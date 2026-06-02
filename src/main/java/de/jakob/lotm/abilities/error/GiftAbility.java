@@ -40,8 +40,6 @@ import java.util.Random;
 public class GiftAbility extends SelectableAbility {
     public GiftAbility(String id) {
         super(id, 1f);
-        canBeCopied = false;
-        canBeReplicated = false;
         canBeUsedByNPC = false;
     }
 
@@ -115,6 +113,18 @@ public class GiftAbility extends SelectableAbility {
 
         selectedAbilities.put(entity.getUUID(), selectedAbility);
         PacketHandler.sendToServer(new AbilitySelectionPacket(getId(), selectedAbility));
+    }
+
+    @Override
+    public boolean isSubAbilityAllowed(LivingEntity entity, int selectedAbility) {
+        int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
+        if (entitySeq > 5) {
+            return selectedAbility == 0;
+        }
+        if (entitySeq > 1) {
+            return selectedAbility < 3;
+        }
+        return true;
     }
 
     @Override

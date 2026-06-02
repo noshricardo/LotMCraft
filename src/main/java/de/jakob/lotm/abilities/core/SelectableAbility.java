@@ -93,6 +93,15 @@ public abstract class SelectableAbility extends Ability {
         selectedAbilities.put(player.getUUID(), selectedAbility);
     }
 
+    public boolean isSubAbilityAllowed(LivingEntity entity, int selectedAbility) {
+        return true;
+    }
+    public void setSelectedAbilityClient(java.util.UUID uuid, int selectedAbility) {
+        if(selectedAbility < 0 || selectedAbility >= getAbilityNames().length)
+            return;
+        selectedAbilities.put(uuid, selectedAbility);
+    }
+
     public void previousAbility(LivingEntity entity) {
         if(getAbilityNames().length == 0)
             return;

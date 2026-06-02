@@ -41,6 +41,12 @@ public class PacketHandler {
         );
 
         registrar.playToClient(
+                SyncWeaknessDetectionTargetsAbilityPacket.TYPE,
+                SyncWeaknessDetectionTargetsAbilityPacket.STREAM_CODEC,
+                SyncWeaknessDetectionTargetsAbilityPacket::handle
+        );
+
+        registrar.playToClient(
                 SyncApotheosisPacket.TYPE,
                 SyncApotheosisPacket.STREAM_CODEC,
                 SyncApotheosisPacket::handle
@@ -173,6 +179,12 @@ public class PacketHandler {
                 OpenCoordinateScreenPacket.TYPE,
                 OpenCoordinateScreenPacket.STREAM_CODEC,
                 OpenCoordinateScreenPacket::handle
+        );
+
+        registrar.playToClient(
+                OpenInternalUnderworldAbilityScreenPacket.TYPE,
+                OpenInternalUnderworldAbilityScreenPacket.STREAM_CODEC,
+                OpenInternalUnderworldAbilityScreenPacket::handle
         );
 
         registrar.playToClient(
@@ -316,6 +328,18 @@ public class PacketHandler {
                 DarknessEffectPacket.TYPE,
                 DarknessEffectPacket.STREAM_CODEC,
                 DarknessEffectPacket::handle
+        );
+
+        registrar.playToClient(
+                SyncCorrosionFovPacket.TYPE,
+                SyncCorrosionFovPacket.STREAM_CODEC,
+                SyncCorrosionFovPacket::handle
+        );
+
+        registrar.playToClient(
+                SyncAbilitySelectionPacket.TYPE,
+                SyncAbilitySelectionPacket.STREAM_CODEC,
+                SyncAbilitySelectionPacket::handle
         );
 
         registrar.playToClient(
@@ -492,6 +516,20 @@ public class PacketHandler {
                 SyncControllingDataPacket.STREAM_CODEC,
                 SyncControllingDataPacket::handle
         );
+
+        registrar.playToClient(
+                OpenDiscernmentScreenPacket.TYPE,
+                OpenDiscernmentScreenPacket.STREAM_CODEC,
+                OpenDiscernmentScreenPacket::handle
+        );
+
+        registrar.playToClient(
+                SyncDiscernmentDataPacket.TYPE,
+                SyncDiscernmentDataPacket.STREAM_CODEC,
+                SyncDiscernmentDataPacket::handle
+        );
+
+
     }
 
     private static void registerServerPackets(PayloadRegistrar registrar) {
@@ -595,6 +633,12 @@ public class PacketHandler {
                 UseSelectedAbilityPacket.TYPE,
                 UseSelectedAbilityPacket.STREAM_CODEC,
                 UseSelectedAbilityPacket::handle
+        );
+
+        registrar.playToServer(
+                UseQueuedSoulAbilityPacket.TYPE,
+                UseQueuedSoulAbilityPacket.STREAM_CODEC,
+                UseQueuedSoulAbilityPacket::handle
         );
 
         registrar.playToServer(
@@ -736,6 +780,18 @@ public class PacketHandler {
                 RequestUniquenessApotheosisPacket.TYPE,
                 RequestUniquenessApotheosisPacket.STREAM_CODEC,
                 RequestUniquenessApotheosisPacket::handle
+        );
+
+        registrar.playToServer(
+                DiscernmentSelectedPacket.TYPE,
+                DiscernmentSelectedPacket.STREAM_CODEC,
+                DiscernmentSelectedPacket::handle
+        );
+
+        registrar.playToServer(
+                StopDiscernmentPacket.TYPE,
+                StopDiscernmentPacket.STREAM_CODEC,
+                StopDiscernmentPacket::handle
         );
     }
 

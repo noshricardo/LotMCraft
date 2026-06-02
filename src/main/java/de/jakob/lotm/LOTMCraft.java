@@ -118,6 +118,7 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -125,6 +126,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(LOTMCraft.MOD_ID)
 public class LOTMCraft
 {
+
     public static final String MOD_ID = "lotmcraft";
 
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
@@ -153,7 +155,6 @@ public class LOTMCraft
     public static KeyMapping useAbilityBarAbility4;
     public static KeyMapping useAbilityBarAbility5;
     public static KeyMapping useAbilityBarAbility6;
-
 
     public static AbilityHandler abilityHandler;
 
@@ -225,6 +226,11 @@ public class LOTMCraft
 
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
+    }
+
+    @SubscribeEvent
+    public void onServerStarted(ServerStartedEvent event) {
+        de.jakob.lotm.abilities.black_emperor.MausoleumDomainAbility.prePlaceStructure(event.getServer());
     }
 
     @EventBusSubscriber(modid = MOD_ID, value = Dist.CLIENT)

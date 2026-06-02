@@ -9,7 +9,9 @@ import de.jakob.lotm.attachments.DisabledAbilitiesComponent;
 import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.attachments.NewPlayerComponent;
 import de.jakob.lotm.attachments.SacrificeRevertComponent;
+import de.jakob.lotm.attachments.UniquenessComponent;
 import de.jakob.lotm.entity.custom.ability_entities.darkness_pathway.ConcealedDomainEntity;
+import de.jakob.lotm.entity.custom.uniqueness.UniquenessEntity;
 import de.jakob.lotm.gamerule.ModGameRules;
 import de.jakob.lotm.item.ModItems;
 import de.jakob.lotm.network.PacketHandler;
@@ -33,6 +35,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
@@ -41,7 +44,23 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.joml.Vector3f;
 
+
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import de.jakob.lotm.util.BeyonderData;
+import de.jakob.lotm.LOTMCraft;
+
+
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 @EventBusSubscriber(modid = LOTMCraft.MOD_ID)
 public class PlayerEvents {
@@ -67,6 +86,7 @@ public class PlayerEvents {
             if(BeyonderData.isBeyonder(player))
                 BeyonderData.playerMap.addLastPosition(player);
 
+            // Return any active souls to storage when the owner logs out.
             de.jakob.lotm.abilities.death.InternalUnderworldAbility.recallSoulsOnLogout(player);
 
             // Revert sacrifice upgrade if active when logging out
@@ -129,8 +149,36 @@ public class PlayerEvents {
 
     @SubscribeEvent
     public static void onDeath(LivingDeathEvent event) {
+        if (event.isCanceled()) {
+            return;
+        }
         if (event.getEntity() instanceof ServerPlayer player) {
             de.jakob.lotm.abilities.death.InternalUnderworldAbility.despawnSoulsOnDeath(player);
+            // Clear stored souls and announce freed seq0/seq1 slots.
+            de.jakob.lotm.abilities.death.InternalUnderworldAbility.FreedSoulSlots freed =
+                    de.jakob.lotm.abilities.death.InternalUnderworldAbility.clearStoredSoulsAndCollectFreedPaths(player);
+            spawnFreedUniquenesses(player, freed.seq0Paths());
+            if (!freed.seq0Paths().isEmpty() || !freed.seq1Paths().isEmpty()) {
+                if (!freed.seq0Paths().isEmpty()) {
+                    String message = "A True God slot has been opened: " + formatPathList(freed.seq0Paths());
+                    player.getServer().getPlayerList().broadcastSystemMessage(
+                        Component.literal(message).withStyle(ChatFormatting.GOLD), false);
+                }
+                if (!freed.seq1Paths().isEmpty()) {
+                    int count = freed.seq1Paths().size();
+                    String prefix;
+                    if (count == 1) {
+                        prefix = "An angel slot has been opened: ";
+                    } else if (count == 2) {
+                        prefix = "Multiple angel slots have been opened: ";
+                    } else {
+                        prefix = "All angel slots have opened: ";
+                    }
+                    String message = prefix + formatPathList(freed.seq1Paths());
+                    player.getServer().getPlayerList().broadcastSystemMessage(
+                        Component.literal(message).withStyle(ChatFormatting.GOLD), false);
+                }
+            }
         }
         if(!(event.getEntity().level() instanceof ServerLevel level)) {
             return;
@@ -146,6 +194,48 @@ public class PlayerEvents {
             new Vector3f(.05f, 0, 0),
             1.5f
     );
+
+    private static String formatPathList(Set<String> paths) {
+        List<String> list = new ArrayList<>(paths);
+        Collections.sort(list);
+        return String.join(", ", list);
+    }
+
+    private static void spawnFreedUniquenesses(ServerPlayer player, Set<String> seq0Paths) {
+        if (seq0Paths == null) return;
+        ServerLevel level = player.serverLevel();
+        Vec3 deathPos = player.position();
+
+        Set<String> spawnPaths = new HashSet<>(seq0Paths);
+        if (BeyonderData.isBeyonder(player) && BeyonderData.getSequence(player) == 0) {
+            UniquenessComponent comp = player.getData(ModAttachments.UNIQUENESS_COMPONENT);
+            if (!comp.hasUniqueness()) {
+                String playerPathway = BeyonderData.getPathway(player);
+                if (playerPathway != null && !playerPathway.isEmpty() && !"none".equals(playerPathway)) {
+                    spawnPaths.add(playerPathway);
+                }
+            }
+        }
+
+        for (String pathway : spawnPaths) {
+            if (pathway == null || pathway.isEmpty() || "none".equals(pathway)) continue;
+            if (UniquenessEntity.existsInWorld(level, pathway)) continue;
+            if (UniquenessEntity.anyPlayerHoldsUniqueness(level, pathway)) continue;
+
+            Vec3 spawnPos = randomSpawnAround(deathPos, 20);
+            UniquenessEntity.trySpawn(level, spawnPos, pathway);
+        }
+    }
+
+    private static Vec3 randomSpawnAround(Vec3 origin, int radius) {
+        double minDistance = Math.min(2.0, radius);
+        double maxDistance = Math.max(minDistance, radius);
+        double distance = minDistance + random.nextDouble() * (maxDistance - minDistance);
+        double angle = random.nextDouble() * Math.PI * 2.0;
+        double dx = Math.cos(angle) * distance;
+        double dz = Math.sin(angle) * distance;
+        return new Vec3(origin.x + dx, origin.y, origin.z + dz);
+    }
 
     @SubscribeEvent
     public static void onDamage(LivingIncomingDamageEvent event) {
@@ -185,5 +275,10 @@ public class PlayerEvents {
     private static void sendActionBar(ServerPlayer player, Component message) {
         ClientboundSetActionBarTextPacket packet = new ClientboundSetActionBarTextPacket(message);
         player.connection.send(packet);
+
+
+
+
+
     }
 }

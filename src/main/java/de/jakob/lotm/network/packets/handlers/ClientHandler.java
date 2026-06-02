@@ -3,6 +3,7 @@ package de.jakob.lotm.network.packets.handlers;
 import com.zigythebird.playeranimcore.math.Vec3f;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.Ability;
+import de.jakob.lotm.abilities.core.SelectableAbility;
 import de.jakob.lotm.abilities.core.ToggleAbility;
 import de.jakob.lotm.abilities.visionary.prophecy.VisionaryAbilityMenus;
 import de.jakob.lotm.attachments.AllyComponent;
@@ -11,6 +12,7 @@ import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.block.ModBlocks;
 import de.jakob.lotm.entity.custom.ability_entities.OriginalBodyEntity;
 import de.jakob.lotm.gui.custom.CoordinateInput.CoordinateInputScreen;
+import de.jakob.lotm.gui.custom.InternalUnderworld.InternalUnderworldAbilityScreen;
 import de.jakob.lotm.gui.custom.Introspect.IntrospectScreen;
 import de.jakob.lotm.gui.custom.Quest.QuestAcceptanceScreen;
 import de.jakob.lotm.gui.custom.SelectionGui.*;
@@ -27,11 +29,13 @@ import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -53,6 +57,22 @@ import java.util.UUID;
 public class ClientHandler {
     public static void openCoordinateScreen(Player player, String use) {
         Minecraft.getInstance().setScreen(new CoordinateInputScreen(player, use));
+    }
+
+    public static void handleOpenInternalUnderworldAbilityScreenPacket() {
+        // Swap generic chest UI with the custom Internal Underworld screen.
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null) return;
+        if (!(mc.screen instanceof AbstractContainerScreen<?> containerScreen)) return;
+        if (containerScreen instanceof InternalUnderworldAbilityScreen) return;
+        if (!(containerScreen.getMenu() instanceof ChestMenu chestMenu)) return;
+
+        String title = containerScreen.getTitle().getString();
+        String selectSoulTitle = Component.translatable("ability.lotmcraft.internal_underworld.select_soul").getString();
+        boolean isUnderworldTitle = title.startsWith("Internal Underworld - ") || title.equals(selectSoulTitle);
+        if (!isUnderworldTitle) return;
+
+        mc.setScreen(new InternalUnderworldAbilityScreen(chestMenu, mc.player.getInventory(), containerScreen.getTitle()));
     }
 
     public static void syncLivingEntityBeyonderData(SyncLivingEntityBeyonderDataPacket packet) {
@@ -481,6 +501,10 @@ public class ClientHandler {
         Minecraft.getInstance().setScreen(new ShapeShiftingSelectionGui(packet.entityTypes()));
     }
 
+    public static void handleDiscernmentScreenPacket(OpenDiscernmentScreenPacket packet) {
+        Minecraft.getInstance().setScreen(new DiscernmentSelectionGui(packet.saved()));
+    }
+
     public static void handleHistoricalVoidBorrowingScreenPacket(OpenHistoricalVoidBorrowingScreenPacket packet) {
         Minecraft.getInstance().setScreen(new HistoricalVoidBorrowingSelectionGui(packet.options()));
     }
@@ -541,6 +565,13 @@ public class ClientHandler {
         }
     }
 
+    public static void handleSyncWeaknessDetectionPacket(SyncWeaknessDetectionTargetsAbilityPacket packet) {
+        WeaknessDetectionRenderLayer.activeWeaknessDetection.clear();
+        if (packet.active()) {
+            WeaknessDetectionRenderLayer.activeWeaknessDetection.putAll(packet.targets());
+        }
+    }
+
     public static void handleControllingDataPacket(SyncControllingDataPacket packet) {
         Entity entity = Minecraft.getInstance().level.getEntity(packet.entityId());
         if(entity == null) {
@@ -548,6 +579,14 @@ public class ClientHandler {
         }
         entity.getData(ModAttachments.CONTROLLING_DATA.get()).setControlling(packet.isControlling());
         entity.getData(ModAttachments.CONTROLLING_DATA.get()).setBodyEntity(packet.bodyEntity());
+    }
+
+    public static void handleDiscernmentDataPacket(SyncDiscernmentDataPacket packet) {
+        Entity entity = Minecraft.getInstance().level.getEntity(packet.entityId());
+        if(entity == null) {
+            return;
+        }
+        entity.getData(ModAttachments.DISCERNMENT_DATA.get()).setDiscerning(packet.isDiscerning());
     }
 
     public static void syncKillCount(int killCount) {
@@ -601,5 +640,12 @@ public class ClientHandler {
         }
 
         AnimationUtil.playAnimation(player, AnimationUtil.getResourceLocationById(packet.animId()));
+    }
+
+    public static void handleAbilitySelectionPacket(SyncAbilitySelectionPacket packet) {
+        if (!(LOTMCraft.abilityHandler.getById(packet.abilityId()) instanceof SelectableAbility selectable)) return;
+        var player = Minecraft.getInstance().player;
+        if (player == null) return;
+        selectable.setSelectedAbilityClient(player.getUUID(), packet.selectedIndex());
     }
 }

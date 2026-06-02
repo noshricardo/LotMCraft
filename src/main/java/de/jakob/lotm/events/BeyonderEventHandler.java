@@ -19,9 +19,11 @@ import de.jakob.lotm.potions.BeyonderPotion;
 import de.jakob.lotm.sefirah.SefirahHandler;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.ClientBeyonderCache;
+import de.jakob.lotm.util.DiscernmentUtil;
 import de.jakob.lotm.util.playerMap.StoredData;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.TeamUtils;
+import de.jakob.lotm.util.playerMap.StoredDataBuilder;
 import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -46,6 +48,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 import java.util.Objects;
 import java.util.Random;
+import java.util.UUID;
 
 import static de.jakob.lotm.util.BeyonderData.playerMap;
 import static de.jakob.lotm.util.BeyonderData.getSequence;
@@ -227,13 +230,27 @@ public class BeyonderEventHandler {
         // sorry nihil i have to mess with your method :)
         // cancel the drop of items completely for summoned entities
         if (event.getEntity().getPersistentData().contains("VoidSummoned")) {
-            event.setCanceled(true);
-            return;
+            boolean underworldSummoned = event.getEntity().getPersistentData().getBoolean("UnderworldSummonedSoul");
+            if (!underworldSummoned) {
+                event.setCanceled(true);
+                return;
+            }
         }
+
+        if (event.isCanceled()) return;
 
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
         if (!BeyonderData.isBeyonder(player)) return;
+
+        // If the soul was captured by Internal Underworld, skip characteristic drops.
+        boolean capturedByUnderworld = player.getPersistentData().getBoolean("InternalUnderworldCaptured");
+        if (capturedByUnderworld) {
+            player.getPersistentData().remove("InternalUnderworldCaptured");
+        } else {
+            dropCharacteristicStacks(player, event);
+        }
+
         if (!player.serverLevel().getGameRules().getBoolean(ModGameRules.REGRESS_SEQUENCE_ON_DEATH)) return;
 
         // onDeath (LivingDeathEvent) already handled regression and cleared the revert component.
@@ -253,17 +270,70 @@ public class BeyonderEventHandler {
 
         BeyonderData.setBeyonder(player, data.pathway(), data.sequence(), true, false, false, false);
 
+        if (capturedByUnderworld) return;
+
         if (charItem == null) return;
 
-        ItemEntity itemEntity = new ItemEntity(
-                player.level(),
-                player.getX(),
-                player.getY(),
-                player.getZ(),
-                new ItemStack(charItem.asItem())
-        );
+        if(DiscernmentUtil.died.containsKey(player.getUUID())){
+            String path = DiscernmentUtil.died.get(player.getUUID());
 
-        event.getDrops().add(itemEntity);
+            UUID id = playerMap.findPlayerByUniqueness(path);
+            if (id != null){
+                var target = player.level().getPlayerByUUID(id);
+
+                if(target != null){
+                    target.addItem(new ItemStack(charItem));
+                }
+            }
+        }
+        else {
+            ItemEntity itemEntity = new ItemEntity(
+                    player.level(),
+                    player.getX(),
+                    player.getY(),
+                    player.getZ(),
+                    new ItemStack(charItem.asItem())
+            );
+
+            event.getDrops().add(itemEntity);
+        }
+    }
+
+    private static void dropCharacteristicStacks(ServerPlayer player, LivingDropsEvent event) {
+        String pathway = BeyonderData.getPathway(player);
+        if (pathway == null || pathway.isBlank() || "none".equals(pathway)) return;
+
+        int[] stacks = BeyonderData.getCharStacks(player);
+        boolean hadStacks = false;
+
+        for (int seq = 1; seq < Math.min(stacks.length, 10); seq++) {
+            int count = stacks[seq];
+            if (count <= 0) continue;
+            hadStacks = true;
+
+            BeyonderCharacteristicItem charItem =
+                    BeyonderCharacteristicItemHandler.selectCharacteristicOfPathwayAndSequence(pathway, seq);
+            if (charItem == null) continue;
+
+            int remaining = count;
+            int maxStack = Math.max(1, new ItemStack(charItem.asItem()).getMaxStackSize());
+            while (remaining > 0) {
+                int stackSize = Math.min(remaining, maxStack);
+                ItemEntity itemEntity = new ItemEntity(
+                        player.level(),
+                        player.getX(),
+                        player.getY(),
+                        player.getZ(),
+                        new ItemStack(charItem.asItem(), stackSize)
+                );
+                event.getDrops().add(itemEntity);
+                remaining -= stackSize;
+            }
+        }
+
+        if (hadStacks) {
+            BeyonderData.clearCharStack(player);
+        }
     }
 
     @SubscribeEvent
@@ -285,6 +355,11 @@ public class BeyonderEventHandler {
             }
 
             StoredData data = playerMap.get(player).get();
+            //StoredData regressed = data.regressSeq(player.getServer().getGameRules().getBoolean(ModGameRules.LOOSE_CHAR_ON_REGRESSION));
+            //StoredData regressed = data.regressSeq(false, player.getServer().getGameRules().getBoolean(ModGameRules.LOOSE_CHAR_ON_REGRESSION));
+
+
+
             StoredData regressed = data.regressSeq(false);
 
             SacrificeRevertComponent revert = player.getData(ModAttachments.SACRIFICE_REVERT_COMPONENT);
@@ -297,6 +372,13 @@ public class BeyonderEventHandler {
                 // Regress from the original sequence, not the temporary sacrificed one
                 StoredData dataAtOriginalSeq = StoredData.builder.copyFrom(data).sequence(originalSeq).build();
                 playerMap.put(player, dataAtOriginalSeq.regressSeq());
+            } else if(player.level().getGameRules().getBoolean(ModGameRules.LOOSE_CHAR_ON_REGRESSION)  && data.charStack()[data.sequence()] > 0){
+                int originalSeq = data.sequence();
+                // Store the original sequence so onPlayerDrops drops the right characteristic
+                // Regress from the original sequence, not the temporary sacrificed one
+                //StoredData dataAtOriginalSeq = StoredData.builder.copyFrom(data).sequence(originalSeq).build();
+                //playerMap.put(player, dataAtOriginalSeq.regressSeq());
+                BeyonderData.setCharStack(player, data.charStack()[data.sequence()] - 1, data.sequence(), true);
             } else {
                 playerMap.put(player, regressed);
             }
@@ -313,7 +395,7 @@ public class BeyonderEventHandler {
                 ClientBeyonderCache.removePlayer(player.getUUID());
             } else
                 ClientBeyonderCache.updateData(player.getUUID(), regressed.pathway(), regressed.sequence(),
-                        0.0f, false, true, 0.0f);
+                        0.0f, false, true, 1.0f);
         }
     }
 
@@ -583,7 +665,7 @@ public class BeyonderEventHandler {
         String path =  BeyonderData.getPathway(entity);
 
 
-        if (target == Level.NETHER && seq > 5){
+        if (target == Level.NETHER && seq > 7){
             event.setCanceled(true);
         }
         else if (target == Level.END){
