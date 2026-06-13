@@ -40,6 +40,9 @@ public class ModDimensions {
     public static final Supplier<MapCodec<NatureDimensionWorldChunkGenerator>> NATURE_WORLD_CHUNK_GENERATOR =
             CHUNK_GENERATORS.register("nature", () -> NatureDimensionWorldChunkGenerator.CODEC);
 
+    public static final Supplier<MapCodec<DreamMazeChunkGenerator>> DREAM_MAZE_CHUNK_GENERATOR =
+            CHUNK_GENERATORS.register("dream_maze", () -> DreamMazeChunkGenerator.CODEC);
+
     // -------------------------------------------------------------------------
     // BiomeSource Registry
     // -------------------------------------------------------------------------
@@ -51,8 +54,8 @@ public class ModDimensions {
             BIOME_SOURCES.register("spirit_world_biome_source", () -> SpiritWorldBiomeSource.CODEC);
 
     // =======================
-    // DREAM MAZE dimension
-    // ========================
+// DREAM MAZE dimension
+// ========================
 
 
     public static final ResourceKey<LevelStem> DREAM_MAZE_LEVEL_KEY =
@@ -67,11 +70,6 @@ public class ModDimensions {
             ResourceKey.create(Registries.DIMENSION_TYPE,
                     ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "dream_maze"));
 
-    public static final ResourceKey<Biome> DREAM_MAZE_BIOME_KEY =
-            ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "dream_maze_biome"));
-
-    
     // =========================================================================
     // SPACE dimension
     // =========================================================================
@@ -205,46 +203,6 @@ public class ModDimensions {
     public static final ResourceKey<Biome> SEFIRAH_CASTLE_BIOME_KEY =
             ResourceKey.create(Registries.BIOME,
                     ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sefirah_castle_biome"));
-
-    // =========================================================================
-    // CHAOS SEA dimension
-    // =========================================================================
-
-    public static final ResourceKey<LevelStem> CHAOS_SEA_LEVEL_KEY =
-            ResourceKey.create(Registries.LEVEL_STEM,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "chaos_sea"));
-
-    public static final ResourceKey<Level> CHAOS_SEA_DIMENSION_KEY =
-            ResourceKey.create(Registries.DIMENSION,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "chaos_sea"));
-
-    public static final ResourceKey<DimensionType> CHAOS_SEA_TYPE_KEY =
-            ResourceKey.create(Registries.DIMENSION_TYPE,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "chaos_sea"));
-
-    public static final ResourceKey<Biome> CHAOS_SEA_BIOME_KEY =
-            ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "chaos_sea_biome"));
-
-    // =========================================================================
-    // RIVER OF ETERNAL DARKNESS dimension
-    // =========================================================================
-
-    public static final ResourceKey<LevelStem> RIVER_OF_ETERNAL_DARKNESS_LEVEL_KEY =
-            ResourceKey.create(Registries.LEVEL_STEM,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "river_of_eternal_darkness"));
-
-    public static final ResourceKey<Level> RIVER_OF_ETERNAL_DARKNESS_DIMENSION_KEY =
-            ResourceKey.create(Registries.DIMENSION,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "river_of_eternal_darkness"));
-
-    public static final ResourceKey<DimensionType> RIVER_OF_ETERNAL_DARKNESS_TYPE_KEY =
-            ResourceKey.create(Registries.DIMENSION_TYPE,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "river_of_eternal_darkness"));
-
-    public static final ResourceKey<Biome> RIVER_OF_ETERNAL_DARKNESS_BIOME_KEY =
-            ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "river_of_eternal_darkness_biome"));
 
     // =========================================================================
     // CONCEALMENT WORLD dimension

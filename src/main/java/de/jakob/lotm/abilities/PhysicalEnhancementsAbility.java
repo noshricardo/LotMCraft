@@ -6,7 +6,7 @@ import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.effect.ModEffects;
 import de.jakob.lotm.gamerule.ModGameRules;
 import de.jakob.lotm.util.BeyonderData;
-import de.jakob.lotm.util.playerMap.Characteristic;
+import de.jakob.lotm.util.beyonderMap.CharacteristicStack;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -24,7 +24,6 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.util.*;
@@ -34,8 +33,9 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
 
     private static final String BASE_MODIFIER_ID = "lotm_physical_enhancement";
 
-    private final Map<EnhancementType, ResourceLocation> modifierIdCache = new EnumMap<>(EnhancementType.class);
-    private String cachedPathwayName = null;
+    // FIX 1: Pre-computed, cached ResourceLocations for all enhancement types.
+    // Previously ResourceLocation.parse() was called on every tick per entity per enhancement,
+    // which does string splitting and validation each time. Now computed once at class load.
     private static final Map<EnhancementType, ResourceLocation> PERMANENT_MODIFIER_IDS = new EnumMap<>(EnhancementType.class);
     static {
         for (EnhancementType type : EnhancementType.values()) {
@@ -43,19 +43,10 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         }
     }
 
-    private static final Map<UUID, Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>>> entityEnhancements = new ConcurrentHashMap<>();
+    private static final Map<UUID, Map<EnhancementType, Integer>> entityEnhancements = new ConcurrentHashMap<>();
     private static final Map<UUID, Map<String, TemporaryEnhancement>> temporaryEnhancements = new ConcurrentHashMap<>();
     private static final Map<UUID, Map<String, EnhancementBoost>> enhancementBoosts = new ConcurrentHashMap<>();
-    public static final Map<UUID, Long> reducedRegen = new ConcurrentHashMap<>();
-
-    /** Suppresses passive regen for the given entity for the specified duration in milliseconds. */
-    public static void suppressRegen(LivingEntity entity, long durationMs) {
-        long expiry = System.currentTimeMillis() + durationMs;
-        if (!reducedRegen.containsKey(entity.getUUID()) || reducedRegen.get(entity.getUUID()) < expiry) {
-            reducedRegen.put(entity.getUUID(), expiry);
-        }
-        entity.removeEffect(MobEffects.REGENERATION);
-    }
+    private static final Map<UUID, Long> reducedRegen = new ConcurrentHashMap<>();
 
     // FIX 2: Track the last known sequence level per entity so that attribute modifiers
     // (health, speed, strength, etc.) are only removed/re-added when the sequence actually
@@ -81,13 +72,6 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         return getEnhancements();
     }
 
-    public int getEnhancementLevelOfEnhancementTypeForSequence(int sequenceLevel, EnhancementType type) {
-        return getEnhancementsForSequence(sequenceLevel).stream()
-                .filter(enh -> enh.getType() == type)
-                .mapToInt(PhysicalEnhancement::getLevel)
-                .sum();
-    }
-
     protected List<PhysicalEnhancement> getEnhancementsForSequence(int sequenceLevel, LivingEntity entity) {
         return getEnhancementsForSequence(sequenceLevel);
     }
@@ -104,18 +88,18 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         // enhancementBoosts.get(uuid), resulting in ~19 ConcurrentHashMap lookups per tick
         // per entity for the same data. Now we do 3 lookups total.
         UUID uuid = entity.getUUID();
-        Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> allEnhancements = entityEnhancements.get(uuid);
+        Map<EnhancementType, Integer> enhancements = entityEnhancements.get(uuid);
         Map<String, TemporaryEnhancement> temps = temporaryEnhancements.get(uuid);
         Map<String, EnhancementBoost> boosts = enhancementBoosts.get(uuid);
 
-        applyConcealment(entity, allEnhancements, temps);
-        applyNightVision(entity, allEnhancements, temps);
-        applyConduit(entity, allEnhancements, temps);
-        applyDolphinsGrace(entity, allEnhancements, temps);
-        applySaturation(entity, allEnhancements, temps);
-        applyWaterBreathing(entity, allEnhancements, temps);
-        applyFireRes(entity, allEnhancements, temps);
-        applyRegeneration(entity, allEnhancements, temps, boosts);
+        applyNightVision(entity, enhancements, temps);
+        applyConduit(entity, enhancements, temps);
+        applyLuck(entity, enhancements, temps, boosts);
+        applyDolphinsGrace(entity, enhancements, temps);
+        applySaturation(entity, enhancements, temps);
+        applyWaterBreathing(entity, enhancements, temps);
+        applyFireRes(entity, enhancements, temps);
+        applyRegeneration(entity, enhancements, temps, boosts);
 
         updateTemporaryEnhancements(entity);
         updateEnhancementBoosts(entity);
@@ -124,6 +108,8 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
     private void recalculateEnhancements(LivingEntity entity) {
         int sequenceLevel = getCurrentSequenceLevel(entity);
 
+        // FIX 2 (continued): Early-exit if the sequence hasn't changed since last tick.
+        // This skips all attribute modifier remove/re-add work in the common case.
         Integer cached = lastKnownSequence.get(entity.getUUID());
         if (cached != null && cached == sequenceLevel) {
             return;
@@ -133,20 +119,19 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         List<PhysicalEnhancement> currentEnhancements = getEnhancementsForSequence(sequenceLevel, entity);
 
         if(entity instanceof ServerPlayer player){
-            var dataOp = BeyonderData.playerMap.get(entity);
+            var dataOp = BeyonderData.beyonderMap.get(entity);
 
             if(dataOp.isPresent()) {
                 var data = dataOp.get();
 
                 ControllingDataComponent controllingData = player.getData(ModAttachments.CONTROLLING_DATA);
-                List<Characteristic> charList = data.chars();
-                if (!charList.isEmpty() && controllingData.getTargetUUID() == null && !controllingData.isControlling()) {
+                if (data.charStack().isUsed() && controllingData.getTargetUUID() == null) {
 
                     if (sequenceLevel < 9) {
                         currentEnhancements = currentEnhancements.stream()
-                                        .map(obj -> obj.type.equals(EnhancementType.HEALTH) ?
+                                .map(obj -> obj.type.equals(EnhancementType.HEALTH) ?
                                         new PhysicalEnhancement(EnhancementType.HEALTH,
-                                                recalculateHealthLevelWithStacks(sequenceLevel, obj.level, charList, data.uniqueness(), null))
+                                                recalculateHealthLevelWithStacks(sequenceLevel, obj.level, data.charStack()))
                                         : obj)
                                 .toList();
                     }
@@ -154,95 +139,36 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
             }
         }
 
-        Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> previousMapForEntity = entityEnhancements.getOrDefault(entity.getUUID(), Collections.emptyMap());
-        Map<EnhancementType, Integer> previousEnhancements = previousMapForEntity.getOrDefault(this, Collections.emptyMap());
-
         Map<EnhancementType, Integer> enhancementMap = new HashMap<>();
+
         for (PhysicalEnhancement enhancement : currentEnhancements) {
-            if (enhancement.type.equals(EnhancementType.SPEED)) {
-                if (!Objects.equals(this.getPathwayName(), BeyonderData.getPathway(entity))) {
-                    continue;
-                }
-            }
             applyEnhancement(entity, enhancement);
             enhancementMap.put(enhancement.getType(), enhancement.getLevel());
         }
 
-        for (EnhancementType previousType : previousEnhancements.keySet()) {
-            if (!enhancementMap.containsKey(previousType)) {
-                removeEnhancement(entity, previousType);
-            }
-        }
-
-        entityEnhancements.compute(entity.getUUID(), (k, v) -> {
-            if (v == null) v = new ConcurrentHashMap<>();
-            v.put(this, enhancementMap);
-            return v;
-        });
-
-        reapplyTemporaryEnhancements(entity);
-        reapplyEnhancementBoosts(entity);
-    }
-
-    private static void reapplyTemporaryEnhancements(LivingEntity entity) {
-        Map<String, TemporaryEnhancement> temps = temporaryEnhancements.get(entity.getUUID());
-        if (temps == null) return;
-        for (Map.Entry<String, TemporaryEnhancement> entry : temps.entrySet()) {
-            applyTemporaryEnhancement(entity, entry.getValue().enhancement, entry.getKey());
-        }
-    }
-
-    private static void reapplyEnhancementBoosts(LivingEntity entity) {
-        Map<String, EnhancementBoost> boosts = enhancementBoosts.get(entity.getUUID());
-        if (boosts == null) return;
-        for (Map.Entry<String, EnhancementBoost> entry : boosts.entrySet()) {
-            EnhancementBoost boost = entry.getValue();
-            applyEnhancementBoost(entity, boost.type, entry.getKey(), boost.amount);
-        }
+        entityEnhancements.put(entity.getUUID(), enhancementMap);
     }
 
     protected int getCurrentSequenceLevel(LivingEntity entity) {
-        return BeyonderData.getSequence(entity, getPathwayName());
+        return BeyonderData.getSequence(entity);
     }
 
-    protected int recalculateHealthLevelWithStacks(int seq, int prevLevel, List<Characteristic> characteristics, String uniqueness, String pathwayToConsider){
+    protected int recalculateHealthLevelWithStacks(int seq, int prevLevel, CharacteristicStack stack){
         int result = prevLevel;
-        String myPathway = pathwayToConsider; // null means consider all pathways
 
         for(int i = 9; i >= seq; i--){
-            final int s = i;
-            float buff;
+            int buff = stack.get(i);
 
-            if (i == 1) {
-                buff = (int) characteristics.stream()
-                        .filter(c -> (myPathway == null || c.pathway().equals(myPathway)) && c.sequence() == 1)
-                        .count();
-            } else {
-                buff = (int) characteristics.stream()
-                        .filter(c -> (myPathway == null || c.pathway().equals(myPathway)) && c.sequence() == s)
-                        .count();
-            }
-            int stacks = characteristics.stream()
-                    .filter(c -> (myPathway == null || c.pathway().equals(myPathway)) && c.sequence() == s)
-                    .mapToInt(c -> Math.max(0, c.stack() - 1))
-                    .sum();
-            buff *=  ((stacks*4f)/(stacks+18f) + 1);
-
-            //buff = (i == 1 && buff >= 0) ? buff : (buff > 0) ? 1 : 0;
-
-            switch (i) {
+            switch (i){
                 case 8 -> result += buff;
                 case 7 -> result += buff * 2;
-                case 6, 5 -> result += buff * 3;
-                case 4, 3 -> result += buff * 5;
+                case 6 -> result += buff * 3;
+                case 5 -> result += buff * 3;
+                case 4 -> result += buff * 5;
+                case 3 -> result += buff * 5;
                 case 2 -> result += buff * 7;
                 case 1 -> result += buff * 7;
-                case 0 -> result += buff * 15;
             }
-        }
-
-        if (myPathway != null && uniqueness != null && uniqueness.equalsIgnoreCase(myPathway)) {
-            result += 20;
         }
 
         return result;
@@ -251,46 +177,13 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
     // All apply* methods below now accept pre-fetched maps (FIX 3) instead of
     // looking them up from the ConcurrentHashMaps individually.
 
-    private void applyConcealment(LivingEntity entity,
-                                  Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> allEnhancements,
-                                  Map<String, TemporaryEnhancement> temps) {
-        boolean hasConcealment = false;
-
-        if (allEnhancements != null) {
-            for (Map<EnhancementType, Integer> enhancements : allEnhancements.values()) {
-                if (enhancements.containsKey(EnhancementType.CONCEALMENT)) {
-                    hasConcealment = true;
-                    break;
-                }
-            }
-        }
-
-        if (!hasConcealment && temps != null) {
-            for (TemporaryEnhancement temp : temps.values()) {
-                if (temp.enhancement.getType() == EnhancementType.CONCEALMENT) {
-                    hasConcealment = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasConcealment) {
-            entity.addEffect(new MobEffectInstance(ModEffects.CONCEALMENT, 300, 1, false, false, false));
-        }
-    }
-
     private void applyNightVision(LivingEntity entity,
-                                  Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> allEnhancements,
+                                  Map<EnhancementType, Integer> enhancements,
                                   Map<String, TemporaryEnhancement> temps) {
         boolean hasNightVision = false;
 
-        if (allEnhancements != null) {
-            for (Map<EnhancementType, Integer> enhancements : allEnhancements.values()) {
-                if (enhancements.containsKey(EnhancementType.NIGHT_VISION)) {
-                    hasNightVision = true;
-                    break;
-                }
-            }
+        if (enhancements != null && enhancements.containsKey(EnhancementType.NIGHT_VISION)) {
+            hasNightVision = true;
         }
 
         if (!hasNightVision && temps != null) {
@@ -308,17 +201,12 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
     }
 
     private void applyFireRes(LivingEntity entity,
-                              Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> allEnhancements,
+                              Map<EnhancementType, Integer> enhancements,
                               Map<String, TemporaryEnhancement> temps) {
         boolean hasFireRes = false;
 
-        if (allEnhancements != null) {
-            for (Map<EnhancementType, Integer> enhancements : allEnhancements.values()) {
-                if (enhancements.containsKey(EnhancementType.FIRE_RESISTANCE)) {
-                    hasFireRes = true;
-                    break;
-                }
-            }
+        if (enhancements != null && enhancements.containsKey(EnhancementType.FIRE_RESISTANCE)) {
+            hasFireRes = true;
         }
 
         if (!hasFireRes && temps != null) {
@@ -335,18 +223,44 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         }
     }
 
+    private void applyLuck(LivingEntity entity,
+                           Map<EnhancementType, Integer> enhancements,
+                           Map<String, TemporaryEnhancement> temps,
+                           Map<String, EnhancementBoost> boosts) {
+        int luckLevel = 0;
+
+        if (enhancements != null && enhancements.containsKey(EnhancementType.LUCK)) {
+            luckLevel = enhancements.get(EnhancementType.LUCK);
+        }
+
+        if (temps != null) {
+            for (TemporaryEnhancement temp : temps.values()) {
+                if (temp.enhancement.getType() == EnhancementType.LUCK) {
+                    luckLevel += temp.enhancement.getLevel();
+                }
+            }
+        }
+
+        if (boosts != null) {
+            for (EnhancementBoost boost : boosts.values()) {
+                if (boost.enhancement.getType() == EnhancementType.LUCK) {
+                    luckLevel += boost.amount;
+                }
+            }
+        }
+
+        if (luckLevel <= 0) return;
+
+        entity.addEffect(new MobEffectInstance(ModEffects.LUCK, 300, luckLevel - 1, false, false, false));
+    }
+
     private void applyConduit(LivingEntity entity,
-                              Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> allEnhancements,
+                              Map<EnhancementType, Integer> enhancements,
                               Map<String, TemporaryEnhancement> temps) {
         boolean hasEffect = false;
 
-        if (allEnhancements != null) {
-            for (Map<EnhancementType, Integer> enhancements : allEnhancements.values()) {
-                if (enhancements.containsKey(EnhancementType.CONDUIT)) {
-                    hasEffect = true;
-                    break;
-                }
-            }
+        if (enhancements != null && enhancements.containsKey(EnhancementType.CONDUIT)) {
+            hasEffect = true;
         }
 
         if (!hasEffect && temps != null) {
@@ -364,17 +278,12 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
     }
 
     private void applySaturation(LivingEntity entity,
-                                 Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> allEnhancements,
+                                 Map<EnhancementType, Integer> enhancements,
                                  Map<String, TemporaryEnhancement> temps) {
         boolean hasEffect = false;
 
-        if (allEnhancements != null) {
-            for (Map<EnhancementType, Integer> enhancements : allEnhancements.values()) {
-                if (enhancements.containsKey(EnhancementType.SATURATION)) {
-                    hasEffect = true;
-                    break;
-                }
-            }
+        if (enhancements != null && enhancements.containsKey(EnhancementType.SATURATION)) {
+            hasEffect = true;
         }
 
         if (!hasEffect && temps != null) {
@@ -386,7 +295,7 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
             }
         }
 
-        if (hasEffect || (BeyonderData.isBeyonder(entity) && BeyonderData.getSequence(entity) <= 2)) {
+        if (hasEffect || (BeyonderData.isBeyonder(entity) && BeyonderData.getSequence(entity) <= 4)) {
             if (entity instanceof Player player) {
                 player.getFoodData().setSaturation(20);
                 player.getFoodData().setFoodLevel(20);
@@ -395,17 +304,12 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
     }
 
     private void applyDolphinsGrace(LivingEntity entity,
-                                    Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> allEnhancements,
+                                    Map<EnhancementType, Integer> enhancements,
                                     Map<String, TemporaryEnhancement> temps) {
         boolean hasEffect = false;
 
-        if (allEnhancements != null) {
-            for (Map<EnhancementType, Integer> enhancements : allEnhancements.values()) {
-                if (enhancements.containsKey(EnhancementType.DOLPHINS_GRACE)) {
-                    hasEffect = true;
-                    break;
-                }
-            }
+        if (enhancements != null && enhancements.containsKey(EnhancementType.DOLPHINS_GRACE)) {
+            hasEffect = true;
         }
 
         if (!hasEffect && temps != null) {
@@ -423,17 +327,12 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
     }
 
     private void applyWaterBreathing(LivingEntity entity,
-                                     Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> allEnhancements,
+                                     Map<EnhancementType, Integer> enhancements,
                                      Map<String, TemporaryEnhancement> temps) {
         boolean hasEffect = false;
 
-        if (allEnhancements != null) {
-            for (Map<EnhancementType, Integer> enhancements : allEnhancements.values()) {
-                if (enhancements.containsKey(EnhancementType.UNDERWATER_BREATHING)) {
-                    hasEffect = true;
-                    break;
-                }
-            }
+        if (enhancements != null && enhancements.containsKey(EnhancementType.UNDERWATER_BREATHING)) {
+            hasEffect = true;
         }
 
         if (!hasEffect && temps != null) {
@@ -451,17 +350,13 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
     }
 
     private void applyRegeneration(LivingEntity entity,
-                                   Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> allEnhancements,
+                                   Map<EnhancementType, Integer> enhancements,
                                    Map<String, TemporaryEnhancement> temps,
                                    Map<String, EnhancementBoost> boosts) {
         int regenLevel = 0;
 
-        if (allEnhancements != null) {
-            for (Map<EnhancementType, Integer> enhancements : allEnhancements.values()) {
-                if (enhancements.containsKey(EnhancementType.REGENERATION)) {
-                    regenLevel += enhancements.get(EnhancementType.REGENERATION);
-                }
-            }
+        if (enhancements != null && enhancements.containsKey(EnhancementType.REGENERATION)) {
+            regenLevel = enhancements.get(EnhancementType.REGENERATION);
         }
 
         if (temps != null) {
@@ -474,7 +369,7 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
 
         if (boosts != null) {
             for (EnhancementBoost boost : boosts.values()) {
-                if (boost.type == EnhancementType.REGENERATION) {
+                if (boost.enhancement.getType() == EnhancementType.REGENERATION) {
                     regenLevel += boost.amount;
                 }
             }
@@ -502,103 +397,33 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
 
     @Override
     public void onPassiveAbilityRemoved(LivingEntity entity, ServerLevel serverLevel) {
-        removeMyEnhancements(entity);
-    }
-
-    private void removeMyEnhancements(LivingEntity entity) {
-        UUID uuid = entity.getUUID();
-        // Clear the sequence cache so callPassiveEffectsOnAdd will re-apply modifiers
-        // after a remove+add cycle (e.g. double setBeyonder call on NPC spawn).
-        lastKnownSequence.remove(uuid);
-        Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> allEnhancements = entityEnhancements.get(uuid);
-        if (allEnhancements != null) {
-            Map<EnhancementType, Integer> myEnhancements = allEnhancements.remove(this);
-            if (myEnhancements != null) {
-                for (EnhancementType type : myEnhancements.keySet()) {
-                    removeEnhancement(entity, type);
-                }
-            }
-            if (allEnhancements.isEmpty()) {
-                entityEnhancements.remove(uuid);
-            }
-        }
-    }
-
-    public static void resetEnhancements(LivingEntity entity) {
-        UUID uuid = entity.getUUID();
-        Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> allEnhancements = entityEnhancements.remove(uuid);
-        if (allEnhancements != null) {
-            for (Map.Entry<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> entry : allEnhancements.entrySet()) {
-                PhysicalEnhancementsAbility ability = entry.getKey();
-                for (EnhancementType type : entry.getValue().keySet()) {
-                    ability.removeEnhancement(entity, type);
-                }
-            }
-        }
-        temporaryEnhancements.remove(uuid);
-        enhancementBoosts.remove(uuid);
-        reducedRegen.remove(uuid);
+        removeAllEnhancements(entity);
     }
 
     private void removeAllEnhancements(LivingEntity entity) {
-        Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> enhancements = entityEnhancements.get(entity.getUUID());
+        Map<EnhancementType, Integer> enhancements = entityEnhancements.get(entity.getUUID());
         if (enhancements != null) {
-            for (Map<EnhancementType, Integer> map : enhancements.values()) {
-                for (EnhancementType type : map.keySet()) {
-                    removeEnhancement(entity, type);
-                }
+            for (Map.Entry<EnhancementType, Integer> entry : enhancements.entrySet()) {
+                removeEnhancement(entity, entry.getKey());
             }
         }
-
-        Map<String, TemporaryEnhancement> temps = temporaryEnhancements.get(entity.getUUID());
-        if (temps != null) {
-            for (Map.Entry<String, TemporaryEnhancement> entry : temps.entrySet()) {
-                removeTemporaryEnhancementEffect(entity, entry.getValue().enhancement, entry.getKey());
-            }
-        }
-
-        Map<String, EnhancementBoost> boosts = enhancementBoosts.get(entity.getUUID());
-        if (boosts != null) {
-            for (Map.Entry<String, EnhancementBoost> entry : boosts.entrySet()) {
-                removeEnhancementBoostEffect(entity, entry.getValue().type, entry.getKey());
-            }
-        }
-
-        System.out.println("removeAllEnhancements called for " + entity.getUUID());
         entityEnhancements.remove(entity.getUUID());
         temporaryEnhancements.remove(entity.getUUID());
         enhancementBoosts.remove(entity.getUUID());
         reducedRegen.remove(entity.getUUID());
-        lastKnownSequence.remove(entity.getUUID());
-    }
-    private String getPathwayName() {
-        if (cachedPathwayName == null) {
-            cachedPathwayName = getRequirements().keySet().stream().findFirst().orElse("none");
-        }
-        return cachedPathwayName;
-    }
-
-    private ResourceLocation getModifierId(EnhancementType type) {
-        return modifierIdCache.computeIfAbsent(type, t ->
-                ResourceLocation.parse(BASE_MODIFIER_ID + "_" + getPathwayName() + "_" + t.name().toLowerCase()));
+        lastKnownSequence.remove(entity.getUUID()); // FIX 2: also clear sequence cache on removal
     }
 
     private void applyEnhancement(LivingEntity entity, PhysicalEnhancement enhancement) {
         if (enhancement.getAttribute() != null) {
             AttributeInstance instance = entity.getAttribute(enhancement.getAttribute());
             if (instance != null) {
-                // Use per-ability/per-pathway modifier id to avoid collisions between abilities
-                ResourceLocation modifierId = getModifierId(enhancement.getType());
+                // FIX 1: Use pre-cached ResourceLocation instead of parsing a string each call
+                ResourceLocation modifierId = PERMANENT_MODIFIER_IDS.get(enhancement.getType());
+
+                instance.removeModifier(modifierId);
 
                 double value = enhancement.calculateValue();
-                AttributeModifier existing = instance.getModifier(modifierId);
-                if (existing != null) {
-                    if (Math.abs(existing.amount() - value) < 0.0001 && existing.operation() == enhancement.getOperation()) {
-                        return; // Already has the correct modifier, avoid flickering
-                    }
-                    instance.removeModifier(modifierId);
-                }
-
                 AttributeModifier modifier = new AttributeModifier(modifierId, value, enhancement.getOperation());
                 instance.addPermanentModifier(modifier);
             }
@@ -610,7 +435,8 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         if (attribute != null) {
             AttributeInstance instance = entity.getAttribute(attribute);
             if (instance != null) {
-            instance.removeModifier(getModifierId(type));
+                // FIX 1: Use pre-cached ResourceLocation instead of parsing a string each call
+                instance.removeModifier(PERMANENT_MODIFIER_IDS.get(type));
             }
         }
     }
@@ -642,7 +468,10 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         if (enhancement.getAttribute() != null) {
             AttributeInstance instance = entity.getAttribute(enhancement.getAttribute());
             if (instance != null) {
-                ResourceLocation modifierId = tempModifierId(id);
+                // FIX 1: Temp/boost modifier IDs are dynamic (include the caller-supplied id string)
+                // so they can't be pre-cached statically, but we still parse once here at
+                // add-time rather than on every tick.
+                ResourceLocation modifierId = ResourceLocation.parse(BASE_MODIFIER_ID + "_temp_" + id);
                 instance.removeModifier(modifierId);
 
                 double value = enhancement.calculateValue();
@@ -656,22 +485,22 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         if (enhancement.getAttribute() != null) {
             AttributeInstance instance = entity.getAttribute(enhancement.getAttribute());
             if (instance != null) {
-                instance.removeModifier(tempModifierId(id));
-                lastKnownSequence.remove(entity.getUUID()); // force recalculation next tick
+                instance.removeModifier(ResourceLocation.parse(BASE_MODIFIER_ID + "_temp_" + id));
             }
         }
     }
 
-    public static void addEnhancementBoost(LivingEntity entity, EnhancementType type, String id, int amount, long durationMillis) {
+    // Enhancement boost methods
+    public static void addEnhancementBoost(LivingEntity entity, PhysicalEnhancement enhancement, String id, int amount, long duration) {
         enhancementBoosts.computeIfAbsent(entity.getUUID(), k -> new ConcurrentHashMap<>())
-                .put(id, new EnhancementBoost(type, amount, System.currentTimeMillis() + durationMillis));
-        applyEnhancementBoost(entity, type, id, amount);
+                .put(id, new EnhancementBoost(enhancement, amount, System.currentTimeMillis() + duration));
+        applyEnhancementBoost(entity, enhancement, id, amount);
     }
 
-    public static void addEnhancementBoost(LivingEntity entity, EnhancementType type, String id, int amount) {
+    public static void addEnhancementBoost(LivingEntity entity, PhysicalEnhancement enhancement, String id, int amount) {
         enhancementBoosts.computeIfAbsent(entity.getUUID(), k -> new ConcurrentHashMap<>())
-                .put(id, new EnhancementBoost(type, amount, -1));
-        applyEnhancementBoost(entity, type, id, amount);
+                .put(id, new EnhancementBoost(enhancement, amount, -1));
+        applyEnhancementBoost(entity, enhancement, id, amount);
     }
 
     public static void removeEnhancementBoost(LivingEntity entity, String id) {
@@ -679,41 +508,35 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         if (boosts != null) {
             EnhancementBoost boost = boosts.remove(id);
             if (boost != null) {
-                removeEnhancementBoostEffect(entity, boost.type, id);
-                lastKnownSequence.remove(entity.getUUID()); // force recalculation next tick
+                removeEnhancementBoostEffect(entity, boost.enhancement, id);
             }
         }
     }
 
-    private static void applyEnhancementBoost(LivingEntity entity, EnhancementType type, String id, int amount) {
-        if (type.getAttribute() != null) {
-            AttributeInstance instance = entity.getAttribute(type.getAttribute());
+    private static void applyEnhancementBoost(LivingEntity entity, PhysicalEnhancement enhancement, String id, int amount) {
+        if (enhancement.getAttribute() != null) {
+            AttributeInstance instance = entity.getAttribute(enhancement.getAttribute());
             if (instance != null) {
-                ResourceLocation modifierId = boostModifierId(id);
+                ResourceLocation modifierId = ResourceLocation.parse(BASE_MODIFIER_ID + "_boost_" + id);
                 instance.removeModifier(modifierId);
 
-                double value = amount * type.getValuePerLevel();
-                AttributeModifier modifier = new AttributeModifier(modifierId, value, type.getOperation());
-                instance.addTransientModifier(modifier);
+                int effectiveLevel = Math.max(0, enhancement.getLevel() + amount);
+                PhysicalEnhancement boosted = new PhysicalEnhancement(enhancement.getType(), effectiveLevel);
+                double value = boosted.calculateValue() - enhancement.calculateValue();
+
+                AttributeModifier modifier = new AttributeModifier(modifierId, value, enhancement.getOperation());
+                instance.addPermanentModifier(modifier);
             }
         }
     }
 
-    private static void removeEnhancementBoostEffect(LivingEntity entity, EnhancementType type, String id) {
-        if (type.getAttribute() != null) {
-            AttributeInstance instance = entity.getAttribute(type.getAttribute());
+    private static void removeEnhancementBoostEffect(LivingEntity entity, PhysicalEnhancement enhancement, String id) {
+        if (enhancement.getAttribute() != null) {
+            AttributeInstance instance = entity.getAttribute(enhancement.getAttribute());
             if (instance != null) {
-                instance.removeModifier(boostModifierId(id));
+                instance.removeModifier(ResourceLocation.parse(BASE_MODIFIER_ID + "_boost_" + id));
             }
         }
-    }
-
-    private static ResourceLocation boostModifierId(String id) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, BASE_MODIFIER_ID + "_boost_" + id);
-    }
-
-    private static ResourceLocation tempModifierId(String id) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, BASE_MODIFIER_ID + "_temp_" + id);
     }
 
     private void updateTemporaryEnhancements(LivingEntity entity) {
@@ -741,7 +564,7 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
                 Map.Entry<String, EnhancementBoost> entry = iterator.next();
                 EnhancementBoost boost = entry.getValue();
                 if (boost.expiryTime != -1 && currentTime >= boost.expiryTime) {
-                    removeEnhancementBoostEffect(entity, boost.type, entry.getKey());
+                    removeEnhancementBoostEffect(entity, boost.enhancement, entry.getKey());
                     iterator.remove();
                 }
             }
@@ -749,15 +572,11 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
     }
 
     public static int getResistanceLevel(UUID entityId) {
-        Map<PhysicalEnhancementsAbility, Map<EnhancementType, Integer>> allEnhancements = entityEnhancements.get(entityId);
+        Map<EnhancementType, Integer> enhancements = entityEnhancements.get(entityId);
         int level = 0;
 
-        if (allEnhancements != null) {
-            for (Map<EnhancementType, Integer> enhancements : allEnhancements.values()) {
-                if (enhancements.containsKey(EnhancementType.RESISTANCE)) {
-                    level += enhancements.get(EnhancementType.RESISTANCE);
-                }
-            }
+        if (enhancements != null && enhancements.containsKey(EnhancementType.RESISTANCE)) {
+            level = enhancements.get(EnhancementType.RESISTANCE);
         }
 
         Map<String, TemporaryEnhancement> temps = temporaryEnhancements.get(entityId);
@@ -772,7 +591,7 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         Map<String, EnhancementBoost> boosts = enhancementBoosts.get(entityId);
         if (boosts != null) {
             for (EnhancementBoost boost : boosts.values()) {
-                if (boost.type == EnhancementType.RESISTANCE) {
+                if (boost.enhancement.getType() == EnhancementType.RESISTANCE) {
                     level += boost.amount;
                 }
             }
@@ -793,18 +612,6 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
                     event.setAmount(event.getAmount() * damageMultiplier);
                 }
             }
-        }
-
-        @SubscribeEvent
-        public static void onLivingHeal(LivingHealEvent event) {
-            UUID uuid = event.getEntity().getUUID();
-            Long expiry = reducedRegen.get(uuid);
-            if (expiry == null) return;
-            if (System.currentTimeMillis() >= expiry) {
-                reducedRegen.remove(uuid);
-                return;
-            }
-            event.setCanceled(true);
         }
 
         @SubscribeEvent
@@ -836,12 +643,12 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
     }
 
     private static class EnhancementBoost {
-        final EnhancementType type;
+        final PhysicalEnhancement enhancement;
         final int amount;
         final long expiryTime;
 
-        EnhancementBoost(EnhancementType type, int amount, long expiryTime) {
-            this.type = type;
+        EnhancementBoost(PhysicalEnhancement enhancement, int amount, long expiryTime) {
+            this.enhancement = enhancement;
             this.amount = amount;
             this.expiryTime = expiryTime;
         }
@@ -867,7 +674,6 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         STRENGTH(Attributes.ATTACK_DAMAGE, AttributeModifier.Operation.ADD_VALUE, 3.0),
         SPEED(Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_VALUE, 0.02),
         HEALTH(Attributes.MAX_HEALTH, AttributeModifier.Operation.ADD_VALUE, 4.0),
-        MINING_EFFICIENCY(Attributes.MINING_EFFICIENCY,AttributeModifier.Operation.ADD_VALUE,1.0),
         KNOCKBACK_RESISTANCE(Attributes.KNOCKBACK_RESISTANCE, AttributeModifier.Operation.ADD_VALUE, 0.05),
         ATTACK_SPEED(Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, 0.05),
         RESISTANCE(null, null, 0),
@@ -876,11 +682,9 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         LUCK(null, null, 0),
         REGENERATION(null, null, 0),
         CONDUIT(null, null, 0),
-        DOLPHINS_GRACE(Attributes.WATER_MOVEMENT_EFFICIENCY, AttributeModifier.Operation.ADD_VALUE, 1),
-        OXYGEN_BONUS(Attributes.OXYGEN_BONUS, AttributeModifier.Operation.ADD_VALUE, 1),
+        DOLPHINS_GRACE(null, null, 0),
         UNDERWATER_BREATHING(null, null, 0),
-        SATURATION(null, null, 0),
-        CONCEALMENT(null, null, 0);
+        SATURATION(null, null, 0);
 
         private final Holder<Attribute> attribute;
         private final AttributeModifier.Operation operation;
@@ -897,26 +701,10 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         public double getValuePerLevel() { return valuePerLevel; }
     }
 
-    public static void resetEnhancements(UUID uuid, LivingEntity entity, boolean removeBoosts) {
+    public static void resetEnhancements(UUID uuid) {
         entityEnhancements.remove(uuid);
         temporaryEnhancements.remove(uuid);
-
-        if (removeBoosts) {
-            Map<String, EnhancementBoost> boosts = enhancementBoosts.get(uuid);
-
-            if (boosts != null && entity != null) {
-                for (Map.Entry<String, EnhancementBoost> entry : boosts.entrySet()) {
-                    removeEnhancementBoostEffect(
-                            entity,
-                            entry.getValue().type,
-                            entry.getKey()
-                    );
-                }
-            }
-
-            enhancementBoosts.remove(uuid);
-        }
-
-        lastKnownSequence.remove(uuid);
+        enhancementBoosts.remove(uuid);
+        lastKnownSequence.remove(uuid); // FIX 2: also clear sequence cache on reset
     }
 }

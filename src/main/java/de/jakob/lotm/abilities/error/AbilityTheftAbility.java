@@ -1,8 +1,13 @@
 package de.jakob.lotm.abilities.error;
 
+import de.jakob.lotm.LOTMCraft;
+import de.jakob.lotm.abilities.core.Ability;
 import de.jakob.lotm.abilities.core.SelectableAbility;
-import de.jakob.lotm.abilities.error.handler.TheftHandler;
-import de.jakob.lotm.events.ProhibitionHandler;
+import de.jakob.lotm.abilities.error.handler.AbilityTheftHandler;
+import de.jakob.lotm.attachments.CopiedAbilityComponent;
+import de.jakob.lotm.attachments.DisabledAbilitiesComponent;
+import de.jakob.lotm.attachments.ModAttachments;
+import de.jakob.lotm.rendering.effectRendering.EffectManager;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.CopiedAbilityHelper;
@@ -14,16 +19,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-
 
 public class AbilityTheftAbility extends SelectableAbility {
     public AbilityTheftAbility(String id) {
-        super(id, 3f);
-        canBeCopied = false;
-        canBeReplicated = false;
-        canBeShared = false;
+        super(id, 1);
     }
 
     @Override
@@ -33,7 +36,7 @@ public class AbilityTheftAbility extends SelectableAbility {
 
     @Override
     public float getSpiritualityCost() {
-        return 200;
+        return 95;
     }
 
     @Override
@@ -65,14 +68,14 @@ public class AbilityTheftAbility extends SelectableAbility {
             }
             return;
         }
-        if (ProhibitionHandler.IsInTheftZone(entity.position(), (ServerLevel) level, AbilityUtil.getSeqWithArt(entity, this))) return;
-        LivingEntity target = AbilityUtil.getTargetEntity(entity, (int) (15 * (multiplier(entity) * multiplier(entity))), 2);
+
+        LivingEntity target = AbilityUtil.getTargetEntity(entity, 20, 2);
         if (target == null) {
             AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.ability_theft.no_target").withColor(0x6d32a8));
             return;
         }
 
-        TheftHandler.performAbilityTheft(level, entity, target, random, false, this);
+        AbilityTheftHandler.performTheft(level, entity, target, random, true);
     }
 
 }

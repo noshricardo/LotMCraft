@@ -45,6 +45,28 @@ public class MarionetteLifelinkGoal extends Goal {
         String controllerUUID = component.getControllerUUID();
         if (controllerUUID.isEmpty()) {
             killMarionette();
+            return;
+        }
+
+        // Check if controller exists across all levels
+        Player controller = findPlayerAcrossAllLevels(controllerUUID);
+        
+        if (controller == null || !controller.isAlive()) {
+            // Controller is dead or offline
+            separationTimer++;
+            
+            // Die after 10 seconds (200 ticks / 20 ticks per check = 10 checks)
+            if (separationTimer >= 10) {
+                killMarionette();
+            } else {
+                // Optional: Show visual effects as marionette weakens
+                if (separationTimer % 3 == 0) {
+                    marionette.hurt(marionette.damageSources().wither(), 1.0f);
+                }
+            }
+        } else {
+            // Controller is alive, reset timer
+            separationTimer = 0;
         }
     }
 

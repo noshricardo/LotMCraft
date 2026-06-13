@@ -4,17 +4,12 @@ import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.PassiveAbilityHandler;
 import de.jakob.lotm.abilities.PassiveAbilityItem;
 import de.jakob.lotm.attachments.AbilityWheelComponent;
-import de.jakob.lotm.attachments.KillCountComponent;
 import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.attachments.SanityComponent;
 import de.jakob.lotm.gui.custom.Introspect.IntrospectMenuProvider;
 import de.jakob.lotm.network.PacketHandler;
 import de.jakob.lotm.network.packets.toClient.SyncAbilityWheelDataPacket;
 import de.jakob.lotm.network.packets.toClient.SyncIntrospectMenuPacket;
-import de.jakob.lotm.network.packets.toClient.SyncKillCountPacket;
-import de.jakob.lotm.network.packets.toClient.SyncSefirotAuthorityDataPacket;
-import de.jakob.lotm.sefirah.SefirahHandler;
-import de.jakob.lotm.sefirah.SefirotAuthorityManager;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.AbilityWheelHelper;
 import net.minecraft.network.FriendlyByteBuf;
@@ -50,12 +45,12 @@ public record OpenIntrospectMenuPacket(int sequence, String pathway) implements 
         context.enqueueWork(() -> {
             if (context.flow().getReceptionSide().isServer()) {
                 ServerPlayer player = (ServerPlayer) context.player();
-                
+
                 if(!BeyonderData.isBeyonder(player))
                     return;
 
-                int sequence = BeyonderData.getHighestSequence(player);
-                String pathway = BeyonderData.getHighestPathway(player);
+                int sequence = packet.sequence();
+                String pathway = packet.pathway();
                 float digestionProgress = BeyonderData.getDigestionProgress(player);
 
                 List<ItemStack> passiveAbilities = new ArrayList<>(PassiveAbilityHandler.ITEMS.getEntries().stream().filter(entry -> {
@@ -67,24 +62,13 @@ public record OpenIntrospectMenuPacket(int sequence, String pathway) implements 
                 SanityComponent sanityComponent = player.getData(ModAttachments.SANITY_COMPONENT);
                 float sanity = sanityComponent.getSanity();
 
-                float corruption = player.getData(ModAttachments.CORRUPTION_COMPONENT).getCorruption();
-
-                boolean isSefirotOwner = SefirahHandler.hasSefirot(player);
-
                 AbilityWheelHelper.removeUnusableAbilities(player);
                 AbilityWheelComponent abilityWheelComponent = player.getData(ModAttachments.ABILITY_WHEEL_COMPONENT);
 
-                player.openMenu(new IntrospectMenuProvider(passiveAbilities, sequence, pathway, digestionProgress, sanity, corruption, isSefirotOwner), buf -> {
-                    buf.writeInt(sequence);
-                    buf.writeUtf(pathway);
-                    buf.writeBoolean(isSefirotOwner);
-                });
+                player.openMenu(new IntrospectMenuProvider(passiveAbilities, sequence, pathway, digestionProgress, sanity));
 
-                SefirotAuthorityManager.syncToClient(player);
-                PacketHandler.sendToPlayer(player, new SyncIntrospectMenuPacket(sequence, pathway, sanity, corruption));
+                PacketHandler.sendToPlayer(player, new SyncIntrospectMenuPacket(sequence, pathway, sanity));
                 PacketHandler.sendToPlayer(player, new SyncAbilityWheelDataPacket(abilityWheelComponent.getAbilities()));
-                PacketHandler.sendToPlayer(player, new SyncKillCountPacket(player.getData(ModAttachments.KILL_COUNT_COMPONENT).getKillCount()));
-                PacketHandler.syncUniquenessToPlayer(player);
             }
         });
     }

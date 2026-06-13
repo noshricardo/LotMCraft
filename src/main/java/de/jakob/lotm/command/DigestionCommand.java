@@ -40,7 +40,7 @@ public class DigestionCommand {
     
     private static int executeSanityCommand(CommandSourceStack source, Player target, float amount) {
         try {
-            BeyonderData.setDigestionProgress(target, amount);
+            BeyonderData.digest(target, amount, false);
             source.sendSuccess(() -> Component.literal("Digested potion " + target.getName().getString() + " with " + amount), true);
             return 1;
 

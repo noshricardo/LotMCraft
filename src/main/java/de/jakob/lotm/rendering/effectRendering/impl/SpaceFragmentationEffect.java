@@ -33,11 +33,11 @@ public class SpaceFragmentationEffect extends ActiveEffect {
     private static final int[] COLOR_CYAN_DARK = {0, 120, 140};
     private static final int[] COLOR_WHITE = {255, 255, 255};
 
-    private static final float EFFECT_RADIUS = 50.0f;
+    private static final float EFFECT_RADIUS = 24.0f;
     private static final int DENSITY_MULTIPLIER = 4; // Massive density increase
 
     public SpaceFragmentationEffect(double x, double y, double z) {
-        super(x, y, z, 20 * 25);
+        super(x, y, z, 20 * 12);
 
         // Pre-calculate vortex geometry - multiple dense layers
         cachedVortexGeometry = calculateVortexGeometry(8, 48, 40);

@@ -1,6 +1,5 @@
 package de.jakob.lotm.abilities.tyrant;
 
-import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.Ability;
 import de.jakob.lotm.entity.custom.ability_entities.tyrant_pathway.LightningEntity;
 import de.jakob.lotm.util.BeyonderData;
@@ -19,10 +18,7 @@ import java.util.Map;
 
 public class LightningStormAbility extends Ability {
     public LightningStormAbility(String id) {
-        super(id, 20, "explosion");
-        interactionRadius = 35;
-        interactionCacheTicks = 20 * 17;
-        canBeShared = false;
+        super(id, 35);
     }
 
     @Override
@@ -32,7 +28,7 @@ public class LightningStormAbility extends Ability {
 
     @Override
     public float getSpiritualityCost() {
-        return 1500;
+        return 900;
     }
 
     @Override
@@ -48,16 +44,15 @@ public class LightningStormAbility extends Ability {
                 true        // thundering
         );
 
-        Vec3 targetLoc = AbilityUtil.getTargetLocation(entity, 25* (int) Math.max(multiplier(entity)/4,1), 2, true);
+        Vec3 targetLoc = AbilityUtil.getTargetLocation(entity, 25, 2, true);
         for(int i = 0; i < 35; i++) {
             BlockState state = level.getBlockState(BlockPos.containing(targetLoc.subtract(0, 1, 0)));
             if(state.getCollisionShape(level, BlockPos.containing(targetLoc)).isEmpty())
                 targetLoc = targetLoc.subtract(0, 1, 0);
         }
 
-        double multiplier = multiplier(entity)*2;
         Vec3 finalTargetLoc = targetLoc;
-        ServerScheduler.scheduleForDuration(0, 4, 20 * 5* (int) Math.max(multiplier(entity)/4,1), () -> {
+        ServerScheduler.scheduleForDuration(0, 4, 20 * 17, () -> {
             for(int j = 0; j < random.nextInt(5, 19); j++) {
                 Vec3 loc = finalTargetLoc.add(random.nextDouble(-35, 35), 6, random.nextDouble(-35, 35));
                 for(int i = 0; i < 35; i++) {
@@ -65,7 +60,8 @@ public class LightningStormAbility extends Ability {
                     if(state.getCollisionShape(level, BlockPos.containing(loc)).isEmpty())
                         loc = loc.subtract(0, 1, 0);
                 }
-                LightningEntity lightning = new LightningEntity(level, entity, loc, 65, 10, DamageLookup.lookupDamage(3, .2) * (int) Math.max(multiplier(entity)/4,1), BeyonderData.isGriefingEnabled(entity), 8, 200, 0x4a23e8);
+
+                LightningEntity lightning = new LightningEntity(level, entity, loc, 65, 10, DamageLookup.lookupDamage(3, .45) * multiplier(entity), BeyonderData.isGriefingEnabled(entity), 8, 200, 0x4a23e8);
                 level.addFreshEntity(lightning);
             }
         });

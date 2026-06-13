@@ -1,6 +1,5 @@
 package de.jakob.lotm.entity.custom.ability_entities;
 
-import de.jakob.lotm.abilities.core.AbilityUsedEvent;
 import de.jakob.lotm.entity.ModEntities;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.AbilityUtil;
@@ -18,7 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -107,12 +105,7 @@ public class VolcanoEntity extends Entity {
             return;
         }
 
-        // Sealing Logic
-        if (getTags().contains("sealing")) {
-            return;
-        }
-
-        // Petrification Logic
+        // Petrification Logic -- run before super.tick() to stop movement completely
         if(getTags().contains("petrified")) {
             petrifiedTicks++;
             if(petrifiedTicks >= 20 * 5) {
@@ -122,14 +115,10 @@ public class VolcanoEntity extends Entity {
         }
 
         if(!level().isClientSide()) {
-            LivingEntity ownerEntity = getOwner((ServerLevel) level());
-            boolean griefing = BeyonderData.isGriefingEnabled(ownerEntity);
-            AbilityUtil.damageNearbyEntities((ServerLevel) level(), ownerEntity, griefing ? 16.5f : 34, getDamage() / 4, position(), true, false, 20 * 10);
+            boolean griefing = BeyonderData.isGriefingEnabled(getOwner((ServerLevel) level()));
+            AbilityUtil.damageNearbyEntities((ServerLevel) level(), getOwner((ServerLevel) level()), griefing ? 16.5f : 34, getDamage() / 4, position(), true, false, 20 * 10);
             for(int i = 0; i < 3; i++) {
-                spawnFallingBlocks(level(), position().add(0, 20.5, 0), griefing, ownerEntity);
-            }
-            if(ownerEntity != null && lifeTime % 20 == 0) {
-                NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level(), position(), ownerEntity, null, new String[]{"burning", "explosion"}, griefing ? 16.5 : 34, 25));
+                spawnFallingBlocks(level(), position().add(0, 20.5, 0), BeyonderData.isGriefingEnabled(getOwner((ServerLevel) level())), getOwner((ServerLevel) level()));
             }
         }
     }

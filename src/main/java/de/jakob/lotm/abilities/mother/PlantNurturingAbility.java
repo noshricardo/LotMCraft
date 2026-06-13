@@ -1,7 +1,6 @@
 package de.jakob.lotm.abilities.mother;
 
 import de.jakob.lotm.abilities.core.Ability;
-import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.ParticleUtil;
 import net.minecraft.core.BlockPos;
@@ -12,7 +11,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
@@ -40,11 +38,6 @@ public class PlantNurturingAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-
-        if(entity instanceof Player player) {
-            BeyonderData.digest(player, 0.01f, true);
-        }
-
         if(level.isClientSide)
             return;
         try {
@@ -52,7 +45,7 @@ public class PlantNurturingAbility extends Ability {
             level.playSound(null, entity, SoundEvents.BONE_MEAL_USE, SoundSource.BLOCKS, 5,1);
             level.playSound(null, entity, Blocks.GRASS_BLOCK.getSoundType(Blocks.GRASS_BLOCK.defaultBlockState(), level, BlockPos.containing(entity.position().x, entity.position().y, entity.position().z), null).getBreakSound(), SoundSource.BLOCKS, 5,1);
 
-            AbilityUtil.getBlocksInCircle((ServerLevel) level, entity.position().subtract(0, 1, 0), 4.5*multiplier(entity), 25).forEach(b -> {
+            AbilityUtil.getBlocksInCircle((ServerLevel) level, entity.position().subtract(0, 1, 0), 4.5, 25).forEach(b -> {
                 BlockState blockState = level.getBlockState(b);
 
                 if (blockState.is(Blocks.SUGAR_CANE)) {
@@ -67,7 +60,7 @@ public class PlantNurturingAbility extends Ability {
                 }
             });
 
-            AbilityUtil.getBlocksInCircle((ServerLevel) level, entity.position(), 4.5*multiplier(entity), 25).forEach(b -> {
+            AbilityUtil.getBlocksInCircle((ServerLevel) level, entity.position(), 4.5, 25).forEach(b -> {
                 BlockState blockState = level.getBlockState(b);
 
                 if (blockState.is(Blocks.SUGAR_CANE)) {
@@ -80,7 +73,7 @@ public class PlantNurturingAbility extends Ability {
                 }
             });
 
-            AbilityUtil.getBlocksInCircle((ServerLevel) level, entity.position().add(0, 1, 0), 4.5*multiplier(entity), 25).forEach(b -> {
+            AbilityUtil.getBlocksInCircle((ServerLevel) level, entity.position().add(0, 1, 0), 4.5, 25).forEach(b -> {
                 BlockState blockState = level.getBlockState(b);
 
                 if (blockState.is(Blocks.SUGAR_CANE)) {

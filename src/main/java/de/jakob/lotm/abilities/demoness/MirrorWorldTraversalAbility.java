@@ -32,12 +32,8 @@ public class MirrorWorldTraversalAbility extends Ability {
     public MirrorWorldTraversalAbility(String id) {
         super(id, 2);
 
-        canBeUsedByNPC = false;
         canBeCopied = false;
-        canBeReplicated = false;
-        canBeUsedInArtifact = false;
-        cannotBeStolen = true;
-        canBeShared = false;
+        canBeUsedByNPC = false;
     }
 
     @Override

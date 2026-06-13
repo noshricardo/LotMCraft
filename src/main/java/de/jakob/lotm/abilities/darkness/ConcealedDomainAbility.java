@@ -13,7 +13,8 @@ import java.util.Map;
 public class ConcealedDomainAbility extends Ability {
 
     public ConcealedDomainAbility(String id) {
-        super(id, 2f);
+        super(id, 30f);
+        this.canBeCopied = false;
         this.canBeUsedByNPC = false;
     }
 
@@ -24,7 +25,7 @@ public class ConcealedDomainAbility extends Ability {
 
     @Override
     public float getSpiritualityCost() {
-        return 5500;
+        return 2500;
     }
 
     @Override

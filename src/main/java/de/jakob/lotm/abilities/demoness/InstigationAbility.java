@@ -31,6 +31,7 @@ public class InstigationAbility extends Ability {
         super(id, 1);
 
         canBeUsedByNPC = false;
+        canBeCopied = false;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class InstigationAbility extends Ability {
         if(level.isClientSide)
             return;
 
-        LivingEntity target = AbilityUtil.getTargetEntity(entity, 20*(int) Math.max(multiplier(entity)/2,1), 2);
+        LivingEntity target = AbilityUtil.getTargetEntity(entity, 20, 2);
         if(target == null) {
             if(entity instanceof ServerPlayer player) {
                 ClientboundSetActionBarTextPacket packet = new ClientboundSetActionBarTextPacket(Component.translatable("lotmcraft.instigation_ability.not_valid_mob").withColor(0xFF68dff7));

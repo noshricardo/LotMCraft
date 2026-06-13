@@ -17,7 +17,6 @@ public class ModParticles {
     public static final Supplier<SimpleParticleType> DARKER_FLAME = PARTICLE_TYPES.register("darker_flame_particles", () -> new SimpleParticleType(true));
     public static final Supplier<SimpleParticleType> GREEN_FLAME = PARTICLE_TYPES.register("green_flame_particles", () -> new SimpleParticleType(true));
     public static final Supplier<SimpleParticleType> BLACK_FLAME = PARTICLE_TYPES.register("black_flame_particles", () -> new SimpleParticleType(true));
-    public static final Supplier<SimpleParticleType> WHITE_FLAME = PARTICLE_TYPES.register("white_flame_particles", () -> new SimpleParticleType(true));
     public static final Supplier<SimpleParticleType> TOXIC_SMOKE = PARTICLE_TYPES.register("toxic_smoke_particles", () -> new SimpleParticleType(true));
     public static final Supplier<SimpleParticleType> HEALING = PARTICLE_TYPES.register("healing_particles", () -> new SimpleParticleType(true));
     public static final Supplier<SimpleParticleType> CRIMSON_LEAF = PARTICLE_TYPES.register("crimson_leaf_particles", () -> new SimpleParticleType(true));
@@ -29,7 +28,6 @@ public class ModParticles {
     public static final Supplier<SimpleParticleType> LIGHTNING = PARTICLE_TYPES.register("lightning_particles", () -> new SimpleParticleType(true));
     public static final Supplier<SimpleParticleType> STAR = PARTICLE_TYPES.register("star_particles", () -> new SimpleParticleType(true));
     public static final Supplier<SimpleParticleType> FOG_OF_WAR = PARTICLE_TYPES.register("fog_of_war_particles", () -> new SimpleParticleType(true));
-    public static final Supplier<SimpleParticleType> GREY_SEAL = PARTICLE_TYPES.register("grey_seal_particles", () -> new SimpleParticleType(true));
     public static void register(IEventBus eventBus) {
         PARTICLE_TYPES.register(eventBus);
     }

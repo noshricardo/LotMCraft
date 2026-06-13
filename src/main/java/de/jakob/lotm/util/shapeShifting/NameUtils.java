@@ -7,24 +7,21 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.ServerChatEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 @EventBusSubscriber(modid = LOTMCraft.MOD_ID)
 public class NameUtils {
-    public static final Map<UUID, String> mapping = new HashMap<>();
-
     public static void setPlayerName(ServerPlayer player, String name) {
-        mapping.put(player.getUUID(), name);
+        NameStorage.mapping.put(player.getUUID(), name);
+        NameStorage.save();
         refreshPlayer(player);
         broadcastNicknameChange(player, name);
     }
 
     public static void resetPlayerName(ServerPlayer player) {
-        mapping.remove(player.getUUID());
+        NameStorage.mapping.remove(player.getUUID());
+        NameStorage.save();
         refreshPlayer(player);
         broadcastNicknameChange(player, "");
     }
@@ -38,7 +35,7 @@ public class NameUtils {
     @SubscribeEvent
     public static void onTabListNameFormat(PlayerEvent.TabListNameFormat event) {
         Player player = event.getEntity();
-        String nickname = mapping.get(player.getUUID());
+        String nickname = NameStorage.mapping.get(player.getUUID());
 
         if (nickname != null && !nickname.isEmpty()) {
             event.setDisplayName(Component.literal(nickname));
@@ -49,7 +46,7 @@ public class NameUtils {
     @SubscribeEvent
     public static void onNameFormat(PlayerEvent.NameFormat event) {
         Player player = event.getEntity();
-        String nickname = mapping.get(player.getUUID());
+        String nickname = NameStorage.mapping.get(player.getUUID());
 
         if (nickname != null && !nickname.isEmpty()) {
             event.setDisplayname(Component.literal(nickname));
@@ -57,8 +54,9 @@ public class NameUtils {
     }
 
     public static void broadcastNicknameChange(ServerPlayer player, String newNickname) {
+        NameSyncPacket packet = new NameSyncPacket(player.getUUID(), newNickname);
         for (ServerPlayer otherPlayer : player.getServer().getPlayerList().getPlayers()) {
-            otherPlayer.connection.send(new NameSyncPacket(player.getUUID(), newNickname));
+            otherPlayer.connection.send(packet);
         }
     }
 
@@ -66,16 +64,17 @@ public class NameUtils {
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             for (ServerPlayer onlinePlayer : player.getServer().getPlayerList().getPlayers()) {
-                String nickname = mapping.get(onlinePlayer.getUUID());
+                String nickname = NameStorage.mapping.get(onlinePlayer.getUUID());
                 if (nickname != null && !nickname.isEmpty()) {
                     player.connection.send(new NameSyncPacket(onlinePlayer.getUUID(), nickname));
                 }
             }
-            String newPlayerNickname = mapping.get(player.getUUID());
+            String newPlayerNickname = NameStorage.mapping.get(player.getUUID());
             if (newPlayerNickname != null && !newPlayerNickname.isEmpty()) {
+                NameSyncPacket packet = new NameSyncPacket(player.getUUID(), newPlayerNickname);
                 for (ServerPlayer otherPlayer : player.getServer().getPlayerList().getPlayers()) {
                     if (!otherPlayer.getUUID().equals(player.getUUID())) {
-                        otherPlayer.connection.send(new NameSyncPacket(player.getUUID(), newPlayerNickname));
+                        otherPlayer.connection.send(packet);
                     }
                 }
             }
@@ -86,10 +85,29 @@ public class NameUtils {
     @SubscribeEvent
     public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
+            NameSyncPacket packet = new NameSyncPacket(player.getUUID(), "");
             for (ServerPlayer otherPlayer : player.getServer().getPlayerList().getPlayers()) {
-                otherPlayer.connection.send(new NameSyncPacket(player.getUUID(), ""));
+                otherPlayer.connection.send(packet);
             }
             resetPlayerName(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onServerChat(ServerChatEvent event) {
+        ServerPlayer player = event.getPlayer();
+
+        String realName = player.getGameProfile().getName();
+        String nickname = NameStorage.mapping.get(player.getUUID());
+
+        if(realName.equals(nickname)) return;
+
+        String message = event.getMessage().getString();
+
+        if (nickname != null && !nickname.isEmpty()) {
+            String logMessage = "SHAPESHIFTED <" + realName + "> ->" + nickname + ": " + message;
+
+           LOTMCraft.LOGGER.info(logMessage);
         }
     }
 }

@@ -114,8 +114,7 @@ public class FogComponent {
         DROUGHT(0, 15f, 24.0f),
         BLIZZARD(1, 15f, 24.0f),
         FOG_OF_HISTORY(2, 7f, 12.0f),
-        ADVANCING(3, 9f, 18.0f),
-        SEALING(4, 9f, 18.0f);
+        ADVANCING(3, 9f, 18.0f);
 
         private final int index;
         private final float nearPlaneDistance;

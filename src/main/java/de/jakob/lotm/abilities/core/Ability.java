@@ -1,20 +1,13 @@
 package de.jakob.lotm.abilities.core;
 
 import de.jakob.lotm.LOTMCraft;
-import de.jakob.lotm.abilities.black_emperor.EntropySubAbility;
-import de.jakob.lotm.abilities.error.ParasitationAbility;
-import de.jakob.lotm.acting.ActingTaskRegistry;
 import de.jakob.lotm.attachments.AbilityCooldownComponent;
-import de.jakob.lotm.attachments.ControllingDataComponent;
 import de.jakob.lotm.attachments.DisabledAbilitiesComponent;
 import de.jakob.lotm.attachments.ModAttachments;
-import de.jakob.lotm.attachments.*;
 import de.jakob.lotm.gamerule.ModGameRules;
 import de.jakob.lotm.network.PacketHandler;
 import de.jakob.lotm.network.packets.toClient.UseAbilityPacket;
 import de.jakob.lotm.util.BeyonderData;
-import de.jakob.lotm.util.helper.AbilityUtil;
-import de.jakob.lotm.util.playerMap.Characteristic;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -26,13 +19,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
-import de.jakob.lotm.abilities.black_emperor.MausoleumDomainAbility;
-import de.jakob.lotm.util.helper.AbilityUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 
 public abstract class Ability {
 
@@ -54,10 +43,6 @@ public abstract class Ability {
     public boolean canBeUsedByNPC = true;
     public boolean canBeCopied = true;
     public boolean cannotBeStolen = false;
-    public boolean canBeUsedInArtifact = true;
-    public boolean canBeReplicated = true;
-    public boolean canBeShared = true;
-
     public boolean canAlwaysBeUsed = false;
 
     // Misc
@@ -67,15 +52,10 @@ public abstract class Ability {
     // Utility
     protected final Random random = new Random();
 
-    //Scaling
-    public HashMap<UUID, Integer> artifactScalingMap;
-    protected boolean autoClear = true;
-
     public Ability(String id, float cooldown, String... interactionFlags) {
         this.id = id;
         this.cooldown = Math.round(cooldown * 20);
         this.interactionFlags = interactionFlags;
-        this.artifactScalingMap = new HashMap<>(60);
     }
 
     public void useAbility(ServerLevel serverLevel, LivingEntity entity, boolean consumeSpirituality, boolean hasToHaveAbility, boolean hasToMeetRequirements) {
@@ -102,60 +82,33 @@ public abstract class Ability {
 
         // Consume spirituality
         if(shouldConsumeSpirituality(newUser) && consumeSpirituality) {
-            BeyonderData.reduceSpirituality(newUser, getInflatedSpiritualityCost(newUser, serverLevel));
+            BeyonderData.reduceSpirituality(newUser, getSpiritualityCost());
         }
 
         // Digest potion
         if(!doesNotIncreaseDigestion && newUser instanceof Player player) {
-            if(ActingTaskRegistry.getTasksFor(BeyonderData.getPathway(player), BeyonderData.getSequence(player)).isEmpty())
-                BeyonderData.digest(player, getDigestionProgressForUse(newUser), true);
+            BeyonderData.digest(player, getDigestionProgressForUse(newUser), true);
         }
 
         // Handle Cooldown
         AbilityCooldownComponent component = newUser.getData(ModAttachments.COOLDOWN_COMPONENT);
-        int inflatedCooldown = cooldown;
-        var pdata = newUser.getPersistentData();
-        if (pdata.contains(EntropySubAbility.SENSORY_DECAY_COOLDOWN_MULT_KEY)) {
-            if (pdata.getLong(EntropySubAbility.SENSORY_DECAY_COOLDOWN_UNTIL_KEY) > serverLevel.getGameTime()) {
-                inflatedCooldown = (int)(cooldown * pdata.getFloat(EntropySubAbility.SENSORY_DECAY_COOLDOWN_MULT_KEY));
-            } else {
-                pdata.remove(EntropySubAbility.SENSORY_DECAY_COOLDOWN_MULT_KEY);
-                pdata.remove(EntropySubAbility.SENSORY_DECAY_COOLDOWN_UNTIL_KEY);
-            }
-        }
-        component.setCooldown(id, inflatedCooldown);
-
-        if(AbilityUtil.hasArtifactScaling(entity)){
-            artifactScalingMap.put(entity.getUUID(), AbilityUtil.getArtifactScalingSeq(entity));
-            AbilityUtil.removeArtifactScaling(entity);
-        }
+        component.setCooldown(id, cooldown);
 
         // Use ability client and server sided
         onAbilityUse(serverLevel, newUser);
-        if(entity instanceof ServerPlayer player) PacketHandler.sendToPlayer(player, new UseAbilityPacket(getId(), newUser.getId()));
-
-        if(this.autoClear){
-            clearArtifactScaling(entity);
-        }
-
-        if(AbilityUtil.ignoreAllies.containsKey(entity.getUUID()) && !AbilityUtil.ignoreAllies.get(entity.getUUID())){
-            AbilityUtil.ignoreAllies.remove(entity.getUUID());
-        }
+        PacketHandler.sendToAllPlayersInSameLevel(new UseAbilityPacket(getId(), newUser.getId()), serverLevel);
 
         // Track ability use for Recording/Replicating detection
         AbilityUseTracker.trackUse(newUser, this, newUser.position(), serverLevel);
 
-        if(!postsUsedAbilityEventManually && !(this instanceof ToggleAbility)) {
-            NeoForge.EVENT_BUS.post(new AbilityUsedEvent(serverLevel, newUser.position(), newUser, this, interactionFlags, interactionRadius, interactionCacheTicks));
-        }
+        if(entity instanceof ServerPlayer player)
+            LOTMCraft.LOGGER.info("{} used {} on {}", player.getName().toString(), this.id, player.position());
+
+        if(!postsUsedAbilityEventManually && !(this instanceof ToggleAbility)) NeoForge.EVENT_BUS.post(new AbilityUsedEvent(serverLevel, newUser.position(), newUser, this, interactionFlags, interactionRadius, interactionCacheTicks));
     }
 
     public void useAbility(ServerLevel serverLevel, LivingEntity entity) {
         useAbility(serverLevel, entity, true, true, true);
-    }
-
-    public void clearArtifactScaling(LivingEntity entity){
-        artifactScalingMap.remove(entity.getUUID());
     }
 
     public abstract void onAbilityUse(Level level, LivingEntity entity);
@@ -164,22 +117,8 @@ public abstract class Ability {
 
     protected abstract float getSpiritualityCost();
 
-    public float getInflatedSpiritualityCost(LivingEntity entity, ServerLevel level) {
-        float base = getSpiritualityCost();
-        var pdata = entity.getPersistentData();
-        if (pdata.contains(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_MULT_KEY)) {
-            if (pdata.getLong(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_UNTIL_KEY) > level.getGameTime()) {
-                return base * pdata.getFloat(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_MULT_KEY);
-            } else {
-                pdata.remove(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_MULT_KEY);
-                pdata.remove(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_UNTIL_KEY);
-            }
-        }
-        return base;
-    }
-
-    public float multiplier(LivingEntity entity) {
-        return (float) AbilityUtil.getMultiplierWithArt(entity, this);
+    protected float multiplier(LivingEntity entity) {
+        return (float) BeyonderData.getMultiplier(entity);
     }
 
     public void onHold(Level level, LivingEntity entity) {
@@ -193,12 +132,6 @@ public abstract class Ability {
     public boolean hasAbility(LivingEntity entity) {
         if(!BeyonderData.isBeyonder(entity)) return false;
 
-        // Check sefirot-authority-granted abilities (server-side only)
-        if (!entity.level().isClientSide()
-                && entity.getData(de.jakob.lotm.attachments.ModAttachments.SEFIROT_UNLOCKED_ABILITIES).hasAbility(this.id)) {
-            return true;
-        }
-
         String pathway = BeyonderData.getPathway(entity);
         int sequence = BeyonderData.getSequence(entity);
 
@@ -207,37 +140,10 @@ public abstract class Ability {
             return getRequirements().values().stream().anyMatch(reqSeq -> reqSeq >= sequence);
         }
 
-        // use the old system in case of controlling - will change once worms get added
-        ControllingDataComponent controllingDataComponent = entity.getData(ModAttachments.CONTROLLING_DATA);
-        if (controllingDataComponent.isControlling()) {
-            if(getRequirements().containsKey(pathway) && getRequirements().get(pathway) >= sequence) {
-                return true;
-            }
-        }
+        if(!getRequirements().containsKey(pathway)) return false;
+        if(getRequirements().get(pathway) < sequence) return false;
 
-        DiscernmentComponent discernmentComponent = entity.getData(ModAttachments.DISCERNMENT_DATA.get());
-        if(discernmentComponent.isDiscerning()){
-            if(getRequirements().containsKey(pathway) && getRequirements().get(pathway) >= sequence)
-                return true;
-        }
-
-        // Check pathway
-        /*for(int i = sequence; i < BeyonderData.getPathwayHistory(entity).length; i++) {
-            if(BeyonderData.getPathwayHistory(entity)[i] == null) continue;
-            String userPath = BeyonderData.getPathwayHistory(entity)[i];
-            if(getRequirements().containsKey(userPath) && getRequirements().get(userPath) == i) {
-                return true;
-            }
-        }*/
-        // Check for received blessings
-        if (entity.getData(de.jakob.lotm.attachments.ModAttachments.RECEIVED_BLESSING_COMPONENT).getBlessings().stream()
-                .anyMatch(b -> getRequirements().containsKey(b.pathway()) && getRequirements().get(b.pathway()) >= b.sequence())) {
-            return true;
-        }
-
-        return BeyonderData.getCharList(entity).stream().anyMatch(character -> getRequirements().containsKey(character.pathway()) && getRequirements().get(character.pathway()) >= sequence);
-
-        //return false;
+        return true;
     }
 
     public boolean canUse(LivingEntity entity) {
@@ -247,14 +153,6 @@ public abstract class Ability {
     public boolean canUse(LivingEntity entity, boolean hasToHaveAbility, boolean doesConsumeSpirituality) {
         if(!hasAbility(entity) && hasToHaveAbility) return false;
 
-        if (MausoleumDomainAbility.isInsideMausoleumDomain(entity.getUUID())) {
-            if (entity instanceof ServerPlayer player) {
-                AbilityUtil.sendActionBar(player,
-                        Component.literal("Your abilities are sealed.").withColor(0xFF5555));
-            }
-            return false;
-        }
-
         AbilityCooldownComponent component = entity.getData(ModAttachments.COOLDOWN_COMPONENT);
         if(component.isOnCooldown(id)) return false;
 
@@ -262,7 +160,7 @@ public abstract class Ability {
 
         if(!(entity instanceof Player) && !canBeUsedByNPC) return false;
 
-        if(entity instanceof Player player && player.isSpectator() && !ParasitationAbility.isConcealed(player.getUUID())) return false;
+        if(entity instanceof Player player && player.isSpectator()) return false;
 
         DisabledAbilitiesComponent disabledComponent = entity.getData(ModAttachments.DISABLED_ABILITIES_COMPONENT);
         if((disabledComponent.isAbilityUsageDisabled() || disabledComponent.isSpecificAbilityDisabled(this.getId())) && !this.canAlwaysBeUsed) return false;
@@ -285,20 +183,18 @@ public abstract class Ability {
     private float getDigestionProgressForUse(LivingEntity entity) {
         int sequence = BeyonderData.getSequence(entity);
 
-        String pathway = BeyonderData.getCharList(entity).stream().filter(character -> getRequirements().containsKey(character.pathway())).findFirst().orElse(new Characteristic("None", 0,10)).pathway();
-        if (!getRequirements().containsKey(pathway)) {
-           return 0f;
+        if (!getRequirements().containsKey(BeyonderData.getPathway(entity))) {
+            return 0f;
         }
 
-        int requiredSequence = getRequirements().get(pathway);
+        int requiredSequence = getRequirements().get(BeyonderData.getPathway(entity));
 
+        // If user's sequence is numerically higher (weaker) → cannot digest at all
         if (sequence > requiredSequence) {
             return 0f;
         }
 
-        float cooldownMultiplier = Math.clamp(((float) cooldown) / (20 * 7), .2f, 2.25f);
-
-        return (1f / (80f * Math.max(.5f, ((10 - requiredSequence) * .5f)))) * cooldownMultiplier;
+        return (1f / (100f * Math.max(.5f, ((10 - sequence) * .5f)))) * (entity.level().getGameRules().getInt(ModGameRules.DIGESTION_RATE) / 100f);
     }
 
     public ResourceLocation getTextureLocation() {
@@ -323,18 +219,6 @@ public abstract class Ability {
         int color = BeyonderData.pathwayInfos.get(pathway).color();
         return getName().withStyle(ChatFormatting.BOLD).withColor(color);
     }
-
-    public Component getNameFormatted(LivingEntity entity) {
-        if(getRequirements().isEmpty()) {
-            return Component.translatable("lotmcraft." + getId()).withStyle(ChatFormatting.BOLD);
-        }
-
-        String pathway = BeyonderData.getPathway(entity);
-
-        int color = BeyonderData.pathwayInfos.containsKey(pathway) ? BeyonderData.pathwayInfos.get(pathway).color() : 0xFFFFFF;
-        return getName().withStyle(ChatFormatting.BOLD).withColor(color);
-    }
-
 
     @Nullable
     public Component getDescription() {
@@ -363,13 +247,5 @@ public abstract class Ability {
 
     public boolean getShouldBeHidden(){
         return shouldBeHidden;
-    }
-
-    public int getCooldown() {
-        return cooldown;
-    }
-
-    public float spiritualityCost() {
-        return getSpiritualityCost();
     }
 }

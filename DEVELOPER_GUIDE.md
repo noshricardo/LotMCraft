@@ -930,7 +930,7 @@ MovableEffectManager.removeEffect(uuid, serverLevel);
 
 ## 9. BeyonderMap
 
-**Location:** `de.jakob.lotm.util.playerMap/`
+**Location:** `de.jakob.lotm.util.beyonderMap/`
 
 The `BeyonderMap` is a **persistent data store per world** that tracks all players' Beyonder progression. It extends Minecraft's `SavedData` and is saved to the world's NBT data.
 

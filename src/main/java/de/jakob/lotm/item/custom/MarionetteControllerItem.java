@@ -152,11 +152,14 @@ public class MarionetteControllerItem extends Item {
                             Entity newEntity = ((ServerLevel) level).getEntity(marionetteUUID);
                             if (newEntity instanceof LivingEntity newMarionette) {
                                 newMarionette.hurtMarked = true;
+                                ((ServerLevel) level).getChunkSource().addEntity(newMarionette);
                                 newMarionette.teleportTo(newMarionette.getX(), newMarionette.getY(), newMarionette.getZ());
                             }
                         }));
                     } else {
                         livingEntity.hurtMarked = true;
+                        entityServerLevel.getChunkSource().removeEntity(livingEntity);
+                        ((ServerLevel) level).getChunkSource().addEntity(livingEntity);
                     }
 
                     player.sendSystemMessage(Component.translatable("ability.lotmcraft.puppeteering.entity_teleport").withColor(0xa26fc9));

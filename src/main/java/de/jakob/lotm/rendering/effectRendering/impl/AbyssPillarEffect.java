@@ -24,7 +24,7 @@ public class AbyssPillarEffect extends ActiveEffect {
     private final List<EmberQuad> embers = new ArrayList<>();
 
     public AbyssPillarEffect(double x, double y, double z) {
-        super(x, y, z, 20 * 7);
+        super(x, y, z, 200);
         for (int i = 0; i < 35; i++) {
             embers.add(new EmberQuad());
         }

@@ -1,9 +1,7 @@
 package de.jakob.lotm.abilities.demoness;
 
 import com.google.common.util.concurrent.AtomicDouble;
-import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.SelectableAbility;
-import de.jakob.lotm.abilities.core.interaction.InteractionHandler;
 import de.jakob.lotm.effect.ModEffects;
 import de.jakob.lotm.network.PacketHandler;
 import de.jakob.lotm.network.packets.toClient.AddClientSideTagPacket;
@@ -21,20 +19,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-@EventBusSubscriber(modid = LOTMCraft.MOD_ID)
 public class PetrificationAbility extends SelectableAbility {
     public PetrificationAbility(String id) {
-        super(id, 60);
-        autoClear = false;
+        super(id, 5);
     }
 
     @Override
@@ -75,17 +66,8 @@ public class PetrificationAbility extends SelectableAbility {
 
         AtomicDouble radius = new AtomicDouble(0.5);
         Vec3 startPos = entity.position();
-        int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
 
-        final UUID[] taskIdHolder = new UUID[1];
-        taskIdHolder[0] = ServerScheduler.scheduleForDuration(0, 1, 120, () -> {
-            Location petrifyLoc = new Location(startPos, serverLevel);
-
-            if(InteractionHandler.isInteractionPossible(petrifyLoc, "explosion", entitySeq)) {
-                if(taskIdHolder[0] != null) ServerScheduler.cancel(taskIdHolder[0]);
-                return;
-            }
-
+        ServerScheduler.scheduleForDuration(0, 1, 120, () -> {
             AbilityUtil.getBlocksInSphereRadius(serverLevel, startPos, radius.get(), true, true, false).forEach(b -> {
                 if(serverLevel.getBlockState(b).getDestroySpeed(serverLevel, b) >= 0)
                     serverLevel.setBlockAndUpdate(b, Blocks.STONE.defaultBlockState());
@@ -93,12 +75,10 @@ public class PetrificationAbility extends SelectableAbility {
 
             AbilityUtil.getAllNearbyEntities(entity, serverLevel, startPos, radius.get(), false).forEach(target -> {
                 if(target instanceof LivingEntity living) {
-                    int livingSeq = BeyonderData.getSequence(living);
-
-                    if (AbilityUtil.isTargetSignificantlyWeaker(entitySeq, livingSeq)) {
+                    if (AbilityUtil.isTargetSignificantlyWeaker(entity, living)) {
                         living.addEffect(new MobEffectInstance(ModEffects.PETRIFICATION, 20 * 60 * 10, 9));
                         return;
-                    } else if (AbilityUtil.isTargetSignificantlyStronger(entitySeq, livingSeq)) {
+                    } else if (AbilityUtil.isTargetSignificantlyStronger(entity, living)) {
                         living.addEffect(new MobEffectInstance(ModEffects.PETRIFICATION, 20, 9));
                         return;
                     }
@@ -112,7 +92,7 @@ public class PetrificationAbility extends SelectableAbility {
             });
 
             radius.addAndGet(0.5);
-        }, () -> clearArtifactScaling(entity), serverLevel, () -> AbilityUtil.getTimeInArea(entity, new Location(entity.position(), serverLevel)));
+        }, null, serverLevel, () -> AbilityUtil.getTimeInArea(entity, new Location(entity.position(), serverLevel)));
     }
 
     private void petrifyTarget(ServerLevel serverLevel, LivingEntity entity) {
@@ -120,14 +100,11 @@ public class PetrificationAbility extends SelectableAbility {
             Entity target = AbilityUtil.getTargetEntityNonLivingIncluded(entity, 15, 2, false, false, false);
             if(target != null) {
                 if(target instanceof LivingEntity livingTarget) {
-                    int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
-                    int livingTargetSeq = BeyonderData.getSequence(livingTarget);
-
                     int duration = 20 * 60 * 2;
-                    if(AbilityUtil.isTargetSignificantlyStronger(entitySeq, livingTargetSeq)) {
+                    if(AbilityUtil.isTargetSignificantlyStronger(entity, livingTarget)) {
                         duration = 20 * 2;
                     }
-                    if(AbilityUtil.isTargetSignificantlyWeaker(entitySeq, livingTargetSeq)) {
+                    if(AbilityUtil.isTargetSignificantlyWeaker(entity, livingTarget)) {
                         duration = 20 * 60 * 10;
                     }
                     livingTarget.addEffect(new MobEffectInstance(ModEffects.PETRIFICATION, duration, 9, false, false));
@@ -145,32 +122,7 @@ public class PetrificationAbility extends SelectableAbility {
                     }
                 });
             }
-        }, () -> clearArtifactScaling(entity), serverLevel, () -> AbilityUtil.getTimeInArea(entity, new Location(entity.position(), serverLevel)));
+        }, null, serverLevel, () -> AbilityUtil.getTimeInArea(entity, new Location(entity.position(), serverLevel)));
     }
 
-    @SubscribeEvent
-    public static void onLivingDamage(LivingIncomingDamageEvent event) {
-        if(!(event.getEntity().level() instanceof ServerLevel serverLevel)) {
-            return;
-        }
-
-        LivingEntity entity = event.getEntity();
-
-        if(entity.hasEffect(ModEffects.PETRIFICATION)){
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
-        if(!(event.getEntity().level() instanceof ServerLevel serverLevel)) {
-            return;
-        }
-
-        LivingEntity entity = event.getEntity();
-
-        if(entity.hasEffect(ModEffects.PETRIFICATION)){
-            event.setCanceled(true);
-        }
-    }
 }

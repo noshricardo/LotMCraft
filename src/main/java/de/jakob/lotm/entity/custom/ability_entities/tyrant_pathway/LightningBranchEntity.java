@@ -324,7 +324,7 @@ public class LightningBranchEntity extends Entity {
             points.add(startPos);
         }
 
-        public void generateJaggedPath(java.util.Random random, float globalProgress) {
+        public void generateJaggedPath(Random random, float globalProgress) {
             points.clear();
 
             // Child branches only start growing after their parent has reached their spawn point

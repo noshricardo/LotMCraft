@@ -18,7 +18,7 @@ import java.util.Map;
 public class MightyBlowAbility extends Ability {
 
     public MightyBlowAbility(String id) {
-        super(id, 2.0f);
+        super(id, 2.5f);
 
         hasOptimalDistance = true;
         optimalDistance = 1.5f;
@@ -45,7 +45,7 @@ public class MightyBlowAbility extends Ability {
         ParticleUtil.spawnParticles((ServerLevel) level, ParticleTypes.CRIT, pos, 60, 0, 0.325);
         ParticleUtil.spawnParticles((ServerLevel) level, ParticleTypes.EXPLOSION, pos, 1, 0, 0.115);
 
-        AbilityUtil.damageNearbyEntities((ServerLevel) level, entity, 3.5f, DamageLookup.lookupDamage(9, 1.5) * multiplier(entity), pos, true, false, true, 0);
+        AbilityUtil.damageNearbyEntities((ServerLevel) level, entity, 3.5f, DamageLookup.lookupDamage(9, 1.5) * (float) multiplier(entity), pos, true, false, true, 0);
 
         level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE.value(), entity.getSoundSource(), 1, 1);
     }

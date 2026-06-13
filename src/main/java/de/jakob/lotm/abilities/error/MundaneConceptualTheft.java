@@ -2,11 +2,8 @@ package de.jakob.lotm.abilities.error;
 
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.SelectableAbility;
-import de.jakob.lotm.abilities.error.handler.TheftHandler;
-import de.jakob.lotm.attachments.CorruptionComponent;
-import de.jakob.lotm.attachments.ModAttachments;
+import de.jakob.lotm.abilities.error.handler.AbilityTheftHandler;
 import de.jakob.lotm.damage.ModDamageTypes;
-import de.jakob.lotm.events.ProhibitionHandler;
 import de.jakob.lotm.rendering.effectRendering.EffectManager;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.TeleportationUtil;
@@ -16,7 +13,6 @@ import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -31,13 +27,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.UUID;
 
 public class MundaneConceptualTheft extends SelectableAbility {
-    public static final HashMap<UUID, Integer> stolenDistanceMap = new HashMap<>(80);
-
     public MundaneConceptualTheft(String id) {
         super(id, 1);
     }
@@ -49,7 +41,7 @@ public class MundaneConceptualTheft extends SelectableAbility {
 
     @Override
     protected float getSpiritualityCost() {
-        return 500;
+        return 50;
     }
 
     @Override
@@ -57,8 +49,7 @@ public class MundaneConceptualTheft extends SelectableAbility {
         return new String[]{"ability.lotmcraft.mundane_conceptual_theft.steal_walk",
                 "ability.lotmcraft.mundane_conceptual_theft.steal_sight",
                 "ability.lotmcraft.mundane_conceptual_theft.steal_health",
-                "ability.lotmcraft.mundane_conceptual_theft.steal_distance",
-                "ability.lotmcraft.mundane_conceptual_theft.steal_corruption"
+                "ability.lotmcraft.mundane_conceptual_theft.steal_distance"
                 //"ability.lotmcraft.mundane_conceptual_theft.steal_thoughts"
         };
     }
@@ -89,7 +80,7 @@ public class MundaneConceptualTheft extends SelectableAbility {
             }
             return;
         }
-        if (ProhibitionHandler.IsInTheftZone(entity.position(), (ServerLevel) level, AbilityUtil.getSeqWithArt(entity, this))) return;
+
         if(abilityIndex == 3) {
             stealDistance(serverLevel, entity);
             return;
@@ -103,60 +94,32 @@ public class MundaneConceptualTheft extends SelectableAbility {
 
         EffectManager.playEffect(EffectManager.Effect.CONCEPTUAL_THEFT, target.getX(), target.getEyeY(), target.getZ(), serverLevel, entity);
 
-        if(BeyonderData.isBeyonder(target) && TheftHandler.doesTheftFail(entity, target, random, this)) {
+        if(BeyonderData.isBeyonder(target) && AbilityTheftHandler.doesTheftFail(entity, target, random)) {
             AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.mundane_conceptual_theft.theft_failed").withColor(0x4742c9));
             return;
         }
 
-        int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
-        int targetSeq = BeyonderData.getSequence(target);
-
         switch (abilityIndex) {
-            case 0 -> stealWalk(target, getTheftDuration(entitySeq, targetSeq));
-            case 1 -> stealSight(target, getTheftDuration(entitySeq, targetSeq));
+            case 0 -> stealWalk(target, getTheftDuration(BeyonderData.getSequence(entity), BeyonderData.getSequence(target)));
+            case 1 -> stealSight(target, getTheftDuration(BeyonderData.getSequence(entity), BeyonderData.getSequence(target)));
             case 2 -> stealHealth(entity, target);
-            case 3 -> stealCorruption(entity);
 
         }
-    }
-
-    private void stealCorruption(LivingEntity entity) {
-        LivingEntity target = AbilityUtil.getTargetEntity(entity, (int) (15 * (multiplier(entity) * multiplier(entity))), 1.5f, false, true);
-        CorruptionComponent targetComp = target.getData(ModAttachments.CORRUPTION_COMPONENT);
-        CorruptionComponent casterComp = entity.getData(ModAttachments.CORRUPTION_COMPONENT);
-
-        if(targetComp == null && casterComp == null && targetComp.getCorruption() !=0){
-            float transfer = Math.min( targetComp.getCorruption(), 10);
-            targetComp.decreaseCorruptionAndSync(transfer, target);
-            casterComp.increaseCorruptionAndSync(transfer, entity);
-        }
-
     }
 
     private void stealDistance(ServerLevel level, LivingEntity entity) {
-        int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
+        if(BeyonderData.getSequence(entity) > 6) return;
 
-        if(entitySeq > 6) return;
-
-        Vec3 targetLoc = AbilityUtil.getTargetBlock(entity, TheftHandler.getDistancePerSeq(entitySeq), true).getCenter().add(0, 1, 0);
+        Vec3 targetLoc = AbilityUtil.getTargetBlock(entity, (1 << (9 - BeyonderData.getSequence(entity))), true).getCenter().add(0, 1, 0);
         level.playSound(null, targetLoc.x, targetLoc.y, targetLoc.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, .5f, 1);
 
         var validatedPos = TeleportationUtil.clampToBorder(level, targetLoc);
-
-        if(entity instanceof ServerPlayer player) {
-            int distance = (int) player.position().distanceTo(validatedPos);
-            int storedDistance = 0;
-            if(stolenDistanceMap.containsKey(player.getUUID()))
-                storedDistance = stolenDistanceMap.get(player.getUUID());
-
-            stolenDistanceMap.put(player.getUUID(), storedDistance + distance);
-        }
 
         entity.teleportTo(validatedPos.x, validatedPos.y, validatedPos.z);
     }
 
     private void stealHealth(LivingEntity entity, LivingEntity target) {
-        float healthToSteal = (float) (DamageLookup.lookupDamage(5, 1f) *(int) Math.max(multiplier(entity)/2,1));
+        float healthToSteal = (float) (DamageLookup.lookupDamage(5, 1f) * multiplier(entity));
         target.hurt(ModDamageTypes.source(target.level(), ModDamageTypes.BEYONDER_GENERIC, entity), healthToSteal);
         entity.setHealth(Math.min(entity.getMaxHealth(), entity.getHealth() + healthToSteal));
     }
@@ -178,11 +141,6 @@ public class MundaneConceptualTheft extends SelectableAbility {
             return;
         }
         movementSpeed.addTransientModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"), -100, AttributeModifier.Operation.ADD_VALUE));
-
-        ServerScheduler.scheduleForDuration(0, 2, theftDuration, () -> {
-            target.setDeltaMovement(new Vec3(0, 0, 0));
-            target.hurtMarked = true;
-        });
 
         ServerScheduler.scheduleDelayed(theftDuration, () -> {
             AttributeInstance movementSpeedInner = target.getAttribute(Attributes.MOVEMENT_SPEED);

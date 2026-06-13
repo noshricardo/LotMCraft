@@ -7,8 +7,6 @@ import de.jakob.lotm.util.helper.ParticleUtil;
 import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -29,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -96,21 +93,12 @@ public class MysticalRingBlock extends Block implements EntityBlock {
         String pathway;
         int sequence;
 
+        // Check if BlockEntity has stored settings
         if (blockEntity instanceof MysticalRingBlockEntity ringBE && ringBE.hasSettings()) {
             pathway = ringBE.getPathway();
             sequence = ringBE.getSequence();
-
-            // Remove blocks from structure after Beyonder was summoned
-            List<BlockPos> toRemove = ringBE.getBlocksToRemovedWhenActivated();
-            ServerScheduler.scheduleDelayed(20 * 8, () -> {
-                for (BlockPos removePos : toRemove) {
-                    level.setBlockAndUpdate(removePos, Blocks.AIR.defaultBlockState());
-
-                    ParticleOptions type = removePos.getX() % 2 == 0 ? ParticleTypes.SMOKE : ParticleTypes.WITCH;
-                    ParticleUtil.spawnParticles(level, type, removePos.getCenter(), 2, .25);
-                }
-            });
         } else {
+            // Determine from block structure
             BlockPos belowPos = pos.below();
             BlockState belowState = level.getBlockState(belowPos);
             Block baseBlock = belowState.getBlock();
@@ -150,7 +138,6 @@ public class MysticalRingBlock extends Block implements EntityBlock {
             beyonder.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
             level.addFreshEntity(beyonder);
         });
-
     }
 
     private int countConsecutiveBlocks(Level level, BlockPos startPos, Block targetBlock) {

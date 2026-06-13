@@ -4,6 +4,7 @@ import de.jakob.lotm.attachments.DisabledAbilitiesComponent;
 import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.attachments.SanityComponent;
 import de.jakob.lotm.damage.ModDamageTypes;
+import de.jakob.lotm.effect.ModEffects;
 import de.jakob.lotm.util.BeyonderData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -27,25 +28,15 @@ public class SanityEventHandler {
             return;
         }
 
+        // Only process server-side and every 20 ticks (1 second)
         if(entity.level().isClientSide || entity.tickCount % 20 != 0) {
             return;
         }
 
         SanityComponent sanityComp = entity.getData(ModAttachments.SANITY_COMPONENT);
 
-        boolean isBeyonder = BeyonderData.isBeyonder(entity);
-        boolean isHighSequence = isBeyonder && BeyonderData.getSequence(entity) <= 2;
-        boolean hasSwitched = BeyonderData.hasSwitchedPathway(entity);
-        boolean hasUndigestedStack = isBeyonder
-                && entity instanceof Player digestionPlayer
-                && BeyonderData.getCurrentCharacteristicCount(entity) > 0
-                && BeyonderData.getDigestionProgress(digestionPlayer) < 1.0f;
-
-        boolean shouldDrain = isHighSequence || sanityComp.getSanity() < .2f || hasUndigestedStack || hasSwitched;
-        float sanityIncrease = shouldDrain ? 0 : 0.0025f;
-        if (isHighSequence || sanityComp.getSanity() < .2f) sanityIncrease -= 0.00025f;
-        if (hasUndigestedStack) sanityIncrease -= 0.00025f;
-        if (hasSwitched) sanityIncrease -= 0.00025f;
+        // Add sanity back over time if not angel, otherwise reduce it
+        float sanityIncrease = BeyonderData.isBeyonder(entity) && BeyonderData.getSequence(entity) <= 2 ? -0.00025f : 0.0025f;
         sanityComp.increaseSanityAndSync(sanityIncrease, entity);
 
         float sanity = sanityComp.getSanity();
@@ -57,10 +48,26 @@ public class SanityEventHandler {
 
         // Clear all sanity effects if above threshold
 
-        // ---------------- SANITY ----------------
+        // ---------------- SANITY → BEYONDER INSTABILITY ----------------
         if (BeyonderData.isBeyonder(entity)) {
             Random random = new Random();
-            double sanityMultiplier = getSanityMultiplier(entity, sanity, sanityValue);
+            float sanityLoss = 1.0f - sanity;
+            UUID uuid = entity.getUUID();
+
+            // ----- MULTIPLIER SCALING -----
+            double sanityMultiplier;
+
+            if (sanityValue >= 64) {
+                sanityMultiplier = 1.0;
+            } else if (sanityValue >= 50) {
+                sanityMultiplier = 0.95;
+            } else if (sanityValue >= 35) {
+                sanityMultiplier = 0.85;
+            } else if (sanityValue >= 20) {
+                sanityMultiplier = 0.7;
+            } else {
+                sanityMultiplier = Math.max(0.2, 0.5 - sanityLoss);
+            }
 
             // Always refresh for 2000 ms
             BeyonderData.addModifier(entity, "sanity_loss", sanityMultiplier);
@@ -159,7 +166,7 @@ public class SanityEventHandler {
         }
 
         // PHASE 4: Sanity 5-19 - Critical state, starting to lose control
-        else if(sanityValue >= 5) {
+        else if(sanityValue >= 5 && sanityValue < 20) {
             entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 2, false, false));
             entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 25, 3, false, true));
             entity.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 200, 0, false, false));
@@ -167,8 +174,8 @@ public class SanityEventHandler {
             entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 0, false, false));
 
             // Apply losing control effect at lower amplifiers
-//            int amplifier = (int)((20 - sanityValue) / 3.0); // 0-4 amplifier range
-//            entity.addEffect(new MobEffectInstance(ModEffects.LOOSING_CONTROL, 100, amplifier, false, true));
+            int amplifier = (int)((20 - sanityValue) / 3.0); // 0-4 amplifier range
+            entity.addEffect(new MobEffectInstance(ModEffects.LOOSING_CONTROL, 100, amplifier, false, true));
 
             // Frequent damage
             if(random.nextInt(10) == 0) {
@@ -191,7 +198,7 @@ public class SanityEventHandler {
         }
 
         // PHASE 5: Sanity 0-4 - Complete loss of control, near certain death
-        else {
+        else if(sanityValue < 5) {
             entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 3, false, false));
             entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 25, 4, false, true));
             entity.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 200, 1, false, false));
@@ -199,8 +206,8 @@ public class SanityEventHandler {
             entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200, 0, false, false));
 
             // High amplifier losing control - almost certain death
-//            int amplifier = 5 + (5 - sanityValue); // 5-9 amplifier range
-//            entity.addEffect(new MobEffectInstance(ModEffects.LOOSING_CONTROL, 100, amplifier, false, true));
+            int amplifier = 5 + (5 - sanityValue); // 5-9 amplifier range
+            entity.addEffect(new MobEffectInstance(ModEffects.LOOSING_CONTROL, 100, amplifier, false, true));
 
             // Wither effect (mind deteriorating)
             entity.addEffect(new MobEffectInstance(MobEffects.WITHER, 25, 1, false, true));
@@ -222,34 +229,13 @@ public class SanityEventHandler {
             }
 
             // Very high chance of death
-//            if(random.nextInt(100) < 15) { // 15% chance per second at sanity < 5
-//                MobEffectInstance controlEffect = entity.getEffect(ModEffects.LOOSING_CONTROL);
-//                if(controlEffect != null && controlEffect.getAmplifier() >= 8) {
-//                    // Let the LoosingControlEffect handle the final death
-//                }
-//            }
+            if(random.nextInt(100) < 15) { // 15% chance per second at sanity < 5
+                MobEffectInstance controlEffect = entity.getEffect(ModEffects.LOOSING_CONTROL);
+                if(controlEffect != null && controlEffect.getAmplifier() >= 8) {
+                    // Let the LoosingControlEffect handle the final death
+                }
+            }
         }
-    }
-
-    private static double getSanityMultiplier(LivingEntity entity, float sanity, int sanityValue) {
-        float sanityLoss = 1.0f - sanity;
-        UUID uuid = entity.getUUID();
-
-        // ----- MULTIPLIER SCALING -----
-        double sanityMultiplier;
-
-        if (sanityValue >= 64) {
-            sanityMultiplier = 1.0;
-        } else if (sanityValue >= 50) {
-            sanityMultiplier = 0.95;
-        } else if (sanityValue >= 35) {
-            sanityMultiplier = 0.85;
-        } else if (sanityValue >= 20) {
-            sanityMultiplier = 0.7;
-        } else {
-            sanityMultiplier = Math.max(0.2, 0.5 - sanityLoss);
-        }
-        return sanityMultiplier;
     }
 
 }

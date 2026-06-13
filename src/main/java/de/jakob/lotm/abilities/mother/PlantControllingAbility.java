@@ -12,12 +12,10 @@ import de.jakob.lotm.util.helper.VectorUtil;
 import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -71,7 +69,7 @@ public class PlantControllingAbility extends SelectableAbility {
             return;
         }
 
-        int duration = 20 * 10*(int)Math.max(multiplier(entity)/2,1);
+        int duration = 20 * 20;
 
         for(int i = 0; i < 12; i++) {
             Vec3 targetLoc = targetEntity.position().add(0, .4, 0);
@@ -89,9 +87,7 @@ public class PlantControllingAbility extends SelectableAbility {
 
         boundEntities.add(targetEntity.getUUID());
 
-        int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
-
-        if(!BeyonderData.isBeyonder(targetEntity) || BeyonderData.getSequence(targetEntity) - 1 > entitySeq) {
+        if(!BeyonderData.isBeyonder(targetEntity) || BeyonderData.getSequence(targetEntity) - 1 > BeyonderData.getSequence(entity)) {
             if(targetEntity instanceof Mob) {
                 ((Mob) targetEntity).setNoAi(true);
                 ServerScheduler.scheduleDelayed(duration, () -> ((Mob) targetEntity).setNoAi(false));
@@ -102,10 +98,8 @@ public class PlantControllingAbility extends SelectableAbility {
 
         AtomicReference<UUID> taskIdRef = new AtomicReference<>();
         UUID taskId = ServerScheduler.scheduleForDuration(0, 5, duration, () -> {
-            boolean escape = InteractionHandler.isInteractionPossibleForEntity(loc, "escape", entitySeq, targetEntity);
-            boolean burning = InteractionHandler.isInteractionPossibleForEntity(loc, "burning", entitySeq, targetEntity);
-
-            if(escape || burning) {
+            // Blink Escape - only the bound entity can free itself
+            if(InteractionHandler.isInteractionPossibleForEntity(loc, "blink_escape", BeyonderData.getSequence(entity), targetEntity)) {
                 ServerScheduler.cancel(taskIdRef.get());
 
                 targetEntity.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
@@ -114,14 +108,6 @@ public class PlantControllingAbility extends SelectableAbility {
                 if (targetEntity instanceof Mob mob) mob.setNoAi(false);
 
                 boundEntities.remove(targetEntity.getUUID());
-
-                if(burning) {
-                    Vec3 pos = targetEntity.getPosition(0.5f);
-                    ParticleUtil.spawnParticles((ServerLevel) level, ParticleTypes.FLAME,       pos, 180, 1.0, 0);
-                    ParticleUtil.spawnParticles((ServerLevel) level, ParticleTypes.LARGE_SMOKE, pos, 90, 1.0, 0.15);
-                    level.playSound(null, BlockPos.containing(pos),
-                            SoundEvents.FIRE_AMBIENT, SoundSource.PLAYERS, 1.5f, 1.2f);
-                }
                 return;
             }
 
@@ -129,17 +115,13 @@ public class PlantControllingAbility extends SelectableAbility {
             targetEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 20, 10, false, false, false));
             targetEntity.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 20, 10, false, false, false));
             targetEntity.setDeltaMovement(new Vec3(0, 0, 0));
-            targetEntity.setOnGround(true);
-            var pos = targetEntity.position();
-            targetEntity.setDeltaMovement(new Vec3(0, 0, 0));
             targetEntity.hurtMarked = true;
-
-            targetEntity.teleportTo(pos.x, pos.y, pos.z);
 
             loc.setLevel(targetEntity.level());
             loc.setPosition(targetEntity.position());
         });
         taskIdRef.set(taskId);
+
 
         ServerScheduler.scheduleDelayed(duration, () -> boundEntities.remove(targetEntity.getUUID()));
     }

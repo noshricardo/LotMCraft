@@ -12,9 +12,6 @@ import java.util.Map;
 public class SpiritCommandingAbility extends Ability {
     public SpiritCommandingAbility(String id) {
         super(id, 1);
-
-        this.canBeUsedInArtifact = false; //as long as it is not implemented
-        this.cannotBeStolen = true; //as long as it is not implemented
     }
 
     @Override

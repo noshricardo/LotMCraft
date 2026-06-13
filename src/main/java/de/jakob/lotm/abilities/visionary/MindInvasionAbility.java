@@ -1,0 +1,35 @@
+package de.jakob.lotm.abilities.visionary;
+
+import de.jakob.lotm.abilities.core.Ability;
+import de.jakob.lotm.util.helper.AbilityUtil;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class MindInvasionAbility extends Ability {
+    public MindInvasionAbility(String id) {
+        super(id, 10);
+    }
+
+    @Override
+    public Map<String, Integer> getRequirements() {
+        return new HashMap<>(Map.of("visionary", 4));
+    }
+
+    @Override
+    public float getSpiritualityCost() {
+        return 1200;
+    }
+
+    @Override
+    public void onAbilityUse(Level level, LivingEntity entity) {
+        if(level.isClientSide)
+            return;
+
+        AbilityUtil.sendActionBar(entity, Component.translatable("lotm.not_implemented_yet").withStyle(ChatFormatting.RED));
+    }
+}

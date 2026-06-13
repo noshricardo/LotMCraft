@@ -30,6 +30,6 @@ public class KillTyrantSeq4Quest extends KillBeyonderQuest {
 
     @Override
     public float getDigestionReward() {
-        return .2f;
+        return .5f;
     }
 }

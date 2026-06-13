@@ -22,7 +22,7 @@ public class SpiritWorldDimensionEffects{
     public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event) {
         event.register(
                 ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"),
-                new SpiritWorldDimensionEffects.SpiritWorldEffects()
+                new SpiritWorldEffects()
         );
     }
 

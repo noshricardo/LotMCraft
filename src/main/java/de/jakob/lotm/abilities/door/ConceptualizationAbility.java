@@ -1,6 +1,5 @@
 package de.jakob.lotm.abilities.door;
 
-import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.ToggleAbility;
 import de.jakob.lotm.attachments.DisabledFlightComponent;
 import de.jakob.lotm.attachments.ModAttachments;
@@ -13,33 +12,23 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@EventBusSubscriber(modid = LOTMCraft.MOD_ID)
 public class ConceptualizationAbility extends ToggleAbility {
     public ConceptualizationAbility(String id) {
         super(id);
-        canBeCopied = false;
-        canBeReplicated = false;
-        canBeUsedInArtifact = false;
-        canBeShared = false;
-        tickRate = 1;
     }
 
     @Override
     public float getSpiritualityCost() {
-        return 220;
+        return 2;
     }
 
     @Override
     public Map<String, Integer> getRequirements() {
-        return new HashMap<>(Map.of("door", 0));
+        return new HashMap<>(Map.of("door", 3));
     }
 
     @Override
@@ -64,18 +53,18 @@ public class ConceptualizationAbility extends ToggleAbility {
         if(level.isClientSide) {
             return;
         }
-        /*
+
         DisabledFlightComponent disabledFlightComponent = entity.getData(ModAttachments.FLIGHT_DISABLE_COMPONENT);
         if(disabledFlightComponent.getCooldownTicks() > 0) {
             cancel((ServerLevel) level, entity);
             return;
         }
-        */
+
         // Allow Flying
         if(entity instanceof Player player) {
             player.getAbilities().mayfly = true;
             player.getAbilities().flying = true;
-            player.getAbilities().setFlyingSpeed(.35f);
+            player.getAbilities().setFlyingSpeed(.225f);
             player.onUpdateAbilities();
         }
 
@@ -86,9 +75,8 @@ public class ConceptualizationAbility extends ToggleAbility {
             return;
         }
 
-        ParticleUtil.spawnParticles((ServerLevel) level, ParticleTypes.ENCHANT, entity.position(), 100, 1, 1, 1, .1);
-        ParticleUtil.spawnParticles((ServerLevel) level, ModParticles.STAR.get(), entity.position(), 3, .8, .8, .8, .1);
-        ParticleUtil.spawnParticles((ServerLevel) level, ParticleTypes.END_ROD, entity.position(), 2, .8, .8, .8, .1);
+        ParticleUtil.spawnParticles((ServerLevel) level, ParticleTypes.ENCHANT, entity.position(), 200, .8, .8, .8, .1);
+        ParticleUtil.spawnParticles((ServerLevel) level, ModParticles.STAR.get(), entity.position(), 5, .4, .4, .4, .1);
     }
 
     @Override
@@ -115,14 +103,5 @@ public class ConceptualizationAbility extends ToggleAbility {
             entity.resetFallDistance();
             entity.fallDistance = 0;
         });
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onLivingDamage(LivingIncomingDamageEvent event) {
-        if(!((ToggleAbility) LOTMCraft.abilityHandler.getById("conceptualization_ability")).isActiveForEntity(event.getEntity())) {
-            return;
-        }
-
-        event.setAmount(event.getAmount() * .20f);
     }
 }

@@ -59,7 +59,7 @@ public class SteelMasteryAbility extends SelectableAbility {
     }
 
     private void steelChains(ServerLevel level, LivingEntity entity) {
-        LivingEntity target = AbilityUtil.getTargetEntity(entity, 25*(int) Math.max(multiplier(entity)/2,1), 2);
+        LivingEntity target = AbilityUtil.getTargetEntity(entity, 25, 2);
 
         if(target == null) {
             if(entity instanceof ServerPlayer player) {
@@ -72,15 +72,12 @@ public class SteelMasteryAbility extends SelectableAbility {
         Location loc = new Location(target.position(), target.level());
 
         AtomicReference<UUID> taskIdRef = new AtomicReference<>();
-
-        int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
-
-        UUID taskId = ServerScheduler.scheduleForDuration(0, 5, 20 * 8*(int) Math.max(multiplier(entity)/4,1), () -> {
+        UUID taskId = ServerScheduler.scheduleForDuration(0, 5, 20 * 8, () -> {
             if(entity.isDeadOrDying())
                 return;
 
             // Blink Escape - only the bound entity can free itself
-            if(InteractionHandler.isInteractionPossibleForEntity(loc, "blink_escape", entitySeq, target)) {
+            if(InteractionHandler.isInteractionPossibleForEntity(loc, "blink_escape", BeyonderData.getSequence(entity), target)) {
                 ServerScheduler.cancel(taskIdRef.get());
 
                 target.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
@@ -112,42 +109,27 @@ public class SteelMasteryAbility extends SelectableAbility {
     private final DustParticleOptions dust = new DustParticleOptions(new Vector3f(0.3f, 0.3f, 0.3f), 2.25f);
 
     private void steelSkin(ServerLevel level, LivingEntity entity) {
-        UUID entityId = entity.getUUID();
-
-        if(castingSteelSkin.contains(entityId)) {
-            castingSteelSkin.remove(entityId);
-            entity.removeEffect(MobEffects.DAMAGE_RESISTANCE);
+        if(castingSteelSkin.contains(entity.getUUID())) {
+            castingSteelSkin.remove(entity.getUUID());
             return;
         }
 
-        castingSteelSkin.add(entityId);
+        castingSteelSkin.add(entity.getUUID());
         AtomicBoolean shouldStop = new AtomicBoolean(false);
-
         ServerScheduler.scheduleUntil(level, () -> {
-            int seq = BeyonderData.getSequence(entity);
-            int effectlevel =  seq<=2? 1: 0;
-            if (seq<=2) {BeyonderData.reduceSpirituality(entity, 32);} else{
-            BeyonderData.reduceSpirituality(entity, 16);};
-
-            if(BeyonderData.getSpirituality(entity) <= 0) {
-                if (entity instanceof ServerPlayer player) {
-                    sendActionBar(player, Component.literal("Your spirituality is exhausted.").withColor(0xFF422a2a));
-                }
-                castingSteelSkin.remove(entityId);
-                entity.removeEffect(MobEffects.DAMAGE_RESISTANCE);
+            if(BeyonderData.getSpirituality(entity) <= 4) {
+                castingSteelSkin.remove(entity.getUUID());
+            }
+            if(!castingSteelSkin.contains(entity.getUUID())) {
                 shouldStop.set(true);
                 return;
             }
 
-            if(!castingSteelSkin.contains(entityId)) {
-                entity.removeEffect(MobEffects.DAMAGE_RESISTANCE);
-                shouldStop.set(true);
-                return;
-            }
+            BeyonderData.reduceSpirituality(entity, 4);
 
-            entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20, effectlevel, false, false, false));
+            entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20, 2, false, false, false));
             ParticleUtil.spawnParticles(level, dust, entity.position().add(0, entity.getEyeHeight() / 2, 0), 10, .4, entity.getEyeHeight() / 2, .4, 0);
-
-        }, 2, () -> castingSteelSkin.remove(entityId), shouldStop);
+        }, 2, () -> castingSteelSkin.remove(entity.getUUID()), shouldStop);
     }
+
 }

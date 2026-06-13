@@ -1,6 +1,5 @@
 package de.jakob.lotm.dimension;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
@@ -36,17 +35,15 @@ import java.util.zip.InflaterInputStream;
 public class PreGeneratedChunkGenerator extends ChunkGenerator {
     public static final MapCodec<PreGeneratedChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
-                    BiomeSource.CODEC.fieldOf("biome_source").forGetter(ChunkGenerator::getBiomeSource),
-                    Codec.STRING.fieldOf("region_path").forGetter(gen -> gen.regionPath)
+                    BiomeSource.CODEC.fieldOf("biome_source").forGetter(ChunkGenerator::getBiomeSource)
             ).apply(instance, PreGeneratedChunkGenerator::new)
     );
 
     private final Map<ChunkPos, CompoundTag> chunkCache = new HashMap<>();
-    private final String regionPath;
+    private static final String REGION_PATH = "data/lotmcraft/dimension_data/sefirah_castle/";
 
-    public PreGeneratedChunkGenerator(BiomeSource biomeSource, String regionPath) {
+    public PreGeneratedChunkGenerator(BiomeSource biomeSource) {
         super(biomeSource);
-        this.regionPath = regionPath;
     }
 
     @Override
@@ -91,15 +88,7 @@ public class PreGeneratedChunkGenerator extends ChunkGenerator {
         ChunkPos pos = chunk.getPos();
         CompoundTag chunkData = getChunkData(pos);
 
-        boolean hasData = chunkData != null && (
-                chunkData.contains("sections") ||                          // 1.18+ top-level
-                chunkData.contains("Sections") ||                          // 1.18 edge case
-                (chunkData.contains("Level") &&                            // 1.13-1.17 wrapped
-                        (chunkData.getCompound("Level").contains("Sections") ||
-                         chunkData.getCompound("Level").contains("sections")))
-        );
-
-        if (hasData) {
+        if (chunkData != null && chunkData.contains("sections")) {
             try {
                 loadChunkSections(chunk, chunkData);
             } catch (Exception e) {
@@ -107,8 +96,8 @@ public class PreGeneratedChunkGenerator extends ChunkGenerator {
                 fillWithDefaultTerrain(chunk);
             }
         } else {
-            // No pre-generated data for this chunk — leave it empty (void)
-            // Do NOT fill with fake terrain; empty ocean/void is more appropriate
+            // If no pre-generated data exists, create default terrain for testing
+            fillWithDefaultTerrain(chunk);
         }
 
         // Update heightmaps
@@ -130,7 +119,7 @@ public class PreGeneratedChunkGenerator extends ChunkGenerator {
 
         try {
             InputStream stream = getClass().getClassLoader()
-                    .getResourceAsStream(regionPath + regionFileName);
+                    .getResourceAsStream(REGION_PATH + regionFileName);
 
             if (stream != null) {
                 CompoundTag data = loadChunkFromRegion(stream, pos.x & 31, pos.z & 31);
@@ -208,69 +197,63 @@ public class PreGeneratedChunkGenerator extends ChunkGenerator {
     }
 
     private void loadChunkSections(ChunkAccess chunk, CompoundTag chunkData) {
-        // Support both modern (1.18+) and legacy (1.13-1.17) chunk NBT formats.
-        // Legacy wraps everything in a "Level" compound; sections key is capitalised.
+        // Get the Level tag which contains the actual chunk data
         CompoundTag level = chunkData.contains("Level") ? chunkData.getCompound("Level") : chunkData;
 
-        // 1.18+ uses "sections" (lowercase); 1.13-1.17 uses "Sections" (capital S)
-        ListTag sections = level.getList("sections", 10);
-        boolean legacyFormat = sections.isEmpty();
-        if (legacyFormat) {
-            sections = level.getList("Sections", 10);
-        }
+        ListTag sections = level.getList("sections", 10); // 10 = CompoundTag type
 
         for (int i = 0; i < sections.size(); i++) {
             CompoundTag section = sections.getCompound(i);
             byte sectionY = section.getByte("Y");
 
-            ListTag palette;
-            long[] data;
-
-            if (!legacyFormat && section.contains("block_states")) {
-                // Modern 1.18+ format: block_states.palette / block_states.data
-                CompoundTag blockStates = section.getCompound("block_states");
-                palette = blockStates.getList("palette", 10);
-                data = blockStates.contains("data") ? blockStates.getLongArray("data") : null;
-            } else if (legacyFormat && section.contains("Palette")) {
-                // Legacy 1.13-1.17 format: Palette / BlockStates directly on section
-                palette = section.getList("Palette", 10);
-                data = section.contains("BlockStates") ? section.getLongArray("BlockStates") : null;
-            } else {
+            if (!section.contains("block_states")) {
                 continue;
             }
 
-            if (palette.isEmpty()) continue;
+            CompoundTag blockStates = section.getCompound("block_states");
 
+            // Load palette
+            ListTag palette = blockStates.getList("palette", 10);
             BlockState[] paletteArray = new BlockState[palette.size()];
+
             for (int j = 0; j < palette.size(); j++) {
                 CompoundTag blockTag = palette.getCompound(j);
                 String blockName = blockTag.getString("Name");
+
+                // Parse block state from name
                 BlockState state = parseBlockState(blockName, blockTag);
                 paletteArray[j] = state != null ? state : Blocks.AIR.defaultBlockState();
             }
 
-            int sectionYOffset = sectionY * 16;
+            // Load block data
+            if (blockStates.contains("data")) {
+                long[] data = blockStates.getLongArray("data");
 
-            if (data != null && data.length > 0) {
+                // Calculate bits per block - Minecraft uses actual palette size, not rounded up
                 int bitsPerBlock = Math.max(4, 32 - Integer.numberOfLeadingZeros(paletteArray.length - 1));
 
+                // Decode packed data and place blocks
+                int sectionYOffset = sectionY * 16;
+
+                // Minecraft stores blocks in YZX order (Y changes slowest, X changes fastest)
                 for (int y = 0; y < 16; y++) {
                     for (int z = 0; z < 16; z++) {
                         for (int x = 0; x < 16; x++) {
-                            int blockIndex = (y * 16 + z) * 16 + x;
-                            int paletteIndex = legacyFormat
-                                    ? extractPaletteIndexSpanning(data, blockIndex, bitsPerBlock)
-                                    : extractPaletteIndex(data, blockIndex, bitsPerBlock);
+                            int blockIndex = (y * 16 + z) * 16 + x; // YZX order
+                            int paletteIndex = extractPaletteIndex(data, blockIndex, bitsPerBlock);
 
                             if (paletteIndex >= 0 && paletteIndex < paletteArray.length) {
-                                chunk.setBlockState(new BlockPos(x, sectionYOffset + y, z), paletteArray[paletteIndex], false);
+                                BlockState state = paletteArray[paletteIndex];
+                                chunk.setBlockState(new BlockPos(x, sectionYOffset + y, z), state, false);
                             }
                         }
                     }
                 }
             } else if (paletteArray.length == 1) {
-                // Entire section is one block type
+                // Single block type in section
                 BlockState state = paletteArray[0];
+                int sectionYOffset = sectionY * 16;
+
                 for (int x = 0; x < 16; x++) {
                     for (int y = 0; y < 16; y++) {
                         for (int z = 0; z < 16; z++) {
@@ -337,34 +320,24 @@ public class PreGeneratedChunkGenerator extends ChunkGenerator {
         return state;
     }
 
-    /**
-     * 1.16+ packing: each long holds floor(64/bitsPerBlock) independent blocks, no spanning.
-     */
     private int extractPaletteIndex(long[] data, int blockIndex, int bitsPerBlock) {
-        int blocksPerLong = 64 / bitsPerBlock;
-        int longIndex = blockIndex / blocksPerLong;
-        int bitOffset = (blockIndex % blocksPerLong) * bitsPerBlock;
-        if (longIndex >= data.length) return 0;
-        long mask = (1L << bitsPerBlock) - 1;
-        return (int) ((data[longIndex] >>> bitOffset) & mask);
-    }
+        // Calculate which long contains our data
+        long blocksPerLong = 64 / bitsPerBlock;
+        int longIndex = (int) (blockIndex / blocksPerLong);
+        int localIndex = (int) (blockIndex % blocksPerLong);
 
-    /**
-     * 1.13-1.15 packing: bits are packed end-to-end and CAN span across two longs.
-     */
-    private int extractPaletteIndexSpanning(long[] data, int blockIndex, int bitsPerBlock) {
-        int bitStart = blockIndex * bitsPerBlock;
-        int longIndex = bitStart >> 6; // divide by 64
-        int bitOffset = bitStart & 63; // mod 64
-        if (longIndex >= data.length) return 0;
-        long mask = (1L << bitsPerBlock) - 1;
-        long value = data[longIndex] >>> bitOffset;
-        int bitsFromFirst = 64 - bitOffset;
-        if (bitsFromFirst < bitsPerBlock && longIndex + 1 < data.length) {
-            // Value spans into the next long
-            value |= data[longIndex + 1] << bitsFromFirst;
+        if (longIndex >= data.length) {
+            return 0;
         }
-        return (int) (value & mask);
+
+        // Calculate bit offset within the long
+        int bitOffset = localIndex * bitsPerBlock;
+
+        // Create mask for extracting the value
+        long mask = (1L << bitsPerBlock) - 1;
+
+        // Extract and return the value
+        return (int) ((data[longIndex] >>> bitOffset) & mask);
     }
 
     private int ceilLog2(int value) {
@@ -418,7 +391,7 @@ public class PreGeneratedChunkGenerator extends ChunkGenerator {
 
     @Override
     public void addDebugScreenInfo(List<String> info, RandomState randomState, BlockPos pos) {
-        info.add("PreGenerated: " + regionPath);
+        info.add("PreGenerated: Sefirah Castle");
         info.add("Chunk Cache Size: " + chunkCache.size());
     }
 }

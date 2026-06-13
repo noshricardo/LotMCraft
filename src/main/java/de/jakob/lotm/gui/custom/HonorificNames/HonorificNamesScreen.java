@@ -1,11 +1,10 @@
 package de.jakob.lotm.gui.custom.HonorificNames;
 
-import de.jakob.lotm.network.packets.toServer.RemoteAbilityCastPacket;
 import de.jakob.lotm.network.PacketHandler;
 import de.jakob.lotm.network.packets.toServer.HonorificNamesRespondPacket;
 import de.jakob.lotm.util.BeyonderData;
-import de.jakob.lotm.util.playerMap.HonorificName;
-import de.jakob.lotm.util.playerMap.PendingPrayer;
+import de.jakob.lotm.util.beyonderMap.HonorificName;
+import de.jakob.lotm.util.beyonderMap.PendingPrayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -57,12 +56,12 @@ public class HonorificNamesScreen extends AbstractContainerScreen<HonorificNames
     private void rebuildButtons() {
         this.clearWidgets();
 
-        // "Set Name" button in the own-name section — visible for seq < 4 or sefirot owners
-        if (menu.getSequence() < 4 || menu.isSefirotOwner()) {
+        // "Set Name" button in the own-name section
+        if (menu.getSequence() < 4) {
             this.addRenderableWidget(
                     Button.builder(Component.literal("Set Name"),
                                     btn -> Minecraft.getInstance().setScreen(
-                                            new SetHonorificNameScreen(menu.getPathway(), menu.getSequence(), menu.isSefirotOwner())))
+                                            new SetHonorificNameScreen(menu.getPathway(), menu.getSequence())))
                             .bounds(leftPos + W - PADDING - 80, topPos + TITLE_H + OWN_NAME_H - 20, 80, 16)
                             .build()
             );
@@ -93,15 +92,7 @@ public class HonorificNamesScreen extends AbstractContainerScreen<HonorificNames
             this.addRenderableWidget(
                     Button.builder(Component.literal("Teleport"),
                                     btn -> respondToPrayer(btnIdx, true))
-                            .bounds(leftPos + PADDING + 126, entryY + 22, 60, 16)
-                            .build()
-            );
-
-            // "Cast Ability" button
-            this.addRenderableWidget(
-                    Button.builder(Component.literal("Cast"),
-                                    btn -> PacketHandler.sendToServer(new RemoteAbilityCastPacket(prayer.senderUUID())))
-                            .bounds(leftPos + PADDING + 126 + 62, entryY + 22, 60, 16)
+                            .bounds(leftPos + PADDING + 126, entryY + 22, 120, 16)
                             .build()
             );
         }

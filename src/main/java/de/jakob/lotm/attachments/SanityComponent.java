@@ -1,7 +1,5 @@
 package de.jakob.lotm.attachments;
 
-import de.jakob.lotm.LOTMCraft;
-import de.jakob.lotm.attachments.GatheringData;
 import de.jakob.lotm.network.PacketHandler;
 import de.jakob.lotm.network.packets.toClient.SyncSanityPacket;
 import de.jakob.lotm.util.BeyonderData;
@@ -38,36 +36,6 @@ public class SanityComponent {
 
     public void increaseSanityAndSync(float amount, LivingEntity entity) {
         if (amount < 0) {
-            // Gathered players are immune to sanity damage
-            if (GatheringData.isGathered(entity.getUUID())) return;
-
-            // Consume one virtual persona stack to fully cancel this sanity reduction
-            if (virtualPersonaStacks > 0) {
-                virtualPersonaStacks--;
-                return;
-            }
-
-            if (BeyonderData.isBeyonder(entity)) {
-                amount *= (float) BeyonderData.getSanityDecreaseMultiplierForSequence(BeyonderData.getSequence(entity));
-            }
-        }
-
-        this.sanity += amount;
-
-        if (this.sanity > 1.0f) this.sanity = 1.0f;
-        else if (this.sanity < 0.0f) this.sanity = 0.0f;
-
-        if (entity instanceof ServerPlayer player) {
-            PacketHandler.sendToPlayer(player, new SyncSanityPacket(sanity, entity.getId()));
-        }
-    }
-
-    public void decreaseSanityAndSync(float amount, LivingEntity entity) {
-        increaseSanityAndSync(-amount, entity);
-    }
-
-    public void increaseSanityWithSequenceDifference(float amount, LivingEntity entity, int casterSequence, int targetSequence) {
-        if (amount < 0) {
             // Consume one virtual persona stack to fully cancel this sanity reduction
             if (virtualPersonaStacks > 0) {
                 virtualPersonaStacks--;
@@ -79,8 +47,6 @@ public class SanityComponent {
             }
         }
 
-        amount *= getSanityDifferenceMultiplier(casterSequence, targetSequence);
-
         this.sanity += amount;
 
         if (this.sanity > 1.0f) this.sanity = 1.0f;
@@ -91,28 +57,12 @@ public class SanityComponent {
         }
     }
 
-    public void decreaseSanityWithSequenceDifference(float amount, LivingEntity entity, int casterSequence, int targetSequence) {
-        increaseSanityWithSequenceDifference(-amount, entity, casterSequence, targetSequence);
-    }
-
-    private float getSanityDifferenceMultiplier(int casterSequence, int targetSequence) {
-        if(casterSequence < targetSequence) {
-            return (targetSequence - casterSequence) * 0.4f + 1;
-        }
-        else if (casterSequence > targetSequence) {
-            return 1.0f / ((casterSequence - targetSequence) * 0.4f + 1);
-        }
-        else {
-            return 1.0f;
-        }
-    }
-
     public int getVirtualPersonaStacks() {
         return virtualPersonaStacks;
     }
 
     public void addVirtualPersonaStack() {
-        virtualPersonaStacks++;
+        if (virtualPersonaStacks < 10) virtualPersonaStacks++;
     }
 
     public void setVirtualPersonaStacks(int stacks) {

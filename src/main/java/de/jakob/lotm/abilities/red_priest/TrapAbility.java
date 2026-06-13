@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TrapAbility extends Ability {
     public TrapAbility(String id) {
-        super(id, 8, "explosion");
+        super(id, 1);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class TrapAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        final int duration = 20 * 30* (int) Math.max(multiplier(entity)/2,1);
+        final int duration = 20 * 30;
         Vec3 pos = entity.position();
         String trapKey = entity.getUUID() + "_" + pos.x + "_" + pos.y + "_" + pos.z;
         UUID trapId = UUID.nameUUIDFromBytes(trapKey.getBytes());
@@ -55,7 +55,6 @@ public class TrapAbility extends Ability {
         AtomicBoolean hasExploded = new AtomicBoolean(false);
 
         if(!level.isClientSide()) {
-
             ServerScheduler.scheduleForDuration(0, 1, duration, () -> {
                 if(hasExploded.get()) {
                     return;
@@ -69,14 +68,14 @@ public class TrapAbility extends Ability {
                         PacketHandler.sendToPlayer(player, new SyncExplodedTrapPacket(trapId));
                     }
 
-                    AbilityUtil.damageNearbyEntities((ServerLevel) level, entity, 3, DamageLookup.lookupDamage(9, .95) * (int) Math.max(multiplier(entity)/4,1), pos, true, false, true, 0);
+                    AbilityUtil.damageNearbyEntities((ServerLevel) level, entity, 3, DamageLookup.lookupDamage(9, .95) * multiplier(entity), pos, true, false, true, 0);
 
                     if(BeyonderData.isGriefingEnabled(entity)) {
                         level.explode(entity, pos.x, pos.y, pos.z, 4f, true, Level.ExplosionInteraction.MOB);
                     }
-                    /*else {
+                    else {
                         level.explode(entity, pos.x, pos.y, pos.z, 4f, false, Level.ExplosionInteraction.NONE);
-                    }*/
+                    }
                 }
             }, (ServerLevel) level);
         }

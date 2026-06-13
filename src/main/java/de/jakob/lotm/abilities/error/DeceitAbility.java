@@ -30,13 +30,9 @@ public class DeceitAbility extends SelectableAbility {
 
     public static final HashSet<UUID> cannotBeTargeted = new HashSet<>();
     public static final HashSet<UUID> cannotBeHarmed = new HashSet<>();
-    public static final HashMap<UUID, Integer> seqMap = new HashMap<>(50);
 
     public DeceitAbility(String id) {
-        super(id, 15);
-        autoClear = false;
-        canBeUsedInArtifact = false;
-        canBeShared = false;
+        super(id, 1);
     }
 
     @Override
@@ -46,7 +42,7 @@ public class DeceitAbility extends SelectableAbility {
 
     @Override
     protected float getSpiritualityCost() {
-        return 4000;
+        return 500;
     }
 
     @Override
@@ -63,8 +59,6 @@ public class DeceitAbility extends SelectableAbility {
 
         EffectManager.playEffect(EffectManager.Effect.DECEPTION, entity.getX(), entity.getY() + .5, entity.getZ(), serverLevel);
 
-        seqMap.put(entity.getUUID(), AbilityUtil.getSeqWithArt(entity, this));
-
         switch (abilityIndex) {
             case 0 -> deceiveOthers(serverLevel, entity);
             case 1 -> deceiveWorld(serverLevel, entity);
@@ -73,18 +67,14 @@ public class DeceitAbility extends SelectableAbility {
 
     private void deceiveWorld(ServerLevel serverLevel, LivingEntity entity) {
         cannotBeHarmed.add(entity.getUUID());
-        ServerScheduler.scheduleDelayed(20 * 7*(int) Math.max(multiplier(entity)/4,1), () -> {
-            cannotBeHarmed.remove(entity.getUUID());
-            clearArtifactScaling(entity);
-            seqMap.remove(entity.getUUID());
-        });
+        ServerScheduler.scheduleDelayed(20 * 7, () -> cannotBeHarmed.remove(entity.getUUID()));
     }
 
     private void deceiveOthers(ServerLevel serverLevel, LivingEntity entity) {
         cannotBeTargeted.add(entity.getUUID());
 
-        AbilityUtil.getNearbyEntities(entity, serverLevel, entity.position(), 20*(int) Math.max(multiplier(entity)/2,1)).forEach(e -> {
-            if(BeyonderData.isBeyonder(e) && BeyonderData.getSequence(e) < AbilityUtil.getSeqWithArt(entity, this)) {
+        AbilityUtil.getNearbyEntities(entity, serverLevel, entity.position(), 20).forEach(e -> {
+            if(BeyonderData.isBeyonder(e) && BeyonderData.getSequence(e) < BeyonderData.getSequence(entity)) {
                 return;
             }
 
@@ -100,11 +90,7 @@ public class DeceitAbility extends SelectableAbility {
             }
         });
 
-        ServerScheduler.scheduleDelayed(20 * 12*(int) Math.max(multiplier(entity)/4,1), () -> {
-            cannotBeTargeted.remove(entity.getUUID());
-            clearArtifactScaling(entity);
-            seqMap.remove(entity.getUUID());
-        });
+        ServerScheduler.scheduleDelayed(20 * 12, () -> cannotBeTargeted.remove(entity.getUUID()));
     }
 
     @SubscribeEvent
@@ -124,17 +110,9 @@ public class DeceitAbility extends SelectableAbility {
     @SubscribeEvent
     public static void onIncomingDamage(LivingIncomingDamageEvent event) {
         LivingEntity entity = event.getEntity();
-
-        var source = event.getSource().getEntity();
-
-        if(!cannotBeHarmed.contains(entity.getUUID()) || !(entity.level() instanceof ServerLevel serverLevel)) return;
-
-        if(!(source instanceof LivingEntity livingSource) ||
-                BeyonderData.getSequence(livingSource) < seqMap.get(entity.getUUID())){
-           return;
+        if(cannotBeHarmed.contains(entity.getUUID()) && entity.level() instanceof ServerLevel serverLevel) {
+            ParticleUtil.spawnParticles(serverLevel, ParticleTypes.END_ROD, entity.position().add(0, entity.getEyeHeight() / 2, 0), 60, 0.5, 0.5, 0.5, 0.1);
+            event.setCanceled(true);
         }
-
-        ParticleUtil.spawnParticles(serverLevel, ParticleTypes.END_ROD, entity.position().add(0, entity.getEyeHeight() / 2, 0), 60, 0.5, 0.5, 0.5, 0.1);
-        event.setCanceled(true);
     }
 }

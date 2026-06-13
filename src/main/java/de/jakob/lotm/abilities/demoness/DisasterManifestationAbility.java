@@ -2,7 +2,6 @@ package de.jakob.lotm.abilities.demoness;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import com.zigythebird.playeranimcore.math.Vec3f;
-import de.jakob.lotm.abilities.core.AbilityUsedEvent;
 import de.jakob.lotm.abilities.core.SelectableAbility;
 import de.jakob.lotm.attachments.ActiveShaderComponent;
 import de.jakob.lotm.attachments.FogComponent;
@@ -25,7 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,8 +31,6 @@ import java.util.Map;
 public class DisasterManifestationAbility extends SelectableAbility {
     public DisasterManifestationAbility(String id) {
         super(id, 4);
-        postsUsedAbilityEventManually = true;
-        canBeShared = false;
     }
 
     @Override
@@ -69,8 +65,6 @@ public class DisasterManifestationAbility extends SelectableAbility {
         AtomicDouble radius = new AtomicDouble(0.5);
         Vec3 startPos = entity.position();
 
-        NeoForge.EVENT_BUS.post(new AbilityUsedEvent(serverLevel, startPos, entity, this, new String[]{"freezing"}, 55, 110));
-
         boolean griefing = BeyonderData.isGriefingEnabled(entity);
 
         ServerScheduler.scheduleForDuration(0, 1, 110, () -> {
@@ -85,7 +79,7 @@ public class DisasterManifestationAbility extends SelectableAbility {
                 }
             });
 
-            AbilityUtil.damageNearbyEntities(serverLevel, entity, radius.get(), radius.get(), (float) DamageLookup.lookupDamage(2, .6) * (int)Math.max(multiplier(entity)/4,1), startPos, true, false, false, 20, ModDamageTypes.source(serverLevel, ModDamageTypes.DEMONESS_GENERIC, entity));
+            AbilityUtil.damageNearbyEntities(serverLevel, entity, radius.get(), radius.get(), (float) DamageLookup.lookupDamage(2, .6) * (float) multiplier(entity), startPos, true, false, false, 20, ModDamageTypes.source(serverLevel, ModDamageTypes.DEMONESS_GENERIC, entity));
 
             // Particles and shader
             for(Player player : AbilityUtil.getNearbyEntities(null, serverLevel, startPos, radius.get(), true)
@@ -111,28 +105,24 @@ public class DisasterManifestationAbility extends SelectableAbility {
     }
 
     private void spawnMeteor(ServerLevel serverLevel, LivingEntity entity) {
-        Vec3 targetLoc = AbilityUtil.getTargetLocation(entity, 55 * (int)Math.max(multiplier(entity)/4,1), 3);
+        Vec3 targetLoc = AbilityUtil.getTargetLocation(entity, 85, 3);
 
-        NeoForge.EVENT_BUS.post(new AbilityUsedEvent(serverLevel, targetLoc, entity, this, new String[]{"burning", "explosion"}, 18, 20 * 10));
-
-        MeteorEntity meteor = new MeteorEntity(serverLevel, 3.25f,  (float) DamageLookup.lookupDamage(2, 1)  * (int)Math.max(multiplier(entity)/4,1), 4, entity, BeyonderData.isGriefingEnabled(entity), 18, 30);
+        MeteorEntity meteor = new MeteorEntity(serverLevel, 3.25f,  (float) DamageLookup.lookupDamage(2, 1) * (float) multiplier(entity), 6, entity, BeyonderData.isGriefingEnabled(entity), 18, 30);
         meteor.setPosition(targetLoc);
         serverLevel.addFreshEntity(meteor);
     }
 
     private void createTornados(ServerLevel serverLevel, LivingEntity entity) {
-        LivingEntity target = AbilityUtil.getTargetEntity(entity, 12 * (int)Math.max(multiplier(entity)/4,1), 3);
+        LivingEntity target = AbilityUtil.getTargetEntity(entity, 12, 3);
 
-        Vec3 pos = AbilityUtil.getTargetLocation(entity, 12 * (int)Math.max(multiplier(entity)/4,1), 2);
+        Vec3 pos = AbilityUtil.getTargetLocation(entity, 12, 2);
 
-        NeoForge.EVENT_BUS.post(new AbilityUsedEvent(serverLevel, pos, entity, this, new String[]{"explosion"}, 60, 20 * 15));
-
-        TornadoEntity tornado = target == null ? new TornadoEntity(ModEntities.TORNADO.get(), serverLevel, .15f,(float) DamageLookup.lookupDamage(2, .35)  * (int)Math.max(multiplier(entity)/4,1), entity) : new TornadoEntity(ModEntities.TORNADO.get(), serverLevel, .15f, (float) DamageLookup.lookupDamage(2, .35) *  (int)Math.max(multiplier(entity)/4,1), entity, target, 3);
+        TornadoEntity tornado = target == null ? new TornadoEntity(ModEntities.TORNADO.get(), serverLevel, .15f,(float) DamageLookup.lookupDamage(2, .35) * (float) multiplier(entity), entity) : new TornadoEntity(ModEntities.TORNADO.get(), serverLevel, .15f, (float) DamageLookup.lookupDamage(2, .35) * (float) multiplier(entity), entity, target);
         tornado.setPos(pos);
         serverLevel.addFreshEntity(tornado);
 
-        for(int i = 0; i < 25; i++) {
-            TornadoEntity additionalTornado = target == null || random.nextInt(4) != 0 ? new TornadoEntity(ModEntities.TORNADO.get(), serverLevel, .15f, (float) DamageLookup.lookupDamage(2, .35)  * (int)Math.max(multiplier(entity)/4,1), entity) : new TornadoEntity(ModEntities.TORNADO.get(), serverLevel, .15f, (float) DamageLookup.lookupDamage(2, .35) *  (int)Math.max(multiplier(entity)/4,1), entity, target, 2.5f);
+        for(int i = 0; i < 30; i++) {
+            TornadoEntity additionalTornado = target == null || random.nextInt(4) != 0 ? new TornadoEntity(ModEntities.TORNADO.get(), serverLevel, .15f, (float) DamageLookup.lookupDamage(2, .35) * (float) multiplier(entity), entity) : new TornadoEntity(ModEntities.TORNADO.get(), serverLevel, .15f, (float) DamageLookup.lookupDamage(2, .35) * (float) multiplier(entity), entity, target);
             Vec3 randomOffset = new Vec3((serverLevel.random.nextDouble() - 0.5) * 120, 3, (serverLevel.random.nextDouble() - 0.5) * 120);
             additionalTornado.setPos(pos.add(randomOffset));
             serverLevel.addFreshEntity(additionalTornado);

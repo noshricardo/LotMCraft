@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.Ability;
 import de.jakob.lotm.attachments.DisabledAbilitiesComponent;
-import de.jakob.lotm.attachments.DoorAuthorityData;
 import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.attachments.SanityComponent;
 import de.jakob.lotm.damage.ModDamageTypes;
@@ -21,7 +20,6 @@ import de.jakob.lotm.util.helper.ParticleUtil;
 import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
@@ -31,7 +29,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -547,6 +544,7 @@ public class NegativeEffect {
             ).filter(Objects::nonNull).toList();
 
             case "door" -> Stream.of(
+                    NegativeEffectType.FULL_MOON_WHISPERS,
                     (sequence <= 5) ? NegativeEffectType.RANDOM_TELEPORT : null
             ).filter(Objects::nonNull).toList();
 
@@ -602,7 +600,7 @@ public class NegativeEffect {
                     NegativeEffectType.NAUSEA
             ).filter(Objects::nonNull).toList();
 
-            default -> Stream.of(
+            default -> List.of(
                     NegativeEffectType.DRAIN_HEALTH,
                     NegativeEffectType.DRAIN_HUNGER,
                     NegativeEffectType.HEARING_WHISPERS,
@@ -610,13 +608,10 @@ public class NegativeEffect {
                     NegativeEffectType.MINING_FATIGUE,
                     NegativeEffectType.HEAR_SOUNDS,
                     NegativeEffectType.NEAR_DEATH_PULSE,
-                    NegativeEffectType.HEART_STOP,
-                    (sequence <= 4) ? NegativeEffectType.FULL_MOON_WHISPERS : null
-            ).filter(Objects::nonNull).toList();
+                    NegativeEffectType.HEART_STOP
+            );
         };
     }
-
-    private int potencyMultiplier = 1;
 
     /**
      * Applies the negative effect to a player
@@ -625,18 +620,6 @@ public class NegativeEffect {
      */
 
     public void apply(Player player, boolean inMainHand, List<String> pathway) {
-        if(!player.level().isClientSide) {
-            DoorAuthorityData doorData = DoorAuthorityData.get((ServerLevel) player.level());
-            if (doorData.isActive()) {
-                if(doorData.getEffectId().equalsIgnoreCase("strengthen")) return;
-                if(doorData.getEffectId().equalsIgnoreCase("malfunction")) {
-                    potencyMultiplier = 2;
-                } else  {
-                    potencyMultiplier = 1;
-                }
-            }
-        }
-
         if (pathway.contains("fool")) applyFoolEffects(player);
         else if (pathway.contains("error")) applyErrorEffects(player);
         else if (pathway.contains("door")) applyDoorEffects(player);
@@ -659,7 +642,7 @@ public class NegativeEffect {
                 case 4, 3 -> 20 * 6;
                 case 2, 1 -> 20 * 3;
                 default -> 20 * 10;
-            } / potencyMultiplier;
+            };
         } else if(multiplier == 2){
             return switch (sequence) {
                 case 8, 7 -> 20 * 10;
@@ -667,7 +650,7 @@ public class NegativeEffect {
                 case 4, 3 -> 20 * 6;
                 case 2, 1 -> 20 * 4;
                 default -> 20 * 10;
-            } / potencyMultiplier;
+            };
         } else if(multiplier == 3){
             return switch (sequence) {
                 case 8, 7 -> 20 * 10;
@@ -676,13 +659,13 @@ public class NegativeEffect {
                 case 2 -> 20 * 4;
                 case 1 -> 20 * 2;
                 default -> 20 * 10;
-            } / potencyMultiplier;
+            };
         }
-        return 20 / potencyMultiplier;
+        return 20;
     }
 
     private int getEffectLevelForSequence(int sequence) {
-        int base = switch (sequence) {
+        return switch (sequence) {
             case 8 -> 1;
             case 7 -> 2;
             case 6 -> 3;
@@ -693,7 +676,6 @@ public class NegativeEffect {
             case 1 -> 15;
             default -> 1;
         };
-        return base * potencyMultiplier;
     }
 
     private int getTeleportIntervalForSequence(int sequence) {
@@ -753,10 +735,10 @@ public class NegativeEffect {
         Collections.shuffle(pathwayEffects, random);
         Collections.shuffle(defaultEffects, random);
 
-        int totalEffects = (sequence <= 1) ? 7 :
-                    (sequence <= 2) ? 6 :
-                    (sequence <= 4) ? 5 :
-                    (sequence <= 7) ? 4 : 3;
+        int totalEffects = (sequence <= 1) ? 5 :
+                    (sequence <= 2) ? 4 :
+                    (sequence <= 4) ? 3 :
+                    (sequence <= 7) ? 2 : 1;
 
         if (baseItem.equals("star")) {
             totalEffects -= 2;
@@ -796,6 +778,7 @@ public class NegativeEffect {
         STOP_TIME,
 
         // door
+        FULL_MOON_WHISPERS,
         RANDOM_TELEPORT,
 
         // sun
@@ -847,44 +830,43 @@ public class NegativeEffect {
         MINING_FATIGUE,
         HEAR_SOUNDS,
         NEAR_DEATH_PULSE,
-        HEART_STOP,
-        FULL_MOON_WHISPERS;
+        HEART_STOP;
     }
 
-    public static List<NegativeEffect.NegativeEffectType> handOnlyTick = List.of(
-            NegativeEffect.NegativeEffectType.RANDOM_TELEPORT,
-            NegativeEffect.NegativeEffectType.DRAIN_HEALTH
+    public static List<NegativeEffectType> handOnlyTick = List.of(
+            NegativeEffectType.RANDOM_TELEPORT,
+            NegativeEffectType.DRAIN_HEALTH
     );
 
-    public static List<NegativeEffect.NegativeEffectType> useOnlyTick = List.of(
-            NegativeEffect.NegativeEffectType.TURN_TO_MARIONETTE,
-            NegativeEffect.NegativeEffectType.WISH_CALAMITY,
-            NegativeEffect.NegativeEffectType.STOP_TIME,
-            NegativeEffect.NegativeEffectType.LOSE_ABILITIES,
-            NegativeEffect.NegativeEffectType.CONFLICT_WITH_ARTIFACTS,
-            NegativeEffect.NegativeEffectType.CURSED,
-            NegativeEffect.NegativeEffectType.CALAMITY_ATTRACTION
+    public static List<NegativeEffectType> useOnlyTick = List.of(
+            NegativeEffectType.TURN_TO_MARIONETTE,
+            NegativeEffectType.WISH_CALAMITY,
+            NegativeEffectType.STOP_TIME,
+            NegativeEffectType.LOSE_ABILITIES,
+            NegativeEffectType.CONFLICT_WITH_ARTIFACTS,
+            NegativeEffectType.CURSED,
+            NegativeEffectType.CALAMITY_ATTRACTION
     );
 
-    public static List<NegativeEffect.NegativeEffectType> hotBarOnlyTick = List.of(
-            NegativeEffect.NegativeEffectType.SLOWER_IN_HOT_PLACES,
-            NegativeEffect.NegativeEffectType.GOLD_ITEM_DEBUFF,
-            NegativeEffect.NegativeEffectType.LOSE_CONCEPTS,
-            NegativeEffect.NegativeEffectType.SLOWER_IN_COLD_PLACES,
-            NegativeEffect.NegativeEffectType.TARGETED_BY_ENTITIES,
-            NegativeEffect.NegativeEffectType.MENTAL_PLAGUE,
-            NegativeEffect.NegativeEffectType.PETRIFICATION,
-            NegativeEffect.NegativeEffectType.ASLEEP,
-            NegativeEffect.NegativeEffectType.MUTATED,
-            NegativeEffect.NegativeEffectType.BAD_LUCK,
-            NegativeEffect.NegativeEffectType.SILK_TRAP,
-            NegativeEffect.NegativeEffectType.FATE_SPIN,
-            NegativeEffect.NegativeEffectType.SPIRIT_HAUNTING,
-            NegativeEffect.NegativeEffectType.DRAIN_HUNGER,
-            NegativeEffect.NegativeEffectType.CRIMSON_CHAIN,
-            NegativeEffect.NegativeEffectType.HEARING_WHISPERS,
-            NegativeEffect.NegativeEffectType.NEAR_DEATH_PULSE,
-            NegativeEffect.NegativeEffectType.HEART_STOP
+    public static List<NegativeEffectType> hotBarOnlyTick = List.of(
+            NegativeEffectType.SLOWER_IN_HOT_PLACES,
+            NegativeEffectType.GOLD_ITEM_DEBUFF,
+            NegativeEffectType.LOSE_CONCEPTS,
+            NegativeEffectType.SLOWER_IN_COLD_PLACES,
+            NegativeEffectType.TARGETED_BY_ENTITIES,
+            NegativeEffectType.MENTAL_PLAGUE,
+            NegativeEffectType.PETRIFICATION,
+            NegativeEffectType.ASLEEP,
+            NegativeEffectType.MUTATED,
+            NegativeEffectType.BAD_LUCK,
+            NegativeEffectType.SILK_TRAP,
+            NegativeEffectType.FATE_SPIN,
+            NegativeEffectType.SPIRIT_HAUNTING,
+            NegativeEffectType.DRAIN_HUNGER,
+            NegativeEffectType.CRIMSON_CHAIN,
+            NegativeEffectType.HEARING_WHISPERS,
+            NegativeEffectType.NEAR_DEATH_PULSE,
+            NegativeEffectType.HEART_STOP
     );
 
     private static boolean getBlockInRadius (Player player, BlockPos center, int radius, Block block){

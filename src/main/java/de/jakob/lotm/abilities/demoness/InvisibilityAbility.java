@@ -31,8 +31,6 @@ public class InvisibilityAbility extends Ability {
 
     public InvisibilityAbility(String id) {
         super(id, 180);
-        this.canBeCopied = false;
-        autoClear = false;
     }
 
     @Override
@@ -57,20 +55,17 @@ public class InvisibilityAbility extends Ability {
             // make invisible
             invisiblePlayers.add(entity.getUUID());
             entity.setInvisible(true);
-            entity.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 20 * 60*(int) Math.max(multiplier(entity)/4,1), 20, false, false, false));
+            entity.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 20 * 60, 20, false, false, false));
 
             //make visible again
             AtomicReference<UUID> taskIdRef = new AtomicReference<>();
             UUID taskId = ServerScheduler.scheduleForDuration(0, 10, 20 * 20, () -> {
-                if(InteractionHandler.isInteractionPossible(new Location(entity.position(), entity.level()), "light_strong", AbilityUtil.getSeqWithArt(entity, this))) {
+                if(InteractionHandler.isInteractionPossible(new Location(entity.position(), entity.level()), "light_strong", BeyonderData.getSequence(entity))) {
                     entity.setInvisible(false);
                     entity.removeEffect(MobEffects.INVISIBILITY);
                     ServerScheduler.cancel(taskIdRef.get());
                 }
-            }, () -> {
-                invisiblePlayers.remove(entity.getUUID());
-                clearArtifactScaling(entity);
-                }, (ServerLevel) level, () -> AbilityUtil.getTimeInArea(entity, new de.jakob.lotm.util.data.Location(entity.position(), level)));
+            }, () -> invisiblePlayers.remove(entity.getUUID()), (ServerLevel) level, () -> AbilityUtil.getTimeInArea(entity, new Location(entity.position(), level)));
             taskIdRef.set(taskId);
         }
     }

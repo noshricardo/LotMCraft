@@ -1,6 +1,5 @@
 package de.jakob.lotm.abilities.core;
 
-import de.jakob.lotm.abilities.black_emperor.EntropySubAbility;
 import de.jakob.lotm.network.PacketHandler;
 import de.jakob.lotm.network.packets.toClient.SyncToggleAbilityPacket;
 import de.jakob.lotm.util.BeyonderData;
@@ -21,8 +20,6 @@ public abstract class ToggleAbility extends Ability {
     private static final HashMap<UUID, HashSet<ToggleAbility>> activeAbilities = new HashMap<>();
     private static final HashMap<UUID, HashSet<ToggleAbility>> activeAbilitiesClientCache = new HashMap<>();
 
-
-    public int tickRate = 5;
 
     protected ToggleAbility(String id, String... interactionFlags) {
         super(id, 0, interactionFlags);
@@ -70,24 +67,12 @@ public abstract class ToggleAbility extends Ability {
 
     public void prepareTick(Level level, LivingEntity entity) {
         if(!level.isClientSide && shouldConsumeSpirituality(entity)) {
-            float cost = getSpiritualityCost();
-            if (level instanceof ServerLevel sl) {
-                var pdata = entity.getPersistentData();
-                if (pdata.contains(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_MULT_KEY)) {
-                    if (pdata.getLong(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_UNTIL_KEY) > sl.getGameTime()) {
-                        cost *= pdata.getFloat(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_MULT_KEY);
-                    } else {
-                        pdata.remove(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_MULT_KEY);
-                        pdata.remove(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_UNTIL_KEY);
-                    }
-                }
-            }
-            if(BeyonderData.getSpirituality(entity) <= cost) {
+            if(BeyonderData.getSpirituality(entity) <= getSpiritualityCost()) {
                 cancel((ServerLevel) level, entity);
                 return;
             }
 
-            BeyonderData.reduceSpirituality(entity, cost);
+            BeyonderData.reduceSpirituality(entity, getSpiritualityCost());
         }
 
         tick(level, entity);

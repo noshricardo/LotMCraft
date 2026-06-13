@@ -127,7 +127,7 @@ public class JusticeSwordEntity extends Entity {
         }
 
         if (!this.isNoGravity()) {
-            this.setDeltaMovement(this.getDeltaMovement().add(0, -0.24D, 0)); // gravity
+            this.setDeltaMovement(this.getDeltaMovement().add(0, -0.04D, 0)); // gravity
         }
         this.move(MoverType.SELF, this.getDeltaMovement());
 

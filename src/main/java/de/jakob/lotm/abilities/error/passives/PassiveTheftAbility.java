@@ -56,7 +56,7 @@ public class PassiveTheftAbility extends PassiveAbilityItem {
         }
 
         LivingEntity target = event.getEntity();
-        TheftHandler.stealItemsFromEntityPassive(target, player);
+        TheftHandler.stealItemsFromEntity(target, player);
 
         PacketHandler.sendToPlayer(player, new SendPassiveTheftEffectPacket(target.getEyePosition().x, target.getEyePosition().y, target.getEyePosition().z));
     }

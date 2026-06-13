@@ -71,7 +71,7 @@ public class DefilingSeedAbility extends Ability {
     );
 
     public DefilingSeedAbility(String id) {
-        super(id, 7, "corruption");
+        super(id, 2);
     }
 
     @Override
@@ -113,20 +113,20 @@ public class DefilingSeedAbility extends Ability {
                 SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 1f, 1f);
 
         // Capture now — the scheduler lambda must not close over a mutable field
-        final int casterSequence = AbilityUtil.getSeqWithArt(entity, this);
-        final float damageMultiplier = multiplier(entity);
+        final int casterSequence = BeyonderData.getSequence(entity);
+        final float damageMultiplier = (float) multiplier(entity);
 
         UUID taskId = ServerScheduler.scheduleForDuration(
                 0,
                 8,
-                20 * 20* (int) Math.max(multiplier(entity)/4,1),
+                20 * 60 * 2,
                 () -> {
                     switch (random.nextInt(22)) {
                         case 0, 2, 3 -> target.hurt(
                                 ModDamageTypes.source(level, ModDamageTypes.LOOSING_CONTROL, entity),
-                                2 * damageMultiplier);
+                                6 * damageMultiplier);
                         case 1 -> target.addEffect(new MobEffectInstance(
-                                ModEffects.LOOSING_CONTROL, 20 * 3, random.nextInt(3)));
+                                ModEffects.LOOSING_CONTROL, 20 * 4, random.nextInt(4)));
                         case 4, 5 -> target.addEffect(new MobEffectInstance(
                                 MobEffects.MOVEMENT_SLOWDOWN, 20 * 9, random.nextInt(2, 7)));
                     }
@@ -137,7 +137,8 @@ public class DefilingSeedAbility extends Ability {
                 // if purify() cancels before the duration expires.
                 () -> ServerScheduler.scheduleDelayed(
                         20 * 5,
-                        () -> defiledEntities.remove(target.getUUID()), serverLevel),
+                        () -> defiledEntities.remove(target.getUUID()),
+                        serverLevel),
                 serverLevel
         );
 

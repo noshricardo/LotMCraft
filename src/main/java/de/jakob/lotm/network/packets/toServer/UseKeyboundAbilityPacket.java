@@ -4,9 +4,7 @@ import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.Ability;
 import de.jakob.lotm.abilities.core.SelectableAbility;
 import de.jakob.lotm.attachments.AbilityBarComponent;
-import de.jakob.lotm.attachments.FoolingComponent;
 import de.jakob.lotm.attachments.ModAttachments;
-import de.jakob.lotm.util.BeyonderData;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -32,54 +30,13 @@ public record UseKeyboundAbilityPacket(int selectedAbility) implements CustomPac
 
     public static void handle(UseKeyboundAbilityPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
+            AbilityBarComponent abilityBarComponent = context.player().getData(ModAttachments.ABILITY_BAR_COMPONENT);
             ServerPlayer player = (ServerPlayer) context.player();
-
-            // Fooling effect: 25% chance to fail entirely, otherwise scramble to a random ability.
-            if (player.getData(ModAttachments.FOOLING_COMPONENT).isFooled()) {
-                if (new java.util.Random().nextFloat() < 0.25f) return;
-                String pathway = BeyonderData.getPathway(player);
-                int sequence   = BeyonderData.getSequence(player);
-                Ability randomAbility = LOTMCraft.abilityHandler.getRandomAbility(pathway, sequence, new java.util.Random(), false, java.util.Collections.emptyList());
-                if (randomAbility != null) {
-                    randomAbility.useAbility(player.serverLevel(), player);
-                }
+            if(packet.selectedAbility() < 0 || packet.selectedAbility() >= abilityBarComponent.getAbilities().size()) {
                 return;
             }
-
-            AbilityBarComponent abilityBarComponent = player.getData(ModAttachments.ABILITY_BAR_COMPONENT);
-            if (packet.selectedAbility() < 0 || packet.selectedAbility() >= abilityBarComponent.getAbilities().size()) {
-                return;
-            }
-            String rawEntry = abilityBarComponent.getAbilities().get(packet.selectedAbility());
-
-            // Soul abilities (from Internal Underworld) are prefixed with "soul|" and must
-            // bypass the hasAbility check since they belong to a different pathway.
-            boolean isSoulAbility = rawEntry.startsWith("soul|");
-            String effectiveEntry = isSoulAbility ? rawEntry.substring(5) : rawEntry; // strip "soul|"
-
-            Ability ability = LOTMCraft.abilityHandler.getById(effectiveEntry.split(":")[0]);
-            if (ability == null) return;
-
-            if(ability instanceof SelectableAbility && getIndex(effectiveEntry) != -1) {
-                ((SelectableAbility) ability).addSubAbilityOverride(player, getIndex(effectiveEntry));
-            }
-
-            if (isSoulAbility) {
-                // Cast as a soul ability: skip hasAbility and requirements checks.
-                ability.useAbility(player.serverLevel(), player, true, false, false);
-            } else {
-                ability.useAbility(player.serverLevel(), player);
-            }
+            Ability ability = LOTMCraft.abilityHandler.getById(abilityBarComponent.getAbilities().get(packet.selectedAbility()));
+            ability.useAbility(player.serverLevel(), player);
         });
-    }
-
-    private static int getIndex(String s) {
-        String[] parts = s.split(":");
-        if (parts.length < 2) return -1;
-        try {
-            return Integer.parseInt(parts[1]);
-        } catch (NumberFormatException e) {
-            return -1;
-        }
     }
 }

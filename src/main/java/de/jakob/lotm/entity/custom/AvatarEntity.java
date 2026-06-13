@@ -132,7 +132,7 @@ public class AvatarEntity extends PathfinderMob {
                         this.getUUID(),
                         pathway,
                         sequence,
-                        BeyonderData.getMaxSpirituality(pathway, sequence),
+                        BeyonderData.getMaxSpirituality(sequence),
                         false,
                         false,
                         0.0f

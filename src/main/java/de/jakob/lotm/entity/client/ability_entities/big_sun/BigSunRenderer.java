@@ -19,8 +19,6 @@ public class BigSunRenderer extends EntityRenderer<BigSunEntity> {
 
     private static final ResourceLocation GOLD_TEXTURE =
             ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID,"textures/entity/sun/gold.png");
-    private static final ResourceLocation BLACK_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID,"textures/entity/black_hole/black.png");
 
     public BigSunRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -37,7 +35,7 @@ public class BigSunRenderer extends EntityRenderer<BigSunEntity> {
         poseStack.scale(radius, radius, radius);
         Matrix4f matrix = poseStack.last().pose();
 
-        VertexConsumer buffer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
+        VertexConsumer buffer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(GOLD_TEXTURE));
 
         renderSphere(matrix, buffer);
         poseStack.popPose();
@@ -51,7 +49,7 @@ public class BigSunRenderer extends EntityRenderer<BigSunEntity> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull BigSunEntity sunEntity) {
-        return sunEntity.getTags().contains("darkened") ? BLACK_TEXTURE : GOLD_TEXTURE;
+        return GOLD_TEXTURE;
     }
 
     private void renderSphere(Matrix4f matrix, VertexConsumer buffer) {

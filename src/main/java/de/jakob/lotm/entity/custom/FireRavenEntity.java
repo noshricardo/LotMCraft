@@ -1,6 +1,5 @@
 package de.jakob.lotm.entity.custom;
 
-import de.jakob.lotm.abilities.core.AbilityUsedEvent;
 import de.jakob.lotm.damage.ModDamageTypes;
 import de.jakob.lotm.entity.ModEntities;
 import de.jakob.lotm.util.helper.ParticleUtil;
@@ -24,7 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -224,12 +222,8 @@ public class FireRavenEntity extends Animal {
                             if(sourceEntity != null) targetEntity.hurt(sourceEntity.damageSources().mobAttack(sourceEntity), (float) damage);
                             else                     targetEntity.hurt(ModDamageTypes.source(level, ModDamageTypes.BEYONDER_GENERIC), (float) damage);
                         }
-                        if(sourceEntity != null)
-                            NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level, targetEntity.position(), sourceEntity, null, new String[]{"burning"}, 2, 10));
                     } else {
                         level.explode(null, target.x, target.y, target.z, 2.2f, griefing, griefing ? Level.ExplosionInteraction.MOB : Level.ExplosionInteraction.NONE);
-                        if(sourceEntity != null)
-                            NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level, new Vec3(target.x, target.y, target.z), sourceEntity, null, new String[]{"burning", "explosion"}, 2.2, 10));
                     }
                     this.discard();
                 }

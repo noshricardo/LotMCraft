@@ -43,8 +43,4 @@ public class DangerPremonitionOverlayRenderer {
             poseStack.popPose();
         }
     }
-
-    public static void clearCache() {
-        playersWithDangerPremonitionActivated.clear();
-    }
 }

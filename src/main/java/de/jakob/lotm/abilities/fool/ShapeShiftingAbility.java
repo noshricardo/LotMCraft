@@ -17,6 +17,7 @@ import java.util.Map;
 public class ShapeShiftingAbility extends SelectableAbility {
     public ShapeShiftingAbility(String id) {
         super(id, 5);
+        canBeCopied = false;
         canBeUsedByNPC = false;
     }
 
@@ -27,7 +28,7 @@ public class ShapeShiftingAbility extends SelectableAbility {
 
     @Override
     public float getSpiritualityCost() {
-        return 1000;
+        return 100;
     }
 
     @Override

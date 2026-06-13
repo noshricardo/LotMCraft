@@ -34,6 +34,7 @@ public class ChainOfCommandAbility extends Ability {
 
         instance = this;
 
+        canBeCopied = false;
         canBeUsedByNPC = false;
     }
 
@@ -68,10 +69,7 @@ public class ChainOfCommandAbility extends Ability {
             return;
         }
 
-        int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
-        int targetSeq = BeyonderData.getSequence(target);
-
-        if(!BeyonderData.isBeyonder(target) || targetSeq > entitySeq) {
+        if(!BeyonderData.isBeyonder(target) || BeyonderData.getSequence(target) > BeyonderData.getSequence(entity)) {
             SubordinateUtils.turnEntityIntoSubordinate(target, player);
             ParticleUtil.spawnParticles(serverLevel, dust, target.position().add(0, target.getEyeHeight() / 2, 0), 95, .5, target.getEyeHeight() / 2, .5, 0);
         }

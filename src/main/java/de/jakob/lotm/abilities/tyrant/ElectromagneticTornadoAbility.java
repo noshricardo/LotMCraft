@@ -14,8 +14,7 @@ import java.util.Map;
 
 public class ElectromagneticTornadoAbility extends Ability {
     public ElectromagneticTornadoAbility(String id) {
-        super(id, 20f, "explosion");
-        canBeShared = false;
+        super(id, 2.5f);
     }
 
     @Override
@@ -25,20 +24,20 @@ public class ElectromagneticTornadoAbility extends Ability {
 
     @Override
     public float getSpiritualityCost() {
-        return 3000;
+        return 400;
     }
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
         if(level.isClientSide()) return;
 
-        LivingEntity target = AbilityUtil.getTargetEntity(entity, 12* (int) Math.max(multiplier(entity)/4,1), 3);
+        LivingEntity target = AbilityUtil.getTargetEntity(entity, 12, 3);
 
-        Vec3 pos = AbilityUtil.getTargetLocation(entity, 12* (int) Math.max(multiplier(entity)/4,1), 2);
+        Vec3 pos = AbilityUtil.getTargetLocation(entity, 12, 2);
 
         ElectromagneticTornadoEntity tornado = target == null ?
-                new ElectromagneticTornadoEntity(ModEntities.ELECTROMAGNETIC_TORNADO.get(), level, .4f, (float) DamageLookup.lookupDamage(1, .6) * (int) Math.max(multiplier(entity)/4,1), entity) :
-                new ElectromagneticTornadoEntity(ModEntities.ELECTROMAGNETIC_TORNADO.get(), level, .4f, (float) DamageLookup.lookupDamage(1, .6) * (int) Math.max(multiplier(entity)/4,1), target);
+                new ElectromagneticTornadoEntity(ModEntities.ELECTROMAGNETIC_TORNADO.get(), level, .4f, (float) DamageLookup.lookupDamage(1, .65) * (float) multiplier(entity), entity) :
+                new ElectromagneticTornadoEntity(ModEntities.ELECTROMAGNETIC_TORNADO.get(), level, .4f, (float) DamageLookup.lookupDamage(1, .65) * (float) multiplier(entity), entity, target);
         tornado.setPos(pos);
         level.addFreshEntity(tornado);
     }

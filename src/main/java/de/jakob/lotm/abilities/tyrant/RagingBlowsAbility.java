@@ -35,7 +35,6 @@ public class RagingBlowsAbility extends Ability {
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
         if(!level.isClientSide) {
-            double multiplier = multiplier(entity)/1.5;
             ServerScheduler.scheduleForDuration(0, 6, 6 * 9, () -> {
                 Vec3 pos = VectorUtil.getRelativePosition(entity.getEyePosition(), entity.getLookAngle().normalize(), random.nextDouble(1, 2), random.nextDouble(-1.5, 1.5), random.nextDouble(-.5, .5));
                 ParticleUtil.spawnParticles((ServerLevel) level, ParticleTypes.POOF, pos, 4, 0, 0.125);
@@ -44,7 +43,7 @@ public class RagingBlowsAbility extends Ability {
 
                 level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE.value(), entity.getSoundSource(), 1, 1);
 
-                AbilityUtil.damageNearbyEntities((ServerLevel) level, entity, 2.75f, DamageLookup.lookupDamage(8, .8) * multiplier, pos, true, false, true, 0);
+                AbilityUtil.damageNearbyEntities((ServerLevel) level, entity, 2.75f, DamageLookup.lookupDamage(8, .8) * multiplier(entity), pos, true, false, true, 0);
             }, null, (ServerLevel) level, () -> AbilityUtil.getTimeInArea(entity, new Location(entity.position(), level)));
         }
     }

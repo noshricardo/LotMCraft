@@ -19,5 +19,13 @@ public class CameraHandler {
         if (player == null || mc.options.getCameraType().isFirstPerson()) {
             return;
         }
+
+        TransformationComponent transformationComponent = player.getData(ModAttachments.TRANSFORMATION_COMPONENT);
+
+        if (transformationComponent.isTransformed() &&
+                transformationComponent.getTransformationIndex() == 101) { // Values between 100 and 200 are reserved for Mythical Creature Forms
+
+            event.setYaw(event.getYaw() + 45);
+        }
     }
 }

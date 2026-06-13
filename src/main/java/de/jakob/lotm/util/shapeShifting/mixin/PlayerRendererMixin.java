@@ -1,9 +1,9 @@
 package de.jakob.lotm.util.shapeShifting.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.jakob.lotm.attachments.ModAttachments;
-import de.jakob.lotm.attachments.ShapeShiftComponent;
 import de.jakob.lotm.entity.custom.BeyonderNPCEntity;
+import de.jakob.lotm.util.shapeShifting.NameStorage;
+import de.jakob.lotm.util.shapeShifting.TransformData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -11,17 +11,18 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ambient.Bat;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerRenderer.class)
 public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
@@ -30,21 +31,21 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
                                PlayerModel<AbstractClientPlayer> model, float shadowRadius) {
         super(context, model, shadowRadius);
     }
-//
-//    // ---- name display part ----
-//    @ModifyVariable(
-//            method = "renderNameTag(Lnet/minecraft/client/player/AbstractClientPlayer;Lnet/minecraft/network/chat/Component;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;IF)V",
-//            at = @At("HEAD"),
-//            ordinal = 0,
-//            argsOnly = true
-//    )
-//    private Component modifyDisplayName(Component displayName, AbstractClientPlayer entity) {
-//        String nickname = NameStorage.mapping.get(entity.getUUID());
-//        if (nickname != null) {
-//            return Component.literal(nickname);
-//        }
-//        return displayName;
-//    }
+
+    // ---- name display part ----
+    @ModifyVariable(
+            method = "renderNameTag(Lnet/minecraft/client/player/AbstractClientPlayer;Lnet/minecraft/network/chat/Component;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;IF)V",
+            at = @At("HEAD"),
+            ordinal = 0,
+            argsOnly = true
+    )
+    private Component modifyDisplayName(Component displayName, AbstractClientPlayer entity) {
+        String nickname = NameStorage.mapping.get(entity.getUUID());
+        if (nickname != null) {
+            return Component.literal(nickname);
+        }
+        return displayName;
+    }
 
     // ---- shape render part ----
 
@@ -60,10 +61,10 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
     private void renderTransformed(AbstractClientPlayer player, float yaw, float tickDelta,
                                    PoseStack matrices, MultiBufferSource vertexConsumers,
                                    int light, CallbackInfo ci) {
-        ShapeShiftComponent data = player.getData(ModAttachments.SHAPE_SHIFT);
-        String shapeKey = data.getShape();
+        TransformData data = (TransformData) player;
+        String shapeKey = data.getCurrentShape();
 
-        if (shapeKey != null && !shapeKey.isEmpty() && !shapeKey.startsWith("player:")) {
+        if (shapeKey != null && !shapeKey.startsWith("player:")) {
             ci.cancel();
             updateCachedEntity(player, shapeKey);
 
@@ -77,6 +78,20 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
                         matrices, vertexConsumers, light);
             }
         }
+    }
+
+    private EntityType<?> parseEntityTypeFromKey(String shapeKey) {
+        if (shapeKey.startsWith("lotmcraft:beyonder_npc:")) {
+            return net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.get(
+                    ResourceLocation.parse("lotmcraft:beyonder_npc")
+            );
+        } else {
+            ResourceLocation id = ResourceLocation.tryParse(shapeKey);
+            if (id != null) {
+                return net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.get(id);
+            }
+        }
+        return null;
     }
 
     @Unique
@@ -108,21 +123,11 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
         }
     }
 
-    private EntityType<?> parseEntityTypeFromKey(String shapeKey) {
-        if (shapeKey.startsWith("lotmcraft:beyonder_npc:")) {
-            return BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse("lotmcraft:beyonder_npc"));
-        } else {
-            ResourceLocation id = ResourceLocation.tryParse(shapeKey);
-            if (id != null) {
-                return BuiltInRegistries.ENTITY_TYPE.get(id);
-            }
-        }
-        return null;
-    }
-
     @Unique
     private void applySkinIfNeeded(Entity entity, String shapeKey) {
-        if (entity instanceof BeyonderNPCEntity npc && shapeKey.startsWith("lotmcraft:beyonder_npc:")) {
+        if (entity instanceof BeyonderNPCEntity npc
+                && shapeKey.startsWith("lotmcraft:beyonder_npc:")) {
+
             String skinName = shapeKey.substring("lotmcraft:beyonder_npc:".length());
 
             if (!skinName.isEmpty() && !npc.getSkinName().equals(skinName)) {
@@ -147,14 +152,6 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
             livingEntity.yBodyRotO = player.yBodyRotO;
             livingEntity.yHeadRot = player.yHeadRot;
             livingEntity.yHeadRotO = player.yHeadRotO;
-
-            if (livingEntity instanceof Bat bat) {
-                bat.setResting(false);
-
-                if (player.walkAnimation.speed() > 0.1F) {
-                    bat.flyAnimationState.startIfStopped(bat.tickCount);
-                }
-            }
 
             synchronizeAnimations(player, livingEntity);
         }

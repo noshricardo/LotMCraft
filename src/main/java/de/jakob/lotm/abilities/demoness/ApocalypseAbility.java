@@ -2,7 +2,6 @@ package de.jakob.lotm.abilities.demoness;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import de.jakob.lotm.abilities.core.Ability;
-import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.damage.ModDamageTypes;
 import de.jakob.lotm.rendering.effectRendering.EffectManager;
 import de.jakob.lotm.util.BeyonderData;
@@ -20,11 +19,7 @@ import java.util.Map;
 
 public class ApocalypseAbility extends Ability {
     public ApocalypseAbility(String id) {
-        super(id, 60, "destruction");
-        autoClear = false;
-        interactionRadius = 50;
-        interactionCacheTicks = 110;
-        canBeShared = false;
+        super(id, 10);
     }
 
     @Override
@@ -53,7 +48,7 @@ public class ApocalypseAbility extends Ability {
         // Remove blocks and damage entities
         AtomicDouble radius = new AtomicDouble(2);
 
-        ServerScheduler.scheduleForDuration(0, 2, 55*(int) Math.max(multiplier(entity)/4,1), () -> {
+        ServerScheduler.scheduleForDuration(0, 2, 110, () -> {
             if(BeyonderData.isGriefingEnabled(entity)) {
                 AbilityUtil.getBlocksInSphereRadius(serverLevel, loc, radius.get(), true, true, false).forEach(blockPos -> {
                     if(level.getBlockState(blockPos).getDestroySpeed(level, blockPos) < 0) {
@@ -68,9 +63,9 @@ public class ApocalypseAbility extends Ability {
                 });
             }
 
-            AbilityUtil.damageNearbyEntities(serverLevel, entity, radius.get(), DamageLookup.lookupDamage(1, .8) *(int) Math.max(multiplier(entity)/4,1), loc, true, false, false, 20, ModDamageTypes.source(level, ModDamageTypes.DEMONESS_GENERIC, entity));
-            AbilityUtil.getNearbyEntities(entity, serverLevel, entity.getEyePosition(), radius.get()).forEach(e -> e.getData(ModAttachments.SANITY_COMPONENT).increaseSanityAndSync((float) (-0.08f * multiplier(entity)), e));
+            AbilityUtil.damageNearbyEntities(serverLevel, entity, radius.get(), DamageLookup.lookupDamage(1, .8) * multiplier(entity), loc, true, false, false, 30, ModDamageTypes.source(level, ModDamageTypes.DEMONESS_GENERIC, entity));
+
             radius.addAndGet(0.8);
-        }, () -> clearArtifactScaling(entity), serverLevel, () -> AbilityUtil.getTimeInArea(entity, new de.jakob.lotm.util.data.Location(entity.position(), serverLevel)));
+        }, null, serverLevel, () -> AbilityUtil.getTimeInArea(entity, new de.jakob.lotm.util.data.Location(entity.position(), serverLevel)));
     }
 }

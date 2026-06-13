@@ -5,7 +5,6 @@ import de.jakob.lotm.abilities.PassiveAbilityHandler;
 import de.jakob.lotm.abilities.PassiveAbilityItem;
 import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.attachments.SanityComponent;
-import de.jakob.lotm.abilities.justiciar.LawAbility;
 import de.jakob.lotm.damage.ModDamageTypes;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.ParticleUtil;
@@ -52,7 +51,7 @@ public class DarknessRevivalAbility extends PassiveAbilityItem {
 
         if (!((DarknessRevivalAbility) PassiveAbilityHandler.DARKNESS_REVIVAL.get()).shouldApplyTo(entity)) return;
 
-        if (LawAbility.SOLACE_KILLED.contains(entity.getUUID())) return;
+        if (event.getSource().is(ModDamageTypes.LOOSING_CONTROL)) return;
 
         // Must be at or below light level 7
         int lightLevel = serverLevel.getMaxLocalRawBrightness(entity.blockPosition());
@@ -60,13 +59,13 @@ public class DarknessRevivalAbility extends PassiveAbilityItem {
 
         // Drain sanity — if not enough sanity (like around 5% ig), revival wont trigger
         SanityComponent sanity = entity.getData(ModAttachments.SANITY_COMPONENT);
-        if (sanity.getSanity() < 0.05) return;
+        if (sanity.getSanity() < 2.5f) return;
 
         event.setCanceled(true);
         entity.setHealth(entity.getMaxHealth());
 
         // Drain sanity after revival (like 5%? idk im bad at math tbh)
-        sanity.increaseSanityAndSync(-1.1f, entity);
+        sanity.increaseSanityAndSync(-2.5f, entity);
 
         ParticleUtil.spawnParticles(serverLevel, dust, entity.position().add(0, entity.getEyeHeight() / 2, 0),
                 40, .5, entity.getEyeHeight() / 2, .5, 0.1);

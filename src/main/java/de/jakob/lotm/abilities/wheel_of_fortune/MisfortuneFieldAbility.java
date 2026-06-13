@@ -1,8 +1,6 @@
 package de.jakob.lotm.abilities.wheel_of_fortune;
 
 import de.jakob.lotm.abilities.core.Ability;
-import de.jakob.lotm.attachments.LuckComponent;
-import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.effect.ModEffects;
 import de.jakob.lotm.rendering.effectRendering.EffectManager;
 import de.jakob.lotm.util.helper.AbilityUtil;
@@ -19,7 +17,6 @@ import java.util.Map;
 public class MisfortuneFieldAbility extends Ability {
     public MisfortuneFieldAbility(String id) {
         super(id, 30);
-        canBeShared = false;
     }
 
     @Override
@@ -41,13 +38,9 @@ public class MisfortuneFieldAbility extends Ability {
         EffectManager.playEffect(EffectManager.Effect.MISFORTUNE_FIELD, entity.getX(), entity.getY(), entity.getZ(), serverLevel);
 
         Vec3 startPos = entity.position();
-        float multiplier = multiplier(entity);
-        int amplifier = Math.min(Math.round(multiplier * 6.25f ) * 80, 6500);
+        int amplifier = (int) Math.round(multiplier(entity) * 3f);
         ServerScheduler.scheduleForDuration(0, 2, 20 * 20, () -> {
-            AbilityUtil.getNearbyEntities(entity, serverLevel, startPos, 20*multiplier).forEach(e -> {
-                LuckComponent luckComponent = e.getData(ModAttachments.LUCK_COMPONENT.get());
-                luckComponent.addLuckWithMax(amplifier, -amplifier);
-            });
+            AbilityUtil.addPotionEffectToNearbyEntities(serverLevel, entity, 20, startPos, new MobEffectInstance(ModEffects.UNLUCK, 40, amplifier));
         });
     }
 }

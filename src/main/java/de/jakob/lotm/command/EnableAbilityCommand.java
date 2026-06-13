@@ -2,11 +2,12 @@ package de.jakob.lotm.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.Ability;
 import de.jakob.lotm.abilities.core.AbilityHandler;
 import de.jakob.lotm.util.BeyonderData;
-import de.jakob.lotm.util.playerMap.StoredData;
+import de.jakob.lotm.util.beyonderMap.StoredData;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -59,7 +60,7 @@ public class EnableAbilityCommand {
             BeyonderData.setBeyonder(target, pathway, sequence);
 
             if(target instanceof Player player) {
-                var optional = BeyonderData.playerMap.get(player);
+                var optional = BeyonderData.beyonderMap.get(player);
 
                 if(optional.isPresent()) {
                     StoredData data = optional.get();

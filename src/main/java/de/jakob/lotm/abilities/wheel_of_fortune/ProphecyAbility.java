@@ -1,9 +1,6 @@
 package de.jakob.lotm.abilities.wheel_of_fortune;
 
 import de.jakob.lotm.abilities.core.Ability;
-import de.jakob.lotm.abilities.core.SelectableAbility;
-import de.jakob.lotm.attachments.LuckComponent;
-import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.effect.ModEffects;
 import de.jakob.lotm.entity.ModEntities;
 import de.jakob.lotm.entity.custom.ability_entities.tyrant_pathway.GiantLightningEntity;
@@ -34,10 +31,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class ProphecyAbility extends SelectableAbility {
+public class ProphecyAbility extends Ability {
     public ProphecyAbility(String id) {
         super(id, 4);
-        canBeShared = false;
     }
 
     @Override
@@ -50,23 +46,21 @@ public class ProphecyAbility extends SelectableAbility {
         return 1000;
     }
 
-    @Override
-    protected String[] getAbilityNames() {
-        return new String[]{
-                "ability.lotmcraft.prophecy.disaster",
-                "ability.lotmcraft.prophecy.fortune",
-                "ability.lotmcraft.prophecy.misfortune_for_enemy"
-        };
-    }
+    private final String[] prophecies = new String[] {"disaster", "fortune", "misfortune_for_enemy"};
 
     @Override
-    protected void castSelectedAbility(Level level, LivingEntity entity, int selectedAbility) {
+    public void onAbilityUse(Level level, LivingEntity entity) {
         if(level.isClientSide()) return;
 
-        switch(selectedAbility) {
-            case 0 -> manifestDisaster(level, entity);
-            case 1 -> manifestFortune(level, entity);
-            case 2 -> manifestMisfortuneForEnemy(level, entity);
+        String prophecy = prophecies[level.random.nextInt(prophecies.length)];
+        if(entity instanceof Player player) {
+            player.displayClientMessage(Component.translatable("ability.lotmcraft.prophecy." + prophecy).withColor(0xc2edec), false);
+        }
+
+        switch(prophecy) {
+            case "disaster" -> manifestDisaster(level, entity);
+            case "fortune" -> manifestFortune(level, entity);
+            case "misfortune_for_enemy" -> manifestMisfortuneForEnemy(level, entity);
         }
     }
 
@@ -75,7 +69,7 @@ public class ProphecyAbility extends SelectableAbility {
             case 0 -> {
                 Vec3 targetLoc = AbilityUtil.getTargetLocation(entity, 85, 3);
 
-                MeteorEntity meteor = new MeteorEntity(level, 3.25f,  (float) DamageLookup.lookupDamage(2, 1) * (int) Math.max(BeyonderData.getMultiplier(entity)/2,1), 4, entity, BeyonderData.isGriefingEnabled(entity), 20, 34);
+                MeteorEntity meteor = new MeteorEntity(level, 3.25f,  (float) DamageLookup.lookupDamage(2, 1) * (float) BeyonderData.getMultiplier(entity), 6, entity, BeyonderData.isGriefingEnabled(entity), 20, 34);
                 meteor.setPosition(targetLoc);
                 level.addFreshEntity(meteor);
             }
@@ -87,7 +81,7 @@ public class ProphecyAbility extends SelectableAbility {
                         targetLoc = targetLoc.subtract(0, 1, 0);
                 }
 
-                GiantLightningEntity lightning = new GiantLightningEntity(level, entity, targetLoc, 50, 6, DamageLookup.lookupDamage(2, 1)  * (int) Math.max(BeyonderData.getMultiplier(entity)/2,1), BeyonderData.isGriefingEnabled(entity), 13, 200, 0x6522a8);
+                GiantLightningEntity lightning = new GiantLightningEntity(level, entity, targetLoc, 50, 6, DamageLookup.lookupDamage(2, .85) * multiplier(entity), BeyonderData.isGriefingEnabled(entity), 13, 200, 0x6522a8);
                 level.addFreshEntity(lightning);
             }
             case 2 -> {
@@ -95,12 +89,12 @@ public class ProphecyAbility extends SelectableAbility {
 
                 Vec3 pos = AbilityUtil.getTargetLocation(entity, 12, 2);
 
-                TornadoEntity tornado = target == null ? new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) DamageLookup.lookupDamage(2, 1), entity) : new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, 32.5f * (int) Math.max(BeyonderData.getMultiplier(entity)/2,1), entity, target, 2);
+                TornadoEntity tornado = target == null ? new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) DamageLookup.lookupDamage(2, .75) * (float) BeyonderData.getMultiplier(entity), entity) : new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, 32.5f * (float) BeyonderData.getMultiplier(entity), entity, target);
                 tornado.setPos(pos);
                 level.addFreshEntity(tornado);
 
                 for(int i = 0; i < 5; i++) {
-                    TornadoEntity additionalTornado = target == null || (new Random()).nextInt(4) != 0 ? new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) DamageLookup.lookupDamage(2, .75) * (int) Math.max(BeyonderData.getMultiplier(entity)/2,1), entity) : new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) DamageLookup.lookupDamage(2, .75) * (int) Math.max(BeyonderData.getMultiplier(entity)/2,1), entity, target, 2);
+                    TornadoEntity additionalTornado = target == null || (new Random()).nextInt(4) != 0 ? new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) DamageLookup.lookupDamage(2, .75) * (float) BeyonderData.getMultiplier(entity), entity) : new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) DamageLookup.lookupDamage(2, .75) * (float) BeyonderData.getMultiplier(entity), entity, target);
                     Vec3 randomOffset = new Vec3((level.random.nextDouble() - 0.5) * 40, 3, (level.random.nextDouble() - 0.5) * 40);
                     additionalTornado.setPos(pos.add(randomOffset));
                     level.addFreshEntity(additionalTornado);
@@ -113,7 +107,7 @@ public class ProphecyAbility extends SelectableAbility {
 
                 level.playSound(null, entity.blockPosition(), SoundEvents.GENERIC_SPLASH, entity.getSoundSource(), 5, 1.0f);
 
-                TsunamiEntity tsunami = new TsunamiEntity(level, position, direction, (float) (DamageLookup.lookupDamage(2, 1) * (int) Math.max(BeyonderData.getMultiplier(entity)/2,1)), BeyonderData.isGriefingEnabled(entity), entity);
+                TsunamiEntity tsunami = new TsunamiEntity(level, position, direction, (float) (DamageLookup.lookupDamage(2, .75) * multiplier(entity)), BeyonderData.isGriefingEnabled(entity), entity);
                 level.addFreshEntity(tsunami);
             }
         }
@@ -135,9 +129,7 @@ public class ProphecyAbility extends SelectableAbility {
                 BeyonderData.addModifierWithTimeLimit(target, "prophecy", 0.6, 20 * 40);
             }
             case 1 -> {
-                LuckComponent component = target.getData(ModAttachments.LUCK_COMPONENT.get());
-                int amplifier = (int) Math.min(Math.round(BeyonderData.getMultiplier(entity) * 6.25f) * 100, 6500);
-                component.addLuckWithMin(-amplifier, (int) (-amplifier * 1.5));
+                target.addEffect(new MobEffectInstance(ModEffects.UNLUCK, 20 * 40, 20, false, false, false));
                 EffectManager.playEffect(EffectManager.Effect.MISFORTUNE_CURSE, target.getX(), target.getY() + 1, target.getZ(), (ServerLevel) level);
             }
             case 2 -> {
@@ -158,14 +150,13 @@ public class ProphecyAbility extends SelectableAbility {
     }
 
     private void giveLuckEffect(Level level, LivingEntity entity) {
-        LuckComponent component = entity.getData(ModAttachments.LUCK_COMPONENT.get());
-        component.addLuckWithMax(3000, 3000);
+        entity.addEffect(new MobEffectInstance(ModEffects.LUCK, 20 * 20, 26, false, false, false));
         EffectManager.playEffect(EffectManager.Effect.BLESSING, entity.getX(), entity.getY() + 1, entity.getZ(), (ServerLevel) level);
     }
 
     private void rainGoodItems(Level level, LivingEntity entity) {
         Vec3 startLoc = entity.position().add(0, 7, 0);
-        for(int i = 0; i < 50; i++) {
+        for(int i = 0; i < 100; i++) {
             ItemStack goodItem = getGoodItem();
             Vec3 spawnLoc = startLoc.add((random.nextDouble() - 0.5) * 12, 0, (random.nextDouble() - 0.5) * 12);
             BlockPos pos = BlockPos.containing(spawnLoc);
@@ -175,15 +166,15 @@ public class ProphecyAbility extends SelectableAbility {
 
     private ItemStack getGoodItem() {
         return switch (random.nextInt(10)) {
-            case 0 -> new ItemStack(Items.EMERALD, random.nextInt(1, 5));
-            case 1, 2 -> new ItemStack(Items.DIAMOND, random.nextInt(1, 5));
-            case 3 -> new ItemStack(Items.GOLD_INGOT, random.nextInt(1, 32));
-            case 4 -> new ItemStack(Items.IRON_BLOCK, random.nextInt(1, 10));
-            case 5 -> new ItemStack(Items.SHULKER_SHELL, random.nextInt(1, 5));
-            case 6 -> new ItemStack(Items.GLOWSTONE, random.nextInt(1, 32));
-            case 7 -> new ItemStack(Items.GOLDEN_CARROT, random.nextInt(1, 32));
+            case 0 -> new ItemStack(Items.EMERALD, random.nextInt(1, 20));
+            case 1, 2 -> new ItemStack(Items.DIAMOND, random.nextInt(1, 20));
+            case 3 -> new ItemStack(Items.GOLD_INGOT, random.nextInt(1, 64));
+            case 4 -> new ItemStack(Items.IRON_BLOCK, random.nextInt(1, 25));
+            case 5 -> new ItemStack(Items.SHULKER_SHELL, random.nextInt(1, 20));
+            case 6 -> new ItemStack(Items.GLOWSTONE, random.nextInt(1, 64));
+            case 7 -> new ItemStack(Items.GOLDEN_CARROT, random.nextInt(1, 64));
             case 8 -> new ItemStack(Items.ANCIENT_DEBRIS, 1);
-            case 9 -> new ItemStack(Items.ENDER_PEARL, random.nextInt(1, 8));
+            case 9 -> new ItemStack(Items.ENDER_PEARL, random.nextInt(1, 17));
             default -> new ItemStack(Items.DIAMOND, 1);
         };
     }

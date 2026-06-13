@@ -52,13 +52,9 @@ public class SealedArtifactHandler {
         String pathway = characteristic.getPathway();
         int sequence = characteristic.getSequence();
 
-        return createSealedArtifactData(pathway, sequence, baseItem);
-    }
-
-    public static SealedArtifactData createSealedArtifactData(String pathway, Integer sequence, String baseItem) {
         // Get 1-3 random abilities
         List<Ability> abilities = selectRandomAbilities(pathway, sequence);
-
+        
         // Create negative effect
         List<NegativeEffect> negativeEffect = NegativeEffect.createRandom(pathway, sequence, RANDOM, baseItem);
 
@@ -101,7 +97,13 @@ public class SealedArtifactHandler {
         }
 
         // If no ability found at target sequence, try higher sequences
-        if ((validAbility == null) || !validAbility.canBeUsedInArtifact) {
+        if ((validAbility == null)
+                || (validAbility instanceof ConqueringAbility)
+                || (validAbility instanceof AllyAbility)
+                || (validAbility instanceof CogitationAbility)
+                || (validAbility instanceof AngelFlightAbility)
+                || (validAbility instanceof MythicalCreatureFormAbility)
+                || (validAbility instanceof MirrorWorldTraversalAbility)) {
             return getPathwayAbilities(pathway, targetSequence + 1, exact, excluded);
         }
 

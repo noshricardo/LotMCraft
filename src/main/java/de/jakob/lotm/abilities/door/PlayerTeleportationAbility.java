@@ -29,12 +29,9 @@ public class PlayerTeleportationAbility extends SelectableAbility {
     public static final HashMap<UUID, String> namesForPlayer = new HashMap<>(); // Needs sync to client side
 
     public PlayerTeleportationAbility(String id) {
-        super(id, 20);
+        super(id, 2);
 
         canBeUsedByNPC = false;
-        canBeCopied = false;
-        canBeReplicated = false;
-        canBeShared = false;
     }
 
     @Override
@@ -44,7 +41,7 @@ public class PlayerTeleportationAbility extends SelectableAbility {
 
     @Override
     protected float getSpiritualityCost() {
-        return 30000;
+        return 1200;
     }
 
     @Override
@@ -123,7 +120,7 @@ public class PlayerTeleportationAbility extends SelectableAbility {
             PacketHandler.sendToAllPlayers(new SyncPlayerTeleportationPlayerNamesPacket(player.getUUID().toString(), player.getName().getString()));
         }
 
-        if(onlinePlayers == null || onlinePlayers.isEmpty() || onlinePlayers.contains(null)) {
+        if(onlinePlayers.isEmpty()) {
             return;
         }
         List<UUID> snapshot = List.copyOf(onlinePlayers);

@@ -23,8 +23,7 @@ import java.util.Map;
 
 public class PlagueAbility extends Ability {
     public PlagueAbility(String id) {
-        super(id, 180, "plague", "disease");
-        autoClear = false;
+        super(id, 120, "plague");
     }
 
     @Override
@@ -34,7 +33,7 @@ public class PlagueAbility extends Ability {
 
     @Override
     public float getSpiritualityCost() {
-        return 1200;
+        return 400;
     }
 
     private final DustParticleOptions dust = new DustParticleOptions(new Vector3f(0, 0, 0), 10f);
@@ -44,13 +43,13 @@ public class PlagueAbility extends Ability {
         if(level.isClientSide || !(level instanceof ServerLevel serverLevel))
             return;
 
-        ServerScheduler.scheduleForDuration(0, 20, 20 * 40*(int) Math.max(multiplier(entity)/4,1), () -> {
+        ServerScheduler.scheduleForDuration(0, 20, 20 * 80, () -> {
             if (entity.level().isClientSide)
                 return;
 
             // Disease is suppressed by purification, cleansing, life aura, or blooming interactions
             Location currentLoc = new Location(entity.position(), entity.level());
-            int seq = AbilityUtil.getSeqWithArt(entity, this);
+            int seq = BeyonderData.getSequence(entity);
             if(InteractionHandler.isInteractionPossible(currentLoc, "purification", seq) ||
                     InteractionHandler.isInteractionPossible(currentLoc, "cleansing", seq))
                 return;
@@ -60,10 +59,10 @@ public class PlagueAbility extends Ability {
 
             ParticleUtil.spawnParticles((ServerLevel) entity.level(), ModParticles.DISEASE.get(), entity.position(), 160, 50, 0.02);
             ParticleUtil.spawnParticles((ServerLevel) entity.level(), dust, entity.position(), 160, 50, 0.02);
-            AbilityUtil.addPotionEffectToNearbyEntities((ServerLevel) entity.level(), entity, 45*(int) Math.max(multiplier(entity)/4,1), entity.position(), new MobEffectInstance(MobEffects.WITHER, 20, 3, false, false, false));
-            AbilityUtil.addPotionEffectToNearbyEntities((ServerLevel) entity.level(), entity, 45*(int) Math.max(multiplier(entity)/4,1), entity.position(), new MobEffectInstance(MobEffects.BLINDNESS, 20, 4, false, false, false));
-            AbilityUtil.addPotionEffectToNearbyEntities((ServerLevel) entity.level(), entity, 45*(int) Math.max(multiplier(entity)/4,1), entity.position(), new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 2, false, false, false));
-            AbilityUtil.damageNearbyEntities((ServerLevel) entity.level(), entity, 45*(int) Math.max(multiplier(entity)/4,1), DamageLookup.lookupDps(4, .3, 35, 20) *(int) Math.max(multiplier(entity)/6,1) * damageMult, entity.position(), true, false, true, 0, ModDamageTypes.source(level, ModDamageTypes.DEMONESS_GENERIC, entity));
-        }, () -> clearArtifactScaling(entity), serverLevel, () -> AbilityUtil.getTimeInArea(entity, new Location(entity.position(), level)));
+            AbilityUtil.addPotionEffectToNearbyEntities((ServerLevel) entity.level(), entity, 70, entity.position(), new MobEffectInstance(MobEffects.WITHER, 20, 3, false, false, false));
+            AbilityUtil.addPotionEffectToNearbyEntities((ServerLevel) entity.level(), entity, 70, entity.position(), new MobEffectInstance(MobEffects.BLINDNESS, 20, 4, false, false, false));
+            AbilityUtil.addPotionEffectToNearbyEntities((ServerLevel) entity.level(), entity, 70, entity.position(), new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 2, false, false, false));
+            AbilityUtil.damageNearbyEntities((ServerLevel) entity.level(), entity, 70, DamageLookup.lookupDps(4, .3, 20, 20) * (float) multiplier(entity) * damageMult, entity.position(), true, false, true, 0, ModDamageTypes.source(level, ModDamageTypes.DEMONESS_GENERIC, entity));
+        }, null, serverLevel, () -> AbilityUtil.getTimeInArea(entity, new Location(entity.position(), level)));
     }
 }

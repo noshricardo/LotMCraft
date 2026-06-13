@@ -1,10 +1,10 @@
 {
   "type": "lotmcraft:dream_maze",
   "generator": {
-    "type": "lotmcraft:empty",
+    "type": "lotmcraft:dream_maze",
     "biome_source": {
       "type": "minecraft:fixed",
-      "biome": "lotmcraft:dream_maze_biome"
+      "biome": "minecraft:the_void"
     }
   }
 }

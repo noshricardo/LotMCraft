@@ -254,11 +254,5 @@ public class MarionetteOverlayRenderer {
     public record MarionetteInfos(String name, double health, double maxHealth) {
 
     }
-
-    public static void clearCache() {
-        currentMarionette.clear();
-        cachedMarionette.clear();
-        nullSinceTime.clear();
-    }
 }
 

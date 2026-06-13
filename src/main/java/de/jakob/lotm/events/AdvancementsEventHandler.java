@@ -33,25 +33,9 @@ public class AdvancementsEventHandler {
         if (BeyonderData.isBeyonder(player)) {
             grantAdvancement(player, "become_beyonder");
 
-            if (BeyonderData.pathwayInfos.get(BeyonderData.getPathway(player)) != null) {
-                if (BeyonderData.getSequence(player) == LOTMCraft.GREAT_OLD_ONE_SEQ) {
-                    // GOO state is legitimate — no sequence advancement to grant
-                } else if (BeyonderData.getSequence(player) >= 10) {
-                    LOTMCraft.LOGGER.info("Player is somehow both a beyonder of " + BeyonderData.getPathway(player) + " and a sequence 10+: " + player.getName().getString() + "");
-                    int charSeq = BeyonderData.getCharList(player).stream().mapToInt(c -> c.sequence()).filter(s -> s != LOTMCraft.GREAT_OLD_ONE_SEQ).max().orElse(de.jakob.lotm.LOTMCraft.NON_BEYONDER_SEQ);
-                    String charPath = BeyonderData.getCharList(player).stream().filter(c -> c.sequence() == charSeq).findFirst().map(c -> c.pathway()).orElse("none");
-                    BeyonderData.setBeyonder(player, charPath, charSeq);
-                } else {
-                    String sequenceName = BeyonderData.pathwayInfos.get(BeyonderData.getPathway(player)).getRawSequenceName(BeyonderData.getSequence(player));
-                    grantAdvancement(player, "become_" + sequenceName.toLowerCase());
-                }
-            } else {
-                LOTMCraft.LOGGER.error("Advancement Error: Missing PathwayInfo for player '{}'. Pathway: '{}', Sequence: {}",
-                        player.getName().getString(),
-                        BeyonderData.getPathway(player),
-                        BeyonderData.getSequence(player)
-                );
-            }
+            String sequenceName = BeyonderData.pathwayInfos.get(BeyonderData.getPathway(player))
+                    .getRawSequenceName(BeyonderData.getSequence(player));
+            grantAdvancement(player, "become_" + sequenceName.toLowerCase());
 
             int sequence = BeyonderData.getSequence(player);
             if (sequence <= 5) grantAdvancement(player, "reach_sequence_5");
@@ -72,7 +56,6 @@ public class AdvancementsEventHandler {
         Entity entity = event.getEntity();
         Entity killer = event.getSource().getEntity();
 
-        // Award advancement for killing a rogue beyonder
         if (entity instanceof BeyonderNPCEntity
                 && killer instanceof ServerPlayer player) {
             grantAdvancement(player, "kill_rogue_beyonder");
@@ -84,7 +67,6 @@ public class AdvancementsEventHandler {
             }
         }
 
-        // Award advancement for dying as a beyonder
         if (entity instanceof ServerPlayer player && BeyonderData.isBeyonder(player)) {
             grantAdvancement(player, "die_as_beyonder");
         }
@@ -153,6 +135,7 @@ public class AdvancementsEventHandler {
                 grantAdvancement(player, "obtain_sealed_artifact");
                 needArtifact = false;
             }
+
             if (!needCharacteristic && !needRecipe && !needArtifact) break;
         }
     }
@@ -177,7 +160,7 @@ public class AdvancementsEventHandler {
         }
     }
 
-    private static boolean isAdvancementDone(ServerPlayer player, String advancementPath) {
+    public static boolean isAdvancementDone(ServerPlayer player, String advancementPath) {
         if (player.getServer() == null) return false;
         AdvancementHolder advancement = player.getServer()
                 .getAdvancements()
@@ -185,5 +168,4 @@ public class AdvancementsEventHandler {
         if (advancement == null) return false;
         return player.getAdvancements().getOrStartProgress(advancement).isDone();
     }
-
 }

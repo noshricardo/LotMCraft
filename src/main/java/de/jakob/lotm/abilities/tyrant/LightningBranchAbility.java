@@ -12,8 +12,7 @@ import java.util.Map;
 
 public class LightningBranchAbility extends Ability {
     public LightningBranchAbility(String id) {
-        super(id, 5f);
-        canBeShared = false;
+        super(id, 1.5f);
     }
 
     @Override
@@ -23,7 +22,7 @@ public class LightningBranchAbility extends Ability {
 
     @Override
     public float getSpiritualityCost() {
-        return 900;
+        return 450;
     }
 
     @Override
@@ -34,7 +33,7 @@ public class LightningBranchAbility extends Ability {
         Vec3 dir = entity.getLookAngle().normalize();
         Vec3 startPos = entity.position().add(dir).add(0, 1.5, 0);
 
-        LightningBranchEntity branch = new LightningBranchEntity(level, entity, startPos, dir, 30, DamageLookup.lookupDamage(3, .3) * (int) Math.max(multiplier(entity)/4,1));
+        LightningBranchEntity branch = new LightningBranchEntity(level, entity, startPos, dir, 30, DamageLookup.lookupDamage(3, .5) * multiplier(entity));
         level.addFreshEntity(branch);
     }
 }

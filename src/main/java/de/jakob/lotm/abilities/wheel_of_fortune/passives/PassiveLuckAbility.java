@@ -1,9 +1,6 @@
 package de.jakob.lotm.abilities.wheel_of_fortune.passives;
 
-import de.jakob.lotm.abilities.PassiveAbilityHandler;
 import de.jakob.lotm.abilities.PassiveAbilityItem;
-import de.jakob.lotm.attachments.LuckComponent;
-import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.effect.ModEffects;
 import de.jakob.lotm.util.BeyonderData;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -17,27 +14,38 @@ import java.util.Map;
 
 public class PassiveLuckAbility extends PassiveAbilityItem {
 
+    private final HashMap<Integer, List<MobEffectInstance>> effectsPerSequence = new HashMap<>();
 
     public PassiveLuckAbility(Properties properties) {
         super(properties);
 
     }
+    private void initEffects() {
+        effectsPerSequence.put(9, List.of());
 
-    public static int getNormalLuckForEntity(LivingEntity livingEntity) {
-        if(!(PassiveAbilityHandler.PASSIVE_LUCK.get() instanceof PassiveLuckAbility instance)) {
-            return 0;
-        }
+        effectsPerSequence.put(8, List.of());
 
-        if(!instance.shouldApplyTo(livingEntity)) {
-            return 0;
-        }
+        effectsPerSequence.put(7, List.of(
+                new MobEffectInstance(ModEffects.LUCK, 20 * 6, 2, false, false, false)));
 
-        int sequence = BeyonderData.getSequence(livingEntity);
-        if (sequence < 0 || sequence > 9) {
-            return 0;
-        }
+        effectsPerSequence.put(6, List.of(
+                new MobEffectInstance(ModEffects.LUCK, 20 * 6, 4, false, false, false)));
 
-        return instance.getLuckLevelForSequence(sequence);
+        effectsPerSequence.put(5, List.of(
+                new MobEffectInstance(ModEffects.LUCK, 20 * 6, 5, false, false, false)));
+
+        effectsPerSequence.put(4, List.of(
+                new MobEffectInstance(ModEffects.LUCK, 20 * 6, 9, false, false, false)));
+
+        effectsPerSequence.put(3, List.of(
+                new MobEffectInstance(ModEffects.LUCK, 20 * 6, 12, false, false, false)));
+
+        effectsPerSequence.put(2, List.of(
+                new MobEffectInstance(ModEffects.LUCK, 20 * 6, 16, false, false, false)));
+
+        effectsPerSequence.put(1, List.of(
+                new MobEffectInstance(ModEffects.LUCK, 20 * 6, 19, false, false, false)));
+
     }
 
     @Override
@@ -54,25 +62,23 @@ public class PassiveLuckAbility extends PassiveAbilityItem {
         if (sequence < 0 || sequence > 9) {
             return;
         }
-        LuckComponent component = entity.getData(ModAttachments.LUCK_COMPONENT.get());
-        //if (component.getLuck() >= getLuckLevelForSequence(sequence)) {return;};
-        if(component.getLuck() < getLuckLevelForSequence(sequence)) {
-            component.setLuck(component.getLuck() + (int) Math.round(5 * BeyonderData.getMultiplier(entity)));
+
+        ArrayList<MobEffectInstance> effects = new ArrayList<>(getEffectsForSequence(sequence));
+
+        applyPotionEffects(entity, effects);
+    }
+
+    private List<MobEffectInstance> getEffectsForSequence(int sequence) {
+        if (effectsPerSequence.containsKey(sequence)) {
+            return effectsPerSequence.get(sequence);
+        } else {
+            for (int i = sequence; i < 10; i++) {
+                if (effectsPerSequence.containsKey(i)) {
+                    return effectsPerSequence.get(i);
+                }
+            }
+
+            return List.of();
         }
     }
-
-    private int getLuckLevelForSequence(int sequence) {
-        return switch (sequence) {
-            case 7 -> 360;
-            case 6 -> 600;
-            case 5 -> 720;
-            case 4 -> 1200;
-            case 3 -> 1560;
-            case 2 -> 2040;
-            case 1 -> 2280;
-            case 0 -> 3000;
-            default -> 0;
-        };
-    }
-
 }

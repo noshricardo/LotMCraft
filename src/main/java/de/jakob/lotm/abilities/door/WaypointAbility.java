@@ -22,9 +22,6 @@ public class WaypointAbility extends SelectableAbility {
 
         canBeCopied = false;
         canBeUsedByNPC = false;
-        canBeReplicated = false;
-        canBeShared = false;
-        cannotBeStolen = true;
     }
 
     @Override
@@ -34,7 +31,7 @@ public class WaypointAbility extends SelectableAbility {
 
     @Override
     protected float getSpiritualityCost() {
-        return 5000;
+        return 900;
     }
 
     @Override

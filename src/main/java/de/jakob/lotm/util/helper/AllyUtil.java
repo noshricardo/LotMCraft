@@ -6,8 +6,6 @@ import de.jakob.lotm.network.PacketHandler;
 import de.jakob.lotm.network.packets.toClient.SyncAllyDataPacket;
 import de.jakob.lotm.util.BeyonderData;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
@@ -81,8 +79,6 @@ public class AllyUtil {
         if (entity1 == null || entity2 == null) return false;
         if (entity1.getUUID().equals(entity2.getUUID())) return true;
 
-        if(AbilityUtil.ignoreAllies.containsKey(entity1.getUUID())) return false;
-
         AllyComponent comp1 = entity1.getData(ModAttachments.ALLY_COMPONENT.get());
         return comp1.isAlly(entity2.getUUID());
     }
@@ -93,8 +89,6 @@ public class AllyUtil {
     public static boolean isAlly(LivingEntity entity, UUID allyUUID) {
         if (entity == null || allyUUID == null) return false;
         if (entity.getUUID().equals(allyUUID)) return true;
-
-        if(AbilityUtil.ignoreAllies.containsKey(entity.getUUID())) return false;
 
         AllyComponent comp = entity.getData(ModAttachments.ALLY_COMPONENT.get());
         return comp.isAlly(allyUUID);
@@ -132,34 +126,12 @@ public class AllyUtil {
     }
 
     /**
-     * Get total ally count for an entity (includes mobs)
+     * Get ally count for an entity
      */
     public static int getAllyCount(LivingEntity entity) {
         if (entity == null) return 0;
         AllyComponent comp = entity.getData(ModAttachments.ALLY_COMPONENT.get());
         return comp.allyCount();
-    }
-
-    /**
-     * Get the number of player allies only (excludes mobs).
-     * Used for the maxAllyCount gamerule limit.
-     */
-    public static int getPlayerAllyCount(LivingEntity entity) {
-        if (entity == null) return 0;
-        if (!(entity.level() instanceof ServerLevel serverLevel)) return 0;
-
-        MinecraftServer server = serverLevel.getServer();
-        AllyComponent comp = entity.getData(ModAttachments.ALLY_COMPONENT.get());
-        int count = 0;
-        for (String uuidStr : comp.allies()) {
-            try {
-                UUID uuid = UUID.fromString(uuidStr);
-                if (server.getProfileCache().get(uuid).isPresent()) {
-                    count++;
-                }
-            } catch (IllegalArgumentException ignored) {}
-        }
-        return count;
     }
 
     /**

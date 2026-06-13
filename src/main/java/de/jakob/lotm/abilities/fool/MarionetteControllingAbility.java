@@ -2,13 +2,11 @@ package de.jakob.lotm.abilities.fool;
 
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.SelectableAbility;
-import de.jakob.lotm.events.ProhibitionHandler;
 import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.attachments.TransformationComponent;
 import de.jakob.lotm.item.ModItems;
 import de.jakob.lotm.network.PacketHandler;
 import de.jakob.lotm.network.packets.toClient.SyncSelectedMarionettePacket;
-import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.ControllingUtil;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.CycleOfFateHelper;
@@ -45,6 +43,7 @@ public class MarionetteControllingAbility extends SelectableAbility {
     public MarionetteControllingAbility(String id) {
         super(id, .5f);
 
+        canBeCopied = false;
         canBeUsedByNPC = false;
     }
 
@@ -90,8 +89,6 @@ public class MarionetteControllingAbility extends SelectableAbility {
     }
 
     private void activateSwap(ServerLevel level, ServerPlayer player) {
-        if (ProhibitionHandler.isInMarionetteZone(player.position(), level, AbilityUtil.getSeqWithArt(player, this))) return;
-
         LivingEntity marionette = getSelectedMarionette(player);
 
         if(marionette == null) {
@@ -164,8 +161,6 @@ public class MarionetteControllingAbility extends SelectableAbility {
 
         if(!swapOnDamageIsActive.contains(player.getUUID()))
             return;
-
-        if (ProhibitionHandler.isInMarionetteZone(player.position(), level, BeyonderData.getSequence(event.getEntity()))) return;
 
         LivingEntity marionette = getSelectedMarionette(player);
         if(marionette == null)
@@ -311,7 +306,7 @@ public class MarionetteControllingAbility extends SelectableAbility {
             }
         }
         if (target != null) {
-            ControllingUtil.possess(player, target, true, true);
+            ControllingUtil.possess(player, target);
         }
     }
 }

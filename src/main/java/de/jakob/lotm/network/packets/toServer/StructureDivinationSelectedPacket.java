@@ -46,32 +46,31 @@ public record StructureDivinationSelectedPacket(String structureId) implements C
         }
 
         int playerSequence = BeyonderData.getSequence(player);
-        double worldBorder = player.level().getWorldBorder().getSize();
         int maxDistance = switch (playerSequence) {
             case 9, 8, 7, 6, 5 -> 500 * (10 - playerSequence);
             case 4             -> 5000;
             case 3             -> 15000;
-            case 2             -> ((int) (worldBorder * 0.001) > 15000) ? (int) (worldBorder * 0.001) : 30000;
-            case 1             -> ((int) (worldBorder * 0.01) > 30000) ? (int) (worldBorder * 0.01) : 60000;
-            case 0             -> ((int) (worldBorder * 0.1) > 60000) ? (int) (worldBorder * 0.01) : 600000;
-            default            -> 100;
+            case 2             -> ((int) (player.level().getWorldBorder().getSize() * 0.001) > 15000) ? (int) (player.level().getWorldBorder().getSize() * 0.001) : 30000;
+            case 1             -> ((int) (player.level().getWorldBorder().getSize() * 0.01) > 30000) ? (int) (player.level().getWorldBorder().getSize() * 0.01) : 60000;
+            default            -> 0;
         };
 
         CompletableFuture.runAsync(() -> {
-            var structureRegistry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
-            var structureHolder = structureRegistry.getHolder(structureKey).orElse(null);
+                    var structureRegistry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
+                    var structureHolder = structureRegistry.getHolder(structureKey).orElse(null);
 
-            if (structureHolder == null) return;
+                    if (structureHolder == null) return;
 
-            var result = level.getChunkSource()
-                    .getGenerator()
-                    .findNearestMapStructure(
-                            level,
-                            HolderSet.direct(structureHolder),
-                            player.blockPosition(),
-                            maxDistance,
-                            false
-                    );
+
+                    var result = level.getChunkSource()
+                            .getGenerator()
+                            .findNearestMapStructure(
+                                    level,
+                                    HolderSet.direct(structureHolder),
+                                    player.blockPosition(),
+                                    maxDistance,
+                                    false
+                            );
 
             context.enqueueWork(() -> {
                 if (result == null) {

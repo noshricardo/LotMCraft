@@ -6,6 +6,7 @@ import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,14 +21,6 @@ public class DisabledAbilitiesComponent implements INBTSerializable<CompoundTag>
 
     private final HashMap<String, Integer> hasAllAbilitiesDisabled = new HashMap<>();
     private final HashMap<String, List<DisabledAbility>> disabledAbilities = new HashMap<>();
-
-    public List<DisabledAbility> getAllDisabledAbilities() {
-        List<DisabledAbility> all = new ArrayList<>();
-        for (List<DisabledAbility> list : disabledAbilities.values()) {
-            all.addAll(list);
-        }
-        return all;
-    }
 
     public void disableAbilityUsage(String cause) {
         hasAllAbilitiesDisabled.put(cause, 1);
@@ -64,11 +57,6 @@ public class DisabledAbilitiesComponent implements INBTSerializable<CompoundTag>
                 disabledAbilities.remove(cause);
             }
         }
-    }
-
-    /** Removes all abilities disabled under a given cause key in one call. */
-    public void clearCause(String cause) {
-        disabledAbilities.remove(cause);
     }
 
     public void disableSpecificAbilityForTime(String ability, String cause, int ticks) {
@@ -108,15 +96,6 @@ public class DisabledAbilitiesComponent implements INBTSerializable<CompoundTag>
     public void enableAllAbilities() {
         hasAllAbilitiesDisabled.clear();
         disabledAbilities.clear();
-    }
-
-    /**
-     * Clears all temporary disabled states while preserving entries under {@code preservedCause}.
-     * Use this on player logout so permanent seals (e.g. death-imprint seals) survive in NBT.
-     */
-    public void clearAllAbilitiesExceptCause(String preservedCause) {
-        hasAllAbilitiesDisabled.clear();
-        disabledAbilities.entrySet().removeIf(e -> !e.getKey().equals(preservedCause));
     }
 
     @Override

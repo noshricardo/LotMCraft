@@ -50,10 +50,10 @@ public class CalamityAttractionAbility extends Ability {
 
         Vec3 targetPos = AbilityUtil.getTargetLocation(entity, 14, 2, true);
 
-        double multiplier = multiplier(entity);
+
         ServerScheduler.scheduleDelayed(random.nextInt(31, 60), () -> {
             Calamity calamity = calamities[random.nextInt(calamities.length)];
-            calamity.spawnCalamity(serverLevel, targetPos, (float) multiplier, BeyonderData.isGriefingEnabled(entity));
+            calamity.spawnCalamity(serverLevel, targetPos, (float) BeyonderData.getMultiplier(entity), BeyonderData.isGriefingEnabled(entity));
         }, serverLevel);
     }
 }

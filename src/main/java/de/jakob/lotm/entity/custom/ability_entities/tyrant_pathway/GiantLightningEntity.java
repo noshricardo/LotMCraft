@@ -1,6 +1,5 @@
 package de.jakob.lotm.entity.custom.ability_entities.tyrant_pathway;
 
-import de.jakob.lotm.abilities.core.AbilityUsedEvent;
 import de.jakob.lotm.abilities.tyrant.WaterMasteryAbility;
 import de.jakob.lotm.entity.ModEntities;
 import de.jakob.lotm.network.packets.handlers.ClientHandler;
@@ -28,7 +27,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +49,7 @@ public class GiantLightningEntity extends Entity {
     private float currentDistance = 0f;
     private final List<Vec3> lightningPoints = new ArrayList<>();
     private final int updateInterval = 1;
-    private float step = 48; // Larger step for faster growth
+    private float step = 8; // Larger step for faster growth
     private int color = 0x88DDFF; // Brighter blue
     private boolean griefing;
     private float explosionPower;
@@ -82,7 +80,7 @@ public class GiantLightningEntity extends Entity {
         this.explosionPower = explosionPower;
         this.griefing = griefing;
         this.currentDistance = 2.0f;
-        this.step = 48f; // Faster advancement
+        this.step = 12f; // Faster advancement
         this.color = color;
         setPos(start.x, start.y, start.z);
 
@@ -95,7 +93,7 @@ public class GiantLightningEntity extends Entity {
             entityData.set(DIR_Y, (float) -1);
             entityData.set(DIR_Z, (float) 0);
             entityData.set(MAX_DISTANCE, maxDistance + 80);
-            entityData.set(STEP, 48f);
+            entityData.set(STEP, 12f);
             entityData.set(COLOR, color);
 
             // More branches for giant lightning, spawn them at varied distances
@@ -299,8 +297,6 @@ public class GiantLightningEntity extends Entity {
         if (!level().isClientSide && source != null) {
             explode(pos);
 
-            NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level(), pos, source, null, new String[]{"lightning", "explosion"}, explosionPower * 1.5, 15));
-
             // Check for water interaction - lightning deals more damage in water
             boolean inWater = isNearWater(pos);
             float waterMultiplier = inWater ? 2.0f : 1.0f;
@@ -325,7 +321,7 @@ public class GiantLightningEntity extends Entity {
             dealWaterWallDamage(pos);
 
             ServerScheduler.scheduleDelayed(15, this::discardEntityAndBranches);
-        } else if(level().isClientSide) {
+        } else {
             ClientHandler.applyCameraShakeToPlayersInRadius(4f, 35, (ClientLevel) level(), pos, 60);
         }
     }
@@ -345,10 +341,8 @@ public class GiantLightningEntity extends Entity {
 
         if (!level().isClientSide) {
             Vec3 pos = hit.getLocation();
-            if(source != null) {
+            if(source != null)
                 explode(pos);
-                NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level(), pos, source, null, new String[]{"lightning", "explosion"}, explosionPower * 1.5, 15));
-            }
 
             // Check for water interaction
             if(isNearWater(pos)) {

@@ -2,9 +2,7 @@ package de.jakob.lotm.abilities.error;
 
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.Ability;
-import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.damage.ModDamageTypes;
-import de.jakob.lotm.events.ProhibitionHandler;
 import de.jakob.lotm.rendering.effectRendering.DirectionalEffectManager;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.AbilityUtil;
@@ -18,7 +16,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
@@ -38,8 +35,7 @@ public class FateSiphoningAbility extends Ability {
     private static final HashMap<UUID, UUID> linkedEntities = new HashMap<>();
 
     public FateSiphoningAbility(String id) {
-        super(id, 20);
-        canBeShared = false;
+        super(id, 25);
     }
 
     @Override
@@ -49,7 +45,7 @@ public class FateSiphoningAbility extends Ability {
 
     @Override
     public float getSpiritualityCost() {
-        return 4000;
+        return 1000;
     }
 
     @Override
@@ -57,28 +53,20 @@ public class FateSiphoningAbility extends Ability {
         if(!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        if (ProhibitionHandler.IsInTheftZone(entity.position(), (ServerLevel) level, AbilityUtil.getSeqWithArt(entity, this))) return;
-        LivingEntity target = AbilityUtil.getTargetEntity(entity, 30*(int) Math.max(multiplier(entity)/4,1), 2);
+
+        LivingEntity target = AbilityUtil.getTargetEntity(entity, 30, 2);
         if(target == null) {
             AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.fate_siphoning.no_target").withColor(0x6d32a8));
             return;
         }
 
-        if(linkedEntities.containsKey(target.getUUID()) &&
-                linkedEntities.get(target.getUUID()).equals(entity.getUUID())){
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.fate_siphoning.resisted").withColor(0x6d32a8));
-            return;
-        }
-
-        int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
-
-        if(BeyonderData.getPathway(target).equals("error") && BeyonderData.getSequence(target) < entitySeq){
+        if(BeyonderData.getPathway(target).equals("error") && BeyonderData.getSequence(target) < BeyonderData.getSequence(entity)){
             AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.fate_siphoning.resisted").withColor(0x6d32a8));
             return;
         }
 
         // High-sequence opponents may outright resist the fate link being established
-        double failureChance = AbilityUtil.getSequenceFailureChance(entitySeq, BeyonderData.getSequence(target));
+        double failureChance = AbilityUtil.getSequenceFailureChance(entity, target);
         if (ThreadLocalRandom.current().nextDouble() < failureChance) {
             AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.fate_siphoning.resisted").withColor(0x6d32a8));
             return;
@@ -91,7 +79,7 @@ public class FateSiphoningAbility extends Ability {
                 entity);
 
         linkedEntities.put(entity.getUUID(), target.getUUID());
-        ServerScheduler.scheduleDelayed(20 * 7*(int) Math.max(multiplier(entity)/4,1), () -> linkedEntities.remove(entity.getUUID()));
+        ServerScheduler.scheduleDelayed(20 * 14, () -> linkedEntities.remove(entity.getUUID()));
     }
 
     @SubscribeEvent
@@ -143,37 +131,14 @@ public class FateSiphoningAbility extends Ability {
         if(!(target instanceof LivingEntity targetLiving))
             return;
 
-        var luck = entity.getData(ModAttachments.LUCK_COMPONENT.get());
-        var luckTarget = target.getData(ModAttachments.LUCK_COMPONENT.get());
+        ArrayList<MobEffectInstance> effects = new ArrayList<>(player.getActiveEffects());
+        for(var effect : effects){
+            if (effect.getEffect().value().isBeneficial()) continue;
 
-        if(luck.getLuck() < 0) {
-            luckTarget.setLuck(luckTarget.getLuck() + luck.getLuck());
-            luck.setLuck(0);
-        }
-    }
+            player.removeEffect(effect.getEffect());
 
-    @SubscribeEvent
-    public static void onEffectApply(MobEffectEvent.Applicable event) {
-        Entity entity = event.getEntity();
-        if(!(entity.level() instanceof ServerLevel serverLevel)) {
-            return;
+            targetLiving.addEffect(new MobEffectInstance(effect));
         }
 
-        if(!(entity instanceof ServerPlayer player))
-            return;
-
-        if(!linkedEntities.containsKey(player.getUUID())) {
-            return;
-        }
-
-        MobEffectInstance effect = event.getEffectInstance();
-
-        if (effect.getEffect().value().isBeneficial()) return;
-
-        Entity targetEntity = serverLevel.getEntity(linkedEntities.get(player.getUUID()));
-
-        if (!(targetEntity instanceof LivingEntity target)) return;
-        event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
-        target.addEffect(new MobEffectInstance(effect));
     }
 }

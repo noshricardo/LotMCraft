@@ -1,7 +1,6 @@
 package de.jakob.lotm.abilities.visionary;
 
 import de.jakob.lotm.abilities.core.SelectableAbility;
-import de.jakob.lotm.abilities.visionary.passives.MetaAwarenessAbility;
 import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.attachments.SanityComponent;
 import de.jakob.lotm.entity.ModEntities;
@@ -11,7 +10,6 @@ import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.RingEffectManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,12 +23,6 @@ public class VirtualPersonaAbility extends SelectableAbility {
 
     public VirtualPersonaAbility(String id) {
         super(id, 3f);
-        canBeUsedByNPC = false;
-        canBeCopied = false;
-        canBeReplicated = false;
-        canBeUsedInArtifact = false;
-        cannotBeStolen = true;
-        canBeShared = false;
     }
 
     @Override
@@ -82,18 +74,6 @@ public class VirtualPersonaAbility extends SelectableAbility {
             return;
         }
 
-        int targetSeq = BeyonderData.getSequence(target);
-        if(BeyonderData.getPathway(target).equals("visionary") && BeyonderData.getSequence(target) <
-                BeyonderData.getSequence(entity)){
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.dream_traversal.failed").withColor(0xFFff124d));
-
-            if(targetSeq <= 1 && target instanceof ServerPlayer targetPlayer && entity instanceof ServerPlayer entityPlayer){
-                MetaAwarenessAbility.onDivined(targetPlayer, entityPlayer);
-            }
-
-            return;
-        }
-
         applyVirtualPersonaStack(level, target);
     }
 
@@ -102,20 +82,20 @@ public class VirtualPersonaAbility extends SelectableAbility {
         SanityComponent sanity = entity.getData(ModAttachments.SANITY_COMPONENT);
         int current = sanity.getVirtualPersonaStacks();
 
-        if (current >= getMaxPersonasPerSeq(BeyonderData.getSequence(entity))) {
+        if (current >= 10) {
             AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.virtual_persona.max_stacks").withColor(0xFFffad33));
             return;
         }
 
         sanity.addVirtualPersonaStack();
 
-//        RingEffectManager.createRingForAll(
-//                entity.getEyePosition().subtract(0, .4, 0),
-//                2, 60,
-//                250 / 255f, 201 / 255f, 102 / 255f,
-//                1, .5f, .75f,
-//                (ServerLevel) level
-//        );
+        RingEffectManager.createRingForAll(
+                entity.getEyePosition().subtract(0, .4, 0),
+                2, 60,
+                250 / 255f, 201 / 255f, 102 / 255f,
+                1, .5f, .75f,
+                (ServerLevel) level
+        );
 
         level.playSound(null,
                 entity.position().x, entity.position().y, entity.position().z,
@@ -124,16 +104,6 @@ public class VirtualPersonaAbility extends SelectableAbility {
         AbilityUtil.sendActionBar(entity,
                 Component.translatable("ability.lotmcraft.virtual_persona.stacks",
                         sanity.getVirtualPersonaStacks()).withColor(0xFFe3ffff));
-    }
-
-    public static int getMaxPersonasPerSeq(int seq){
-        return switch (seq){
-            case 4, 3 -> 10;
-            case 2, 1 -> 20;
-            case 0 -> 30;
-            default -> 5;
-        };
-
     }
 
 

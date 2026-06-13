@@ -49,15 +49,7 @@ public class SpectatingAbility extends ToggleAbility {
         if(!(entity instanceof ServerPlayer player) || level.isClientSide)
             return;
 
-        LivingEntity lookedAt = AbilityUtil.getTargetEntity(entity, 40, 1.2f, true, true);
-
-        if(lookedAt != null) {
-            if (PsychologicalInvisibilityAbility.invisiblePlayers.containsKey(lookedAt.getUUID())) {
-                if (AbilityUtil.getSeqWithArt(entity, this) >=
-                        PsychologicalInvisibilityAbility.invisiblePlayers.get(lookedAt.getUUID()))
-                    return;
-            }
-        }
+        LivingEntity lookedAt = AbilityUtil.getTargetEntity(entity, 40, 1.2f);
 
         PacketHandler.sendToPlayer(player, new SyncSpectatingAbilityPacket(true, lookedAt == null ? -1 : lookedAt.getId()));
 

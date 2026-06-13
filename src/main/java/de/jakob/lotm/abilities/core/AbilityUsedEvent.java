@@ -5,7 +5,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.ICancellableEvent;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +20,7 @@ public class AbilityUsedEvent extends Event implements ICancellableEvent {
     private final double interactionRadius;
     private final int interactionCacheTime;
 
-    public AbilityUsedEvent(ServerLevel serverLevel, Vec3 position, LivingEntity entity, @Nullable Ability ability, String[] interactionFlags, double interactionRadius, int interactionCacheTime) {
+    public AbilityUsedEvent(ServerLevel serverLevel, Vec3 position, LivingEntity entity, Ability ability, String[] interactionFlags, double interactionRadius, int interactionCacheTime) {
         this.level = serverLevel;
         this.position = position;
         this.entity = entity;
@@ -47,7 +46,6 @@ public class AbilityUsedEvent extends Event implements ICancellableEvent {
         return entity;
     }
 
-    @Nullable
     public Ability getAbility() {
         return ability;
     }

@@ -13,13 +13,10 @@ import java.util.Map;
 
 public class DivineKingdomManifestationAbility extends Ability {
     public DivineKingdomManifestationAbility(String id) {
-        super(id, 20 * 60*2, "purification", "light_source", "light_strong", "light_weak", "purification_holy");
+        super(id, 20 * 60 * 3, "purification", "light_source", "light_strong", "light_weak");
+
         canBeCopied = false;
-        canBeReplicated = false;
-        canBeShared = false;
-        cannotBeStolen = true;
-        canBeUsedInArtifact = false;
-        canBeShared = false;
+        canBeUsedByNPC = false;
     }
 
     @Override
@@ -29,7 +26,7 @@ public class DivineKingdomManifestationAbility extends Ability {
 
     @Override
     protected float getSpiritualityCost() {
-        return 8000;
+        return 2900;
     }
 
     @Override

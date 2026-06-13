@@ -1,7 +1,6 @@
 package de.jakob.lotm.abilities.error;
 
 import de.jakob.lotm.abilities.core.SelectableAbility;
-import de.jakob.lotm.abilities.error.handler.TheftHandler;
 import de.jakob.lotm.data.ModDataComponents;
 import de.jakob.lotm.item.ModItems;
 import de.jakob.lotm.util.BeyonderData;
@@ -10,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -25,31 +23,24 @@ import java.util.Map;
 
 public class ConceptualTheftAbility extends SelectableAbility {
     public ConceptualTheftAbility(String id) {
-        super(id, 10);
+        super(id, 25);
 
         canBeUsedByNPC = false;
-        canBeShared = false;
     }
 
     @Override
     public Map<String, Integer> getRequirements() {
-        return new HashMap<>(Map.of("error", 1));
+        return new HashMap<>(Map.of("error", 2));
     }
 
     @Override
     protected float getSpiritualityCost() {
-        return 10000;
+        return 2000;
     }
 
     @Override
     protected String[] getAbilityNames() {
-        return new String[]{
-                "ability.lotmcraft.conceptual_theft.day_night",
-                "ability.lotmcraft.conceptual_theft.area",
-                "ability.lotmcraft.conceptual_theft.digestion",
-                "ability.lotmcraft.conceptual_theft.sanity",
-                "ability.lotmcraft.conceptual_theft.luck"
-        };
+        return new String[]{"ability.lotmcraft.conceptual_theft.day_night", "ability.lotmcraft.conceptual_theft.area"};
     }
 
     @Override
@@ -61,60 +52,7 @@ public class ConceptualTheftAbility extends SelectableAbility {
         switch (abilityIndex) {
             case 0 -> stealDayNight(serverLevel, entity);
             case 1 -> stealArea(serverLevel, entity);
-            case 2 -> stealDigestion(level, entity);
-            case 3 -> stealSanity(level, entity);
         }
-    }
-
-    private  void stealLuck(Level level, LivingEntity entity){
-        if(!(level instanceof ServerLevel serverLevel)) {
-            if(entity instanceof Player player) {
-                player.playSound(SoundEvents.BELL_RESONATE, 1, 1);
-            }
-            return;
-        }
-
-        LivingEntity target = AbilityUtil.getTargetEntity(entity, (int) (15 * (multiplier(entity) * multiplier(entity))), 1.5f);
-        if(target == null) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.conceptual_theft.no_target").withColor(0x4742c9));
-            return;
-        }
-
-        TheftHandler.performLuckTheft(entity, target, random, this);
-    }
-
-    private void stealSanity(Level level, LivingEntity entity){
-        if(!(level instanceof ServerLevel serverLevel)) {
-            if(entity instanceof Player player) {
-                player.playSound(SoundEvents.BELL_RESONATE, 1, 1);
-            }
-            return;
-        }
-
-        LivingEntity target = AbilityUtil.getTargetEntity(entity, (int) (15 * (multiplier(entity) * multiplier(entity))), 1.5f);
-        if(target == null) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.conceptual_theft.no_target").withColor(0x4742c9));
-            return;
-        }
-
-        TheftHandler.performSanityTheft(entity, target, random, this);
-    }
-
-    private void stealDigestion(Level level, LivingEntity entity){
-        if(!(level instanceof ServerLevel serverLevel)) {
-            if(entity instanceof Player player) {
-                player.playSound(SoundEvents.BELL_RESONATE, 1, 1);
-            }
-            return;
-        }
-
-        LivingEntity target = AbilityUtil.getTargetEntity(entity, (int) (15 * (multiplier(entity) * multiplier(entity))), 1.5f);
-        if(target == null) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.conceptual_theft.no_target").withColor(0x4742c9));
-            return;
-        }
-
-        TheftHandler.performDigestionTheft(entity, target, random, this);
     }
 
     private void stealDayNight(ServerLevel serverLevel, LivingEntity entity) {
@@ -232,6 +170,4 @@ public class ConceptualTheftAbility extends SelectableAbility {
             }
         }
     }
-
-
 }

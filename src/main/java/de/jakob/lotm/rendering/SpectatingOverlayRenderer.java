@@ -118,6 +118,8 @@ public class SpectatingOverlayRenderer {
         Font font = Minecraft.getInstance().font;
         int y = 15 + (font.lineHeight / 2);
 
+
+
         int outlineX = startingX - 10;
         int outlineY = 15;
         int outlineWidth = screenWidth - outlineX;
@@ -213,9 +215,5 @@ public class SpectatingOverlayRenderer {
         int b = (int) (b1 + (b2 - b1) * ratio);
 
         return (a << 24) | (r << 16) | (g << 8) | b;
-    }
-
-    public static void clearCache() {
-        entitiesLookedAtByPlayerWithActiveSpectating.clear();
     }
 }

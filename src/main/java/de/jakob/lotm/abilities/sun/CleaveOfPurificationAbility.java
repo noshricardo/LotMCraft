@@ -22,11 +22,11 @@ import java.util.Map;
 
 public class CleaveOfPurificationAbility extends Ability {
     public CleaveOfPurificationAbility(String id) {
-        super(id, 1.8f, "purification", "light_weak");
+        super(id, .8f, "purification", "light_weak");
 
         hasOptimalDistance = true;
         optimalDistance = 1f;
-        interactionRadius = 4;
+        interactionRadius = 2;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class CleaveOfPurificationAbility extends Ability {
                 .5, 12, .4
         );
 
-        AbilityUtil.damageNearbyEntities((ServerLevel) level, entity, 2.75* (int) Math.max(multiplier(entity)/4,1), DamageLookup.lookupDamage(7, .9) * (int) Math.max(multiplier(entity)/4,1), startPos, true, false, true, 0, ModDamageTypes.source(level, ModDamageTypes.PURIFICATION, entity));
+        AbilityUtil.damageNearbyEntities((ServerLevel) level, entity, 2.75, DamageLookup.lookupDamage(7, .9) * multiplier(entity), startPos, true, false, true, 0, ModDamageTypes.source(level, ModDamageTypes.PURIFICATION, entity));
 
         BlockState block = level.getBlockState(BlockPos.containing(startPos));
         if(block.isAir()) {

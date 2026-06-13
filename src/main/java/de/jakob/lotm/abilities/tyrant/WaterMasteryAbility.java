@@ -31,9 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class WaterMasteryAbility extends SelectableAbility {
     public WaterMasteryAbility(String id) {
-        super(id, 5f, "water", "water_strong");
-        interactionRadius = 30;
-        interactionCacheTicks = 20 * 30;
+        super(id, 5f);
     }
 
     private final DustParticleOptions dust = new DustParticleOptions(
@@ -109,23 +107,21 @@ public class WaterMasteryAbility extends SelectableAbility {
     }
 
     private void waterWall(ServerLevel level, LivingEntity entity) {
-        Vec3 targetPos = AbilityUtil.getTargetLocation(entity, 12* (int) Math.max(multiplier(entity)/4,1), 1.4f);
+        Vec3 targetPos = AbilityUtil.getTargetLocation(entity, 12, 1.4f);
 
         Vec3 perpendicular = VectorUtil.getPerpendicularVector(entity.getLookAngle()).normalize();
 
         AtomicBoolean isFrozen = new AtomicBoolean(false);
 
         UUID wallId = UUID.randomUUID();
-        ActiveWaterWall wallData = new ActiveWaterWall(targetPos, perpendicular, wallId, 30* (int) Math.max(multiplier(entity)/4,1), -2* (int) Math.max(multiplier(entity)/4,1), 17* (int) Math.max(multiplier(entity)/4,1));
+        ActiveWaterWall wallData = new ActiveWaterWall(targetPos, perpendicular, wallId, 30, -2, 17);
         activeWaterWalls.add(wallData);
 
-        int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
-
-        ServerScheduler.scheduleForDuration(0, 7, 20 * 30* (int) Math.max(multiplier(entity)/4,1), () -> {
+        ServerScheduler.scheduleForDuration(0, 7, 20 * 30, () -> {
             if(random.nextInt(10) == 0)
                 level.playSound(null, targetPos.x, targetPos.y, targetPos.z, SoundEvents.GENERIC_SPLASH, entity.getSoundSource(), 2.0f, 1.0f);
 
-            if(InteractionHandler.isInteractionPossible(new Location(targetPos, level), "freezing", entitySeq)) {
+            if(InteractionHandler.isInteractionPossible(new Location(targetPos, level), "freezing", BeyonderData.getSequence(entity))) {
                 isFrozen.set(true);
             }
 
@@ -143,7 +139,7 @@ public class WaterMasteryAbility extends SelectableAbility {
                     if(random.nextBoolean())
                         ParticleUtil.spawnParticles(level, !isFrozen.get() ? dust : ParticleTypes.SNOWFLAKE, pos, 1, 0.5, 0.02);
 
-                    AbilityUtil.damageNearbyEntities(level, isFrozen.get() ? null : entity, 1.2f, DamageLookup.lookupDamage(4, .35) * (int) Math.max(multiplier(entity)/4,1), pos, true, false, false, 15);
+                    AbilityUtil.damageNearbyEntities(level, isFrozen.get() ? null : entity, 1.2f, DamageLookup.lookupDamage(4, .35) * multiplier(entity), pos, true, false, false, 15);
 
                     for(LivingEntity target : AbilityUtil.getNearbyEntities(isFrozen.get() ? null : entity, level, pos, 1f)) {
                         Vec3 knockback = target.position().subtract(pos).normalize().add(0, .2, 0).scale(1.4f);

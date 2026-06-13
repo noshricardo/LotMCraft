@@ -1,7 +1,6 @@
 package de.jakob.lotm.abilities.common;
 
 import de.jakob.lotm.abilities.core.Ability;
-import de.jakob.lotm.gamerule.ModGameRules;
 import de.jakob.lotm.network.PacketHandler;
 import de.jakob.lotm.network.packets.toClient.PendingAllyRequestPacket;
 import de.jakob.lotm.util.BeyonderData;
@@ -32,10 +31,6 @@ public class AllyAbility extends Ability {
         canBeUsedByNPC = false;
         canAlwaysBeUsed = true;
         doesNotIncreaseDigestion = true;
-        cannotBeStolen = true;
-        canBeReplicated = false;
-        canBeUsedInArtifact = false;
-        canBeShared = false;
     }
 
     @Override
@@ -95,15 +90,6 @@ public class AllyAbility extends Ability {
         UUID requesterUUID = requester.getUUID();
         UUID targetUUID = target.getUUID();
 
-        // Check ally limit (player-to-player only)
-        if (requester.level() instanceof ServerLevel sl) {
-            int maxAllies = sl.getGameRules().getInt(ModGameRules.MAX_ALLY_COUNT);
-            if (maxAllies >= 0 && AllyUtil.getPlayerAllyCount(requester) >= maxAllies) {
-                AbilityUtil.sendActionBar(requester, Component.translatable("lotm.ally.limit_reached", maxAllies).withColor(0xF44336));
-                return;
-            }
-        }
-
         // Check if there's already a pending request from target to requester
         if (hasPendingRequest(targetUUID, requesterUUID)) {
             // Auto-accept if both players want to be allies
@@ -145,24 +131,6 @@ public class AllyAbility extends Ability {
             AbilityUtil.sendActionBar(accepter, Component.translatable("lotm.ally.requester_offline").withColor(0xF44336));
             removePendingRequest(requesterUUID, accepter.getUUID());
             return;
-        }
-
-        // Check ally limits for both players
-        if (accepter.level() instanceof ServerLevel serverLevel) {
-            int maxAllies = serverLevel.getGameRules().getInt(ModGameRules.MAX_ALLY_COUNT);
-            if (maxAllies >= 0) {
-                if (AllyUtil.getPlayerAllyCount(accepter) >= maxAllies) {
-                    AbilityUtil.sendActionBar(accepter, Component.translatable("lotm.ally.limit_reached", maxAllies).withColor(0xF44336));
-                    removePendingRequest(requesterUUID, accepter.getUUID());
-                    return;
-                }
-                if (AllyUtil.getPlayerAllyCount(requester) >= maxAllies) {
-                    AbilityUtil.sendActionBar(accepter, Component.translatable("lotm.ally.requester_limit_reached", requester.getName()).withColor(0xF44336));
-                    AbilityUtil.sendActionBar(requester, Component.translatable("lotm.ally.limit_reached", maxAllies).withColor(0xF44336));
-                    removePendingRequest(requesterUUID, accepter.getUUID());
-                    return;
-                }
-            }
         }
 
         AllyUtil.makeAllies(requester, accepter);

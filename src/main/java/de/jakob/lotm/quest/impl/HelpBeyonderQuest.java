@@ -1,4 +1,4 @@
-//package de.jakob.lotm.quest.impl;
+package de.jakob.lotm.quest.impl;//package de.jakob.lotm.quest.impl;
 //
 //import de.jakob.lotm.LOTMCraft;
 //import de.jakob.lotm.attachments.ModAttachments;

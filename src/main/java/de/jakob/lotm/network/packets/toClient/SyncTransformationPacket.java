@@ -9,7 +9,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record SyncTransformationPacket(int entityId, boolean isTransformed, int transformationIndex, String additionalData) implements CustomPacketPayload {
+public record SyncTransformationPacket(int entityId, boolean isTransformed, int transformationIndex) implements CustomPacketPayload {
     
     public static final Type<SyncTransformationPacket> TYPE =
         new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sync_transformation"));
@@ -21,8 +21,6 @@ public record SyncTransformationPacket(int entityId, boolean isTransformed, int 
         SyncTransformationPacket::isTransformed,
         ByteBufCodecs.INT,
         SyncTransformationPacket::transformationIndex,
-        ByteBufCodecs.STRING_UTF8,
-        SyncTransformationPacket::additionalData,
         SyncTransformationPacket::new
     );
     

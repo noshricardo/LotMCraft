@@ -1,9 +1,8 @@
 package de.jakob.lotm.abilities.abyss;
 
-import de.jakob.lotm.abilities.core.AbilityUsedEvent;
 import de.jakob.lotm.abilities.core.SelectableAbility;
 import de.jakob.lotm.damage.ModDamageTypes;
-import de.jakob.lotm.entity.custom.projectiles.FireballEntity;
+import de.jakob.lotm.entity.custom.ability_entities.projectiles.FireballEntity;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.DamageLookup;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +26,7 @@ import java.util.Map;
 public class FlameSpellsAbility extends SelectableAbility {
 
     public FlameSpellsAbility(String id) {
-        super(id, 1.75f, "burning");
+        super(id, .75f);
     }
 
     @Override
@@ -70,8 +68,7 @@ public class FlameSpellsAbility extends SelectableAbility {
         level.playSound(null, BlockPos.containing(startPos), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 3, 1);
 
         AbilityUtil.getNearbyEntities(entity, (ServerLevel) level, startPos, 5).forEach(e -> {
-            e.hurt(ModDamageTypes.source(level, ModDamageTypes.BEYONDER_GENERIC, entity), (float) (DamageLookup.lookupDamage(6, .875) *
-                    multiplier(entity)));
+            e.hurt(ModDamageTypes.source(level, ModDamageTypes.BEYONDER_GENERIC, entity), (float) (DamageLookup.lookupDamage(6, .875) * multiplier(entity)));
             e.setRemainingFireTicks(20 * 3);
             Vec3 knockBack = new Vec3(e.position().subtract(startPos).normalize().x, .75, e.position().subtract(startPos).normalize().z).normalize().scale(.5);
             e.setDeltaMovement(knockBack);
@@ -86,8 +83,6 @@ public class FlameSpellsAbility extends SelectableAbility {
         AbilityUtil.getBlocksInCircleOutline((ServerLevel) level, startPos.subtract(0, 1, 0), 3).forEach(b -> {
             spawnFallingBlocks(level, startPos, b, griefing);
         });
-
-        NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level, startPos, entity, this, new String[]{"explosion", "burning"}, 4, 20));
     }
 
     private void spawnFallingBlocks(Level level, Vec3 startPos, BlockPos b, boolean griefing) {
@@ -121,10 +116,7 @@ public class FlameSpellsAbility extends SelectableAbility {
 
         level.playSound(null, startPos.x, startPos.y, startPos.z, SoundEvents.BLAZE_SHOOT, entity.getSoundSource(), 1.0f, 1.0f);
 
-        float damage = (float) DamageLookup.lookupDamage(6, .75) *
-                multiplier(entity);
-
-        FireballEntity fireball = new FireballEntity(level, entity, damage, BeyonderData.isGriefingEnabled(entity));
+        FireballEntity fireball = new FireballEntity(level, entity, DamageLookup.lookupDamage(6, .75) * multiplier(entity), BeyonderData.isGriefingEnabled(entity));
         fireball.setPos(startPos.x, startPos.y, startPos.z); // Set initial position
         fireball.shoot(direction.x, direction.y, direction.z, 1.2f, 0);
         level.addFreshEntity(fireball);

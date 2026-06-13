@@ -1,8 +1,8 @@
 package de.jakob.lotm.gui.custom.HonorificNames;
 
 import de.jakob.lotm.gui.ModMenuTypes;
-import de.jakob.lotm.util.playerMap.HonorificName;
-import de.jakob.lotm.util.playerMap.PendingPrayer;
+import de.jakob.lotm.util.beyonderMap.HonorificName;
+import de.jakob.lotm.util.beyonderMap.PendingPrayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -17,7 +17,6 @@ public class HonorificNamesMenu extends AbstractContainerMenu {
     private final String pathway;
     private final int sequence;
     private final LinkedList<PendingPrayer> pendingPrayers;
-    private final boolean sefirotOwner;
 
     // CLIENT constructor (reads from network buffer)
     public HonorificNamesMenu(int id, Inventory inv, FriendlyByteBuf buf) {
@@ -26,20 +25,18 @@ public class HonorificNamesMenu extends AbstractContainerMenu {
                 HonorificName.fromNetwork(buf),
                 buf.readUtf(64),
                 buf.readInt(),
-                buf.readCollection(s -> new LinkedList<>(), PendingPrayer::fromNetwork),
-                buf.readBoolean()
+                buf.readCollection(s -> new LinkedList<>(), PendingPrayer::fromNetwork)
         );
     }
 
     // SERVER constructor
     public HonorificNamesMenu(int id, Inventory inv, HonorificName ownName, String pathway, int sequence,
-                              LinkedList<PendingPrayer> pendingPrayers, boolean sefirotOwner) {
+                              LinkedList<PendingPrayer> pendingPrayers) {
         super(ModMenuTypes.HONORIFIC_NAMES_MENU.get(), id);
         this.ownName = ownName;
         this.pathway = pathway;
         this.sequence = sequence;
         this.pendingPrayers = pendingPrayers;
-        this.sefirotOwner = sefirotOwner;
     }
 
     public HonorificName getOwnName() {
@@ -56,10 +53,6 @@ public class HonorificNamesMenu extends AbstractContainerMenu {
 
     public LinkedList<PendingPrayer> getPendingPrayers() {
         return pendingPrayers;
-    }
-
-    public boolean isSefirotOwner() {
-        return sefirotOwner;
     }
 
     @Override

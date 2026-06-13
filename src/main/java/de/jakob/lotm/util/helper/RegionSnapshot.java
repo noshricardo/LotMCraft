@@ -1,12 +1,10 @@
 package de.jakob.lotm.util.helper;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +16,15 @@ public class RegionSnapshot {
 
     public RegionSnapshot(Level level, BlockPos center, int radius) {
         this.level = level;
+        // Don't capture anything on creation - we'll capture blocks as they're modified
     }
 
-
+    /**
+     * Capture the current state of a block before modifying it.
+     * This should be called BEFORE any block modification.
+     */
     public void captureBlock(BlockPos pos) {
+        // Only capture if we haven't already captured this position
         if (!blockStates.containsKey(pos)) {
             BlockPos immutablePos = pos.immutable();
             blockStates.put(immutablePos, level.getBlockState(pos));
@@ -33,14 +36,16 @@ public class RegionSnapshot {
         }
     }
 
-    public void captureSphere(Level level, BlockPos center, int radius) {
+    /**
+     * Capture all blocks in a spherical region before modifying them.
+     */
+    public void captureSphere(BlockPos center, int radius) {
         for (int x = -radius; x <= radius; x++) {
             for (int y = -radius; y <= radius; y++) {
                 for (int z = -radius; z <= radius; z++) {
                     double distance = Math.sqrt(x * x + y * y + z * z);
                     if (distance <= radius) {
                         BlockPos pos = center.offset(x, y, z);
-                        if(level.getBlockEntity(pos) != null) continue;
                         captureBlock(pos);
                     }
                 }
@@ -49,6 +54,7 @@ public class RegionSnapshot {
     }
 
     public void restore(Level level) {
+        // Remove current block entities first
         blockEntityData.keySet().forEach(pos -> {
             BlockEntity existing = level.getBlockEntity(pos);
             if (existing != null) {
@@ -56,9 +62,9 @@ public class RegionSnapshot {
             }
         });
 
-
+        // Restore blocks
         blockStates.forEach((pos, state) -> {
-            level.setBlock(pos, state, 3);
+            level.setBlock(pos, state, 3); // Flag 3 = update + notify
         });
 
         // Restore block entities

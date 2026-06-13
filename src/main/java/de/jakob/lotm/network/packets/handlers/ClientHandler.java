@@ -3,44 +3,33 @@ package de.jakob.lotm.network.packets.handlers;
 import com.zigythebird.playeranimcore.math.Vec3f;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.Ability;
-import de.jakob.lotm.abilities.core.SelectableAbility;
 import de.jakob.lotm.abilities.core.ToggleAbility;
-import de.jakob.lotm.abilities.visionary.prophecy.VisionaryAbilityMenus;
 import de.jakob.lotm.attachments.AllyComponent;
 import de.jakob.lotm.attachments.DisabledAbilitiesComponent;
 import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.block.ModBlocks;
 import de.jakob.lotm.entity.custom.ability_entities.OriginalBodyEntity;
-import de.jakob.lotm.gui.custom.AbilitySeal.AbilitySealScreen;
-import de.jakob.lotm.gui.custom.AboveSeqAuthority.AboveSeqAuthorityScreen;
-import de.jakob.lotm.gui.custom.CharSlotRoll.CharSlotRollScreen;
 import de.jakob.lotm.gui.custom.CoordinateInput.CoordinateInputScreen;
-import de.jakob.lotm.gui.custom.InternalUnderworld.InternalUnderworldAbilityScreen;
 import de.jakob.lotm.gui.custom.Introspect.IntrospectScreen;
 import de.jakob.lotm.gui.custom.Quest.QuestAcceptanceScreen;
-import de.jakob.lotm.gui.custom.RiverVault.RiverVaultScreen;
-import de.jakob.lotm.gui.custom.SelectionGui.*;
+import de.jakob.lotm.gui.custom.SelectionGui.PlayerSelectionGui;
+import de.jakob.lotm.gui.custom.SelectionGui.ShapeShiftingSelectionGui;
+import de.jakob.lotm.gui.custom.SelectionGui.StructureSelectionGui;
 import de.jakob.lotm.network.packets.toClient.*;
 import de.jakob.lotm.quest.Quest;
 import de.jakob.lotm.quest.QuestRegistry;
 import de.jakob.lotm.rendering.*;
 import de.jakob.lotm.rendering.effectRendering.impl.VFXRenderer;
 import de.jakob.lotm.util.ClientBeyonderCache;
-import de.jakob.lotm.util.ClientSacrificeCache;
-import de.jakob.lotm.util.ClientAccommodationCache;
-import de.jakob.lotm.util.helper.AnimationUtil;
 import de.jakob.lotm.util.helper.RingExpansionRenderer;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -53,9 +42,6 @@ import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.joml.Random;
 
-import de.jakob.lotm.network.packets.toClient.SyncAnchorsPacket;
-import de.jakob.lotm.util.data.ClientData;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -63,32 +49,8 @@ import java.util.UUID;
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(modid = LOTMCraft.MOD_ID, value = Dist.CLIENT)
 public class ClientHandler {
-    public static void handleSyncAnchors(SyncAnchorsPacket packet) {
-        ClientData.setAnchors(packet.anchors());
-    }
-
     public static void openCoordinateScreen(Player player, String use) {
         Minecraft.getInstance().setScreen(new CoordinateInputScreen(player, use));
-    }
-
-    public static void handleOpenInternalUnderworldAbilityScreenPacket(boolean isRiverOwner) {
-        // Swap generic chest UI with the custom Internal Underworld screen.
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null) return;
-        if (!(mc.screen instanceof AbstractContainerScreen<?> containerScreen)) return;
-        if (containerScreen instanceof InternalUnderworldAbilityScreen) return;
-        if (!(containerScreen.getMenu() instanceof ChestMenu chestMenu)) return;
-
-        String title = containerScreen.getTitle().getString();
-        // Strip Minecraft formatting codes for comparison (§ followed by any char).
-        String cleanTitle = title.replaceAll("§.", "");
-        String selectSoulTitle = Component.translatable("ability.lotmcraft.internal_underworld.select_soul").getString();
-        boolean isUnderworldTitle = title.startsWith("Internal Underworld - ")
-                || title.equals(selectSoulTitle)
-                || cleanTitle.equals("River Soul Vault");
-        if (!isUnderworldTitle) return;
-
-        mc.setScreen(new InternalUnderworldAbilityScreen(chestMenu, mc.player.getInventory(), containerScreen.getTitle(), isRiverOwner));
     }
 
     public static void syncLivingEntityBeyonderData(SyncLivingEntityBeyonderDataPacket packet) {
@@ -138,19 +100,6 @@ public class ClientHandler {
         }
         else {
             SpiritVisionOverlayRenderer.entitiesLookedAt.remove(player.getUUID());
-        }
-    }
-
-    public static void syncEyeOfDeathAbility(SyncEyeOfDeathAbilityPacket packet, Player player) {
-        if (packet.active()) {
-            Level level = Minecraft.getInstance().level;
-            if (level == null) return;
-
-            Entity entity = packet.entityId() == -1 ? null : level.getEntity(packet.entityId());
-            LivingEntity living = entity instanceof LivingEntity ? (LivingEntity) entity : null;
-            EyeOfDeathOverlayRenderer.entitiesLookedAt.put(player.getUUID(), living);
-        } else {
-            EyeOfDeathOverlayRenderer.entitiesLookedAt.remove(player.getUUID());
         }
     }
 
@@ -240,7 +189,6 @@ public class ClientHandler {
 
         entity.getData(ModAttachments.TRANSFORMATION_COMPONENT.get()).setTransformed(packet.isTransformed());
         entity.getData(ModAttachments.TRANSFORMATION_COMPONENT.get()).setTransformationIndex(packet.transformationIndex());
-        entity.getData(ModAttachments.TRANSFORMATION_COMPONENT.get()).setAdditionalData(packet.additionalData());
     }
 
     public static void changeToThirdPerson(LivingEntity entity) {
@@ -253,10 +201,6 @@ public class ClientHandler {
         Minecraft minecraft = Minecraft.getInstance();
         if(minecraft.player == entity)
             minecraft.options.setCameraType(CameraType.FIRST_PERSON);
-    }
-
-    public static void handleGreyFogStatus(boolean inside) {
-        de.jakob.lotm.rendering.GreyFogOverlayRenderer.insideGreyFog = inside;
     }
 
     public static void handleShaderPacket(SyncShaderPacket packet) {
@@ -353,32 +297,6 @@ public class ClientHandler {
             return;
         }
         entity.getData(ModAttachments.SANITY_COMPONENT.get()).setSanity(packet.sanity());
-    }
-
-    public static void handleCorruptionPacket(SyncCorruptionPacket packet) {
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level == null) return;
-
-        Entity entity = level.getEntity(packet.entityId());
-        if(entity == null) {
-            return;
-        }
-        entity.getData(ModAttachments.CORRUPTION_COMPONENT.get()).setCorruption(packet.corruption());
-    }
-
-    public static void handleSkillScalingPacket(SyncSkillScalingPacket packet) {
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level == null) return;
-
-        Entity entity = level.getEntity(packet.entityId());
-        if(entity == null) {
-            return;
-        }
-        var component = entity.getData(ModAttachments.SKILL_SCALING_COMPONENT.get());
-
-        component.setScalingToSkill(packet.scaleToSkill())
-                .setPath(packet.path())
-                .setSeq(packet.seq());
     }
 
     public static void handleAllyPacket(SyncAllyDataPacket packet) {
@@ -504,40 +422,16 @@ public class ClientHandler {
         ));
     }
 
-    public static Player getPlayer() {
-        return Minecraft.getInstance().player;
-    }
-
     public static void handlePlayerDivinationScreenPacket(OpenPlayerDivinationScreenPacket packet) {
-        Minecraft.getInstance().setScreen(new PlayerSelectionGui(packet.players(), packet.types()));
-    }
-
-    public static void openPsychologicalCueExplanation() {
-        Minecraft.getInstance().setScreen(VisionaryAbilityMenus.createPsychologicalCueAbilityMenu(Minecraft.getInstance().screen));
-    }
-
-    public static void openStoryWritingExplanation() {
-        Minecraft.getInstance().setScreen(VisionaryAbilityMenus.createStoryWritingAbilityMenu(Minecraft.getInstance().screen));
+        Minecraft.getInstance().setScreen(new PlayerSelectionGui(packet.players()));
     }
 
     public static void handleStructureDivinationScreenPacket(OpenStructureDivinationScreenPacket packet) {
         Minecraft.getInstance().setScreen(new StructureSelectionGui(packet.structureIds()));
     }
 
-    public static void handleBiomeDivinationScreenPacket(OpenBiomeDivinationScreenPacket packet) {
-        Minecraft.getInstance().setScreen(new BiomeSelectionGui(packet.biomeIds()));
-    }
-
-    public static void handleShapeShiftingScreenPacket(OpenShapeShiftingScreenPacket packet) {
-        Minecraft.getInstance().setScreen(new ShapeShiftingSelectionGui(packet.entityTypes()));
-    }
-
-    public static void handleDiscernmentScreenPacket(OpenDiscernmentScreenPacket packet) {
-        Minecraft.getInstance().setScreen(new DiscernmentSelectionGui(packet.saved()));
-    }
-
-    public static void handleHistoricalVoidBorrowingScreenPacket(OpenHistoricalVoidBorrowingScreenPacket packet) {
-        Minecraft.getInstance().setScreen(new HistoricalVoidBorrowingSelectionGui(packet.options()));
+    public static void handleShapeShiftingScreenPacket(OpenShapeShiftingScreenPacket payload) {
+        Minecraft.getInstance().setScreen(new ShapeShiftingSelectionGui(payload.entityTypes()));
     }
 
     public static void handleOriginalBodyOwnerSyncPacket(SyncOriginalBodyOwnerPacket packet) {
@@ -568,8 +462,6 @@ public class ClientHandler {
             return;
         }
 
-        if(entity != Minecraft.getInstance().player) return;
-
         switch (packet.action()) {
             case 0 -> {
                 ActiveToggleAbilitiesRenderer.activeToggleAbilities.add(packet.abilityId());
@@ -593,200 +485,6 @@ public class ClientHandler {
         Entity entity = level.getEntity(packet.entityId());
         if (entity != null) {
             entity.getTags().add(packet.tag());
-        }
-    }
-
-    public static void handleSyncWeaknessDetectionPacket(SyncWeaknessDetectionTargetsAbilityPacket packet) {
-        WeaknessDetectionRenderLayer.activeWeaknessDetection.clear();
-        if (packet.active()) {
-            WeaknessDetectionRenderLayer.activeWeaknessDetection.putAll(packet.targets());
-        }
-    }
-
-    public static void handleControllingDataPacket(SyncControllingDataPacket packet) {
-        Entity entity = Minecraft.getInstance().level.getEntity(packet.entityId());
-        if(entity == null) {
-            return;
-        }
-        entity.getData(ModAttachments.CONTROLLING_DATA.get()).setControlling(packet.isControlling());
-        entity.getData(ModAttachments.CONTROLLING_DATA.get()).setBodyEntity(packet.bodyEntity());
-
-        if (Minecraft.getInstance().screen instanceof IntrospectScreen screen) {
-            screen.refreshAvailableAbilities();
-        }
-    }
-
-    public static void handleDiscernmentDataPacket(SyncDiscernmentDataPacket packet) {
-        Entity entity = Minecraft.getInstance().level.getEntity(packet.entityId());
-        if(entity == null) {
-            return;
-        }
-        entity.getData(ModAttachments.DISCERNMENT_DATA.get()).setDiscerning(packet.isDiscerning());
-    }
-
-    public static void syncKillCount(int killCount) {
-        ClientSacrificeCache.setKillCount(killCount);
-        if (Minecraft.getInstance().screen instanceof IntrospectScreen screen) {
-            screen.updateKillCount(killCount);
-        }
-    }
-
-    public static void syncSacrificeDuration(int totalTicks) {
-        ClientSacrificeCache.setTotalTicks(totalTicks);
-        ClientSacrificeCache.setRemainingTicks(totalTicks);
-    }
-
-    public static void syncSefirotAccommodation(int progressTicks, int totalTicks) {
-        if (totalTicks <= 0 || progressTicks <= 0) {
-            ClientAccommodationCache.reset();
-            return;
-        }
-
-        ClientAccommodationCache.setProgress(progressTicks, totalTicks);
-    }
-
-    public static void syncCullAbility(boolean active, UUID playerUUID) {
-        if (active) {
-            CullOverlay.playersWithCullActivated.add(playerUUID);
-        } else {
-            CullOverlay.playersWithCullActivated.remove(playerUUID);
-        }
-    }
-
-    public static void handleSpiritChannelingPacket(de.jakob.lotm.network.packets.toClient.SyncSpiritChannelingPacket packet) {
-        de.jakob.lotm.util.ClientSpiritCache.setSpiritTypeOrdinal(packet.spiritType());
-    }
-
-    public static void handleSyncIntrospectMenuPacket(SyncIntrospectMenuPacket packet, UUID playerUUID) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.screen instanceof IntrospectScreen screen) {
-            screen.updateMenuData(packet.sequence(), packet.pathway(), ClientBeyonderCache.getDigestionProgress(playerUUID), packet.sanity(), packet.corruption());
-            screen.refreshAvailableAbilities();
-        }
-    }
-
-    public static void handleSyncBeyonderData(SyncBeyonderDataPacket packet, IPayloadContext context) {
-        Player player = context.player();
-        ClientBeyonderCache.updateData(
-                player.getUUID(),
-                packet.pathway(),
-                packet.sequence(),
-                packet.spirituality(),
-                packet.griefingEnabled(),
-                true,
-                packet.digestionProgress(),
-                packet.pathwayHistory(),
-                packet.charList()
-        );
-
-        // Update received blessings
-        de.jakob.lotm.attachments.ReceivedBlessingComponent receivedBlessings = player.getData(de.jakob.lotm.attachments.ModAttachments.RECEIVED_BLESSING_COMPONENT);
-        receivedBlessings.getBlessings().clear();
-        receivedBlessings.getBlessings().addAll(packet.blessings());
-
-        if (Minecraft.getInstance().screen instanceof IntrospectScreen screen) {
-            screen.refreshAvailableAbilities();
-        }
-    }
-
-    public static void handleSyncLivingEntityBeyonderData(SyncLivingEntityBeyonderDataPacket packet, IPayloadContext context) {
-        if (!context.flow().isClientbound()) return;
-        syncLivingEntityBeyonderData(packet);
-
-        if (Minecraft.getInstance().screen instanceof IntrospectScreen screen) {
-            screen.refreshAvailableAbilities();
-        }
-    }
-
-    public static void handleSyncIntrospectMenu(SyncIntrospectMenuPacket packet, IPayloadContext context) {
-        handleSyncIntrospectMenuPacket(packet, context.player().getUUID());
-    }
-
-    public static void handleApotheosisPacket(SyncApotheosisPacket packet) {
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level == null) return;
-
-        Entity entity = level.getEntity(packet.entityId());
-        if (entity instanceof LivingEntity living) {
-            living.getData(ModAttachments.APOTHEOSIS_COMPONENT).setApotheosisTicksLeft(packet.ticks());
-            living.getData(ModAttachments.APOTHEOSIS_COMPONENT).setPathway(packet.pathway());
-        }
-    }
-
-    public static void playAnimation(PlayAnimationPacket packet) {
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level == null) return;
-
-        Entity entity = level.getEntity(packet.playerId());
-        if(!(entity instanceof AbstractClientPlayer player)) {
-            return;
-        }
-
-        AnimationUtil.playAnimation(player, AnimationUtil.getResourceLocationById(packet.animId()));
-    }
-
-    public static void handleAbilitySelectionPacket(SyncAbilitySelectionPacket packet) {
-        if (!(LOTMCraft.abilityHandler.getById(packet.abilityId()) instanceof SelectableAbility selectable)) return;
-        var player = Minecraft.getInstance().player;
-        if (player == null) return;
-        selectable.setSelectedAbilityClient(player.getUUID(), packet.selectedIndex());
-    }
-
-    public static void openCharSlotRollScreen(OpenCharSlotRollPacket packet) {
-        Minecraft mc = Minecraft.getInstance();
-        // If a CharSlotRollScreen is already open (server responding to a reroll), update
-        // it in-place instead of creating a new one — this preserves Konami bonus rerolls
-        // and the konamiUsed counter which would otherwise reset to 0 on the new screen.
-        if (mc.screen instanceof CharSlotRollScreen existing) {
-            existing.serverAcknowledgedReroll(packet.rerollsLeft());
-        } else {
-            mc.setScreen(new CharSlotRollScreen(packet.pathways(), packet.charNames(), packet.rerollsLeft()));
-        }
-    }
-
-    public static void openAbilitySealScreen(OpenAbilitySealScreenPacket packet) {
-        Minecraft.getInstance().setScreen(
-                new AbilitySealScreen(
-                        packet.targetUUIDStr(),
-                        packet.targetName(),
-                        packet.abilityIds(),
-                        packet.abilityNames(),
-                        packet.currentlySealed()));
-    }
-
-    public static void openAboveSeqAuthorityScreen() {
-        Minecraft.getInstance().setScreen(new AboveSeqAuthorityScreen());
-    }
-
-    public static void openDailySpinScreen(de.jakob.lotm.network.packets.toClient.OpenDailySpinScreenPacket packet) {
-        Minecraft.getInstance().setScreen(
-                new de.jakob.lotm.gui.custom.DailySpin.DailySpinScreen(
-                        packet.reelNames(), packet.landingIndex(), packet.canSpin()));
-    }
-
-    public static void openSellYourSoulScreen(de.jakob.lotm.network.packets.toClient.OpenSellYourSoulScreenPacket packet) {
-        Minecraft.getInstance().setScreen(
-                new de.jakob.lotm.gui.custom.SellYourSoul.SellYourSoulScreen(
-                        packet.outcome(), packet.rewardName()));
-    }
-
-    public static void openSellYourSoulGateScreen(de.jakob.lotm.network.packets.toClient.OpenSellYourSoulGatePacket packet) {
-        Minecraft.getInstance().setScreen(
-                new de.jakob.lotm.gui.custom.SellYourSoul.SellYourSoulGateScreen(packet.cooldownEndMillis()));
-    }
-
-    public static void openCharExchangeWheelScreen(de.jakob.lotm.network.packets.toClient.OpenCharExchangeWheelPacket packet) {
-        Minecraft.getInstance().setScreen(
-                new de.jakob.lotm.gui.custom.CharExchange.CharExchangeWheelScreen(
-                        packet.reelNames(), packet.landingIndex(), packet.outcome(), packet.rewardName(), packet.title()));
-    }
-
-    public static void handleOpenRiverVaultScreen(de.jakob.lotm.network.packets.toClient.OpenRiverVaultScreenPacket packet) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null) {
-            mc.setScreen(new de.jakob.lotm.gui.custom.RiverVault.RiverVaultScreen(
-                    packet.vaultItems(), packet.iuItems(),
-                    packet.maxIU(), packet.vaultCapacity()));
         }
     }
 }

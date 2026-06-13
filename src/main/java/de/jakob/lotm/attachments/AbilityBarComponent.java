@@ -20,13 +20,6 @@ public class AbilityBarComponent implements INBTSerializable<CompoundTag> {
         this.abilities = abilities;
     }
 
-    public AbilityBarComponent copy(){
-        var result = new AbilityBarComponent();
-        result.abilities = new ArrayList<>(abilities);
-
-        return result;
-    }
-
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();

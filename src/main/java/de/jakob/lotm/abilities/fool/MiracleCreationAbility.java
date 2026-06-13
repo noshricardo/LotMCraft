@@ -36,7 +36,6 @@ CATEGORIES:
 public class MiracleCreationAbility extends SelectableAbility {
     public MiracleCreationAbility(String id) {
         super(id, 5);
-        canBeShared = false;
     }
 
     @Override
@@ -46,7 +45,7 @@ public class MiracleCreationAbility extends SelectableAbility {
 
     @Override
     protected float getSpiritualityCost() {
-        return 7000;
+        return 1200;
     }
 
     @Override

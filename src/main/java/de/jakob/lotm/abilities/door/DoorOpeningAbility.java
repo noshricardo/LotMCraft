@@ -42,7 +42,7 @@ public class DoorOpeningAbility extends Ability {
         if(level.isClientSide)
             return;
 
-        BlockPos targetLoc = AbilityUtil.getTargetBlock(entity, 15, false);
+        BlockPos targetLoc = AbilityUtil.getTargetBlock(entity, 25, false);
 
         if(level.getBlockState(targetLoc).isAir()) {
             Vec3 failureParticleLoc = AbilityUtil.getTargetBlock(entity, 4).getCenter();
@@ -51,6 +51,7 @@ public class DoorOpeningAbility extends Ability {
             return;
         }
 
+        // Get the cardinal direction closest to facing the player
         Direction facingDirection = getClosestCardinalDirection(entity, targetLoc);
 
         // Check if the target block is exposed in that direction
@@ -59,9 +60,10 @@ public class DoorOpeningAbility extends Ability {
             Vec3 failureParticleLoc = AbilityUtil.getTargetBlock(entity, 4).getCenter();
             spawnFailureParticles((ServerLevel) level, failureParticleLoc);
             level.playSound(null, failureParticleLoc.x, failureParticleLoc.y, failureParticleLoc.z, SoundEvents.WOODEN_DOOR_OPEN, SoundSource.BLOCKS, 1, 1);
-            return;
+            return; // Block is not exposed in that direction
         }
 
+        // Check blocks above and below
         BlockPos blockBelow = targetLoc.below();
         BlockPos blockAbove = targetLoc.above();
 
@@ -82,37 +84,25 @@ public class DoorOpeningAbility extends Ability {
         // Determine the starting position for the door
         BlockPos doorStartPos;
         if (belowExposed) {
+            // Both are exposed, shift to the block below
             doorStartPos = blockBelow;
         } else {
+            // Only above is exposed, use current position
             doorStartPos = targetLoc;
         }
+        // Spawn the apprentice door
         Vec3 blockCenter = new Vec3(doorStartPos.getX() + 0.5, doorStartPos.getY(), doorStartPos.getZ() + 0.5);
         ApprenticeDoorEntity door = new ApprenticeDoorEntity(
-                ModEntities.APPRENTICE_DOOR.get(),
+                ModEntities.APPRENTICE_DOOR.get(), // Assuming this is your registered entity type
                 level,
                 facingDirection,
                 blockCenter,
-                20 * 10,
-                getMaxRadius(AbilityUtil.getSeqWithArt(entity, this))
+                20 * 10
         );
 
         level.addFreshEntity(door);
 
         level.playSound(null, blockCenter.x, blockCenter.y, blockCenter.z, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1, 1);
-    }
-
-    private int getMaxRadius(int sequence) {
-        return switch (sequence) {
-            default -> 2;
-            case 8 -> 4;
-            case 7 -> 6;
-            case 6 -> 7;
-            case 5 -> 10;
-            case 4 -> 50;
-            case 3 -> 70;
-            case 2 -> 200;
-            case 1 -> 500;
-        };
     }
 
     private final DustParticleOptions blueDust = new DustParticleOptions(
@@ -129,8 +119,9 @@ public class DoorOpeningAbility extends Ability {
         Vec3 entityPos = entity.position();
         Vec3 blockPos = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
 
-        Vec3 direction = entityPos.subtract(blockPos).normalize();
+        Vec3 direction = entityPos.subtract(blockPos).normalize(); // Reversed: from block to player
 
+        // Find the cardinal direction with the largest component
         double absX = Math.abs(direction.x);
         double absZ = Math.abs(direction.z);
 

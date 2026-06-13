@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class UnshadowedDomainAbility extends Ability {
     public UnshadowedDomainAbility(String id) {
-        super(id, 50, "purification", "purification_holy", "light_source", "light_strong", "light_weak");
+        super(id, 50, "purification", "light_source", "light_strong", "light_weak");
         interactionRadius = 40;
         interactionCacheTicks = 20 * 30;
     }
@@ -40,7 +40,7 @@ public class UnshadowedDomainAbility extends Ability {
 
     @Override
     protected float getSpiritualityCost() {
-        return 800;
+        return 600;
     }
 
     private final DustParticleOptions dust = new DustParticleOptions(new Vector3f(1f, 185 / 255f, 3 / 255f), 10f);
@@ -67,18 +67,15 @@ public class UnshadowedDomainAbility extends Ability {
 
         blocks.forEach(b -> level.setBlockAndUpdate(b, Blocks.LIGHT.defaultBlockState()));
 
-        double multiplier = multiplier(entity);
-        int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
-
-        ServerScheduler.scheduleForDuration(0, 10, 20 * 20* (int) Math.max(multiplier(entity)/4,1), () -> {
+        ServerScheduler.scheduleForDuration(0, 10, 20 * 30, () -> {
             ParticleUtil.spawnParticles((ServerLevel) level, dust, startPos, 120, 25, 5, 25, 0);
             ParticleUtil.spawnParticles((ServerLevel) level, ParticleTypes.END_ROD, startPos, 120, 25, 5, 25, 0);
 
-            AbilityUtil.addPotionEffectToNearbyEntities((ServerLevel) level, entity, 40* (int) Math.max(multiplier(entity)/4,1), startPos, new MobEffectInstance(MobEffects.GLOWING, 20 * 2, 1, false, false, false));
-            AbilityUtil.getNearbyEntities(entity, (ServerLevel) level, startPos, 40* (int) Math.max(multiplier(entity)/4,1))
+            AbilityUtil.addPotionEffectToNearbyEntities((ServerLevel) level, entity, 40, startPos, new MobEffectInstance(MobEffects.GLOWING, 20 * 2, 1, false, false, false));
+            AbilityUtil.getNearbyEntities(entity, (ServerLevel) level, startPos, 40)
                     .stream()
-                    .filter(e -> (!BeyonderData.isBeyonder(e) || BeyonderData.getSequence(e) > entitySeq) && (e instanceof Mob || e instanceof Player))
-                    .forEach(e -> e.hurt(ModDamageTypes.source(level, ModDamageTypes.PURIFICATION_INDIRECT, entity), (float) (DamageLookup.lookupDps(4, .4, 10, 20) * (int) Math.max(multiplier(entity)/4,1))));
+                    .filter(e -> (!BeyonderData.isBeyonder(e) || BeyonderData.getSequence(e) > BeyonderData.getSequence(entity)) && (e instanceof Mob || e instanceof Player))
+                    .forEach(e -> e.hurt(ModDamageTypes.source(level, ModDamageTypes.PURIFICATION, entity), (float) (DamageLookup.lookupDps(4, .4, 10, 20) * multiplier(entity))));
         }, () -> blocks.forEach(b -> {
             BlockState state = level.getBlockState(b);
             if(state.is(Blocks.LIGHT))

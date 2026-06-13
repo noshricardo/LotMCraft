@@ -3,8 +3,8 @@ package de.jakob.lotm.abilities.red_priest;
 import com.google.common.util.concurrent.AtomicDouble;
 import de.jakob.lotm.abilities.core.SelectableAbility;
 import de.jakob.lotm.entity.custom.FireRavenEntity;
-import de.jakob.lotm.entity.custom.projectiles.FireballEntity;
-import de.jakob.lotm.entity.custom.projectiles.FlamingSpearProjectileEntity;
+import de.jakob.lotm.entity.custom.ability_entities.projectiles.FireballEntity;
+import de.jakob.lotm.entity.custom.ability_entities.projectiles.FlamingSpearProjectileEntity;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.DamageLookup;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class PyrokinesisAbility extends SelectableAbility {
 
     public PyrokinesisAbility(String id) {
-        super(id, 1.25f, "burning");
+        super(id, .75f);
     }
 
     @Override
@@ -66,13 +66,13 @@ public class PyrokinesisAbility extends SelectableAbility {
             return;
 
         Vec3 startPos = VectorUtil.getRelativePosition(entity.getEyePosition().add(entity.getLookAngle().normalize()), entity.getLookAngle().normalize(), 0, random.nextDouble(1, 2.85f), random.nextDouble(-.1, .6));
-        Vec3 direction = AbilityUtil.getTargetLocation(entity, 50* (int) Math.max(multiplier(entity)/4,1), 1.4f).subtract(startPos).normalize();
+        Vec3 direction = AbilityUtil.getTargetLocation(entity, 50, 1.4f).subtract(startPos).normalize();
 
         level.playSound(null, startPos.x, startPos.y, startPos.z, SoundEvents.BLAZE_SHOOT, entity.getSoundSource(), 1.0f, 1.0f);
 
-        FlamingSpearProjectileEntity spear = new FlamingSpearProjectileEntity(level, entity, DamageLookup.lookupDamage(7, 0.9) * (int) Math.max(multiplier(entity)/4,1), BeyonderData.isGriefingEnabled(entity));
+        FlamingSpearProjectileEntity spear = new FlamingSpearProjectileEntity(level, entity, DamageLookup.lookupDamage(7, .8) * multiplier(entity), BeyonderData.isGriefingEnabled(entity));
         spear.setPos(startPos.x, startPos.y, startPos.z); // Set initial position
-        spear.shoot(direction.x, direction.y, direction.z, 2f*(int) Math.max(multiplier(entity)/4,1), 0);
+        spear.shoot(direction.x, direction.y, direction.z, 1.6f, 0);
         level.addFreshEntity(spear);
 
     }
@@ -88,10 +88,10 @@ public class PyrokinesisAbility extends SelectableAbility {
             FireRavenEntity fireRaven;
             if(target == null) {
                 Vec3 targetPos = AbilityUtil.getTargetLocation(entity, 40, 1.4f);
-                fireRaven = new FireRavenEntity(level, targetPos, entity, DamageLookup.lookupDamage(7, .5) * (int) Math.max(multiplier(entity)/4,1), BeyonderData.isGriefingEnabled(entity));
+                fireRaven = new FireRavenEntity(level, targetPos, entity, DamageLookup.lookupDamage(7, .5) * multiplier(entity), BeyonderData.isGriefingEnabled(entity));
             }
             else {
-                fireRaven = new FireRavenEntity(level, target, entity, DamageLookup.lookupDamage(7, .5) * (int) Math.max(multiplier(entity)/4,1), BeyonderData.isGriefingEnabled(entity));
+                fireRaven = new FireRavenEntity(level, target, entity, DamageLookup.lookupDamage(7, .5) * multiplier(entity), BeyonderData.isGriefingEnabled(entity));
             }
 
             fireRaven.setInvulnerable(true);
@@ -109,8 +109,6 @@ public class PyrokinesisAbility extends SelectableAbility {
 
         Vec3 perpendicular = VectorUtil.getPerpendicularVector(entity.getLookAngle()).normalize();
 
-        double multiplier = multiplier(entity);
-
         ServerScheduler.scheduleForDuration(0, 1, 20 * 20, () -> {
             if(random.nextInt(10) == 0)
                 level.playSound(null, targetPos.x, targetPos.y, targetPos.z, SoundEvents.BLAZE_SHOOT, entity.getSoundSource(), 1.0f, 1.0f);
@@ -123,7 +121,7 @@ public class PyrokinesisAbility extends SelectableAbility {
                     ParticleUtil.spawnParticles((ServerLevel) level, ParticleTypes.FLAME, pos, 1, 0.5, 0.02);
                     ParticleUtil.spawnParticles((ServerLevel) level, ParticleTypes.SMOKE, pos, 1, 0.5, 0.02);
 
-                    AbilityUtil.damageNearbyEntities((ServerLevel) level, entity, 1f, DamageLookup.lookupDamage(7, .4) * (int) Math.max(multiplier(entity)/4,1), pos, true, false, false, 15, 20 * 4);
+                    AbilityUtil.damageNearbyEntities((ServerLevel) level, entity, 1f, DamageLookup.lookupDamage(7, .2) * multiplier(entity), pos, true, false, false, 15, 20 * 4);
 
                     for(LivingEntity target : AbilityUtil.getNearbyEntities(entity, (ServerLevel) level, pos, 1f)) {
                         Vec3 knockback = target.position().subtract(pos).normalize().add(0, .2, 0).scale(0.8f);
@@ -143,9 +141,7 @@ public class PyrokinesisAbility extends SelectableAbility {
 
         level.playSound(null, startPos.x, startPos.y, startPos.z, SoundEvents.BLAZE_SHOOT, entity.getSoundSource(), 1.0f, 1.0f);
 
-        double multiplier = multiplier(entity);
-
-        ServerScheduler.scheduleDelayed(18, () -> AbilityUtil.damageNearbyEntities((ServerLevel) level, entity, 5.5, DamageLookup.lookupDamage(7, 1.2) * (int) Math.max(multiplier(entity)/4,1), entity.position().add(0, .2, 0), true, false, true, 0, 20 * 5));
+        ServerScheduler.scheduleDelayed(18, () -> AbilityUtil.damageNearbyEntities((ServerLevel) level, entity, 5.5, DamageLookup.lookupDamage(7, .9) * multiplier(entity), entity.position().add(0, .2, 0), true, false, true, 0, 20 * 5));
 
         AtomicDouble i = new AtomicDouble(0.6);
         ServerScheduler.scheduleForDuration(0, 1, 24, () -> {
@@ -163,13 +159,13 @@ public class PyrokinesisAbility extends SelectableAbility {
             return;
 
         Vec3 startPos = VectorUtil.getRelativePosition(entity.getEyePosition().add(entity.getLookAngle().normalize()), entity.getLookAngle().normalize(), 0, random.nextDouble(1, 2.85f), random.nextDouble(-.1, .6));
-        Vec3 direction = AbilityUtil.getTargetLocation(entity, 50* (int) Math.max(multiplier(entity)/4,1), 1.4f).subtract(startPos).normalize();
+        Vec3 direction = AbilityUtil.getTargetLocation(entity, 50, 1.4f).subtract(startPos).normalize();
 
         level.playSound(null, startPos.x, startPos.y, startPos.z, SoundEvents.BLAZE_SHOOT, entity.getSoundSource(), 1.0f, 1.0f);
 
-        FireballEntity fireball = new FireballEntity(level, entity, DamageLookup.lookupDamage(7, 0.8) * (int) Math.max(multiplier(entity)/4,1), BeyonderData.isGriefingEnabled(entity));
+        FireballEntity fireball = new FireballEntity(level, entity, DamageLookup.lookupDamage(7, .775) * multiplier(entity), BeyonderData.isGriefingEnabled(entity));
         fireball.setPos(startPos.x, startPos.y, startPos.z); // Set initial position
-        fireball.shoot(direction.x, direction.y, direction.z, 1.85f*(int) Math.max(multiplier(entity)/4,1), 0);
+        fireball.shoot(direction.x, direction.y, direction.z, 1.2f, 0);
         level.addFreshEntity(fireball);
     }
 }

@@ -2,7 +2,6 @@ package de.jakob.lotm.block.custom;
 
 import de.jakob.lotm.block.ModBlockEntities;
 import de.jakob.lotm.gui.custom.BrewingCauldron.BrewingCauldronMenu;
-import de.jakob.lotm.item.custom.BlasphemyCardItem;
 import de.jakob.lotm.potions.BeyonderPotion;
 import de.jakob.lotm.potions.PotionRecipeItem;
 import de.jakob.lotm.potions.PotionRecipes;
@@ -30,16 +29,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
-public class BrewingCauldronBlockEntity extends BlockEntity implements MenuProvider {
-    /**
-     * Tracks all loaded instances so the card-uniqueness system can find
-     * Blasphemy Cards sitting in cauldron recipe slots.
-     * Uses a WeakHashMap so GC'd (unloaded) entries are collected automatically.
-     */
-    public static final java.util.Set<BrewingCauldronBlockEntity> INSTANCES =
-            java.util.Collections.synchronizedSet(
-                    java.util.Collections.newSetFromMap(new java.util.WeakHashMap<>()));
+import java.util.Objects;
 
+public class BrewingCauldronBlockEntity extends BlockEntity implements MenuProvider {
     public final ItemStackHandler itemHandler = new ItemStackHandler(5) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -47,16 +39,6 @@ public class BrewingCauldronBlockEntity extends BlockEntity implements MenuProvi
             if(!level.isClientSide()) {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
             }
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @org.jetbrains.annotations.NotNull ItemStack stack) {
-            if (slot == INPUT_SLOT_RECIPE) {
-                // Recipe slot accepts Blasphemy Cards and Potion Recipe Items
-                return stack.getItem() instanceof BlasphemyCardItem
-                        || stack.getItem() instanceof PotionRecipeItem;
-            }
-            return true;
         }
     };
 
@@ -90,7 +72,7 @@ public class BrewingCauldronBlockEntity extends BlockEntity implements MenuProvi
                 }
             }
 
-            //how many variables get saved in the data (progress + maxProgress) (I would 100% forget this without having written that comment :))
+            //how many variables get saved in the data (progress + maxProgress)
             @Override
             public int getCount() {
                 return 2;
@@ -106,18 +88,6 @@ public class BrewingCauldronBlockEntity extends BlockEntity implements MenuProvi
     @Override
     public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
         return new BrewingCauldronMenu(i, inventory, this, this.data);
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        INSTANCES.add(this);
-    }
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        INSTANCES.remove(this);
     }
 
     public void drops() {
@@ -145,11 +115,7 @@ public class BrewingCauldronBlockEntity extends BlockEntity implements MenuProvi
     protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
 
-        CompoundTag inv = pTag.getCompound("inventory");
-        if (inv.contains("Size") && inv.getInt("Size") == itemHandler.getSlots()) {
-            itemHandler.deserializeNBT(pRegistries, inv);
-        }
-
+        itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
         progress = pTag.getInt("brewing_cauldron.progress");
         maxProgress = pTag.getInt("brewing_cauldron.max_progress");
     }
@@ -197,37 +163,7 @@ public class BrewingCauldronBlockEntity extends BlockEntity implements MenuProvi
         itemHandler.setStackInSlot(INPUT_SLOT_SUPP_2, ItemStack.EMPTY);
         itemHandler.setStackInSlot(INPUT_SLOT_MAIN, ItemStack.EMPTY);
 
-        // Decrement envisioned card uses; destroy the card when uses reach 0
-        ItemStack recipeStack = itemHandler.getStackInSlot(INPUT_SLOT_RECIPE);
-        if (!recipeStack.isEmpty() && recipeStack.getItem() instanceof BlasphemyCardItem bc
-                && de.jakob.lotm.events.BlasphemySlateItemHandler.isEnvisionSummoned(recipeStack)) {
-            int remaining = de.jakob.lotm.events.BlasphemySlateItemHandler.decrementEnvisionedUses(recipeStack);
-            if (remaining <= 0) {
-                itemHandler.setStackInSlot(INPUT_SLOT_RECIPE, ItemStack.EMPTY);
-                // Put the pathway on a 5-hour cooldown for the player who summoned this card
-                if (level instanceof net.minecraft.server.level.ServerLevel sl) {
-                    de.jakob.lotm.attachments.SummonedBlasphemyData sbd =
-                            de.jakob.lotm.attachments.SummonedBlasphemyData.get(sl.getServer());
-                    String pathway = bc.getPathway();
-                    // Find which online player has this pathway summoned and apply the cooldown
-                    for (net.minecraft.server.level.ServerPlayer sp : sl.getServer().getPlayerList().getPlayers()) {
-                        if (sbd.hasSummoned(sp.getUUID(), pathway)) {
-                            sbd.forceDismiss(sp.getUUID(), pathway);
-                            sbd.putOnCooldown(sp.getUUID(), pathway,
-                                    de.jakob.lotm.attachments.SummonedBlasphemyData.DESTROYED_COOLDOWN_MS);
-                            de.jakob.lotm.network.PacketHandler.sendToPlayer(sp,
-                                    new de.jakob.lotm.network.packets.toClient.SyncSummonedBlasphemyPacket(
-                                            sbd.getCards(sp.getUUID()),
-                                            sbd.getLockedCards(sp.getUUID()),
-                                            sbd.getCooldownExpiryMap(sp.getUUID())));
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        if(BeyonderData.playerMap.check(potion.getPathway(), potion.getSequence()))
+        if(BeyonderData.beyonderMap.check(potion.getPathway(), potion.getSequence()))
             itemHandler.setStackInSlot(OUTPUT_SLOT, new ItemStack(potion, 1));
     }
 
@@ -251,6 +187,7 @@ public class BrewingCauldronBlockEntity extends BlockEntity implements MenuProvi
                 itemHandler.getStackInSlot(INPUT_SLOT_MAIN)
         );
 
+        // check if the item is historical summoned
         if (itemHandler.getStackInSlot(INPUT_SLOT_MAIN)
                 .getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
                 .contains("VoidSummonTime")) {
@@ -260,18 +197,12 @@ public class BrewingCauldronBlockEntity extends BlockEntity implements MenuProvi
             return false;
 
         ItemStack recipeItem = itemHandler.getStackInSlot(INPUT_SLOT_RECIPE);
-        if (recipeItem.getItem() instanceof BlasphemyCardItem card) {
-            // A Blasphemy Card in the recipe slot acts as a wildcard recipe item for its pathway.
-            if (!card.getPathway().equals(potion.getPathway())) {
-                return false;
-            }
-        } else {
-            if (recipeItem.isEmpty() || !(recipeItem.getItem() instanceof PotionRecipeItem recipe)) {
-                return false;
-            }
-            if (recipe.getRecipe().potion().getSequence() != potion.getSequence() || !recipe.getRecipe().potion().getPathway().equals(potion.getPathway())) {
-                return false;
-            }
+        if(recipeItem.isEmpty() || !(recipeItem.getItem() instanceof PotionRecipeItem recipe)) {
+            return false;
+        }
+
+        if(recipe.getRecipe().potion().getSequence() != potion.getSequence() || !recipe.getRecipe().potion().getPathway().equals(potion.getPathway())) {
+            return false;
         }
 
         if (!itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty()) return false;

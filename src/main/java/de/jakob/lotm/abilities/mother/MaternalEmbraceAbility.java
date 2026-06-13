@@ -49,11 +49,8 @@ public class MaternalEmbraceAbility extends Ability {
         CoffinEntity coffinEntity = new CoffinEntity(serverLevel, targetEntity.position().add(0, 1, 0));
         serverLevel.addFreshEntity(coffinEntity);
 
-        int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
-        int targetEntitySeq = BeyonderData.getSequence(targetEntity);
-
-        if(AbilityUtil.isTargetSignificantlyStronger(entitySeq, targetEntitySeq) || (
-                BeyonderData.isBeyonder(entity) && BeyonderData.isBeyonder(targetEntity) && targetEntitySeq <= entitySeq)) {
+        if(AbilityUtil.isTargetSignificantlyStronger(entity, targetEntity) || (
+                BeyonderData.isBeyonder(entity) && BeyonderData.isBeyonder(targetEntity) && BeyonderData.getSequence(targetEntity) <= BeyonderData.getSequence(entity))) {
             AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.maternal_embrace.too_strong").withColor(0x8abd93));
             coffinEntity.discard();
             return;
@@ -64,20 +61,20 @@ public class MaternalEmbraceAbility extends Ability {
         component.setTransformationIndexAndSync(TransformationComponent.TransformationType.COFFIN, targetEntity);
 
         DisabledAbilitiesComponent disabledAbilitiesComponent = targetEntity.getData(ModAttachments.DISABLED_ABILITIES_COMPONENT);
-        disabledAbilitiesComponent.disableAbilityUsageForTime("maternal_embrace", 20 * 30*(int)Math.max(multiplier(entity)/4,1) , targetEntity);
+        disabledAbilitiesComponent.disableAbilityUsageForTime("maternal_embrace", 20 * 30, targetEntity);
 
-        targetEntity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20 * 30*(int)Math.max(multiplier(entity)/4,1), 20, false, false, false));
-        targetEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20 * 30*(int)Math.max(multiplier(entity)/4,1), 20, false, false, false));
-        targetEntity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 20 * 30*(int)Math.max(multiplier(entity)/4,1), 20, false, false, false));
+        targetEntity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20 * 30, 20, false, false, false));
+        targetEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20 * 30, 20, false, false, false));
+        targetEntity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 20 * 30, 20, false, false, false));
 
-        ServerScheduler.scheduleForDuration(0, 1, 20 * 30*(int)Math.max(multiplier(entity)/4,1), () -> {
+        ServerScheduler.scheduleForDuration(0, 1, 20 * 30, () -> {
             if(!targetEntity.isAlive()) {
                 return;
             }
             targetEntity.setPos(coffinEntity.getX(), coffinEntity.getY(), coffinEntity.getZ());
         }, null, serverLevel, () -> AbilityUtil.getTimeInArea(targetEntity, new de.jakob.lotm.util.data.Location(coffinEntity.position(), serverLevel)));
 
-        ServerScheduler.scheduleDelayed(20 * 30*(int)Math.max(multiplier(entity)/4,1), () -> {
+        ServerScheduler.scheduleDelayed(20 * 30, () -> {
             component.setTransformedAndSync(false, targetEntity);
             component.setTransformationIndexAndSync(0, targetEntity);
             coffinEntity.discard();

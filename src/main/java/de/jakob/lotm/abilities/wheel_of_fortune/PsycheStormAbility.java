@@ -1,7 +1,6 @@
 package de.jakob.lotm.abilities.wheel_of_fortune;
 
 import de.jakob.lotm.abilities.core.Ability;
-import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.effect.ModEffects;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.data.Location;
@@ -24,7 +23,7 @@ import java.util.Map;
 
 public class PsycheStormAbility extends Ability {
     public PsycheStormAbility(String id) {
-        super(id, 7);
+        super(id, 4);
     }
 
     @Override
@@ -47,21 +46,16 @@ public class PsycheStormAbility extends Ability {
         if(level.isClientSide || !(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        float multiplier = multiplier(entity);
-        AbilityUtil.damageNearbyEntities(serverLevel, entity, 10*Math.max(multiplier/2, 1), DamageLookup.lookupDamage(6, 1.2)*multiplier, entity.getEyePosition(), true, false);
-        AbilityUtil.getNearbyEntities(entity, serverLevel, entity.getEyePosition(), 10*Math.max(multiplier/2, 1)).forEach(e ->
-                e.addEffect(new MobEffectInstance(ModEffects.LOOSING_CONTROL, 20 * 7, getAmplifier(entity, e))));
-        int seq = BeyonderData.getSequence(entity);
-        if(seq <= 4){
-            AbilityUtil.getNearbyEntities(entity, serverLevel, entity.getEyePosition(), 10 *Math.max(multiplier/2, 1)).forEach(e -> e.getData(ModAttachments.SANITY_COMPONENT).increaseSanityAndSync((float) (-0.5f * multiplier(entity)), e));
 
-        }
+        AbilityUtil.damageNearbyEntities(serverLevel, entity, 10, DamageLookup.lookupDamage(6, .875) * multiplier(entity), entity.getEyePosition(), true, false);
+        AbilityUtil.getNearbyEntities(entity, serverLevel, entity.getEyePosition(), 10).forEach(e -> e.addEffect(new MobEffectInstance(ModEffects.LOOSING_CONTROL, 20 * 7, getAmplifier(entity, e))));
+
         Location loc = new Location(entity.position(), serverLevel);
 
-        ParticleUtil.createExpandingParticleSpirals(dust, loc, 3, 4*Math.max(multiplier/2, 1), 2, .5, 4, 90, 7, 2);
-        ParticleUtil.createExpandingParticleSpirals(dust, loc, 5, 6*Math.max(multiplier/2, 1), 2, .5, 4, 90, 7, 2);
-        ParticleUtil.createExpandingParticleSpirals(dust, loc, 7, 8*Math.max(multiplier/2, 1), 2, .5, 4, 90, 7, 2);
-        ParticleUtil.createExpandingParticleSpirals(dust, loc, 9, 10*Math.max(multiplier/2, 1), 2, .5, 4, 90, 7, 2);
+        ParticleUtil.createExpandingParticleSpirals(dust, loc, 3, 4, 2, .5, 4, 90, 7, 2);
+        ParticleUtil.createExpandingParticleSpirals(dust, loc, 5, 6, 2, .5, 4, 90, 7, 2);
+        ParticleUtil.createExpandingParticleSpirals(dust, loc, 7, 8, 2, .5, 4, 90, 7, 2);
+        ParticleUtil.createExpandingParticleSpirals(dust, loc, 9, 10, 2, .5, 4, 90, 7, 2);
         ParticleUtil.spawnParticles(serverLevel, ParticleTypes.END_ROD, entity.getEyePosition(), 150, 7, 3, 7, 0);
 
         serverLevel.playSound(null, BlockPos.containing(loc.getPosition()), SoundEvents.BREEZE_DEATH, SoundSource.BLOCKS);
@@ -79,7 +73,7 @@ public class PsycheStormAbility extends Ability {
 
         if(BeyonderData.isBeyonder(entity) && BeyonderData.isBeyonder(target)) {
             int targetSequence = BeyonderData.getSequence(target);
-            int sequence = AbilityUtil.getSeqWithArt(entity, this);
+            int sequence = BeyonderData.getSequence(entity);
 
             if(targetSequence <= sequence) {
                 return 2;

@@ -101,7 +101,7 @@ public class SunKingdomEntity extends Entity {
                 ParticleUtil.spawnParticles(serverLevel, ParticleTypes.END_ROD, e.position().add(0, e.getEyeHeight() / 2, 0), 8, .5, e.getEyeHeight() / 2, .5, .01);
             }
             else {
-                BeyonderData.addModifier(e, "sun_kingdom", .3);
+                BeyonderData.addModifier(e, "sun_kingdom", .2);
                 ParticleUtil.spawnParticles(serverLevel, ParticleTypes.END_ROD, e.position().add(0, e.getEyeHeight() / 2, 0), 8, .5, e.getEyeHeight() / 2, .5, .01);
             }
         });

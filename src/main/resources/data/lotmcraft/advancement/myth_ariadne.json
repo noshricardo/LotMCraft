@@ -1,0 +1,19 @@
+{
+  "parent": "lotmcraft:root",
+  "display": {
+    "icon": {
+      "id": "lotmcraft:myth_ariadne"
+    },
+    "title": "Myth: Ariadne's Thread",
+    "description": "Derive the myth of the Labyrinth.",
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "criteria": {
+    "myth_longinus": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

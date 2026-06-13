@@ -27,9 +27,6 @@ public class PocketDimensionAbility extends Ability {
 
         canBeCopied = false;
         canBeUsedByNPC = false;
-        canBeReplicated = false;
-        canBeShared = false;
-
     }
 
     @Override

@@ -19,6 +19,12 @@ public class ModEffects {
             () -> new AsleepEffect(MobEffectCategory.HARMFUL, 0x2E2E5C)
                     .addAttributeModifier(Attributes.MOVEMENT_SPEED, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "asleep"), -10f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)); // Dark blue color
 
+    public static final Holder<MobEffect> LUCK = MOB_EFFECTS.register("luck",
+            () -> new LuckEffect(MobEffectCategory.BENEFICIAL, 0xdaeaf5));
+
+    public static final Holder<MobEffect> UNLUCK = MOB_EFFECTS.register("unluck",
+            () -> new UnluckEffect(MobEffectCategory.HARMFUL, 0xf0b05d));
+
     public static final Holder<MobEffect> MENTAL_PLAGUE = MOB_EFFECTS.register("mental_plague",
             () -> new MentalPlagueEffect(MobEffectCategory.HARMFUL, 0xf0b05d));
 
@@ -39,12 +45,6 @@ public class ModEffects {
 
     public static final Holder<MobEffect> CONCEALMENT = MOB_EFFECTS.register("concealment",
             () -> new ConcealmentEffect(MobEffectCategory.BENEFICIAL, 0x161718));
-
-    public static final Holder<MobEffect> SPIRIT_CALLED = MOB_EFFECTS.register("spirit_called",
-            () -> new SpiritCalledEffect(MobEffectCategory.HARMFUL, 0x7ECFCF));
-
-    public static final Holder<MobEffect> FOOLING = MOB_EFFECTS.register("fooling",
-            () -> new FoolingEffect(MobEffectCategory.HARMFUL, 0xE040FB));
 
     public static void register(IEventBus eventBus) {
         MOB_EFFECTS.register(eventBus);

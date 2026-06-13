@@ -14,12 +14,11 @@ import java.util.Map;
 public class FlightAbility extends ToggleAbility {
     public FlightAbility(String id) {
         super(id);
-        canBeShared = false;
     }
 
     @Override
     protected float getSpiritualityCost() {
-        return 60;
+        return 12;
     }
 
     @Override

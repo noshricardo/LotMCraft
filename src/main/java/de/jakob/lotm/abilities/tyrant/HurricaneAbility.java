@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class HurricaneAbility extends Ability {
     public HurricaneAbility(String id) {
-        super(id, 10f, "explosion");
+        super(id, 2.5f);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class HurricaneAbility extends Ability {
 
     @Override
     public float getSpiritualityCost() {
-        return 600;
+        return 400;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class HurricaneAbility extends Ability {
 
         Vec3 pos = AbilityUtil.getTargetLocation(entity, 12, 2);
 
-        TornadoEntity tornado = target == null ? new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) (DamageLookup.lookupDamage(4, .65)* (int) Math.max(multiplier(entity)/4,1)), entity) : new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) (DamageLookup.lookupDamage(4, .65)* (int) Math.max(multiplier(entity)/4,1)), entity, target, 1.5f);
+        TornadoEntity tornado = target == null ? new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) (DamageLookup.lookupDamage(4, .65) * multiplier(entity)), entity) : new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) (DamageLookup.lookupDamage(4, .65) * multiplier(entity)), entity, target);
         tornado.setPos(pos);
         level.addFreshEntity(tornado);
     }

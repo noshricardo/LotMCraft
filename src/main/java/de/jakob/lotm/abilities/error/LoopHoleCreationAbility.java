@@ -3,10 +3,7 @@ package de.jakob.lotm.abilities.error;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.Ability;
 import de.jakob.lotm.abilities.core.AbilityUseEvent;
-import de.jakob.lotm.abilities.error.handler.TheftHandler;
-import de.jakob.lotm.abilities.visionary.VirtualPersonaAbility;
-import de.jakob.lotm.data.ModDataComponents;
-import de.jakob.lotm.events.ProhibitionHandler;
+import de.jakob.lotm.abilities.error.handler.AbilityTheftHandler;
 import de.jakob.lotm.rendering.effectRendering.EffectManager;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.AbilityUtil;
@@ -15,14 +12,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
-import java.lang.reflect.AccessFlag;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -39,19 +33,17 @@ public class LoopHoleCreationAbility extends Ability {
     private static final Map<UUID, UUID> entityToLoophole = new ConcurrentHashMap<>();
 
     public LoopHoleCreationAbility(String id) {
-        super(id, 16f);
-        autoClear = false;
-        canBeShared = false;
+        super(id, 3.5f);
     }
 
     @Override
     public Map<String, Integer> getRequirements() {
-        return new HashMap<>(Map.of("error", 2));
+        return new HashMap<>(Map.of("error", 3));
     }
 
     @Override
     public float getSpiritualityCost() {
-        return 6000;
+        return 1200;
     }
 
     @Override
@@ -59,7 +51,7 @@ public class LoopHoleCreationAbility extends Ability {
         if(!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        if (ProhibitionHandler.IsInTheftZone(entity.position(), (ServerLevel) level, AbilityUtil.getSeqWithArt(entity, this))) return;
+
         Vec3 targetLoc = AbilityUtil.getTargetLocation(entity, 40, 2);
         UUID loopholeId = UUID.randomUUID();
 
@@ -72,13 +64,13 @@ public class LoopHoleCreationAbility extends Ability {
                 loopholeId,
                 entity.getUUID(),
                 targetLoc,
-                3.0*(int) Math.max(multiplier(entity)/4,1), // radius
+                3.0, // radius
                 serverLevel,
                 System.currentTimeMillis() + (20 * 14 * 50) // 14 seconds in milliseconds
         );
         activeLoopholes.put(loopholeId, loopholeData);
 
-        ServerScheduler.scheduleForDuration(0, 2, 20 * 7*(int) Math.max(multiplier(entity)/4,1), () -> {
+        ServerScheduler.scheduleForDuration(0, 2, 20 * 14, () -> {
             // Update entities in loophole
             updateEntitiesInLoophole(loopholeData);
 
@@ -87,21 +79,16 @@ public class LoopHoleCreationAbility extends Ability {
                 double resistance = AbilityUtil.getSequenceResistanceFactor(entity, e);
                 if (ThreadLocalRandom.current().nextDouble() >= resistance) {
                     e.teleportTo(targetLoc.x, targetLoc.y, targetLoc.z);
-                }
-            });
-        });
 
-        ServerScheduler.scheduleForDuration(0, 45, 20 * 7*(int) Math.max(multiplier(entity)/4,1), () -> {
-            AbilityUtil.getNearbyEntities(entity, serverLevel, targetLoc, 3).forEach(e -> {
                     if(BeyonderData.isBeyonder(e))
-                        TheftHandler.performAbilityTheft(serverLevel, entity, e, random, true, this);
+                        AbilityTheftHandler.performTheft(serverLevel, entity, e, random, false);
+                }
             });
         });
 
         // Clean up after loophole expires
         ServerScheduler.scheduleDelayed(20 * 14, () -> {
             removeLoophole(loopholeId);
-            clearArtifactScaling(entity);
         });
     }
 
@@ -195,8 +182,8 @@ public class LoopHoleCreationAbility extends Ability {
         Ability ability = event.getAbility();
         if (ability != null && user.level() instanceof ServerLevel serverLevel && ability.canBeUsedByNPC
                 && !(ability instanceof LoopHoleCreationAbility)
-                && !(ability instanceof AvatarCreationAbility)
-                && !(ability instanceof VirtualPersonaAbility)) {
+                && !(ability instanceof AvatarCreationAbility))
+                {
             // Use the creator as the caster but potentially keep original targeting
             isRedirecting.set(true);
             try {

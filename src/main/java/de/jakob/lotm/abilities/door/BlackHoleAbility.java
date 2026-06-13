@@ -15,9 +15,7 @@ import java.util.Map;
 
 public class BlackHoleAbility extends Ability {
     public BlackHoleAbility(String id) {
-        super(id, 20 * 60 * 2, "space_warp");
-        canBeCopied = false;
-        canBeShared = false;
+        super(id, 20 * 60 * 2);
     }
 
     @Override
@@ -27,7 +25,7 @@ public class BlackHoleAbility extends Ability {
 
     @Override
     public float getSpiritualityCost() {
-        return 25000;
+        return 1500;
     }
 
     @Override
@@ -35,8 +33,8 @@ public class BlackHoleAbility extends Ability {
         if(level.isClientSide)
             return;
 
-        Vec3 targetLoc = AbilityUtil.getTargetLocation(entity, 27*(int) Math.max(multiplier(entity)/4,1), 2);
-        BlackHoleEntity blackHole = new BlackHoleEntity(ModEntities.BLACK_HOLE.get(), level, targetLoc.x, targetLoc.y, targetLoc.z, 10f*(int) Math.max(multiplier(entity)/4,1), (float) DamageLookup.lookupDps(1, 1, 1, 10) *(int) Math.max(multiplier(entity)/4,1), BeyonderData.isGriefingEnabled(entity), entity);
+        Vec3 targetLoc = AbilityUtil.getTargetLocation(entity, 27, 2);
+        BlackHoleEntity blackHole = new BlackHoleEntity(ModEntities.BLACK_HOLE.get(), level, targetLoc.x, targetLoc.y, targetLoc.z, 10f, (float) DamageLookup.lookupDps(1, 1, 1, 10) * (float) multiplier(entity), BeyonderData.isGriefingEnabled(entity), entity);
         level.addFreshEntity(blackHole);
     }
 }

@@ -43,8 +43,4 @@ public class ActiveToggleAbilitiesRenderer {
         }
     }
 
-    public static void clearCache() {
-        activeToggleAbilities.clear();
-    }
-
 }

@@ -1,22 +1,8 @@
 package de.jakob.lotm.abilities.error.handler;
 
-import de.jakob.lotm.LOTMCraft;
-import de.jakob.lotm.abilities.core.Ability;
-import de.jakob.lotm.attachments.CopiedAbilityComponent;
-import de.jakob.lotm.attachments.DisabledAbilitiesComponent;
-import de.jakob.lotm.attachments.LuckComponent;
-import de.jakob.lotm.attachments.ModAttachments;
-import de.jakob.lotm.effect.ModEffects;
-import de.jakob.lotm.events.ProhibitionHandler;
-import de.jakob.lotm.rendering.effectRendering.EffectManager;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.AbilityUtil;
-import de.jakob.lotm.util.helper.CopiedAbilityHelper;
-import de.jakob.lotm.util.helper.DamageLookup;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.GlowSquid;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ambient.Bat;
@@ -34,11 +20,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
-import org.apache.logging.log4j.core.jmx.Server;
-import org.checkerframework.checker.units.qual.A;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class TheftHandler {
 
@@ -138,6 +123,7 @@ public class TheftHandler {
         } else if (entity instanceof WitherSkeleton) {
             loot.add(new TheftLoot(new ItemStack(Items.BONE), 2, 6));
             loot.add(new TheftLoot(new ItemStack(Items.COAL), 1, 4));
+            loot.add(new TheftLoot(new ItemStack(Items.WITHER_SKELETON_SKULL), 0, 1));
         } else if (entity instanceof Zombie) {
             loot.add(new TheftLoot(new ItemStack(Items.ROTTEN_FLESH), 1, 6));
             loot.add(new TheftLoot(new ItemStack(Items.IRON_INGOT), 0, 2));
@@ -191,8 +177,8 @@ public class TheftHandler {
 
         // --- End / stronghold ---
         else if (entity instanceof EnderDragon) {
-            loot.add(new TheftLoot(new ItemStack(Items.EGG), 1, 4));
-            loot.add(new TheftLoot(new ItemStack(Items.POTATO), 0, 1));
+            loot.add(new TheftLoot(new ItemStack(Items.DRAGON_BREATH), 1, 4));
+            loot.add(new TheftLoot(new ItemStack(Items.DRAGON_EGG), 0, 1));
         } else if (entity instanceof Shulker) {
             loot.add(new TheftLoot(new ItemStack(Items.SHULKER_SHELL), 0, 2));
         } else if (entity instanceof Silverfish) {
@@ -241,44 +227,17 @@ public class TheftHandler {
         return items;
     }
 
-    public static void stealItemsFromEntity(LivingEntity target, Player thief, Ability skill) {
+    public static void stealItemsFromEntity(LivingEntity target, Player thief) {
         if(!(target.level() instanceof ServerLevel)) {
             return;
         }
 
-        int thiefSeq = AbilityUtil.getSeqWithArt(thief, skill);
-        int targetSeq = BeyonderData.getSequence(target);
-
-        if(BeyonderData.isBeyonder(target) && AbilityUtil.isTargetSignificantlyStronger(thiefSeq, targetSeq)) {
+        if(BeyonderData.isBeyonder(target) && AbilityUtil.isTargetSignificantlyStronger(thief, target)) {
             return;
         }
 
         if(BeyonderData.isBeyonder(target) && BeyonderData.getPathway(target).equals("error")
-                && targetSeq < thiefSeq)
-            return;
-
-        if(target instanceof Player player) {
-            stealFromPlayer(player, thief);
-        }
-        else {
-            stealFromMob(target, thief);
-        }
-    }
-
-    public static void stealItemsFromEntityPassive(LivingEntity target, Player thief) {
-        if(!(target.level() instanceof ServerLevel)) {
-            return;
-        }
-
-        int thiefSeq = BeyonderData.getSequence(thief);
-        int targetSeq = BeyonderData.getSequence(target);
-
-        if(BeyonderData.isBeyonder(target) && AbilityUtil.isTargetSignificantlyStronger(thiefSeq, targetSeq)) {
-            return;
-        }
-
-        if(BeyonderData.isBeyonder(target) && BeyonderData.getPathway(target).equals("error")
-                && targetSeq < thiefSeq)
+                && BeyonderData.getSequence(target) < BeyonderData.getSequence(thief))
             return;
 
         if(target instanceof Player player) {
@@ -324,237 +283,8 @@ public class TheftHandler {
         }
     }
 
-    public record TheftLoot(ItemStack loot, int minAmount, int maxAmount) {}
+    public record TheftLoot(ItemStack loot, int minAmount, int maxAmount) {
 
-    public static void performAbilityTheft(Level level, LivingEntity entity, LivingEntity target, Random random, boolean isLoopHole, Ability skill) {
-        if (entity instanceof ServerPlayer serverPlayer && !isLoopHole) {
-            EffectManager.playEffect(EffectManager.Effect.ABILITY_THEFT, target.position().x, target.position().y + target.getEyeHeight(), target.position().z, serverPlayer, entity);
-        }
-
-        if (!BeyonderData.isBeyonder(target)) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.ability_theft.not_beyonder").withColor(0x6d32a8));
-            return;
-        }
-
-        // Get stealable abilities from the target
-        HashSet<Ability> targetAbilities = LOTMCraft.abilityHandler.getByPathwayAndSequence(
-                BeyonderData.getPathway(target), BeyonderData.getSequence(target));
-
-        DisabledAbilitiesComponent disabledComponent = target.getData(ModAttachments.DISABLED_ABILITIES_COMPONENT);
-
-        ArrayList<Ability> stealableAbilities = new ArrayList<>(targetAbilities.stream()
-                .filter(ability -> !ability.cannotBeStolen
-                        && !disabledComponent.isSpecificAbilityDisabled(ability.getId()))
-                .toList());
-
-        HashSet<Ability> entityAbilities = LOTMCraft.abilityHandler.getByPathwayAndSequence(
-                BeyonderData.getPathway(entity), BeyonderData.getSequence(entity));
-
-        if (stealableAbilities.isEmpty()) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.ability_theft.no_abilities").withColor(0x6d32a8));
-            return;
-        }
-
-        int sequence = AbilityUtil.getSeqWithArt(entity, skill);
-
-        if (AbilityUtil.isTargetSignificantlyStronger(sequence, BeyonderData.getSequence(target))) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.ability_theft.no_abilities").withColor(0x6d32a8));
-            return;
-        }
-
-        if (doesTheftFail(entity, target, random, skill)) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.ability_theft.no_abilities").withColor(0x6d32a8));
-            return;
-        }
-
-        int abilityCount = isLoopHole? 1 : getAbilityCountForSequence(sequence);
-
-        //int abilityUses = getAbilityUsesForSequence(sequence);
-        int abilityUses = 1;
-        int disableTime = getDisablingTimeForSequenceInSeconds(sequence);
-
-        for (int i = 0; i < abilityCount; i++) {
-            if (stealableAbilities.isEmpty()) break;
-
-            int index = random.nextInt(stealableAbilities.size());
-            Ability stolenAbility = stealableAbilities.get(index);
-            stealableAbilities.remove(index);
-            // Disable the ability on the target for the duration
-            disabledComponent.disableSpecificAbilityForTime(stolenAbility.getId(), "theft_" + entity.getUUID(), disableTime * 20);
-
-            // Add to the thief's copied abilities
-            if (entity instanceof ServerPlayer player) {
-                if(entityAbilities.contains(stolenAbility))
-                    continue;
-
-                CopiedAbilityHelper.addAbility(player,
-                        new CopiedAbilityComponent.CopiedAbilityData(
-                                stolenAbility.getId(),
-                                "stolen",
-                                abilityUses,
-                                target.getUUID().toString()
-                        ));
-            }
-        }
-
-        if (entity instanceof ServerPlayer) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.ability_theft.success").withColor(0x6d32a8));
-        }
-    }
-    public static int getAbilityCountForSequence(int sequence) {
-        return switch (sequence) {
-            default -> 1;
-            case 4 -> 2;
-            case 3 -> 3;
-            case 2 -> 4;
-            case 1 -> 5;
-            case 0 -> 6;
-        };
     }
 
-    public static int getDisablingTimeForSequenceInSeconds(int sequence) {
-        return switch (sequence) {
-            default -> 35;
-            case 5 -> 60;
-            case 4 -> 120;
-            case 3 -> 240;
-            case 2 -> 480;
-            case 1 -> 800;
-            case 0 -> 900;
-
-        };
-    }
-
-    public static boolean doesTheftFail(LivingEntity user, LivingEntity target, Random random, Ability ability) {
-        int userSeq = AbilityUtil.getSeqWithArt(user, ability);
-        int targetSeq = BeyonderData.getSequence(target);
-        if (targetSeq > userSeq) {
-            return false;
-        }
-
-        if(BeyonderData.getPathway(target).equals("error") && targetSeq < userSeq){
-            return true;
-        }
-
-        int difference = targetSeq - userSeq;
-
-        LuckComponent userLuckComponent = user.getData(ModAttachments.LUCK_COMPONENT);
-        LuckComponent targetLuckComponent = target.getData(ModAttachments.LUCK_COMPONENT);
-
-        int userLuck = userLuckComponent.getLuck();
-        int targetLuck = targetLuckComponent.getLuck();
-
-        double luckMultiplier = (double) (userLuck - targetLuck) / (600 * 10);
-
-        double baseFailPerStep = 0.15;
-
-        double failChance = difference * baseFailPerStep - luckMultiplier;
-
-        float theftcap = 0;
-        if (targetSeq <= 2 && targetSeq != 0) {
-            theftcap = 0.75f;
-        } else if (targetSeq == 0) {
-            theftcap = 0.8f;
-        } else {
-            theftcap = 0.6f;
-        }
-        failChance = Math.max(Math.max(failChance, 0.0), theftcap);
-        double randomnum =  random.nextDouble();
-        return randomnum < failChance;
-    }
-
-/*
-    public static int getAbilityUsesForSequence(int sequence) {
-        return switch (sequence) {
-            default -> 1;
-            case 5 -> 5;
-            case 4, 3 -> 10;
-            case 2, 1 -> 20;
-            case 0 -> 40;
-        };
-    }
-*/
-    public static float getSeqDifferenceMultiplier(int userSeq, int targetSeq){
-        int diff = Math.abs(targetSeq - userSeq);
-        float multiplier = diff * 0.15f;
-        return Math.max(0.1f, multiplier);
-    }
-
-    public static void performSanityTheft(LivingEntity entity, LivingEntity target, Random random, Ability skill){
-        if (!BeyonderData.isBeyonder(target)) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.ability_theft.not_beyonder").withColor(0x6d32a8));
-            return;
-        }
-
-        if (doesTheftFail(entity, target, random, skill) || !(target instanceof ServerPlayer)) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.conceptual_theft.failed.sanity").withColor(0x6d32a8));
-            return;
-        }
-
-        float mult = skill.multiplier(entity);
-        float baseSanity = (mult / (mult + 1.0f));
-        float seqMultiplier = getSeqDifferenceMultiplier(AbilityUtil.getSeqWithArt(entity, skill), BeyonderData.getSequence(target));
-        float sanityToSteal = seqMultiplier * baseSanity;
-        float entitySanityMultiplier = Math.max(0.0f, 1.0f - seqMultiplier);
-
-        var targetSanity = target.getData(ModAttachments.SANITY_COMPONENT);
-        var entitySanity = entity.getData(ModAttachments.SANITY_COMPONENT);
-
-        float targetSanityValue = targetSanity.getSanity();
-        float userSanityValue = entitySanity.getSanity();
-
-        targetSanity.setSanityAndSync(targetSanityValue - sanityToSteal, target);
-        entitySanity.setSanityAndSync(userSanityValue + (sanityToSteal*entitySanityMultiplier), entity);
-    }
-
-    public static void performDigestionTheft(LivingEntity entity, LivingEntity target, Random random, Ability skill){
-        if (!BeyonderData.isBeyonder(target)) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.ability_theft.not_beyonder").withColor(0x6d32a8));
-            return;
-        }
-
-        if (doesTheftFail(entity, target, random, skill) || !(target instanceof ServerPlayer)) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.conceptual_theft.failed.digestion").withColor(0x6d32a8));
-            return;
-        }
-
-        float mult = skill.multiplier(entity);
-        float baseDigestion = (mult / (mult + 1.0f));
-
-        float seqMultiplier = getSeqDifferenceMultiplier(AbilityUtil.getSeqWithArt(entity, skill), BeyonderData.getSequence(target));
-        float entityDigestionMultiplier = Math.max(0.0f, 1.0f - seqMultiplier);
-
-        float digestionToSteal = baseDigestion * seqMultiplier;
-
-        float targetDigestion = BeyonderData.getDigestionProgress((ServerPlayer) target);
-
-        if(targetDigestion - digestionToSteal < 0f){
-            digestionToSteal = digestionToSteal + (targetDigestion - digestionToSteal);
-        }
-
-        BeyonderData.digest((ServerPlayer) target, - digestionToSteal, false);
-        BeyonderData.digest((ServerPlayer) entity, digestionToSteal * entityDigestionMultiplier,false);
-    }
-
-    public static void performLuckTheft(LivingEntity entity, LivingEntity target, Random random, Ability skill){
-        if (!BeyonderData.isBeyonder(target)) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.ability_theft.not_beyonder").withColor(0x6d32a8));
-            return;
-        }
-
-        if (doesTheftFail(entity, target, random, skill)) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.conceptual_theft.failed.luck").withColor(0x6d32a8));
-            return;
-        }
-
-        var luck = entity.getData(ModAttachments.LUCK_COMPONENT.get());
-        var targetLuck = target.getData(ModAttachments.LUCK_COMPONENT.get());
-
-        luck.setLuck(luck.getLuck() + targetLuck.getLuck());
-        targetLuck.setLuck(0);
-    }
-
-    public static double getDistancePerSeq(int seq){
-       return (1 << (9 - seq));
-    }
 }

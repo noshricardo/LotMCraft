@@ -23,10 +23,6 @@ import java.util.List;
 
 public class SubordinateUtils {
     public static void turnEntityIntoSubordinate(LivingEntity entity, LivingEntity controller) {
-        turnEntityIntoSubordinate(entity, controller, true);
-    }
-
-    public static void turnEntityIntoSubordinate(LivingEntity entity, LivingEntity controller, boolean giveControllerItem) {
         if (entity instanceof Player) {
             return; // Players cannot be turned into marionettes
         }
@@ -60,8 +56,6 @@ public class SubordinateUtils {
             mob.targetSelector.addGoal(0, new SubordinateTargetGoal(mob));
             mob.setTarget(null);
         }
-
-        if (!giveControllerItem) return;
 
         ItemStack controllerItem = createController(entity);
 

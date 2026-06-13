@@ -3,7 +3,6 @@ package de.jakob.lotm.attachments;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.util.helper.marionettes.MarionetteComponent;
 import de.jakob.lotm.util.helper.subordinates.SubordinateComponent;
-import com.mojang.serialization.Codec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.bus.api.IEventBus;
@@ -67,11 +66,6 @@ public class ModAttachments {
                     AttachmentType.serializable(DisabledAbilitiesComponent::new).build()
             );
 
-    public static final Supplier<AttachmentType<ApotheosisComponent>> APOTHEOSIS_COMPONENT =
-            ATTACHMENT_TYPES.register("apotheosis_component", () ->
-                    AttachmentType.serializable(ApotheosisComponent::new).build()
-            );
-
     public static final Supplier<AttachmentType<MultiplierModifierComponent>> MULTIPLIER_MODIFIER_COMPONENT =
             ATTACHMENT_TYPES.register("multiplier_modifier_component", () ->
                     AttachmentType.serializable(MultiplierModifierComponent::new).build()
@@ -105,14 +99,6 @@ public class ModAttachments {
             ATTACHMENT_TYPES.register("sanity_component", () ->
                     AttachmentType.builder(SanityComponent::new)
                             .serialize(SanityComponent.SERIALIZER)
-                            .build()
-            );
-
-    public static final Supplier<AttachmentType<CorruptionComponent>> CORRUPTION_COMPONENT =
-            ATTACHMENT_TYPES.register("corruption_component", () ->
-                    AttachmentType.builder(CorruptionComponent::new)
-                            .serialize(CorruptionComponent.SERIALIZER)
-                            .copyOnDeath()
                             .build()
             );
 
@@ -168,14 +154,6 @@ public class ModAttachments {
                             .build()
             );
 
-    public static final Supplier<AttachmentType<DiscernmentComponent>> DISCERNMENT_DATA =
-            ATTACHMENT_TYPES.register("discernment_data", () ->
-                    AttachmentType.builder(DiscernmentComponent::new)
-                            .serialize(DiscernmentComponent.SERIALIZER)
-                            .copyOnDeath()
-                            .build()
-            );
-
     public static final Supplier<AttachmentType<CopiedInventoryComponent>> COPIED_INVENTORY =
             ATTACHMENT_TYPES.register("copied_inventory", () ->
                     AttachmentType.builder(CopiedInventoryComponent::new)
@@ -216,123 +194,7 @@ public class ModAttachments {
                     AttachmentType.serializable(CopiedAbilityComponent::new).copyOnDeath().build()
             );
 
-    public static final Supplier<AttachmentType<TeamComponent>> TEAM_COMPONENT =
-            ATTACHMENT_TYPES.register("team_component", () ->
-                    AttachmentType.builder(TeamComponent::new)
-                            .serialize(TeamComponent.CODEC)
-                            .copyOnDeath()
-                            .build()
-            );
 
-    public static final Supplier<AttachmentType<SharedAbilitiesComponent>> SHARED_ABILITIES_COMPONENT =
-            ATTACHMENT_TYPES.register("shared_abilities_component", () ->
-                    AttachmentType.builder(SharedAbilitiesComponent::new)
-                            .serialize(SharedAbilitiesComponent.SERIALIZER)
-                            .copyOnDeath()
-                            .build()
-            );
-
-    public static final Supplier<AttachmentType<BeyonderComponent>> BEYONDER_COMPONENT =
-            ATTACHMENT_TYPES.register("beyonder_component", () ->
-                    AttachmentType.serializable(BeyonderComponent::new).copyOnDeath().build()
-            );
-
-    public static final Supplier<AttachmentType<SkillScalingComponent>> SKILL_SCALING_COMPONENT =
-            ATTACHMENT_TYPES.register("skill_scaling_component", () ->
-                    AttachmentType.builder(SkillScalingComponent::new)
-                            .serialize(SkillScalingComponent.SERIALIZER)
-                            .build()
-            );
-
-    public static final Supplier<AttachmentType<KillCountComponent>> KILL_COUNT_COMPONENT =
-            ATTACHMENT_TYPES.register("kill_count_component", () ->
-                    AttachmentType.builder(KillCountComponent::new)
-                            .serialize(KillCountComponent.SERIALIZER)
-                            .copyOnDeath()
-                            .build()
-            );
-
-    public static final Supplier<AttachmentType<SacrificeRevertComponent>> SACRIFICE_REVERT_COMPONENT =
-            ATTACHMENT_TYPES.register("sacrifice_revert_component", () ->
-                    AttachmentType.builder(SacrificeRevertComponent::new)
-                            .serialize(SacrificeRevertComponent.SERIALIZER)
-                            .build()
-            );
-
-    public static final Supplier<AttachmentType<FoolingComponent>> FOOLING_COMPONENT =
-            ATTACHMENT_TYPES.register("fooling_component", () ->
-                    AttachmentType.serializable(FoolingComponent::new).build());
-                                      
-    public static final Supplier<AttachmentType<UniquenessComponent>> UNIQUENESS_COMPONENT =
-            ATTACHMENT_TYPES.register("uniqueness_component", () ->
-                    AttachmentType.builder(UniquenessComponent::new)
-                            .serialize(UniquenessComponent.SERIALIZER)
-                            .copyOnDeath()
-                            .build()
-            );
-
-    public static final Supplier<AttachmentType<HistoricalVoidComponent>> HISTORICAL_VOID_COMPONENT =
-            ATTACHMENT_TYPES.register("historical_void_component", () ->
-                    AttachmentType.serializable(HistoricalVoidComponent::new)
-                            .copyOnDeath()
-                            .build()
-            );
-
-    public static final Supplier<AttachmentType<MiracleOfResurrectionComponent>> MIRACLE_OF_RESURRECTION =
-            ATTACHMENT_TYPES.register("miracle_of_resurrection", () ->
-                    AttachmentType.builder(MiracleOfResurrectionComponent::new)
-                            .serialize(MiracleOfResurrectionComponent.SERIALIZER)
-                            .copyOnDeath()
-                            .build()
-            );
-
-    public static final Supplier<AttachmentType<ShapeShiftComponent>> SHAPE_SHIFT =
-            ATTACHMENT_TYPES.register("shape_shift", () ->
-                    AttachmentType.builder(ShapeShiftComponent::new)
-                            .serialize(ShapeShiftComponent.SERIALIZER)
-                            .copyOnDeath()
-                            .build()
-            );
-
-    public static final Supplier<AttachmentType<SefirotUnlockedAbilitiesComponent>> SEFIROT_UNLOCKED_ABILITIES =
-            ATTACHMENT_TYPES.register("sefirot_unlocked_abilities", () ->
-                    AttachmentType.serializable(SefirotUnlockedAbilitiesComponent::new)
-                            .copyOnDeath()
-                            .build()
-            );
-
-    public static final Supplier<AttachmentType<DailySpinComponent>> DAILY_SPIN_COMPONENT =
-            ATTACHMENT_TYPES.register("daily_spin_component", () ->
-                    AttachmentType.builder(DailySpinComponent::new)
-                            .serialize(DailySpinComponent.SERIALIZER)
-                            .build()
-            );
-
-    public static final Supplier<AttachmentType<CorruptedPlayerComponent>> CORRUPTED_PLAYER_COMPONENT =
-            ATTACHMENT_TYPES.register("corrupted_player_component", () ->
-                    AttachmentType.builder(CorruptedPlayerComponent::new)
-                            .serialize(CorruptedPlayerComponent.SERIALIZER)
-                            .copyOnDeath()
-                            .build()
-            );
-
-    public static final Supplier<AttachmentType<AnchorComponent>> ANCHOR_COMPONENT =
-            ATTACHMENT_TYPES.register("anchor_component", () ->
-                    AttachmentType.builder(AnchorComponent::new)
-                            .serialize(AnchorComponent.SERIALIZER)
-                            .copyOnDeath()
-                            .build()
-            );
-
-    public static final Supplier<AttachmentType<ActiveBlessingComponent>> ACTIVE_BLESSING_COMPONENT =
-            ATTACHMENT_TYPES.register("active_blessing_component", () ->
-                    AttachmentType.serializable(ActiveBlessingComponent::new).copyOnDeath().build()
-            );
-
-    public static final Supplier<AttachmentType<ReceivedBlessingComponent>> RECEIVED_BLESSING_COMPONENT =
-            ATTACHMENT_TYPES.register("received_blessing_component", () ->
-                    AttachmentType.serializable(ReceivedBlessingComponent::new).copyOnDeath().build()
-            );
 
     public static void register(IEventBus eventBus) {
         ATTACHMENT_TYPES.register(eventBus);

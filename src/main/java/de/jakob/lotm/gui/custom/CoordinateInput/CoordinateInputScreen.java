@@ -93,7 +93,6 @@ public class CoordinateInputScreen extends Screen {
                     DivinationAbility.performDreamDivination(player.level(), player, new BlockPos(x, y, z));
                 }
                 case "teleportation" -> PacketHandler.sendToServer(new TeleportPlayerToLocationPacket(x, y, z, entity.getId()));
-                case "envision_location" -> PacketHandler.sendToServer(new TeleportPlayerToLocationPacket(x, y, z, entity.getId()));
             }
 
             this.onClose();

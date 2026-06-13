@@ -1,7 +1,6 @@
 {
   "type": "neoforge:add_spawns",
   "biomes": [
-    "lotmcraft:spirit_wool_meadows",
     "lotmcraft:spirit_crystalline_peaks",
     "lotmcraft:spirit_void_gardens",
     "lotmcraft:spirit_ember_wastes",
@@ -14,7 +13,7 @@
   "spawners": [
     {
       "type": "lotmcraft:spirit_translucent_wizard",
-      "weight": 50,
+      "weight": 100,
       "minCount": 1,
       "maxCount": 5,
       "category": "creature"

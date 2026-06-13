@@ -143,7 +143,12 @@ public enum SpiritWorldBiome {
                 float p = sinPulse(timeMs, 220, 0.10f, 0.90f);
                 yield new float[]{ c[0]*p, c[1]*p, c[2]*p };
             }
-            case VOID_GARDENS -> hsb(0.75f, 0.80f, 0.15f);
+            case VOID_GARDENS -> {
+                float h = 0.72f + (float) Math.sin(timeMs / 5000.0) * 0.06f;
+                float[] c = hsb(h, 0.88f, 0.80f);
+                float p = sinPulse(timeMs, 350, 0.20f, 0.80f);
+                yield new float[]{ c[0]*p, c[1]*p, c[2]*p };
+            }
             case EMBER_WASTES -> {
                 float baseH  = 0.01f + (float) Math.sin(timeMs / 900.0) * 0.04f;
                 float[] fire = hsb(baseH, 1.00f, 1.0f);
@@ -169,6 +174,7 @@ public enum SpiritWorldBiome {
                 float p = sinPulse(timeMs, 200, 0.16f, 0.84f);
                 yield new float[]{ c[0]*p, c[1]*p, c[2]*p };
             }
+            // Bioluminescent blue-green spore fog, slow pulse like underwater
             case FUNGAL_DEPTHS -> {
                 float h = 0.40f + (float) Math.sin(timeMs / 6000.0) * 0.08f;
                 float s = 0.90f + sinPulse(timeMs, 400, 0.06f, 0.0f);
@@ -176,6 +182,7 @@ public enum SpiritWorldBiome {
                 float p = sinPulse(timeMs, 500, 0.18f, 0.82f);
                 yield new float[]{ c[0]*p, c[1]*p, c[2]*p };
             }
+            // Cold arctic white-blue, slow shimmer like aurora
             case GLACIAL_SHELF -> {
                 float h = 0.58f + (float) Math.sin(timeMs / 9000.0) * 0.06f;
                 float s = 0.40f + sinPulse(timeMs, 700, 0.10f, 0.0f);
@@ -190,6 +197,7 @@ public enum SpiritWorldBiome {
     // Biome determination – large Voronoi cells
     // -------------------------------------------------------------------------
 
+    private static final int    BIOME_GRID    = 250;
 
     /** Width (in blocks) of the cross-fade zone between two adjacent biomes. */
     private static final double BLEND_RADIUS  = 220.0;

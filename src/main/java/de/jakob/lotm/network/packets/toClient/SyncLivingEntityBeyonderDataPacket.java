@@ -35,7 +35,9 @@ public record SyncLivingEntityBeyonderDataPacket(
 
     public static void handle(SyncLivingEntityBeyonderDataPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
-            ClientHandler.handleSyncLivingEntityBeyonderData(packet, context);
+            if (context.flow().getReceptionSide().isClient()) {
+                ClientHandler.syncLivingEntityBeyonderData(packet);
+            }
         });
     }
 }

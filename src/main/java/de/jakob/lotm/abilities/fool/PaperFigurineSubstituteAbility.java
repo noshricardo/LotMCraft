@@ -2,11 +2,8 @@ package de.jakob.lotm.abilities.fool;
 
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.Ability;
-import de.jakob.lotm.abilities.justiciar.ImprisonAbility;
-import de.jakob.lotm.events.ProhibitionHandler;
 import de.jakob.lotm.damage.ModDamageTypes;
 import de.jakob.lotm.item.ModItems;
-import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.ParticleUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -33,12 +30,7 @@ public class PaperFigurineSubstituteAbility extends Ability {
     private static final HashMap<UUID, Integer> figurineNumbers = new HashMap<>();
 
     public PaperFigurineSubstituteAbility(String id) {
-        super(id, 10f);
-        canBeCopied = false;
-        canBeReplicated = false;
-        canBeUsedInArtifact = false;
-        cannotBeStolen = true;
-        canBeShared = false;
+        super(id, 5f);
     }
 
     @Override
@@ -73,16 +65,12 @@ public class PaperFigurineSubstituteAbility extends Ability {
 
     @SubscribeEvent
     public static void takeDamage(LivingDamageEvent.Pre event) {
-        if (ImprisonAbility.IMPRISONED.contains(event.getEntity().getUUID())) return;
         if(!figurineNumbers.containsKey(event.getEntity().getUUID()))
             return;
 
         if(event.getSource().is(ModDamageTypes.LOOSING_CONTROL)) {
             return;
         }
-
-        LivingEntity entity = event.getEntity();
-        if (entity.level() instanceof ServerLevel sl && ProhibitionHandler.isInStandInsZone(entity.position(), sl, BeyonderData.getSequence(entity))) return;
 
         int num = figurineNumbers.get(event.getEntity().getUUID());
 
@@ -92,6 +80,7 @@ public class PaperFigurineSubstituteAbility extends Ability {
         figurineNumbers.put(event.getEntity().getUUID(), num - 1);
         event.setNewDamage(0);
 
+        LivingEntity entity = event.getEntity();
         Vec3 pos = entity.position();
 
         Level level = entity.level();

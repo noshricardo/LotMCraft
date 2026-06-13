@@ -32,11 +32,6 @@ public class ModDataComponents {
                     .persistent(Codec.BOOL)
                     .build());
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> IS_TRAP =
-            DATA_COMPONENT_TYPES.register("is_trap", () -> DataComponentType.<Boolean>builder()
-                    .persistent(Codec.BOOL)
-                    .build());
-
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> ABILITY_USES =
             DATA_COMPONENT_TYPES.register("ability_uses", () -> DataComponentType.<Integer>builder()
                     .persistent(Codec.INT)
@@ -75,30 +70,6 @@ public class ModDataComponents {
             DATA_COMPONENT_TYPES.register("sealed_artifact_base_type",
                     () -> DataComponentType.<String>builder()
                             .persistent(Codec.STRING)
-                            .build());
-
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> SEALED_ARTIFACT_GENERATED =
-            DATA_COMPONENT_TYPES.register("sealed_artifact_generated",
-                    () -> DataComponentType.<Boolean>builder()
-                            .persistent(Codec.BOOL)
-                            .build());
-
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> SEALED_ARTIFACT_GENERATED_SEQ =
-            DATA_COMPONENT_TYPES.register("sealed_artifact_generated_seq",
-                    () -> DataComponentType.<Integer>builder()
-                            .persistent(Codec.INT)
-                            .build());
-
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> SEALED_ARTIFACT_GENERATED_PATH =
-            DATA_COMPONENT_TYPES.register("sealed_artifact_generated_path",
-                    () -> DataComponentType.<String>builder()
-                            .persistent(Codec.STRING)
-                            .build());
-
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> SEALED_ARTIFACT_GENERATED_FAILED =
-            DATA_COMPONENT_TYPES.register("sealed_artifact_generated_failed",
-                    () -> DataComponentType.<Boolean>builder()
-                            .persistent(Codec.BOOL)
                             .build());
 
     // Data component for storing the center position of excavation

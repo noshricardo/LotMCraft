@@ -1,6 +1,5 @@
 package de.jakob.lotm.entity.custom.ability_entities.door_pathway;
 
-import de.jakob.lotm.abilities.core.AbilityUsedEvent;
 import de.jakob.lotm.damage.ModDamageTypes;
 import de.jakob.lotm.entity.ModEntities;
 import net.minecraft.nbt.CompoundTag;
@@ -10,7 +9,6 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -21,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +103,7 @@ public class ElectricShockEntity extends Entity {
         // Check for entity hits
         List<Entity> entities = level().getEntities(this, new AABB(startPos, currentEnd));
         for (Entity entity : entities) {
-            if (entity != this && entity != source && !entity.isSpectator()) {
+            if (entity != this && !entity.isSpectator()) {
                 onHitEntity(entity);
                 discard();
                 return;
@@ -186,9 +183,6 @@ public class ElectricShockEntity extends Entity {
                     : level().damageSources().generic();
 
             entity.hurt(dmg, (float) damage);
-
-            if(source != null)
-                NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level(), entity.position(), source, null, new String[]{"lightning"}, 2, 10));
         }
     }
 

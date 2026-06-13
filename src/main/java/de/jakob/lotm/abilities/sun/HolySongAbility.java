@@ -35,9 +35,10 @@ public class HolySongAbility extends Ability {
 
     @Override
     protected float getSpiritualityCost() {
-        return 24;
+        return 12;
     }
 
+    private final int duration = 20 * 20;
     DustParticleOptions dustOptions = new DustParticleOptions(
             new Vector3f(255 / 255f, 180 / 255f, 66 / 255f),
             1.5f
@@ -56,7 +57,7 @@ public class HolySongAbility extends Ability {
                     e.removeEffect(ModEffects.LOOSING_CONTROL);
                 }
             });
-            int duration = 20 * 20* (int) Math.max(multiplier(entity)/4,1);
+
             entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, duration, 0, false, false, false));
             entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, duration, 1, false, false, false));
             entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, duration, 0, false, false, false));

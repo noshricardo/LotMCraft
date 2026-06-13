@@ -6,25 +6,17 @@ import de.jakob.lotm.abilities.PassiveAbilityItem;
 import de.jakob.lotm.abilities.PhysicalEnhancementsAbility;
 import de.jakob.lotm.abilities.core.Ability;
 import de.jakob.lotm.abilities.core.ToggleAbility;
-import de.jakob.lotm.abilities.door.passives.VoidImmunityAbility;
-import de.jakob.lotm.abilities.visionary.PsychologicalInvisibilityAbility;
-import de.jakob.lotm.abilities.wheel_of_fortune.passives.PassiveLuckAbility;
-import de.jakob.lotm.attachments.*;
-import de.jakob.lotm.effect.FoolingEffect;
-import de.jakob.lotm.effect.ModEffects;
-import de.jakob.lotm.util.helper.AbilityUtil;
-import de.jakob.lotm.util.helper.AllyUtil;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
+import de.jakob.lotm.attachments.AbilityCooldownComponent;
+import de.jakob.lotm.attachments.AbilityWheelComponent;
+import de.jakob.lotm.attachments.DisabledFlightComponent;
+import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.item.ModItems;
 import de.jakob.lotm.item.custom.MarionetteControllerItem;
 import de.jakob.lotm.item.custom.SubordinateControllerItem;
 import de.jakob.lotm.network.PacketHandler;
 import de.jakob.lotm.network.packets.toClient.SyncOnHoldAbilityPacket;
 import de.jakob.lotm.network.packets.toClient.SyncToggleAbilityPacket;
-import de.jakob.lotm.sefirah.GreatOldOneManager;
 import de.jakob.lotm.util.BeyonderData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -46,8 +38,7 @@ public class BeyonderDataTickHandler {
 
 
     // In BeyonderDataTickHandler
-    private static final Map<UUID, Set<PassiveAbilityItem>> cachedAbilities = new ConcurrentHashMap<>();
-    private static final Map<UUID, Set<PassiveAbilityItem>> lastTickedAbilities = new ConcurrentHashMap<>();
+    private static final Map<UUID, Set<PassiveAbilityItem>> cachedAbilities = new HashMap<>();
 
     public static void invalidateCache(LivingEntity entity) {
         cachedAbilities.remove(entity.getUUID());
@@ -65,6 +56,8 @@ public class BeyonderDataTickHandler {
                             .stream()
                             .map(entry -> (PassiveAbilityItem) entry.get())
                             .toList();
+                    // addAll into a CopyOnWriteArraySet (or synchronizedSet)
+                    // so concurrent readers on the stream below are safe
                     passiveAbilities.addAll(items);
                 }
             }
@@ -95,65 +88,16 @@ public class BeyonderDataTickHandler {
             disabledFlightComponent.setCooldownTicks(disabledFlightComponent.getCooldownTicks() - 1);
         }
 
-        // Tick Fooling attachment — re-apply a 2-tick cosmetic effect each tick so the HUD always shows it
-        if (!livingEntity.level().isClientSide) {
-            FoolingComponent foolingComponent = livingEntity.getData(ModAttachments.FOOLING_COMPONENT);
-            if (foolingComponent.isFooled()) {
-                // Trigger a new stun on the interval, based on remaining ticks
-                if (foolingComponent.getTicksRemaining() % FoolingEffect.STUN_INTERVAL_TICKS == 0) {
-                    foolingComponent.applyStun(FoolingEffect.STUN_DURATION_TICKS);
-                }
-
-                // Zero velocity and suppress client movement every tick while stunned
-                if (foolingComponent.isStunned()) {
-                    livingEntity.setDeltaMovement(0, 0, 0);
-                    livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 254, false, false, false));
-                    livingEntity.hurtMarked = true;
-                }
-
-                foolingComponent.tick();
-                // Re-apply with the actual remaining ticks so the HUD countdown is accurate
-                livingEntity.addEffect(new MobEffectInstance(ModEffects.FOOLING, foolingComponent.getTicksRemaining(), 0, false, true, true));
-            } else if (livingEntity.hasEffect(ModEffects.FOOLING)) {
-                livingEntity.removeEffect(ModEffects.FOOLING);
-            }
-        }
-
         if(BeyonderData.isBeyonder(livingEntity)) {
-            if(entity.getData(ModAttachments.SANITY_COMPONENT.get()).getSanity() == 0.0f){
-                entity.kill();
-            }
-
             if(entity.tickCount % 200 == 0) {
                 invalidateCache(livingEntity);
-                PhysicalEnhancementsAbility.resetEnhancements(event.getEntity().getUUID(), livingEntity, false);
-                invalidateCache(livingEntity);
+                PhysicalEnhancementsAbility.resetEnhancements(event.getEntity().getUUID());
+                invalidateCache(livingEntity); // also re-filter applicable abilities
             }
 
-            // Tick Passive Abilities, and onHold for currently selected Ability and tick luck
-            if(entity.tickCount % 5 == 0) {
+            // Tick Passive Abilities, Toggle Abilities and onHold for currently selected Ability
+            if(entity.tickCount % 5 == 0)
                 tickAbilities(livingEntity);
-
-                // Remove Unluck gradually
-                LuckComponent luckComponent = livingEntity.getData(ModAttachments.LUCK_COMPONENT);
-                if(luckComponent.getLuck() < 0) {
-                    luckComponent.addLuckWithMax(1, 0);
-                }
-
-                // Remove Luck gradually
-                if(luckComponent.getLuck() > PassiveLuckAbility.getNormalLuckForEntity(livingEntity)) {
-                    luckComponent.addLuckWithMin(-1, PassiveLuckAbility.getNormalLuckForEntity(livingEntity));
-                }
-            }
-
-            // Tick Toggle Abilities
-            ToggleAbility.getActiveAbilitiesForEntity(livingEntity).forEach(toggleAbility -> {
-                if(entity.tickCount % toggleAbility.tickRate != 0) {
-                    return;
-                }
-                toggleAbility.prepareTick(livingEntity.level(), livingEntity);
-                PacketHandler.sendToTrackingAndSelf(livingEntity, new SyncToggleAbilityPacket(livingEntity.getId(), toggleAbility.getId(), SyncToggleAbilityPacket.Action.TICK.getValue()));
-            });
         }
     }
 
@@ -165,18 +109,18 @@ public class BeyonderDataTickHandler {
             return;
         }
 
-        if(player.getY() < -200 && !VoidImmunityAbility.IMMUNE_ENTITIES.contains(player)) {
+        if(player.getY() < -200) {
             player.kill();
         }
 
         if (BeyonderData.isBeyonder(player)) {
             // Regenerate Spirituality
-            float amount = BeyonderData.getMaxSpirituality(BeyonderData.getPathway(player), BeyonderData.getSequence(player), player) * 0.0006f;
+            float amount = BeyonderData.getMaxSpirituality(BeyonderData.getSequence(player)) * 0.0006f;
             BeyonderData.incrementSpirituality(player, amount);
 
             // Slowly digest potion
             if(player.tickCount % 20 == 0) {
-                BeyonderData.digest(player, 1 / (20 * 60 * 60f), true);
+                BeyonderData.digest(player, 1 / (20 * 60 * 60f), false);
             }
         }
 
@@ -190,63 +134,26 @@ public class BeyonderDataTickHandler {
                 SubordinateControllerItem.onHold(player, player.getMainHandItem());
             }
         }
-
-        if(player.tickCount % 20 == 0) {
-            invalidateCache(player);
-        }
-
     }
 
     @SubscribeEvent
     public static void onPlayerClone(PlayerEvent.Clone event) {
-        PhysicalEnhancementsAbility.resetEnhancements(event.getEntity().getUUID(), event.getEntity(), true);
-        invalidateCache(event.getEntity());
-        PhysicalEnhancementsAbility.resetEnhancements(event.getEntity());
+        PhysicalEnhancementsAbility.resetEnhancements(event.getEntity().getUUID());
         invalidateCache(event.getEntity()); // also re-filter applicable abilities
-        lastTickedAbilities.remove(event.getEntity().getUUID());
-    }
-
-    @SubscribeEvent
-    public static void onLivingDeath(net.neoforged.neoforge.event.entity.living.LivingDeathEvent event) {
-        lastTickedAbilities.remove(event.getEntity().getUUID());
-        cachedAbilities.remove(event.getEntity().getUUID());
     }
 
     private static void tickAbilities(LivingEntity entity) {
         if(entity.level().isClientSide) return;
 
-        UUID uuid = entity.getUUID();
-        Set<PassiveAbilityItem> current = getApplicableAbilities(entity);
-        Set<PassiveAbilityItem> last = lastTickedAbilities.get(uuid);
-
-        if (last != null && !last.equals(current)) {
-            // Handle removal
-            for (PassiveAbilityItem ability : last) {
-                if (!current.contains(ability)) {
-                    ability.onPassiveAbilityRemoved(entity, (ServerLevel)entity.level());
-                }
-            }
-            // Handle gain
-            for (PassiveAbilityItem ability : current) {
-                if (!last.contains(ability)) {
-                    ability.onPassiveAbilityGained(entity, (ServerLevel)entity.level());
-                }
-            }
-        } else if (last == null && !current.isEmpty()) {
-            for (PassiveAbilityItem ability : current) {
-                ability.onPassiveAbilityGained(entity, (ServerLevel)entity.level());
-            }
-        }
-
-        if (current.isEmpty()) {
-            lastTickedAbilities.remove(uuid);
-        } else {
-            lastTickedAbilities.put(uuid, new HashSet<>(current));
-        }
-
         // Passive Abilities
-        current.forEach(abilityItem -> {
+        getApplicableAbilities(entity).forEach(abilityItem -> {
             abilityItem.tick(entity.level(), entity);
+        });
+
+        // Tick Toggle Abilities
+        ToggleAbility.getActiveAbilitiesForEntity(entity).forEach(toggleAbility -> {
+            toggleAbility.prepareTick(entity.level(), entity);
+            PacketHandler.sendToTrackingAndSelf(entity, new SyncToggleAbilityPacket(entity.getId(), toggleAbility.getId(), SyncToggleAbilityPacket.Action.TICK.getValue()));
         });
 
         if(entity instanceof ServerPlayer player) {

@@ -1,10 +1,7 @@
 package de.jakob.lotm.abilities.abyss;
 
 import de.jakob.lotm.abilities.core.ToggleAbility;
-import de.jakob.lotm.abilities.core.interaction.InteractionHandler;
 import de.jakob.lotm.attachments.ModAttachments;
-import de.jakob.lotm.util.BeyonderData;
-import de.jakob.lotm.util.data.Location;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.ParticleUtil;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -19,7 +16,6 @@ import org.joml.Vector3f;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 
 public class MindFogAbility extends ToggleAbility {
     private final Random random = new Random();
@@ -28,9 +24,8 @@ public class MindFogAbility extends ToggleAbility {
     private final DustParticleOptions fogDustStrong = new DustParticleOptions(new Vector3f(0.88f, 0.9f, 1.0f), 1.5f);
 
     public MindFogAbility(String id) {
-        super(id, "fog");
-        autoClear = false;
-        interactionRadius = 20;
+        super(id);
+        canBeUsedByNPC = false;
     }
 
     @Override
@@ -53,9 +48,7 @@ public class MindFogAbility extends ToggleAbility {
         if (level.isClientSide) return;
 
         ServerLevel serverLevel = (ServerLevel) level;
-        double fogRadius = 20* (int) Math.max(multiplier(entity)/2,1);
-
-        int seq = AbilityUtil.getSeqWithArt(entity, this);
+        double fogRadius = 20;
 
         for (int i = 0; i < 8; i++) {
             double angle = random.nextDouble() * Math.PI * 2;
@@ -66,20 +59,13 @@ public class MindFogAbility extends ToggleAbility {
             ParticleUtil.spawnParticles(serverLevel, particle, new Vec3(x, entity.getY() + 1, z), 1, 0.2, 0.02);
         }
 
-        if (InteractionHandler.isInteractionPossible(new Location(entity.position(), level), "purification", seq) ||
-            InteractionHandler.isInteractionPossible(new Location(entity.position(), level), "calming", seq) ||
-                InteractionHandler.isInteractionPossible(new Location(entity.position(), level), "sealing", seq)) {
-            cancel(serverLevel, entity);
-            return;
-        }
-
         AbilityUtil.getNearbyEntities(entity, serverLevel, entity.position(), fogRadius)
                 .stream()
                 .filter(target -> AbilityUtil.mayDamage(entity, target))
                 .forEach(target -> {
                     if (target.hasData(ModAttachments.SANITY_COMPONENT)) {
                         target.getData(ModAttachments.SANITY_COMPONENT)
-                                .decreaseSanityWithSequenceDifference((float) (0.0125* (int) Math.max(multiplier(entity)/2,1)), target, AbilityUtil.getSeqWithArt(entity, this), BeyonderData.getSequence(target));
+                                .increaseSanityAndSync(-0.05f, target);
                     }
 
                     if (random.nextInt(5) == 0) {
@@ -93,8 +79,6 @@ public class MindFogAbility extends ToggleAbility {
     @Override
     public void stop(Level level, LivingEntity entity) {
         if (level.isClientSide) return;
-
-        clearArtifactScaling(entity);
     }
 
     private void applyRandomNegativeEffect(LivingEntity entity) {

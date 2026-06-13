@@ -2,7 +2,6 @@ package de.jakob.lotm.abilities.wheel_of_fortune;
 
 import de.jakob.lotm.abilities.core.Ability;
 import de.jakob.lotm.attachments.LuckAccumulationComponent;
-import de.jakob.lotm.attachments.LuckComponent;
 import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.effect.ModEffects;
 import de.jakob.lotm.util.data.EntityLocation;
@@ -20,8 +19,6 @@ import java.util.Map;
 public class LuckReleaseAbility extends Ability {
     public LuckReleaseAbility(String id) {
         super(id, 120);
-        canBeUsedInArtifact = false;
-        canBeShared = false;
     }
 
     @Override
@@ -51,16 +48,18 @@ public class LuckReleaseAbility extends Ability {
         component.setTicksAccumulated(0);
 
         int additionalLuck = getAdditionalLuckByTicks(ticks);
+        int currentLuck = entity.hasEffect(ModEffects.LUCK) ? entity.getEffect(ModEffects.LUCK).getAmplifier() : 0;
+        int newLuck = currentLuck + additionalLuck;
 
-        LuckComponent luckComponent = entity.getData(ModAttachments.LUCK_COMPONENT.get());
-        luckComponent.addLuck(-additionalLuck);
+        entity.addEffect(new MobEffectInstance(ModEffects.LUCK, 20 * 35, newLuck));
 
         EntityLocation loc = new EntityLocation(entity);
         ParticleUtil.createParticleSpirals(dust, loc, 1.75, 1.75, 2.25, .35, 5, 20 * 35, 15, 8);
+
     }
 
     private int getAdditionalLuckByTicks(long ticks) {
-        int additionalLuck = Math.round(ticks / (20 * 60 * 2f)) * 120;
+        int additionalLuck = Math.round(ticks / (20 * 60 * 2f));
         return Math.clamp(additionalLuck, 1, 8);
     }
 }

@@ -1,8 +1,5 @@
 package de.jakob.lotm.entity.custom.ability_entities.darkness_pathway;
 
-import de.jakob.lotm.abilities.core.interaction.InteractionHandler;
-import de.jakob.lotm.util.BeyonderData;
-import de.jakob.lotm.util.data.Location;
 import de.jakob.lotm.util.helper.AllyUtil;
 import de.jakob.lotm.util.helper.RegionSnapshot;
 import net.minecraft.core.BlockPos;
@@ -28,7 +25,7 @@ import java.util.*;
 
 public class ConcealedDomainEntity extends Entity {
 
-    public static final int RADIUS = 30;
+    public static final int RADIUS = 20;
     private static final int OWNER_MAX_DISTANCE = 50;
     private static final int SHELL_THICKNESS = 1;
 
@@ -219,12 +216,6 @@ public class ConcealedDomainEntity extends Entity {
         }
         // Discard if owner exceeded max distance from domain center
         if (owner.distanceToSqr(center) > OWNER_MAX_DISTANCE * OWNER_MAX_DISTANCE) {
-            this.discard();
-            return;
-        }
-
-        // Check for interactions
-        if(InteractionHandler.isInteractionPossible(new Location(position(), level()), "destruction", BeyonderData.getSequence(owner))) {
             this.discard();
             return;
         }

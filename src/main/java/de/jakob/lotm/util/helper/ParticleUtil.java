@@ -7,9 +7,7 @@ import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -19,6 +17,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ParticleUtil {
 
+    /**
+     * Helper method to spawn particles at a location for a duration
+     *
+     * @param particleType      Type of particle to spawn
+     * @param position          Position to spawn particles
+     * @param duration          Duration in ticks
+     * @param interval          Interval between particle spawns
+     * @param particlesPerSpawn Number of particles to spawn each time
+     * @param spread            Spread radius for particles
+     */
     public static void spawnParticlesForDuration(ServerLevel level, ParticleOptions particleType, Vec3 position,
                                                  int duration, int interval, int particlesPerSpawn,
                                                  double spread) {
@@ -41,6 +49,14 @@ public class ParticleUtil {
         }, level);
     }
 
+    /**
+     * Helper method to spawn particles in a sphere pattern
+     *
+     * @param particleType  Type of particle to spawn
+     * @param center        Center position
+     * @param radius        Sphere radius
+     * @param particleCount Number of particles in sphere
+     */
     public static void spawnSphereParticles(ServerLevel level, ParticleOptions particleType, Vec3 center,
                                             double radius, int particleCount) {
         if (level == null) return;
@@ -48,6 +64,7 @@ public class ParticleUtil {
         RandomSource random = level.random;
 
         for (int i = 0; i < particleCount; i++) {
+            // Generate random points on a sphere using spherical coordinates
             double theta = 2 * Math.PI * random.nextDouble(); // Azimuthal angle
             double phi = Math.acos(2 * random.nextDouble() - 1); // Polar angle
 
@@ -56,42 +73,6 @@ public class ParticleUtil {
             double z = center.z + radius * Math.cos(phi);
 
             level.sendParticles(particleType, x, y, z, 1, 0, 0, 0, 0);
-        }
-    }
-
-    public static void spawnSphereParticles(ClientLevel level, ParticleOptions particleType, Vec3 center,
-                                            double radius, int particleCount) {
-        if (level == null) return;
-
-        RandomSource random = level.random;
-
-        for (int i = 0; i < particleCount; i++) {
-            double theta = 2 * Math.PI * random.nextDouble(); // Azimuthal angle
-            double phi = Math.acos(2 * random.nextDouble() - 1); // Polar angle
-
-            double x = center.x + radius * Math.sin(phi) * Math.cos(theta);
-            double y = center.y + radius * Math.sin(phi) * Math.sin(theta);
-            double z = center.z + radius * Math.cos(phi);
-
-            level.addParticle(particleType, x, y, z, 0, 0, 0);
-        }
-    }
-
-    public static void spawnSphereParticles(ServerLevel level, ParticleOptions particleType, Vec3 center,
-                                            double radius, int particleCount, double speed) {
-        if (level == null) return;
-
-        RandomSource random = level.random;
-
-        for (int i = 0; i < particleCount; i++) {
-            double theta = 2 * Math.PI * random.nextDouble(); // Azimuthal angle
-            double phi = Math.acos(2 * random.nextDouble() - 1); // Polar angle
-
-            double x = center.x + radius * Math.sin(phi) * Math.cos(theta);
-            double y = center.y + radius * Math.sin(phi) * Math.sin(theta);
-            double z = center.z + radius * Math.cos(phi);
-
-            level.sendParticles(particleType, x, y, z, 1, 0, 0, 0, speed);
         }
     }
 
@@ -139,6 +120,17 @@ public class ParticleUtil {
         drawParticleLine(level, particleType, start, end, step, particleCount, offset);
     }
 
+
+    /**
+     * Helper method to spawn particles in a circle pattern
+     *
+     * @param particleType  Type of particle to spawn
+     * @param center        Center position
+     * @param radius        Circle radius
+     * @param duration      Duration in ticks
+     * @param interval      Interval between particle spawns
+     * @param particleCount Number of particles in circle
+     */
     public static void spawnCircleParticlesForDuration(ServerLevel level, ParticleOptions particleType, Vec3 center,
                                                        double radius, int duration, int interval,
                                                        int particleCount) {
@@ -155,20 +147,33 @@ public class ParticleUtil {
         }, level);
     }
 
+    /**
+     * Helper method to spawn particles in a circle pattern
+     *
+     * @param particleType  Type of particle to spawn
+     * @param center        Center position
+     * @param direction     Direction vector (normal to the circle plane)
+     * @param radius        Circle radius
+     * @param particleCount Number of particles in circle
+     */
     public static void spawnCircleParticles(ServerLevel level, ParticleOptions particleType, Vec3 center, Vec3 direction,
                                                        double radius, int particleCount) {
         if (level == null) return;
 
+        // Normalize the direction vector
         Vec3 normal = direction.normalize();
 
+        // Create two perpendicular vectors in the plane of the circle
         Vec3 tangent1, tangent2;
 
+        // Find a vector that's not parallel to the normal
         if (Math.abs(normal.x) < 0.9) {
             tangent1 = new Vec3(1, 0, 0).cross(normal).normalize();
         } else {
             tangent1 = new Vec3(0, 1, 0).cross(normal).normalize();
         }
 
+        // Get the second tangent vector perpendicular to both normal and tangent1
         tangent2 = normal.cross(tangent1).normalize();
 
         for (int i = 0; i < particleCount; i++) {
@@ -176,6 +181,7 @@ public class ParticleUtil {
             double cosAngle = Math.cos(angle);
             double sinAngle = Math.sin(angle);
 
+            // Calculate position on the circle in 3D space
             Vec3 offset = tangent1.scale(radius * cosAngle).add(tangent2.scale(radius * sinAngle));
             Vec3 particlePos = center.add(offset);
 
@@ -183,6 +189,14 @@ public class ParticleUtil {
         }
     }
 
+    /**
+     * Helper method to spawn particles at a location for a duration
+     *
+     * @param particleType      Type of particle to spawn
+     * @param position          Position to spawn particles
+     * @param particlesPerSpawn Number of particles to spawn each time
+     * @param spread            Spread radius for particles
+     */
     public static void spawnParticles(ServerLevel level, ParticleOptions particleType, Vec3 position,
                                                  int particlesPerSpawn, double spread) {
         if (level == null) return;
@@ -479,72 +493,14 @@ public class ParticleUtil {
         return shouldStop;
     }
 
-    public static List<AtomicBoolean> createParticleSpirals(ClientLevel level, ParticleOptions particleType, Vec3 centerPosition, double starRadius, double endRadius, double height, double speed, double density, int duration, int spiralCount, int delayBetweenSpirals) {
-        ArrayList<AtomicBoolean> stopConditions = new ArrayList<>();
-
-        int degreeIncrease = 360 / spiralCount;
-
-        for (int i = 0; i < spiralCount; i++) {
-            stopConditions.add(createParticleSpiral(level, particleType, centerPosition, starRadius, endRadius, duration, i * degreeIncrease, height, speed, density, delayBetweenSpirals * i));
-        }
-
-        return stopConditions;
-    }
-
-    public static AtomicBoolean createParticleSpiral(ClientLevel level, ParticleOptions particleType, Vec3 centerPosition, double starRadius, double endRadius, int duration, int startingAngle, double height, double speed, double density, int delay) {
-        if (level == null)
-            return new AtomicBoolean(true);
-
-        int particleCount = (int) (((int) Math.round(Math.max(starRadius, endRadius))) * 5 * density);
-
-        double startRadians = Math.toRadians(startingAngle);
-        double stepSize = (2 * Math.PI) / particleCount;
-        int startingI = (int) Math.round(startRadians / stepSize);
-
-        AtomicBoolean shouldStop = new AtomicBoolean(false);
-
-        AtomicDouble radius = new AtomicDouble(starRadius);
-        AtomicDouble yPos = new AtomicDouble(centerPosition.y);
-
-        double yIncreaseStep = .15 * speed;
-        double radiusIncreaseStep = (Math.abs(endRadius - starRadius)) / (height / yIncreaseStep);
-
-        AtomicInteger i = new AtomicInteger(startingI);
-        AtomicInteger delayCountdown = new AtomicInteger(delay);
-
-        ClientScheduler.scheduleForDuration(0, 1, duration, () -> {
-            if (shouldStop.get())
-                return;
-
-            double angle = (2 * Math.PI * i.get()) / particleCount;
-            double x = centerPosition.x + radius.get() * Math.cos(angle);
-            double z = centerPosition.z + radius.get() * Math.sin(angle);
-
-            level.addParticle(particleType, x, yPos.get(), z, 0, 0, 0);
-
-            if (delayCountdown.get() <= 0) {
-                yPos.addAndGet(yIncreaseStep);
-            }
-
-            radius.addAndGet(radiusIncreaseStep);
-            i.addAndGet(1);
-
-            if ((yPos.get() - centerPosition.y) > height) {
-                yPos.set(centerPosition.y);
-                radius.set(starRadius);
-            }
-
-            if (delayCountdown.get() > 0)
-                delayCountdown.decrementAndGet();
-
-            if (i.get() > particleCount)
-                i.set(0);
-
-        }, level);
-
-        return shouldStop;
-    }
-
+    /**
+     * Helper method to spawn particles at a location for a duration
+     *
+     * @param particleType      Type of particle to spawn
+     * @param position          Position to spawn particles
+     * @param particlesPerSpawn Number of particles to spawn each time
+     * @param spread            Spread radius for particles
+     */
     public static void spawnParticles(ServerLevel level, ParticleOptions particleType, Vec3 position,
                                       int particlesPerSpawn, double spread, double speed) {
         if (level == null) return;
@@ -558,6 +514,13 @@ public class ParticleUtil {
                 particlesPerSpawn, spread, spread, spread, speed);
     }
 
+    /**
+     * Helper method to spawn particles at a location for a duration
+     *
+     * @param particleType      Type of particle to spawn
+     * @param position          Position to spawn particles
+     * @param particlesPerSpawn Number of particles to spawn each time
+     */
     public static void spawnParticles(ServerLevel level, ParticleOptions particleType, Vec3 position,
                                       int particlesPerSpawn, double spreadX, double spreadY, double spreadZ, double speed) {
         if (level == null) return;
@@ -572,6 +535,14 @@ public class ParticleUtil {
                 particlesPerSpawn, spreadX, spreadY, spreadZ, speed);
     }
 
+    /**
+     * Helper method to spawn particles in a circle pattern
+     *
+     * @param particleType  Type of particle to spawn
+     * @param center        Center position
+     * @param radius        Circle radius
+     * @param particleCount Number of particles in circle
+     */
     public static void spawnCircleParticles(ServerLevel level, ParticleOptions particleType, Vec3 center,
                                                        double radius, int particleCount) {
         if (level == null) return;
@@ -585,22 +556,36 @@ public class ParticleUtil {
         }
     }
 
-
+    /**
+     * Helper method to spawn particles in a circle pattern
+     *
+     * @param particleType  Type of particle to spawn
+     * @param center        Center position
+     * @param direction     Direction vector (normal to the circle plane)
+     * @param radius        Circle radius
+     * @param duration      Duration in ticks
+     * @param interval      Interval between particle spawns
+     * @param particleCount Number of particles in circle
+     */
     public static void spawnCircleParticlesForDuration(ServerLevel level, ParticleOptions particleType, Vec3 center, Vec3 direction,
                                                        double radius, int duration, int interval,
                                                        int particleCount) {
         if (level == null) return;
 
+        // Normalize the direction vector
         Vec3 normal = direction.normalize();
 
+        // Create two perpendicular vectors in the plane of the circle
         Vec3 tangent1, tangent2;
 
+        // Find a vector that's not parallel to the normal
         if (Math.abs(normal.x) < 0.9) {
             tangent1 = new Vec3(1, 0, 0).cross(normal).normalize();
         } else {
             tangent1 = new Vec3(0, 1, 0).cross(normal).normalize();
         }
 
+        // Get the second tangent vector perpendicular to both normal and tangent1
         tangent2 = normal.cross(tangent1).normalize();
 
         ServerScheduler.scheduleForDuration(0, interval, duration, () -> {
@@ -609,6 +594,7 @@ public class ParticleUtil {
                 double cosAngle = Math.cos(angle);
                 double sinAngle = Math.sin(angle);
 
+                // Calculate position on the circle in 3D space
                 Vec3 offset = tangent1.scale(radius * cosAngle).add(tangent2.scale(radius * sinAngle));
                 Vec3 particlePos = center.add(offset);
 
@@ -617,7 +603,16 @@ public class ParticleUtil {
         }, level);
     }
 
-
+    /**
+     * Helper method to spawn particles at a location for a duration
+     *
+     * @param particleType      Type of particle to spawn
+     * @param position          Position to spawn particles
+     * @param duration          Duration in ticks
+     * @param interval          Interval between particle spawns
+     * @param particlesPerSpawn Number of particles to spawn each time
+     * @param spread            Spread radius for particles
+     */
     public static void spawnParticlesForDuration(ClientLevel level, ParticleOptions particleType, Vec3 position,
                                                  int duration, int interval, int particlesPerSpawn,
                                                  double spread) {
@@ -640,7 +635,16 @@ public class ParticleUtil {
         });
     }
 
-
+    /**
+     * Helper method to spawn particles in a circle pattern
+     *
+     * @param particleType  Type of particle to spawn
+     * @param center        Center position
+     * @param radius        Circle radius
+     * @param duration      Duration in ticks
+     * @param interval      Interval between particle spawns
+     * @param particleCount Number of particles in circle
+     */
     public static void spawnCircleParticlesForDuration(ClientLevel level, ParticleOptions particleType, Vec3 center,
                                                        double radius, int duration, int interval,
                                                        int particleCount) {
@@ -657,21 +661,33 @@ public class ParticleUtil {
         });
     }
 
-
+    /**
+     * Helper method to spawn particles in a circle pattern
+     *
+     * @param particleType  Type of particle to spawn
+     * @param center        Center position
+     * @param direction     Direction vector (normal to the circle plane)
+     * @param radius        Circle radius
+     * @param particleCount Number of particles in circle
+     */
     public static void spawnCircleParticles(ClientLevel level, ParticleOptions particleType, Vec3 center, Vec3 direction,
                                             double radius, int particleCount) {
         if (level == null) return;
 
+        // Normalize the direction vector
         Vec3 normal = direction.normalize();
 
+        // Create two perpendicular vectors in the plane of the circle
         Vec3 tangent1, tangent2;
 
+        // Find a vector that's not parallel to the normal
         if (Math.abs(normal.x) < 0.9) {
             tangent1 = new Vec3(1, 0, 0).cross(normal).normalize();
         } else {
             tangent1 = new Vec3(0, 1, 0).cross(normal).normalize();
         }
 
+        // Get the second tangent vector perpendicular to both normal and tangent1
         tangent2 = normal.cross(tangent1).normalize();
 
         for (int i = 0; i < particleCount; i++) {
@@ -679,6 +695,7 @@ public class ParticleUtil {
             double cosAngle = Math.cos(angle);
             double sinAngle = Math.sin(angle);
 
+            // Calculate position on the circle in 3D space
             Vec3 offset = tangent1.scale(radius * cosAngle).add(tangent2.scale(radius * sinAngle));
             Vec3 particlePos = center.add(offset);
 
@@ -686,7 +703,14 @@ public class ParticleUtil {
         }
     }
 
-
+    /**
+     * Helper method to spawn particles at a location
+     *
+     * @param particleType      Type of particle to spawn
+     * @param position          Position to spawn particles
+     * @param particlesPerSpawn Number of particles to spawn each time
+     * @param spread            Spread radius for particles
+     */
     public static void spawnParticles(ClientLevel level, ParticleOptions particleType, Vec3 position,
                                       int particlesPerSpawn, double spread) {
         if (level == null) return;
@@ -694,9 +718,9 @@ public class ParticleUtil {
         RandomSource random = level.random;
 
         for (int i = 0; i < particlesPerSpawn; i++) {
-            double offsetX = (random.nextDouble() - 0.5) * spread * 2;
-            double offsetY = (random.nextDouble() - 0.5) * spread * 2;
-            double offsetZ = (random.nextDouble() - 0.5) * spread * 2;
+            double offsetX = (random.nextDouble() - 0.5) * spread;
+            double offsetY = (random.nextDouble() - 0.5) * spread;
+            double offsetZ = (random.nextDouble() - 0.5) * spread;
 
             level.addParticle(particleType,
                     position.x + offsetX,
@@ -713,9 +737,9 @@ public class ParticleUtil {
         RandomSource random = level.random;
 
         for (int i = 0; i < particlesPerSpawn; i++) {
-            double offsetX = (random.nextDouble() - 0.5) * spreadX * 2;
-            double offsetY = (random.nextDouble() - 0.5) * spreadY * 2;
-            double offsetZ = (random.nextDouble() - 0.5) * spreadZ * 2;
+            double offsetX = (random.nextDouble() - 0.5) * spreadX;
+            double offsetY = (random.nextDouble() - 0.5) * spreadY;
+            double offsetZ = (random.nextDouble() - 0.5) * spreadZ;
 
             level.addParticle(particleType,
                     position.x + offsetX,
@@ -725,7 +749,15 @@ public class ParticleUtil {
         }
     }
 
-
+    /**
+     * Helper method to spawn particles at a location with velocity
+     *
+     * @param particleType      Type of particle to spawn
+     * @param position          Position to spawn particles
+     * @param particlesPerSpawn Number of particles to spawn each time
+     * @param spread            Spread radius for particles
+     * @param speed             Initial velocity for particles
+     */
     public static void spawnParticles(ClientLevel level, ParticleOptions particleType, Vec3 position,
                                       int particlesPerSpawn, double spread, double speed) {
         if (level == null) return;
@@ -749,7 +781,14 @@ public class ParticleUtil {
         }
     }
 
-
+    /**
+     * Helper method to spawn particles in a circle pattern
+     *
+     * @param particleType  Type of particle to spawn
+     * @param center        Center position
+     * @param radius        Circle radius
+     * @param particleCount Number of particles in circle
+     */
     public static void spawnCircleParticles(ClientLevel level, ParticleOptions particleType, Vec3 center,
                                             double radius, int particleCount) {
         if (level == null) return;
@@ -763,22 +802,36 @@ public class ParticleUtil {
         }
     }
 
-
+    /**
+     * Helper method to spawn particles in a circle pattern for a duration
+     *
+     * @param particleType  Type of particle to spawn
+     * @param center        Center position
+     * @param direction     Direction vector (normal to the circle plane)
+     * @param radius        Circle radius
+     * @param duration      Duration in ticks
+     * @param interval      Interval between particle spawns
+     * @param particleCount Number of particles in circle
+     */
     public static void spawnCircleParticlesForDuration(ClientLevel level, ParticleOptions particleType, Vec3 center, Vec3 direction,
                                                        double radius, int duration, int interval,
                                                        int particleCount) {
         if (level == null) return;
 
+        // Normalize the direction vector
         Vec3 normal = direction.normalize();
 
+        // Create two perpendicular vectors in the plane of the circle
         Vec3 tangent1, tangent2;
 
+        // Find a vector that's not parallel to the normal
         if (Math.abs(normal.x) < 0.9) {
             tangent1 = new Vec3(1, 0, 0).cross(normal).normalize();
         } else {
             tangent1 = new Vec3(0, 1, 0).cross(normal).normalize();
         }
 
+        // Get the second tangent vector perpendicular to both normal and tangent1
         tangent2 = normal.cross(tangent1).normalize();
 
         ClientScheduler.scheduleForDuration(0, interval, duration, () -> {
@@ -787,7 +840,7 @@ public class ParticleUtil {
                 double cosAngle = Math.cos(angle);
                 double sinAngle = Math.sin(angle);
 
-                // Calculate position on the circle in 3D spyace
+                // Calculate position on the circle in 3D space
                 Vec3 offset = tangent1.scale(radius * cosAngle).add(tangent2.scale(radius * sinAngle));
                 Vec3 particlePos = center.add(offset);
 

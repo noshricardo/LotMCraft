@@ -12,7 +12,6 @@ public class TransformationComponent {
 
     private boolean isTransformed = false;
     private int transformationIndex = 0;
-    private String additionalData = "";
 
     public TransformationComponent() {
     }
@@ -27,7 +26,7 @@ public class TransformationComponent {
 
     public void setTransformedAndSync(boolean transformed, LivingEntity entity) {
         isTransformed = transformed;
-        PacketHandler.sendToAllPlayers(new SyncTransformationPacket(entity.getId(), isTransformed, transformationIndex, additionalData));
+        PacketHandler.sendToAllPlayers(new SyncTransformationPacket(entity.getId(), isTransformed, transformationIndex));
     }
 
     public int getTransformationIndex() {
@@ -42,41 +41,23 @@ public class TransformationComponent {
         this.transformationIndex = type.getIndex();
     }
 
-    public void setTransformationIndexAndSync(int transformationIndex, LivingEntity entity) {
-        this.transformationIndex = transformationIndex;
-        PacketHandler.sendToAllPlayers(new SyncTransformationPacket(entity.getId(), isTransformed, transformationIndex, additionalData));
-    }
-
-    public void setTransformationIndexAndSync(TransformationType type, LivingEntity entity) {
-        this.transformationIndex = type.getIndex();
-        PacketHandler.sendToAllPlayers(new SyncTransformationPacket(entity.getId(), isTransformed, transformationIndex, additionalData));
-    }
-
-    public String getAdditionalData() {
-        return additionalData;
-    }
-
-    public void setAdditionalData(String additionalData) {
-        this.additionalData = additionalData;
-    }
-
-    public void setAdditionalDataAndSync(String additionalData, LivingEntity entity) {
-        this.additionalData = additionalData;
-        PacketHandler.sendToAllPlayers(new SyncTransformationPacket(entity.getId(), isTransformed, transformationIndex, additionalData));
-    }
-
-    public void reset() {
-        isTransformed = false;
-        transformationIndex = 0;
-        additionalData = "";
-    }
-
     public boolean shouldCancelDefaultRendering() {
         return switch (transformationIndex) {
             case 4 -> false;
             default -> true;
         };
     }
+
+    public void setTransformationIndexAndSync(int transformationIndex, LivingEntity entity) {
+        this.transformationIndex = transformationIndex;
+        PacketHandler.sendToAllPlayers(new SyncTransformationPacket(entity.getId(), isTransformed, transformationIndex));
+    }
+
+    public void setTransformationIndexAndSync(TransformationType type, LivingEntity entity) {
+        this.transformationIndex = type.getIndex();
+        PacketHandler.sendToAllPlayers(new SyncTransformationPacket(entity.getId(), isTransformed, transformationIndex));
+    }
+
 
 
     public static final IAttachmentSerializer<CompoundTag, TransformationComponent> SERIALIZER =
@@ -86,7 +67,6 @@ public class TransformationComponent {
                     TransformationComponent component = new TransformationComponent();
                     component.isTransformed = tag.getBoolean("active");
                     component.transformationIndex = tag.getInt("index");
-                    component.additionalData = tag.getString("additionalData");
                     return component;
                 }
 
@@ -95,7 +75,6 @@ public class TransformationComponent {
                     CompoundTag tag = new CompoundTag();
                     tag.putBoolean("active", component.isTransformed);
                     tag.putInt("index", component.transformationIndex);
-                    tag.putString("additionalData", component.additionalData);
                     return tag;
                 }
             };
@@ -110,9 +89,10 @@ public class TransformationComponent {
         FOG_OF_HISTORY(5),
         ENERGY(6),
         CONCEPTUALIZATION(7),
-        PARASITATION(8),
+        PARASTATION(8),
         COFFIN(9),
         DREAM_DIVINATION(10),
+        DIGITIZE(11),
         MYTHICAL_CREATURE(101);
 
         private final int index;

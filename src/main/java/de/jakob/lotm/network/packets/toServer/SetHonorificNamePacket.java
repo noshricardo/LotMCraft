@@ -1,10 +1,8 @@
 package de.jakob.lotm.network.packets.toServer;
 
 import de.jakob.lotm.LOTMCraft;
-import de.jakob.lotm.abilities.visionary.prophecy.TokenStream;
-import de.jakob.lotm.sefirah.SefirahHandler;
 import de.jakob.lotm.util.BeyonderData;
-import de.jakob.lotm.util.playerMap.HonorificName;
+import de.jakob.lotm.util.beyonderMap.HonorificName;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -58,23 +56,22 @@ public record SetHonorificNamePacket(LinkedList<String> lines) implements Custom
 
             try {
                 int sequence = BeyonderData.getSequence(player);
-                boolean isSefirotOwner = !SefirahHandler.getClaimedSefirot(player).isEmpty();
 
-                if (!isSefirotOwner && sequence >= 4) {
+                if (sequence >= 4) {
                     player.sendSystemMessage(Component.literal(
                             "You must be sequence 3 or higher to utilize honorific name!")
                             .withStyle(ChatFormatting.RED));
                     return;
                 }
 
-                if (!isSefirotOwner && sequence == 3 && lines.size() != 5) {
+                if (sequence == 3 && lines.size() != 5) {
                     player.sendSystemMessage(Component.literal(
                             "You must have 5 lines in honorific name as sequence 3")
                             .withStyle(ChatFormatting.RED));
                     return;
                 }
 
-                if (!isSefirotOwner && sequence == 2 && lines.size() < 4) {
+                if (sequence == 2 && lines.size() < 4) {
                     player.sendSystemMessage(Component.literal(
                             "You must have 4 lines in honorific name as sequence 2")
                             .withStyle(ChatFormatting.RED));
@@ -99,14 +96,6 @@ public record SetHonorificNamePacket(LinkedList<String> lines) implements Custom
                     if (line.length() >= HonorificName.MAX_LENGTH) {
                         player.sendSystemMessage(Component.literal(
                                 "Maximum length of a line is " + HonorificName.MAX_LENGTH + "!")
-                                .withStyle(ChatFormatting.RED));
-                        return;
-                    }
-
-                    var stream = new TokenStream(line);
-                    if(stream.getTotalSize() < 3){
-                        player.sendSystemMessage(Component.literal(
-                                        "Honorific name line must contain more than 3 worlds")
                                 .withStyle(ChatFormatting.RED));
                         return;
                     }

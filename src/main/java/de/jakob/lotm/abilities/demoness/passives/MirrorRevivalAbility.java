@@ -3,9 +3,6 @@ package de.jakob.lotm.abilities.demoness.passives;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.PassiveAbilityHandler;
 import de.jakob.lotm.abilities.PassiveAbilityItem;
-import de.jakob.lotm.attachments.ModAttachments;
-import de.jakob.lotm.attachments.SanityComponent;
-import de.jakob.lotm.abilities.justiciar.LawAbility;
 import de.jakob.lotm.damage.ModDamageTypes;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.ParticleUtil;
@@ -59,18 +56,14 @@ public class MirrorRevivalAbility extends PassiveAbilityItem {
         if(event.getSource().is(ModDamageTypes.LOOSING_CONTROL)) {
             return;
         }
-        if (LawAbility.SOLACE_KILLED.contains(entity.getUUID())) return;
 
         BlockPos glassPos = getNearestGlassBlock((ServerLevel) entity.level(), entity.position(), 100);
         if(glassPos == null) {
             return;
         }
-        SanityComponent sanity = entity.getData(ModAttachments.SANITY_COMPONENT);
-        if (sanity.getSanity() < 0.1) return;
 
         event.setCanceled(true);
         entity.setHealth(entity.getMaxHealth());
-        sanity.increaseSanityAndSync(-2.2f, entity);
         entity.teleportTo(glassPos.getX() + 0.5, glassPos.getY() + 1, glassPos.getZ() + 0.5);
         ParticleUtil.spawnParticles(serverLevel, dust, entity.position().add(0, entity.getEyeHeight() / 2, 0), 40, .5, entity.getEyeHeight() / 2, .5, 0.1);
     }

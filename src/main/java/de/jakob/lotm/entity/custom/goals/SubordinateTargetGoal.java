@@ -1,7 +1,6 @@
 package de.jakob.lotm.entity.custom.goals;
 
 import de.jakob.lotm.attachments.ModAttachments;
-import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.subordinates.SubordinateComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -76,16 +75,14 @@ public class SubordinateTargetGoal extends TargetGoal {
         // Defend controller if attacked (higher priority)
         LivingEntity controllerAttacker = controller.getLastHurtByMob();
         if (controllerAttacker != null && controllerAttacker.isAlive() &&
-                controllerAttacker != marionette && controllerAttacker != controller &&
-                AbilityUtil.mayTarget(marionette, controllerAttacker)) {
+                controllerAttacker != marionette && controllerAttacker != controller) {
             return controllerAttacker;
         }
 
         // Fight what the controller fights
         LivingEntity controllerTarget = controller.getLastHurtMob();
         if (controllerTarget != null && controllerTarget.isAlive() &&
-                controllerTarget != marionette && controllerTarget != controller &&
-                AbilityUtil.mayTarget(marionette, controllerTarget)) {
+                controllerTarget != marionette && controllerTarget != controller) {
             return controllerTarget;
         }
 

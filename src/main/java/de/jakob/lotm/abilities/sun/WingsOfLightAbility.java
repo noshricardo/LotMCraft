@@ -4,11 +4,7 @@ import de.jakob.lotm.abilities.core.ToggleAbility;
 import de.jakob.lotm.attachments.DisabledFlightComponent;
 import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.attachments.TransformationComponent;
-import de.jakob.lotm.util.BeyonderData;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -20,12 +16,11 @@ public class WingsOfLightAbility extends ToggleAbility {
 
     public WingsOfLightAbility(String id) {
         super(id);
-        canBeShared = false;
     }
 
     @Override
     protected float getSpiritualityCost() {
-        return 0;
+        return 5;
     }
 
     @Override
@@ -57,18 +52,6 @@ public class WingsOfLightAbility extends ToggleAbility {
             return;
         }
 
-        BeyonderData.reduceSpirituality(entity, 80);
-
-        if (BeyonderData.getSpirituality(entity) <= 0) {
-            if (entity instanceof ServerPlayer player) {
-                player.connection.send(new ClientboundSetActionBarTextPacket(
-                        Component.literal("Your spirituality is exhausted.").withColor(0xFF422a2a)
-                ));
-            }
-            cancel((ServerLevel) level, entity);
-            return;
-        }
-
         DisabledFlightComponent disabledFlightComponent = entity.getData(ModAttachments.FLIGHT_DISABLE_COMPONENT);
         if(disabledFlightComponent.getCooldownTicks() > 0) {
             cancel((ServerLevel) level, entity);
@@ -79,7 +62,7 @@ public class WingsOfLightAbility extends ToggleAbility {
         if(entity instanceof Player player) {
             player.getAbilities().mayfly = true;
             player.getAbilities().flying = true;
-            player.getAbilities().setFlyingSpeed(.45f);
+            player.getAbilities().setFlyingSpeed(.15f);
             player.onUpdateAbilities();
         }
 

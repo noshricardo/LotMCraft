@@ -1,9 +1,6 @@
 package de.jakob.lotm.network.packets.toServer;
 
 import de.jakob.lotm.LOTMCraft;
-import de.jakob.lotm.abilities.error.ParasitationAbility;
-import de.jakob.lotm.attachments.ControllingDataComponent;
-import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.util.ControllingUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -27,14 +24,7 @@ public record ReturnToMainBodyPacket() implements CustomPacketPayload {
     public static void handle(ReturnToMainBodyPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer serverPlayer) {
-                ControllingDataComponent data = serverPlayer.getData(ModAttachments.CONTROLLING_DATA);
-                if (data.isControlling()) {
-                    if (ParasitationAbility.isControlling(serverPlayer.getUUID())) {
-                        ParasitationAbility.exitControl(serverPlayer.serverLevel(), serverPlayer);
-                    } else {
-                        ControllingUtil.reset(serverPlayer, serverPlayer.serverLevel(), true);
-                    }
-                }
+                ControllingUtil.reset(serverPlayer, serverPlayer.serverLevel(), true);
             }
         });
     }

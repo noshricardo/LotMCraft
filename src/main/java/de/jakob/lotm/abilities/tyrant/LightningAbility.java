@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class LightningAbility extends Ability {
     public LightningAbility(String id) {
-        super(id, 2f);
+        super(id, .8f);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class LightningAbility extends Ability {
 
     @Override
     public float getSpiritualityCost() {
-        return 120;
+        return 50;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class LightningAbility extends Ability {
                 targetLoc = targetLoc.subtract(0, 1, 0);
         }
 
-        LightningEntity lightning = new LightningEntity(level, entity, targetLoc, 50, 6, DamageLookup.lookupDamage(5, .85)* (int) Math.max(multiplier(entity)/4,1), BeyonderData.isGriefingEnabled(entity), 4, 200* (int) Math.max(multiplier(entity)/4,1), 0x11A8DD);
+        LightningEntity lightning = new LightningEntity(level, entity, targetLoc, 50, 6, DamageLookup.lookupDamage(5, .85) * multiplier(entity), BeyonderData.isGriefingEnabled(entity), 4, 200, 0x11A8DD);
         level.addFreshEntity(lightning);
     }
 }

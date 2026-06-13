@@ -7,7 +7,6 @@ import de.jakob.lotm.abilities.core.ToggleAbility;
 import de.jakob.lotm.abilities.demoness.CharmAbility;
 import de.jakob.lotm.abilities.demoness.ThreadManipulationAbility;
 import de.jakob.lotm.abilities.tyrant.TorrentialDownpourAbility;
-import de.jakob.lotm.attachments.DoorAuthorityData;
 import de.jakob.lotm.effect.ModEffects;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.data.Location;
@@ -21,14 +20,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import java.util.HashSet;
 import java.util.UUID;
 
-/**
- * Interaction Flags that exist so far:
- * "freezing", "burning", "purification", "purification_holy", "drought", "light_source", "light_weak", "light_strong",
- * "explosion", "poison", "calming", "water", "water_strong", "sealing", "darkness",
- * "unluck", "morale_boost", "soul_burn", "blooming", "cleansing", "corruption",
- * "blink_escape", "charm", "petrification", "fog", "curse", "disease", "plague",
- * "lightning", "destruction", "space_warp", "escape
- */
 @EventBusSubscriber(modid = LOTMCraft.MOD_ID)
 public class InteractionHandler {
 
@@ -98,17 +89,6 @@ public class InteractionHandler {
     }
 
     public static boolean isInteractionPossible(Location location, String interactionFlag, int sequence, boolean requireSameOrHigherSequence) {
-        if(interactionFlag.equalsIgnoreCase("sealing_strengthening")) {
-            if(location.getLevel() instanceof ServerLevel level && DoorAuthorityData.get(level).isActive() && DoorAuthorityData.get(level).getEffectId().equalsIgnoreCase("strengthen")) {
-                return true;
-            }
-        }
-        if(interactionFlag.equalsIgnoreCase("sealing_malfunction")) {
-            if(location.getLevel() instanceof ServerLevel level && DoorAuthorityData.get(level).isActive() && DoorAuthorityData.get(level).getEffectId().equalsIgnoreCase("malfunction")) {
-                return true;
-            }
-        }
-
         return recentInteractions.stream()
                 .filter(interaction -> interaction.event.getInteractionFlags().contains(interactionFlag))
                 .filter(interaction -> location.isInSameLevel(interaction.event.getLevel()))

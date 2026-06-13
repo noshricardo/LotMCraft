@@ -1,8 +1,7 @@
 package de.jakob.lotm.abilities.red_priest;
 
-import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.SelectableAbility;
-import de.jakob.lotm.entity.custom.projectiles.SpearOfDestructionProjectileEntity;
+import de.jakob.lotm.entity.custom.ability_entities.projectiles.SpearOfDestructionProjectileEntity;
 import de.jakob.lotm.particle.ModParticles;
 import de.jakob.lotm.rendering.effectRendering.EffectManager;
 import de.jakob.lotm.util.BeyonderData;
@@ -24,8 +23,7 @@ import java.util.Map;
 
 public class FlameAuthorityAbility extends SelectableAbility {
     public FlameAuthorityAbility(String id) {
-        super(id, 8f, "burning");
-        canBeShared = false;
+        super(id, 2.5f);
     }
 
     @Override
@@ -35,7 +33,7 @@ public class FlameAuthorityAbility extends SelectableAbility {
 
     @Override
     protected float getSpiritualityCost() {
-        return 1800;
+        return 1000;
     }
 
     @Override
@@ -63,30 +61,28 @@ public class FlameAuthorityAbility extends SelectableAbility {
         ParticleUtil.createParticleSpirals(serverLevel, ParticleTypes.FLAME, startPos, 1.5, 6, 5, .75, 1, 20 * 6, 120, 1);
         ParticleUtil.createParticleSpirals(serverLevel, ModParticles.PURPLE_FLAME.get(), startPos, 1.5, 6, 5, .75, 1, 20 * 6, 120, 1);
 
-
-        ServerScheduler.scheduleForDuration(0, 5, 20 * 6*(int) Math.max(multiplier(entity)/4,1),
-                () -> AbilityUtil.damageNearbyEntities(serverLevel, entity, 9*(int) Math.max(multiplier(entity)/4,1), DamageLookup.lookupDps(1, 0.4, 3, 9) *(int) Math.max(multiplier(entity)/4,1), startPos, true, false, 20 * 40),
+        ServerScheduler.scheduleForDuration(0, 5, 20 * 6,
+                () -> AbilityUtil.damageNearbyEntities(serverLevel, entity, 9, DamageLookup.lookupDps(1, 1, 5, 20) * multiplier(entity), startPos, true, false, 20 * 40),
                 null,
                 serverLevel,
                 () -> AbilityUtil.getTimeInArea(entity, new Location(startPos, serverLevel)));
     }
 
     private void inferno(ServerLevel serverLevel, LivingEntity entity) {
-        Vec3 pos = AbilityUtil.getTargetLocation(entity, 120*(int) Math.max(multiplier(entity)/4,1), 2);
+        Vec3 pos = AbilityUtil.getTargetLocation(entity, 120, 2);
 
         // Sound
         serverLevel.playSound(null, pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, entity.getSoundSource(), 10.0f, 1.0f);
         serverLevel.playSound(null, pos.x, pos.y, pos.z, SoundEvents.FIRECHARGE_USE, entity.getSoundSource(), 10.0f, 1.0f);
-        ServerScheduler.scheduleForDuration(0, 5, 20 * 4*(int) Math.max(multiplier(entity)/4,1), () -> serverLevel.playSound(null, pos.x, pos.y, pos.z, SoundEvents.BLAZE_SHOOT, entity.getSoundSource(), 10.0f, random.nextFloat()));
+        ServerScheduler.scheduleForDuration(0, 5, 20 * 4, () -> serverLevel.playSound(null, pos.x, pos.y, pos.z, SoundEvents.BLAZE_SHOOT, entity.getSoundSource(), 10.0f, random.nextFloat()));
 
         // VFX
         EffectManager.playEffect(EffectManager.Effect.INFERNO, pos.x, pos.y, pos.z, serverLevel, entity);
 
-        double multiplier = multiplier(entity);
         // Damage
         ServerScheduler.scheduleForDuration(
-                0, 5, 20 * 4*(int) Math.max(multiplier(entity)/4,1),
-                () -> AbilityUtil.damageNearbyEntities(serverLevel, entity, 22.5*(int) Math.max(multiplier(entity)/4,1), DamageLookup.lookupDps(1, 1, 3, 12) *(int) Math.max(multiplier(entity)/4,1), pos, true, false, 20 * 40),
+                0, 5, 20 * 4,
+                () -> AbilityUtil.damageNearbyEntities(serverLevel, entity, 22.5, DamageLookup.lookupDps(1, .8, 5, 20) * multiplier(entity), pos, true, false, 20 * 40),
                 null,
                 serverLevel,
                 () -> AbilityUtil.getTimeInArea(entity, new Location(pos, serverLevel)));
@@ -94,16 +90,15 @@ public class FlameAuthorityAbility extends SelectableAbility {
 
     private void destructionSpear(ServerLevel serverLevel, LivingEntity entity) {
         Vec3 startPos = VectorUtil.getRelativePosition(entity.getEyePosition().add(entity.getLookAngle().normalize()), entity.getLookAngle().normalize(), 0, random.nextDouble(4.5f, 8f), random.nextDouble(-.1, .6));
-        Vec3 direction = AbilityUtil.getTargetLocation(entity, 120*(int) Math.max(multiplier(entity)/4,1), 1.4f).subtract(startPos).normalize();
+        Vec3 direction = AbilityUtil.getTargetLocation(entity, 120, 1.4f).subtract(startPos).normalize();
 
         serverLevel.playSound(null, startPos.x, startPos.y, startPos.z, SoundEvents.BLAZE_SHOOT, entity.getSoundSource(), 10.0f, 1.0f);
         serverLevel.playSound(null, startPos.x, startPos.y, startPos.z, SoundEvents.BLAZE_SHOOT, entity.getSoundSource(), 10.0f, 1.0f);
         serverLevel.playSound(null, startPos.x, startPos.y, startPos.z, SoundEvents.BLAZE_SHOOT, entity.getSoundSource(), 10.0f, 1.0f);
 
-        SpearOfDestructionProjectileEntity spear = new SpearOfDestructionProjectileEntity(serverLevel, entity, DamageLookup.lookupDamage(1, 0.8) *(int) Math.max(multiplier(entity)/4,1), BeyonderData.isGriefingEnabled(entity));
-        //LOTMCraft.LOGGER.info("damage {} multiplier {}",DamageLookup.lookupDamage(1, 0.8),multiplier(entity));
+        SpearOfDestructionProjectileEntity spear = new SpearOfDestructionProjectileEntity(serverLevel, entity, DamageLookup.lookupDamage(1, .8) * multiplier(entity), BeyonderData.isGriefingEnabled(entity));
         spear.setPos(startPos.x, startPos.y, startPos.z);
-        spear.shoot(direction.x, direction.y, direction.z, 3f*(int) Math.max(multiplier(entity)/4,1), 0);
+        spear.shoot(direction.x, direction.y, direction.z, 3f, 0);
         serverLevel.addFreshEntity(spear);
     }
 }

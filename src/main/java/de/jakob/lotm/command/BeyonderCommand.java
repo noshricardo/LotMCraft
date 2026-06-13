@@ -5,14 +5,12 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import de.jakob.lotm.util.BeyonderData;
-import de.jakob.lotm.util.SetBeyonderAuditLog;
-import de.jakob.lotm.util.playerMap.StoredData;
+import de.jakob.lotm.util.beyonderMap.StoredData;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
@@ -27,7 +25,7 @@ public class BeyonderCommand {
             .requires(source -> source.hasPermission(2)) // Requires OP level 2
             .then(Commands.argument("pathway", StringArgumentType.string())
                 .suggests(PATHWAY_SUGGESTIONS)
-                .then(Commands.argument("sequence", IntegerArgumentType.integer(0, 9))
+                .then(Commands.argument("sequence", IntegerArgumentType.integer(1, 9))
                     .executes(context -> {
                         // Execute on the command source (self)
                         CommandSourceStack source = context.getSource();
@@ -72,10 +70,10 @@ public class BeyonderCommand {
             }
             
             // Call the setBeyonder method
-            BeyonderData.setBeyonder(target, pathway, sequence, false, true, true, true);
+            BeyonderData.setBeyonder(target, pathway, sequence);
 
             if(target instanceof Player player) {
-                var optional = BeyonderData.playerMap.get(player);
+                var optional = BeyonderData.beyonderMap.get(player);
 
                 if(optional.isPresent()) {
                     StoredData data = optional.get();
@@ -92,15 +90,7 @@ public class BeyonderCommand {
             // Send success message
             String targetName = target instanceof Player player ? player.getGameProfile().getName() : target.getDisplayName().getString();
             source.sendSuccess(() -> Component.literal("Set " + targetName + " to " + pathway + " sequence " + sequence), true);
-
-            // Audit log
-            String executorName = source.getTextName();
-            String fullCommand = "beyonder " + pathway + " " + sequence
-                    + (target instanceof Player p && !p.getGameProfile().getName().equals(executorName)
-                       ? " " + targetName : "");
-            ServerLevel level = source.getLevel();
-            SetBeyonderAuditLog.get(level).addEntry(executorName, targetName, pathway, sequence, fullCommand);
-
+            
             return 1; // Success
         } catch (Exception e) {
             source.sendFailure(Component.literal("Failed to set beyonder data: " + e.getMessage()));

@@ -5,7 +5,6 @@ import de.jakob.lotm.abilities.mother.handler.HybridMobData;
 import de.jakob.lotm.entity.custom.BeyonderNPCEntity;
 import de.jakob.lotm.network.packets.toClient.HybridMobSyncPacket;
 import de.jakob.lotm.util.helper.AbilityUtil;
-import de.jakob.lotm.util.helper.AllyUtil;
 import de.jakob.lotm.util.helper.ParticleUtil;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -32,6 +31,7 @@ public class CrossbreedingAbility extends Ability {
         super(id, 1);
 
         canBeUsedByNPC = false;
+        canBeCopied = false;
     }
 
     @Override
@@ -53,11 +53,11 @@ public class CrossbreedingAbility extends Ability {
 
         // entities to exclude from
         List<EntityType<?>> notValidTargets = List.of(
-                //EntityType.ENDER_DRAGON,
-                //EntityType.WITHER
+                EntityType.ENDER_DRAGON,
+                EntityType.WITHER
         );
 
-        LivingEntity target = AbilityUtil.getTargetEntity(entity, 20, 2, false, true);
+        LivingEntity target = AbilityUtil.getTargetEntity(entity, 20, 2);
         if(target == null || target instanceof BeyonderNPCEntity || target instanceof Player || notValidTargets.contains(target.getType())) {
             AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.crossbreeding.not_valid_mob").withColor(0xFF88c276));
             return;
@@ -80,18 +80,15 @@ public class CrossbreedingAbility extends Ability {
             }
 
             // Spawn the hybrid mob
-            spawnHybridMob(level, previousTarget, target, entity);
+            spawnHybridMob(level, previousTarget, target);
 
             AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.crossbreeding.success").withColor(0xFF88c276));
         }
     }
 
-    private void spawnHybridMob(Level level, LivingEntity firstMob, LivingEntity secondMob, LivingEntity caster) {
+    private void spawnHybridMob(Level level, LivingEntity firstMob, LivingEntity secondMob) {
         EntityType<?> entityType = secondMob.getType();
         Entity newEntity = entityType.create(level);
-
-        newEntity.copyAttachmentsFrom(secondMob, false);
-
 
         if(!(newEntity instanceof LivingEntity newMob)) {
             return;
@@ -103,7 +100,6 @@ public class CrossbreedingAbility extends Ability {
         HybridMobData hybridData = new HybridMobData(
                 EntityType.getKey(firstMob.getType()),
                 firstMob.getDimensions(firstMob.getPose())
-
         );
 
         CompoundTag tag = hybridData.save();
@@ -117,8 +113,5 @@ public class CrossbreedingAbility extends Ability {
             HybridMobSyncPacket packet = new HybridMobSyncPacket(newMob.getId(), tag);
             PacketDistributor.sendToPlayersTrackingEntity(newMob, packet);
         }
-
-        AllyUtil.makeAllies(newMob, caster);
-
     }
 }

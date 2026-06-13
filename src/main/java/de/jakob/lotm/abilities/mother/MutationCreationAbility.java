@@ -1,13 +1,10 @@
 package de.jakob.lotm.abilities.mother;
 
 import de.jakob.lotm.abilities.core.Ability;
-import de.jakob.lotm.attachments.ModAttachments;
-import de.jakob.lotm.attachments.SanityComponent;
 import de.jakob.lotm.effect.ModEffects;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.ParticleUtil;
-import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -60,10 +57,6 @@ public class MutationCreationAbility extends Ability {
         if(!target.hasEffect(ModEffects.MUTATED)) {
             int duration = getDuration(entity, target);
             target.addEffect(new MobEffectInstance(ModEffects.MUTATED, duration, (int) (2 * multiplier(entity))));
-            ServerScheduler.scheduleForDuration(0, 10, duration, () -> {
-                SanityComponent sanityComponent = target.getData(ModAttachments.SANITY_COMPONENT);
-                sanityComponent.increaseSanityAndSync(-0.01625f*(int) Math.max(multiplier(entity)/2,1), target);
-            });
         }
         else {
             AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.mutation_creation.already_afflicted").withColor(0x8abd93));
@@ -72,12 +65,12 @@ public class MutationCreationAbility extends Ability {
     }
 
     private int getDuration(LivingEntity entity, LivingEntity target) {
-        if( AbilityUtil.isTargetSignificantlyWeaker(entity, target)) {
-            return 20 * 60 *(int) Math.max(multiplier(entity)/4,1);
+        if(!BeyonderData.isBeyonder(entity) || !BeyonderData.isBeyonder(target) || AbilityUtil.isTargetSignificantlyWeaker(entity, target)) {
+            return 20 * 60;
         }
         if(AbilityUtil.isTargetSignificantlyStronger(entity, target)) {
-            return 35 *(int) Math.max(multiplier(entity)/4,1);
+            return 20 * 5;
         }
-        return 20 * 30*(int) Math.max(multiplier(entity)/4,1)/  (int) Math.max(multiplier(target)/4,1);
+        return 20 * 30;
     }
 }

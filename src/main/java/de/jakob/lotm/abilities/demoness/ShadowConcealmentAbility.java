@@ -34,7 +34,6 @@ public class ShadowConcealmentAbility extends Ability {
 
     public ShadowConcealmentAbility(String id) {
         super(id, 45);
-        autoClear = false;
     }
 
     @Override
@@ -67,15 +66,12 @@ public class ShadowConcealmentAbility extends Ability {
             //make visible again
             AtomicReference<UUID> taskIdRef = new AtomicReference<>();
             UUID taskId = ServerScheduler.scheduleForDuration(0, 10, 20 * 20, () -> {
-                if(InteractionHandler.isInteractionPossible(new Location(entity.position(), entity.level()), "light_source", AbilityUtil.getSeqWithArt(entity, this))) {
+                if(InteractionHandler.isInteractionPossible(new Location(entity.position(), entity.level()), "light_source", BeyonderData.getSequence(entity))) {
                     entity.setInvisible(false);
                     entity.removeEffect(MobEffects.INVISIBILITY);
                     ServerScheduler.cancel(taskIdRef.get());
                 }
-            }, () -> {
-                invisiblePlayers.remove(entity.getUUID());
-                clearArtifactScaling(entity);
-                }, (ServerLevel) level, () -> AbilityUtil.getTimeInArea(entity, new de.jakob.lotm.util.data.Location(entity.position(), level)));
+            }, () -> invisiblePlayers.remove(entity.getUUID()), (ServerLevel) level, () -> AbilityUtil.getTimeInArea(entity, new Location(entity.position(), level)));
             taskIdRef.set(taskId);
         }
     }

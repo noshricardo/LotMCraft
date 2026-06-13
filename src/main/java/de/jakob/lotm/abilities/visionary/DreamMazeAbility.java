@@ -2,18 +2,12 @@ package de.jakob.lotm.abilities.visionary;
 
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.core.SelectableAbility;
-import de.jakob.lotm.abilities.visionary.passives.MetaAwarenessAbility;
 import de.jakob.lotm.attachments.DreamMazeData;
 import de.jakob.lotm.dimension.DreamMazeEventHandler;
 import de.jakob.lotm.dimension.ModDimensions;
 import de.jakob.lotm.effect.ModEffects;
-import de.jakob.lotm.util.BeyonderData;
-import de.jakob.lotm.util.helper.AbilityUtil;
-import de.jakob.lotm.util.helper.ParticleUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,8 +24,7 @@ import java.util.*;
 
 @EventBusSubscriber(modid = LOTMCraft.MOD_ID)
 public class DreamMazeAbility extends SelectableAbility {
-
-    // To resize the maze, change MAZE_SIZE in DreamMazeData. This reads from there automatically.
+    // To resize the maze, change in DreamMazeData.
     private static final int MAZE_SIZE = DreamMazeData.MAZE_SIZE;
     private static final int MAZE_HEIGHT = 7;
     private static final int FLOOR_Y_OFFSET = 0;
@@ -44,13 +37,10 @@ public class DreamMazeAbility extends SelectableAbility {
     private boolean[][] removedVertWalls;
 
     public DreamMazeAbility(String id) {
-        super(id, 7);
+        super(id, 60);
         this.canBeCopied = false;
         this.canBeUsedByNPC = false;
-        canBeShared = false;
-        canBeReplicated = false;
-        cannotBeStolen = true;
-        canBeUsedInArtifact = false;
+
     }
 
     @Override
@@ -60,7 +50,7 @@ public class DreamMazeAbility extends SelectableAbility {
 
     @Override
     public float getSpiritualityCost() {
-        return 4000;
+        return 1000;
     }
 
     @Override
@@ -82,8 +72,6 @@ public class DreamMazeAbility extends SelectableAbility {
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (!(entity instanceof ServerPlayer player)) return;
 
-        ParticleUtil.spawnParticles(serverLevel, ParticleTypes.END_ROD, entity.position(),1000, 1, .5, 1, .05);
-
         DreamMazeData data = DreamMazeData.get(serverLevel.getServer());
 
         // If already inside the dream maze, send them back out
@@ -103,14 +91,12 @@ public class DreamMazeAbility extends SelectableAbility {
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (!(entity instanceof ServerPlayer caster)) return;
 
-        ParticleUtil.spawnParticles(serverLevel, ParticleTypes.END_ROD, entity.position(),500, SURROUNDING_RADIUS, .5, SURROUNDING_RADIUS, .05);
-
         // Cannot use from inside the maze
         if (serverLevel.dimension().equals(ModDimensions.DREAM_MAZE_DIMENSION_KEY)) return;
 
         DreamMazeData data = DreamMazeData.get(serverLevel.getServer());
 
-        List<LivingEntity> nearby = AbilityUtil.getNearbyEntities(
+        List<LivingEntity> nearby = de.jakob.lotm.util.helper.AbilityUtil.getNearbyEntities(
                 entity, serverLevel, entity.position(), SURROUNDING_RADIUS, false, true);
 
         for (LivingEntity target : nearby) {
@@ -118,21 +104,10 @@ public class DreamMazeAbility extends SelectableAbility {
             if (target.getUUID().equals(caster.getUUID())) continue;
             if (data.isOccupant(target.getUUID())) continue;
 
-            int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
-            int targetSeq = BeyonderData.getSequence(target);
-            if(BeyonderData.getPathway(target).equals("visionary") && targetSeq < entitySeq){
-                AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.dream_traversal.failed").withColor(0xFFff124d));
-
-                if(targetSeq <= 1 && target instanceof ServerPlayer targetPlayer){
-                    MetaAwarenessAbility.onDivined(caster, targetPlayer);
-                }
-
-                return;
-            }
-
             sendIntoDreamMaze(target, caster.getUUID(), serverLevel, data);
         }
     }
+
 
     private void sendIntoDreamMaze(LivingEntity target, UUID casterUUID,
                                    ServerLevel fromLevel, DreamMazeData data) {

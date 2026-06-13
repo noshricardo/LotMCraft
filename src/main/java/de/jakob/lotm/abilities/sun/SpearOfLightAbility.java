@@ -1,7 +1,7 @@
 package de.jakob.lotm.abilities.sun;
 
 import de.jakob.lotm.abilities.core.Ability;
-import de.jakob.lotm.entity.custom.projectiles.SpearOfLightProjectileEntity;
+import de.jakob.lotm.entity.custom.ability_entities.projectiles.SpearOfLightProjectileEntity;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.DamageLookup;
@@ -16,9 +16,8 @@ import java.util.Map;
 
 public class SpearOfLightAbility extends Ability {
     public SpearOfLightAbility(String id) {
-        super(id, 2.5f, "purification", "light_source", "light_strong", "light_weak");
+        super(id, 1, "purification", "light_source", "light_strong", "light_weak");
         postsUsedAbilityEventManually = true;
-        canBeShared = false;
     }
 
     @Override
@@ -28,7 +27,7 @@ public class SpearOfLightAbility extends Ability {
 
     @Override
     protected float getSpiritualityCost() {
-        return 1250;
+        return 150;
     }
 
     @Override
@@ -37,13 +36,13 @@ public class SpearOfLightAbility extends Ability {
             return;
 
         Vec3 startPos = VectorUtil.getRelativePosition(entity.getEyePosition().add(entity.getLookAngle().normalize()), entity.getLookAngle().normalize(), 0, random.nextDouble(4.5f, 8f), random.nextDouble(-.1, .6));
-        Vec3 direction = AbilityUtil.getTargetLocation(entity, 50* (int) Math.max(multiplier(entity)/4,1), 1.4f).subtract(startPos).normalize();
+        Vec3 direction = AbilityUtil.getTargetLocation(entity, 50, 1.4f).subtract(startPos).normalize();
 
         level.playSound(null, startPos.x, startPos.y, startPos.z, SoundEvents.BEACON_ACTIVATE, entity.getSoundSource(), 1.0f, 1.0f);
 
-        SpearOfLightProjectileEntity spear = new SpearOfLightProjectileEntity(level, entity, DamageLookup.lookupDamage(2, .75) * (int) Math.max(multiplier(entity)/4,1), BeyonderData.isGriefingEnabled(entity), this);
+        SpearOfLightProjectileEntity spear = new SpearOfLightProjectileEntity(level, entity, DamageLookup.lookupDamage(2, .75) * multiplier(entity), BeyonderData.isGriefingEnabled(entity), this);
         spear.setPos(startPos.x, startPos.y, startPos.z); // Set initial position
-        spear.shoot(direction.x, direction.y, direction.z, 9f* (int) Math.max(multiplier(entity)/4,1), 0);
+        spear.shoot(direction.x, direction.y, direction.z, 3f, 0);
         level.addFreshEntity(spear);
     }
 }

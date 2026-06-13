@@ -29,10 +29,6 @@ public class WanderingAbility extends Ability {
         super(id, 1);
 
         canBeUsedByNPC = false;
-        canBeCopied = false;
-        canBeReplicated = false;
-        canBeShared = false;
-        cannotBeStolen = true;
     }
 
     @Override
@@ -42,7 +38,7 @@ public class WanderingAbility extends Ability {
 
     @Override
     public float getSpiritualityCost() {
-        return 7000;
+        return 200;
     }
 
     @Override
@@ -50,10 +46,11 @@ public class WanderingAbility extends Ability {
         if(level.isClientSide || !(level instanceof ServerLevel serverLevel))
             return;
 
+
+
         List<ServerLevel> dimensions = StreamSupport.stream(serverLevel.getServer().getAllLevels().spliterator(), false)
                 .filter(s -> !s.dimension().equals(ModDimensions.SEFIRAH_CASTLE_DIMENSION_KEY))
                 .filter(s -> !s.dimension().equals(ModDimensions.CONCEALMENT_WORLD_DIMENSION_KEY))
-                .filter(s -> !s.dimension().equals(ModDimensions.RIVER_OF_ETERNAL_DARKNESS_DIMENSION_KEY))
                 .toList();
 
         if(dimensions.size() <= 1) {

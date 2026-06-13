@@ -15,18 +15,15 @@ public class IntrospectMenuProvider implements MenuProvider {
     private final String pathway;
     private final float digestionProgress;
     private final float sanity;
-    private final float corruption;
     private final List<ItemStack> passiveAbilities;
-    private final boolean sefirotOwner;
 
-    public IntrospectMenuProvider(List<ItemStack> passiveAbilities, int sequence, String pathway, float digestionProgress, float sanity, float corruption, boolean sefirotOwner) {
+
+    public IntrospectMenuProvider(List<ItemStack> passiveAbilities, int sequence, String pathway, float digestionProgress, float sanity) {
         this.sequence = sequence;
         this.pathway = pathway;
         this.digestionProgress = digestionProgress;
         this.passiveAbilities = passiveAbilities;
         this.sanity = sanity;
-        this.corruption = corruption;
-        this.sefirotOwner = sefirotOwner;
     }
 
     @Override
@@ -35,7 +32,7 @@ public class IntrospectMenuProvider implements MenuProvider {
     }
 
     @Override
-    public AbstractContainerMenu createMenu(int containerId, @NotNull Inventory playerInventory, @NotNull Player player) {
-        return new IntrospectMenu(passiveAbilities, containerId, playerInventory, sequence, pathway, digestionProgress, sanity, corruption, sefirotOwner);
+    public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
+        return new IntrospectMenu(passiveAbilities, containerId, playerInventory, sequence, pathway, digestionProgress, sanity);
     }
 }

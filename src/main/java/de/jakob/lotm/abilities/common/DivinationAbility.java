@@ -3,12 +3,13 @@ package de.jakob.lotm.abilities.common;
 import de.jakob.lotm.abilities.core.SelectableAbility;
 import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.attachments.TransformationComponent;
-import de.jakob.lotm.sefirah.SefirotAuthorityManager;
 import de.jakob.lotm.network.PacketHandler;
 import de.jakob.lotm.network.packets.handlers.ClientHandler;
-import de.jakob.lotm.network.packets.toClient.*;
+import de.jakob.lotm.network.packets.toClient.OpenCoordinateScreenPacket;
+import de.jakob.lotm.network.packets.toClient.OpenPlayerDivinationScreenPacket;
+import de.jakob.lotm.network.packets.toClient.OpenStructureDivinationScreenPacket;
+import de.jakob.lotm.network.packets.toClient.SyncDangerPremonitionAbilityPacket;
 import de.jakob.lotm.util.BeyonderData;
-import de.jakob.lotm.util.PlayerSelectionWorkType;
 import de.jakob.lotm.util.data.PlayerInfo;
 import de.jakob.lotm.util.scheduling.ClientScheduler;
 import de.jakob.lotm.util.scheduling.ServerScheduler;
@@ -23,7 +24,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -32,35 +32,23 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DivinationAbility extends SelectableAbility {
     public static final Set<UUID> dangerPremonitionActive = new HashSet<>();
-    public static final Set<UUID> DIVINATION_IMMUNE = Collections.newSetFromMap(new java.util.concurrent.ConcurrentHashMap<>());
 
     public DivinationAbility(String id) {
         super(id, 1);
 
         canBeCopied = false;
         canBeUsedByNPC = false;
-        cannotBeStolen = true;
-        canBeReplicated = false;
     }
 
     @Override
     public Map<String, Integer> getRequirements() {
-        Map<String, Integer> reqs = new HashMap(
-                Map.of(
-                        "fool", 9,
-                        "door", 7,
-                        "hermit", 9,
-                        "demoness", 7,
-                        "wheel_of_fortune", 8,
-                        "abyss", 4,
-                        "darkness", 4
+        return new HashMap<>(Map.of(
+                "fool", 9,
+                "door", 7,
+                "hermit", 9,
+                "demoness", 7,
+                "wheel_of_fortune", 8
         ));
-
-        for(String pathway : BeyonderData.pathways) {
-            if (!reqs.containsKey(pathway) && !pathway.equalsIgnoreCase("death"))
-                reqs.put(pathway, 4);
-        }
-        return reqs;
     }
 
     @Override
@@ -74,7 +62,6 @@ public class DivinationAbility extends SelectableAbility {
                 "ability.lotmcraft.divination.danger_premonition",
                 "ability.lotmcraft.divination.dream_divination",
                 "ability.lotmcraft.divination.structure_divination",
-                "ability.lotmcraft.divination.biome_divination",
                 "ability.lotmcraft.divination.player_divination",
                 "ability.lotmcraft.divination.anti_divination"
         };
@@ -86,10 +73,13 @@ public class DivinationAbility extends SelectableAbility {
             case 0 -> dangerPremonition(level, entity);
             case 1 -> dreamDivination(level, entity);
             case 2 -> structureDivination(level, entity);
-            case 3 -> biomeDivination(level, entity);
-            case 4 -> playerDivination(level, entity);
-            case 5 -> antiDivination(level, entity);
+            case 3 -> playerDivination(level, entity);
+            case 4 -> antiDivination(level, entity);
         }
+    }
+
+    private void dowsingRod(Level level, LivingEntity entity) {
+
     }
 
     private void dangerPremonition(Level level, LivingEntity entity) {
@@ -188,14 +178,12 @@ public class DivinationAbility extends SelectableAbility {
                 .getPlayers()
                 .stream()
                 .filter(p -> p != player)
-                .filter(p -> !DIVINATION_IMMUNE.contains(p.getUUID()))
-                .filter(p -> !SefirotAuthorityManager.blocksConcealment(p.getUUID(), player))
                 .map(p -> new PlayerInfo(p.getUUID(), p.getGameProfile().getName()))
                 .toList();
 
         PacketDistributor.sendToPlayer(
                 player,
-                new OpenPlayerDivinationScreenPacket(players, PlayerSelectionWorkType.DIVINATION)
+                new OpenPlayerDivinationScreenPacket(players)
         );
     }
 
@@ -227,23 +215,6 @@ public class DivinationAbility extends SelectableAbility {
                 SoundSource.BLOCKS,
                 10.0f,
                 1.0f);
-    }
-
-    private void biomeDivination(Level level, Entity entity) {
-        if (!(entity instanceof ServerPlayer player)) return;
-
-        Registry<Biome> registry = player.serverLevel().registryAccess()
-                .registry(Registries.BIOME).orElseThrow();
-
-        List<String> biomeIds = registry.holders()
-                .map(holder -> holder.key().location().toString())
-                .sorted()
-                .toList();
-
-        PacketDistributor.sendToPlayer(
-                player,
-                new OpenBiomeDivinationScreenPacket(biomeIds)
-        );
     }
 
     public static void cleanupOnLogout(Player player) {

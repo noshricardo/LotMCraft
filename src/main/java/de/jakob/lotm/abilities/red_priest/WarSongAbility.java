@@ -20,10 +20,9 @@ import java.util.Map;
 
 public class WarSongAbility extends Ability {
     public WarSongAbility(String id) {
-        super(id, 70, "morale_boost");
+        super(id, 40, "morale_boost");
         interactionRadius = 20;
         interactionCacheTicks = 20 * 30;
-        canBeShared = false;
     }
 
     @Override
@@ -44,6 +43,8 @@ public class WarSongAbility extends Ability {
         Location loc = new Location(entity.getEyePosition().add(0, .1, 0), level);
         ParticleUtil.createParticleSpirals(ModParticles.BLACK_NOTE.get(), loc, 3, 3, 4, .35, 5, 20 * 30, 15, 8);
 
+        BeyonderData.addModifier(entity, "buff_song", 1.5);
+
         level.playSound(null, BlockPos.containing(entity.position()), ModSounds.SONG_OF_COURAGE.get(), SoundSource.BLOCKS, 1, 1);
 
         MobEffectInstance strength = entity.getEffect(MobEffects.DAMAGE_BOOST);
@@ -51,10 +52,10 @@ public class WarSongAbility extends Ability {
 
         int strengthLevel = strength == null ? 1 : strength.getAmplifier() + 2;
         int speedLevel = speed == null ? 1 : speed.getAmplifier() + 2;
-        BeyonderData.addModifierWithTimeLimit(entity, "war_song", 1.05f, 20L *30*(int) Math.max(multiplier(entity)/4,1));
+        BeyonderData.addModifier(entity, "war_song", 1.5f);
 
-        entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20 * 30*(int) Math.max(multiplier(entity)/4,1), strengthLevel, false, false, false));
-        entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 30*(int) Math.max(multiplier(entity)/4,1), speedLevel, false, false, false));
+        entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20 * 30, strengthLevel, false, false, false));
+        entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 30, speedLevel, false, false, false));
 
         ServerScheduler.scheduleForDuration(0,  2, 20 * 30, () -> {
             if(entity.level().isClientSide)
@@ -62,5 +63,6 @@ public class WarSongAbility extends Ability {
             loc.setPosition(entity.position());
             loc.setLevel(entity.level());
         }, (ServerLevel) level);
+        ServerScheduler.scheduleDelayed(20 * 30, () -> BeyonderData.removeModifier(entity, "war_song"));
     }
 }

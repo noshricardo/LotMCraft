@@ -1,12 +1,9 @@
 package de.jakob.lotm.util.helper;
 
-import de.jakob.lotm.LOTMCraft;
-import de.jakob.lotm.abilities.core.Ability;
 import de.jakob.lotm.abilities.error.DeceitAbility;
 import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.attachments.ParasitationComponent;
 import de.jakob.lotm.damage.ModDamageTypes;
-import de.jakob.lotm.effect.ModEffects;
 import de.jakob.lotm.entity.custom.AvatarEntity;
 import de.jakob.lotm.entity.custom.BeyonderNPCEntity;
 import de.jakob.lotm.entity.custom.ability_entities.TimeChangeEntity;
@@ -38,17 +35,11 @@ import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 public class AbilityUtil {
 
+    // ThreadLocal flag to prevent firing TargetEntityEvent when called from getTargetLocation
     private static final ThreadLocal<Boolean> INSIDE_GET_TARGET_LOCATION = ThreadLocal.withInitial(() -> false);
-
-    //if map contains entiy - ignore ally
-    //if bool is true - it will not clear the map after skill usage
-    public static Map<UUID, Boolean> ignoreAllies = new ConcurrentHashMap<UUID, Boolean>();
-
 
     // ==================== SEQUENCE UTILITY METHODS ====================
 
@@ -68,43 +59,37 @@ public class AbilityUtil {
             return 10 - BeyonderData.getSequence(target);
         }
 
-        return getSequenceDifference(BeyonderData.getSequence(target), BeyonderData.getSequence(source));
-    }
-
-    public static int getSequenceDifference(int sourceSeq, int targetSeq){
-        return targetSeq - sourceSeq;
+        return BeyonderData.getSequence(target) - BeyonderData.getSequence(source);
     }
 
     public static boolean isTargetSignificantlyWeaker(LivingEntity source, LivingEntity target) {
-        return isTargetSignificantlyWeaker(BeyonderData.getSequence(source), BeyonderData.getSequence(target));
-    }
-
-    public static boolean isTargetSignificantlyWeaker(int sourceSeq, int targetSeq) {
-        if (sourceSeq == LOTMCraft.NON_BEYONDER_SEQ) {
+        if (!BeyonderData.isBeyonder(source)) {
             return false;
         }
 
-        if (targetSeq == LOTMCraft.NON_BEYONDER_SEQ) {
+        if (!BeyonderData.isBeyonder(target)) {
             return true;
         }
 
-        return isSequenceSignificantlyHigher(targetSeq, sourceSeq);
+        int sourceSequence = BeyonderData.getSequence(source);
+        int targetSequence = BeyonderData.getSequence(target);
+
+        return isSequenceSignificantlyHigher(targetSequence, sourceSequence);
     }
 
     public static boolean isTargetSignificantlyStronger(LivingEntity source, LivingEntity target) {
-        return isTargetSignificantlyStronger(BeyonderData.getSequence(source), BeyonderData.getSequence(target));
-    }
-
-    public static boolean isTargetSignificantlyStronger(int sourceSeq, int targetSeq) {
-        if (targetSeq == LOTMCraft.NON_BEYONDER_SEQ) {
+        if (!BeyonderData.isBeyonder(target)) {
             return false;
         }
 
-        if (sourceSeq == LOTMCraft.NON_BEYONDER_SEQ) {
+        if (!BeyonderData.isBeyonder(source)) {
             return true;
         }
 
-        return isSequenceSignificantlyHigher(sourceSeq, targetSeq);
+        int sourceSequence = BeyonderData.getSequence(source);
+        int targetSequence = BeyonderData.getSequence(target);
+
+        return isSequenceSignificantlyHigher(sourceSequence, targetSequence);
     }
 
     private static boolean isSequenceSignificantlyHigher(int higher, int lower) {
@@ -140,10 +125,6 @@ public class AbilityUtil {
         int casterSeq = (caster != null && BeyonderData.isBeyonder(caster)) ? BeyonderData.getSequence(caster) : 10;
         int opponentSeq = BeyonderData.getSequence(opponent);
 
-        return getSequenceResistanceFactor(casterSeq, opponentSeq);
-    }
-
-    public static double getSequenceResistanceFactor(int casterSeq, int opponentSeq) {
         // Opponent weaker or same sequence: no resistance
         if (opponentSeq >= casterSeq) return 0.0;
 
@@ -172,13 +153,9 @@ public class AbilityUtil {
     public static double getSequenceFailureChance(LivingEntity caster, LivingEntity opponent) {
         if (opponent == null || !BeyonderData.isBeyonder(opponent)) return 0.0;
 
-        int casterSeq = (caster != null && BeyonderData.isBeyonder(caster)) ? BeyonderData.getSequence(caster) : LOTMCraft.NON_BEYONDER_SEQ;
+        int casterSeq = (caster != null && BeyonderData.isBeyonder(caster)) ? BeyonderData.getSequence(caster) : 10;
         int opponentSeq = BeyonderData.getSequence(opponent);
 
-        return getSequenceFailureChance(casterSeq, opponentSeq);
-    }
-
-    public static double getSequenceFailureChance(int casterSeq, int opponentSeq){
         if (opponentSeq >= casterSeq) return 0.0;
 
         int casterCat = getSequenceCategory(casterSeq);
@@ -248,20 +225,13 @@ public class AbilityUtil {
 
         if(source == target) return false;
 
-        if(ignoreAllies.containsKey(source.getUUID())) allowAllies = true;
-
         // If we're allowing allies for support abilities, skip the mayDamage check
         if (!allowAllies && !mayDamage(source, target)) {
-           return false;
-        }
-
-        // Still check these even for support abilities
-        if (DeceitAbility.cannotBeTargeted.contains(target.getUUID()) &&
-                BeyonderData.getSequence(source) > BeyonderData.getSequence(target)) {
             return false;
         }
 
-        if(target.hasEffect(ModEffects.PETRIFICATION)){
+        // Still check these even for support abilities
+        if (DeceitAbility.cannotBeTargeted.contains(target.getUUID())) {
             return false;
         }
 
@@ -274,6 +244,7 @@ public class AbilityUtil {
         if (!mayTargetMarionette(source, target) ^ targetMarionettes) {
             return false;
         }
+
 
         // Subordinate targeting restrictions
         if (!mayTargetSubordinate(source, target)) {
@@ -420,22 +391,6 @@ public class AbilityUtil {
         return BlockPos.containing(targetPosition);
     }
 
-    // ==================== REMOTE TARGETING ====================
-    private static final ThreadLocal<UUID> REMOTE_CAST_TARGET_UUID = new ThreadLocal<>();
-
-    public static void setRemoteCastTargetUUID(UUID uuid) {
-        REMOTE_CAST_TARGET_UUID.set(uuid);
-    }
-
-    public static void clearRemoteCastTargetUUID() {
-        REMOTE_CAST_TARGET_UUID.remove();
-    }
-
-    @Nullable
-    public static UUID getRemoteCastTargetUUID() {
-        return REMOTE_CAST_TARGET_UUID.get();
-    }
-
     // ==================== TARGET ENTITY METHODS ====================
 
     @Nullable
@@ -503,21 +458,6 @@ public class AbilityUtil {
     @Nullable
     private static LivingEntity getTargetEntityInternal(LivingEntity entity, int radius, float entityDetectionRadius,
                                                         boolean onlyAllowWithLineOfSight, boolean allowAllies, boolean targetMarionettes) {
-        // Check for remote target first
-        UUID remoteTargetUUID = getRemoteCastTargetUUID();
-        if (remoteTargetUUID != null) {
-            Entity target = entity.level().getPlayerByUUID(remoteTargetUUID);
-            if (target == null) {
-                for (Entity e : entity.level().getEntities((Entity) null, entity.getBoundingBox().inflate(512), e -> e.getUUID().equals(remoteTargetUUID))) {
-                    target = e;
-                    break;
-                }
-            }
-            if (target instanceof LivingEntity livingTarget) {
-                return livingTarget;
-            }
-        }
-
         // Check for existing targets first (unless line of sight only)
         if (!onlyAllowWithLineOfSight) {
             LivingEntity currentTarget = getCurrentTarget(entity);
@@ -627,21 +567,6 @@ public class AbilityUtil {
      */
     public static Vec3 getTargetLocation(LivingEntity entity, int radius, float entityDetectionRadius,
                                          boolean positionAtEntityFeet, boolean allowAllies) {
-        // Check for remote target first
-        UUID remoteTargetUUID = getRemoteCastTargetUUID();
-        if (remoteTargetUUID != null) {
-            Entity target = entity.level().getPlayerByUUID(remoteTargetUUID);
-            if (target == null) {
-                for (Entity e : entity.level().getEntities((Entity) null, entity.getBoundingBox().inflate(512), e -> e.getUUID().equals(remoteTargetUUID))) {
-                    target = e;
-                    break;
-                }
-            }
-            if (target != null) {
-                return positionAtEntityFeet ? target.position() : target.position().add(0, target.getEyeHeight(), 0);
-            }
-        }
-
         // Set flag to prevent TargetEntityEvent from firing during this call
         INSIDE_GET_TARGET_LOCATION.set(true);
 
@@ -1276,39 +1201,5 @@ public class AbilityUtil {
         }
         ClientboundSetActionBarTextPacket packet = new ClientboundSetActionBarTextPacket(message);
         player.connection.send(packet);
-    }
-
-    public static void setArtifactScaling(LivingEntity entity, String path, int seq){
-        entity.getData(ModAttachments.SKILL_SCALING_COMPONENT.get())
-                .setScalingToSkill(true)
-                .setSeq(seq)
-                .setPath(path)
-                .Sync(entity);
-    }
-
-    public static void removeArtifactScaling(LivingEntity entity){
-        entity.getData(ModAttachments.SKILL_SCALING_COMPONENT.get())
-                .setScalingToSkill(false)
-                .setSeq(LOTMCraft.NON_BEYONDER_SEQ)
-                .setPath("none")
-                .Sync(entity);
-    }
-
-    public static boolean hasArtifactScaling(LivingEntity entity){
-        return entity.getData(ModAttachments.SKILL_SCALING_COMPONENT.get()).getScaleToSkill();
-    }
-
-    public static int getArtifactScalingSeq(LivingEntity entity){
-        return entity.getData(ModAttachments.SKILL_SCALING_COMPONENT.get()).getSeq();
-    }
-
-    public static int getSeqWithArt(LivingEntity entity, Ability ability){
-        if(entity == null) return LOTMCraft.NON_BEYONDER_SEQ;
-        return ability.artifactScalingMap.containsKey(entity.getUUID()) ?
-                ability.artifactScalingMap.get(entity.getUUID()) : BeyonderData.getSequence(entity);
-    }
-
-    public static double getMultiplierWithArt(LivingEntity entity, Ability ability){
-        return ability.artifactScalingMap.containsKey(entity.getUUID()) ? 1 : BeyonderData.getMultiplier(entity);
     }
 }

@@ -5,7 +5,6 @@ import de.jakob.lotm.attachments.DisabledAbilitiesComponent;
 import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.entity.ModEntities;
 import de.jakob.lotm.entity.custom.ability_entities.door_pathway.DistortionFieldEntity;
-import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.data.Location;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.scheduling.ServerScheduler;
@@ -25,10 +24,7 @@ import java.util.Map;
 
 public class DistortionFieldAbility extends Ability {
     public DistortionFieldAbility(String id) {
-        super(id, 60);
-        canBeCopied = false;
-        autoClear = false;
-        canBeShared = false;
+        super(id, 40);
     }
 
     @Override
@@ -38,7 +34,7 @@ public class DistortionFieldAbility extends Ability {
 
     @Override
     public float getSpiritualityCost() {
-        return 7000;
+        return 1400;
     }
 
     private final DustParticleOptions dust = new DustParticleOptions(new Vector3f(56 / 255f, 19 / 255f, 102 / 255f), 5f);
@@ -68,7 +64,7 @@ public class DistortionFieldAbility extends Ability {
         distortionFieldEntity.setPos(startPos);
         serverLevel.addFreshEntity(distortionFieldEntity);
 
-        ServerScheduler.scheduleForDuration(0, 6, 20 * 20*(int) Math.max(multiplier(entity)/4,1), () -> {
+        ServerScheduler.scheduleForDuration(0, 6, 20 * 30, () -> {
             if(entity.level() != serverLevel) {
                 return;
             }
@@ -88,7 +84,7 @@ public class DistortionFieldAbility extends Ability {
             });
 
             // Replace area near caster with air
-            AbilityUtil.getBlocksInSphereRadius(serverLevel, entity.position(), 4.5*(int) Math.max(multiplier(entity)/4,1), true).forEach(b -> {
+            AbilityUtil.getBlocksInSphereRadius(serverLevel, entity.position(), 4.5, true).forEach(b -> {
                 if(serverLevel.getBlockState(b).getBlock() != Blocks.BARRIER) {
                     return;
                 }
@@ -98,7 +94,7 @@ public class DistortionFieldAbility extends Ability {
 
             // Randomly teleport entities around and disable ability use
             AbilityUtil.getNearbyEntities(entity, serverLevel, startPos, 40).forEach(e -> {
-                if(random.nextInt(15) == 0 && AbilityUtil.getSeqWithArt(entity, this) <= BeyonderData.getSequence(e)) {
+                if(random.nextInt(15) == 0) {
                     DisabledAbilitiesComponent component = e.getData(ModAttachments.DISABLED_ABILITIES_COMPONENT);
                     component.disableAbilityUsageForTime("distortion_field", 20 * 4, e);
                 }
@@ -109,8 +105,6 @@ public class DistortionFieldAbility extends Ability {
         }, () -> {
             // Remove Distortion Field Entity
             distortionFieldEntity.discard();
-
-            clearArtifactScaling(entity);
 
             // Remove Barriers
             barrierBlocks.forEach(b -> {

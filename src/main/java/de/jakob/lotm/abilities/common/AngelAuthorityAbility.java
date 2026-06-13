@@ -9,7 +9,6 @@ import de.jakob.lotm.dimension.SpiritWorldHandler;
 import de.jakob.lotm.particle.ModParticles;
 import de.jakob.lotm.potions.BeyonderCharacteristicItem;
 import de.jakob.lotm.potions.BeyonderCharacteristicItemHandler;
-import de.jakob.lotm.potions.BeyonderPotion;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.ParticleUtil;
 import net.minecraft.core.BlockPos;
@@ -41,9 +40,6 @@ public class AngelAuthorityAbility extends SelectableAbility {
         this.canBeUsedByNPC = false;
         this.canBeCopied = false;
         this.cannotBeStolen = true;
-        this.canBeReplicated = false;
-        this.canBeUsedInArtifact = false;
-        this.doesNotIncreaseDigestion = true;
 
         flightSkill = null;
     }
@@ -97,26 +93,16 @@ public class AngelAuthorityAbility extends SelectableAbility {
     }
 
     public void artifactShattering(Player player, Level level, double x, double y, double z){
-        BeyonderCharacteristicItem selectedCharacteristic = null;
+        SealedArtifactData data = player.getInventory().offhand.getFirst().get(ModDataComponents.SEALED_ARTIFACT_DATA);
         ItemStack handStack = player.getInventory().offhand.getFirst();
-        var item = handStack.getItem();
-
-        if(item instanceof BeyonderPotion potion){
-            selectedCharacteristic = BeyonderCharacteristicItemHandler.
-                    selectCharacteristicOfPathwayAndSequence(potion.getPathway(), potion.getSequence());
+        if (data == null) {
+            data = player.getItemInHand(InteractionHand.MAIN_HAND).get(ModDataComponents.SEALED_ARTIFACT_DATA);
+            handStack = player.getItemInHand(InteractionHand.MAIN_HAND);
+            if (data == null) return;
         }
-        else {
-            SealedArtifactData data = player.getInventory().offhand.getFirst().get(ModDataComponents.SEALED_ARTIFACT_DATA);
 
-            if (data == null) {
-                data = player.getItemInHand(InteractionHand.MAIN_HAND).get(ModDataComponents.SEALED_ARTIFACT_DATA);
-                handStack = player.getItemInHand(InteractionHand.MAIN_HAND);
-                if (data == null) return;
-            }
-
-            selectedCharacteristic = BeyonderCharacteristicItemHandler.
-                    selectCharacteristicOfPathwayAndSequence(data.pathway(), data.sequence());
-        }
+        BeyonderCharacteristicItem selectedCharacteristic = BeyonderCharacteristicItemHandler.
+                selectCharacteristicOfPathwayAndSequence(data.pathway(), data.sequence());
 
         if (selectedCharacteristic == null) return;
 
@@ -131,10 +117,6 @@ public class AngelAuthorityAbility extends SelectableAbility {
 
     public void spiritWorldPassage(ServerPlayer player) {
         if (player.level().isClientSide) return;
-        if (de.jakob.lotm.sefirah.SefirahCastleEventHandler.isAccommodating(player)) {
-            player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("lotm.sefirot.sefirah_castle_spirit_world_locked"));
-            return;
-        }
         ServerLevel targetLevel;
         Vec3 targetPos;
 

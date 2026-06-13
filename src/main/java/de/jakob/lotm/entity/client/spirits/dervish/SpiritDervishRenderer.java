@@ -8,8 +8,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.Random;
-
 public class SpiritDervishRenderer extends MobRenderer<SpiritDervishEntity, SpiritDervishModel<SpiritDervishEntity>> {
     public SpiritDervishRenderer(EntityRendererProvider.Context context) {
         super(context, new SpiritDervishModel<>(context.bakeLayer(SpiritDervishModel.LAYER_LOCATION)), .3f);
@@ -24,11 +22,10 @@ public class SpiritDervishRenderer extends MobRenderer<SpiritDervishEntity, Spir
     public void render(SpiritDervishEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         poseStack.pushPose();
 
-        poseStack.translate(0, -.32, 0);
-
-        Random random = new Random(entity.getUUID().getMostSignificantBits() ^ entity.getUUID().getLeastSignificantBits());
-        float scale = 1f + random.nextFloat();
-        poseStack.scale(scale, scale, scale);
+        poseStack.translate(0.0D, -.2D, 0.0D);
+        if(entity.getUUID().getLeastSignificantBits() % 2 == 0) {
+            poseStack.scale(2, 2, 2);
+        }
 
         super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
         poseStack.popPose();

@@ -1,13 +1,10 @@
 package de.jakob.lotm.abilities.error;
 
 import de.jakob.lotm.abilities.core.Ability;
-import de.jakob.lotm.abilities.error.handler.TheftHandler;
 import de.jakob.lotm.damage.ModDamageTypes;
-import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.DamageLookup;
 import de.jakob.lotm.util.helper.ParticleUtil;
-import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -16,12 +13,10 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class MentalDisruptionAbility extends Ability {
     public MentalDisruptionAbility(String id) {
@@ -49,22 +44,17 @@ public class MentalDisruptionAbility extends Ability {
             return;
         }
 
-        LivingEntity target = AbilityUtil.getTargetEntity(entity, 20*(int) Math.max(multiplier(entity)/4,1), 1.5f);
+        LivingEntity target = AbilityUtil.getTargetEntity(entity, 20, 1.5f);
         if(target == null) {
             AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.theft.no_target").withColor(0x4742c9));
             return;
         }
 
-        target.hurt(ModDamageTypes.source(level, ModDamageTypes.LOOSING_CONTROL, entity), (float) (DamageLookup.lookupDamage(8, .4) * (int) Math.max(multiplier(entity)/2,1)));
-        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20 * 6*(int) Math.max(multiplier(entity)/2,1), 8, false, false, false));
-        target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 30*(int) Math.max(multiplier(entity)/2,1), 8, false, false, false));
+        target.hurt(ModDamageTypes.source(level, ModDamageTypes.LOOSING_CONTROL, entity), (float) (DamageLookup.lookupDamage(8, .4) * multiplier(entity)));
+        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20 * 6, 8, false, false, false));
+        target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 30, 8, false, false, false));
 
         ParticleUtil.spawnParticles(serverLevel, ParticleTypes.END_ROD, target.getEyePosition(), 60, .5, .025);
         ParticleUtil.spawnParticles(serverLevel, dust, target.getEyePosition(), 120, .5, .025);
-
-        ServerScheduler.scheduleForDuration(0, 2, 20 * 4*(int) Math.max(multiplier(entity)/4,1), () -> {
-            target.setDeltaMovement(new Vec3(0, 0, 0));
-            target.hurtMarked = true;
-        });
     }
 }

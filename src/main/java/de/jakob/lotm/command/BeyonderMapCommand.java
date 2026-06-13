@@ -3,21 +3,32 @@ package de.jakob.lotm.command;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.sun.jdi.connect.Connector;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.util.BeyonderData;
-import de.jakob.lotm.util.playerMap.StoredData;
+import de.jakob.lotm.util.beyonderMap.BeyonderMap;
+import de.jakob.lotm.util.beyonderMap.StoredData;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Comparator;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class BeyonderMapCommand {
 
@@ -48,7 +59,7 @@ Available commands:
     private static int showAll(CommandContext<CommandSourceStack> ctx) {
         CommandSourceStack source = ctx.getSource();
 
-        var data = BeyonderData.playerMap.entrySet().stream()
+        var data = BeyonderData.beyonderMap.entrySet().stream()
                 .sorted(Comparator.comparingInt(e -> e.getValue().sequence()))
                 .toList();
 
@@ -85,7 +96,7 @@ Available commands:
                         return 0;
                     }
 
-                    BeyonderData.playerMap.put(livingEntity);
+                    BeyonderData.beyonderMap.put(livingEntity);
 
                     return 1;
                 }));
@@ -99,7 +110,7 @@ Available commands:
                             var targets = GameProfileArgument.getGameProfiles(context, "targets");
 
                             for(var obj : targets){
-                                BeyonderData.playerMap.remove(obj.getId());
+                                BeyonderData.beyonderMap.remove(obj.getId());
                             }
 
                     return 1;
@@ -108,12 +119,12 @@ Available commands:
                         .executes(context -> {
                             CommandSourceStack source = context.getSource();
 
-                            if(BeyonderData.playerMap.isEmpty()) {
+                            if(BeyonderData.beyonderMap.isEmpty()) {
                                 source.sendFailure(Component.literal("BeyonderMap must contain any target!"));
                                 return 0;
                             }
 
-                            BeyonderData.playerMap.clear();
+                            BeyonderData.beyonderMap.clear();
 
                             return 1;
                         })
@@ -123,33 +134,19 @@ Available commands:
 
     private static LiteralArgumentBuilder<CommandSourceStack> get() {
         return Commands.literal("get")
-                .executes(context -> {
-                    CommandSourceStack source = context.getSource();
-                    if (!(source.getEntity() instanceof ServerPlayer player)) {
-                        source.sendFailure(Component.literal("Must be a player!"));
-                        return 0;
-                    }
-                    if (!BeyonderData.playerMap.contains(player.getUUID())) {
-                        source.sendFailure(Component.literal("You are not in the BeyonderMap!"));
-                        return 0;
-                    }
-                    source.sendSystemMessage(Component.literal(
-                            BeyonderData.playerMap.get(player.getUUID()).get().getSelfInfo() + "\n"));
-                    return 1;
-                })
                 .then(Commands.argument("targets", GameProfileArgument.gameProfile())
-                .requires(source -> source.hasPermission(2))
                 .executes(context -> {
                     CommandSourceStack source = context.getSource();
                     var targets = GameProfileArgument.getGameProfiles(context, "targets");
 
-                    for (var obj : targets) {
-                        if (!BeyonderData.playerMap.contains(obj.getId())) {
+                    for(var obj : targets){
+                        if(!BeyonderData.beyonderMap.contains(obj.getId())){
                             source.sendFailure(Component.literal("BeyonderMap doesn't contain this player!"));
                             continue;
                         }
+
                         source.sendSystemMessage(Component.literal(
-                                BeyonderData.playerMap.get(obj.getId()).get().getAllInfo() + "\n"));
+                                BeyonderData.beyonderMap.get(obj.getId()).get().getAllInfo() + "\n"));
                     }
 
                     return 1;
@@ -170,7 +167,7 @@ Available commands:
                                 String path = obj.get("path").getAsString();
                                 int seq = obj.get("seq").getAsInt();
 
-                                var id = BeyonderData.playerMap.getKeyByName(name);
+                                var id = BeyonderData.beyonderMap.getKeyByName(name);
 
                                 if(id == null){
                                     source.sendFailure(Component.literal("BeyonderMap doesn't contain passed target!"));
@@ -187,9 +184,9 @@ Available commands:
                                     return 0;
                                 }
 
-                                StoredData data = BeyonderData.playerMap.get(id).get();
+                                StoredData data = BeyonderData.beyonderMap.get(id).get();
 
-                                BeyonderData.playerMap.put(id, StoredData.builder
+                                BeyonderData.beyonderMap.put(id, StoredData.builder
                                         .copyFrom(data)
                                         .pathway(path)
                                         .sequence(seq)
@@ -207,12 +204,14 @@ Available commands:
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("beyondermap")
+                .requires(source -> source.hasPermission(2))
+                .then(help())
+                .then(all())
+                .then(add())
+                .then(delete())
                 .then(get())
-                .then(help().requires(source -> source.hasPermission(2)))
-                .then(all().requires(source -> source.hasPermission(2)))
-                .then(add().requires(source -> source.hasPermission(2)))
-                .then(delete().requires(source -> source.hasPermission(2)))
-                .then(edit().requires(source -> source.hasPermission(2)))
+                .then(edit())
+
         );
     }
 }

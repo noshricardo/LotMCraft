@@ -3,7 +3,6 @@ package de.jakob.lotm.abilities.abyss.passives;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.PassiveAbilityHandler;
 import de.jakob.lotm.abilities.PassiveAbilityItem;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -43,11 +42,6 @@ public class WordImmunityAbility extends PassiveAbilityItem {
         if (entity.hasEffect(MobEffects.BLINDNESS)) {
             entity.removeEffect(MobEffects.BLINDNESS);
         }
-    }
-
-    @Override
-    public void onPassiveAbilityRemoved(LivingEntity entity, ServerLevel serverLevel) {
-        IMMUNE_ENTITIES.remove(entity);
     }
 
     @SubscribeEvent

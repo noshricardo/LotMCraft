@@ -56,13 +56,34 @@ public class SpiritWorldEntityEffects {
 
         if(BeyonderData.getSequence(entity) <= 2) return;
         
+        // Random chance to apply effect
         if (entity.getRandom().nextFloat() > EFFECT_CHECK_CHANCE) {
             return;
         }
         
+        // Randomly choose which effect to apply
         int effectChoice = entity.getRandom().nextInt(100);
         
-        if (effectChoice < 70) {
+        if (effectChoice < 3) {
+            // 40% chance - Levitation
+            int duration = 30;
+            int amplifier = entity.getRandom().nextInt(2); // 0-1 amplifier
+            
+            entity.addEffect(new MobEffectInstance(
+                MobEffects.LEVITATION,
+                duration,
+                amplifier,
+                false, // ambient
+                true,  // visible particles
+                true   // show icon
+            ));
+            
+            // Set cooldown
+            int cooldown = MIN_COOLDOWN + entity.getRandom().nextInt(MAX_COOLDOWN - MIN_COOLDOWN);
+            effectCooldowns.put(entityId, currentTime + cooldown);
+            
+        } else if (effectChoice < 70) {
+            // 30% chance - Slow Falling
             int duration = 60;
             
             entity.addEffect(new MobEffectInstance(
@@ -78,6 +99,7 @@ public class SpiritWorldEntityEffects {
             effectCooldowns.put(entityId, currentTime + cooldown);
             
         } else {
+            // 30% chance - Jump Boost
             int duration = 120;
             int amplifier = 1 + entity.getRandom().nextInt(3); // 1-3 amplifier
             

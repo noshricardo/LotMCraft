@@ -18,7 +18,6 @@ public class BloomingAreaAbility extends Ability {
         super(id, 5, "blooming");
 
         canBeUsedByNPC = false;
-        canBeShared = false;
     }
 
     @Override

@@ -23,10 +23,6 @@ public class WorldCreationAbility extends Ability {
 
         canBeCopied = false;
         canBeUsedByNPC = false;
-        canBeReplicated = false;
-        canBeShared = false;
-        cannotBeStolen = true;
-        canBeUsedInArtifact = false;
     }
 
     @Override

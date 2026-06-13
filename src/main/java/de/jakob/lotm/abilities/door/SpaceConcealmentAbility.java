@@ -37,9 +37,7 @@ public class SpaceConcealmentAbility extends SelectableAbility {
     private static final Map<UUID, List<ApprenticeDoorEntity>> playerDoors = new ConcurrentHashMap<>();
 
     public SpaceConcealmentAbility(String id) {
-        super(id, 40f);
-        canBeCopied = false;
-        canBeShared = false;
+        super(id, 1);
     }
 
     @Override
@@ -49,7 +47,7 @@ public class SpaceConcealmentAbility extends SelectableAbility {
 
     @Override
     protected float getSpiritualityCost() {
-        return 3000;
+        return 100;
     }
 
     @Override
@@ -100,7 +98,7 @@ public class SpaceConcealmentAbility extends SelectableAbility {
 
         // Remove all spaces
         for(ConcealedSpace space : new ArrayList<>(spaces)) {
-            space.collapse(entity, multiplier(entity));
+            space.collapse(entity, BeyonderData.getMultiplier(entity));
             ServerScheduler.cancel(space.getTaskId());
             if(space.getParticleTaskId() != null) {
                 ServerScheduler.cancel(space.getParticleTaskId());
@@ -111,7 +109,7 @@ public class SpaceConcealmentAbility extends SelectableAbility {
     }
 
     private void createConcealedSpace(ServerLevel level, LivingEntity entity, Vec3 center) {
-        ConcealedSpace space = new ConcealedSpace(center, level, 6, entity.getUUID());
+        ConcealedSpace space = new ConcealedSpace(center, level, 5, entity.getUUID());
 
         // Add to player's list of spaces
         playerSpaces.computeIfAbsent(entity.getUUID(), k -> new ArrayList<>()).add(space);
@@ -122,7 +120,7 @@ public class SpaceConcealmentAbility extends SelectableAbility {
 
         // Schedule periodic barrier checking (every 5 ticks)
         UUID checkTaskId = ServerScheduler.scheduleForDuration(
-                5, 5, 400* Math.round(Math.max(multiplier(entity)/4,1)), // Start after 5 ticks, check every 5 ticks, for 30 seconds (600 ticks)
+                5, 5, 600, // Start after 5 ticks, check every 5 ticks, for 30 seconds (600 ticks)
                 space::repairBarriers,
                 () -> {
                     // On finish, remove the space
@@ -137,7 +135,7 @@ public class SpaceConcealmentAbility extends SelectableAbility {
         // If entity is a player, schedule particle display
         if(entity instanceof ServerPlayer player) {
             UUID particleTaskId = ServerScheduler.scheduleForDuration(
-                    0, 10, 400* Math.round(Math.max(multiplier(entity)/4,1)), // Every 10 ticks for 30 seconds
+                    0, 10, 600, // Every 10 ticks for 30 seconds
                     () -> space.showParticlesToPlayer(player),
                     level
             );
@@ -285,8 +283,7 @@ public class SpaceConcealmentAbility extends SelectableAbility {
                                         level,
                                         facingDirection,
                                         blockCenter,
-                                        20 * 30,
-                                        10
+                                        20 * 30
                                 );
 
                                 level.addFreshEntity(door);
@@ -299,8 +296,7 @@ public class SpaceConcealmentAbility extends SelectableAbility {
                                         level,
                                         oppositeDirection,
                                         blockCenter,
-                                        20 * 30,
-                                        10
+                                        20 * 30
                                 );
 
                                 level.addFreshEntity(oppositeDoor);
@@ -463,7 +459,7 @@ public class SpaceConcealmentAbility extends SelectableAbility {
 
                 // Deal damage to living entities
                 if(entity instanceof LivingEntity && AbilityUtil.mayDamage(source, (LivingEntity) entity)) {
-                    entity.hurt(ModDamageTypes.source(level, ModDamageTypes.DOOR_SPACE), (float) (DamageLookup.lookupDamage(4, 1.5) * (int) Math.max(multiplier/4,1)));
+                    entity.hurt(ModDamageTypes.source(level, ModDamageTypes.DOOR_SPACE), (float) (DamageLookup.lookupDamage(4, 1.5) * multiplier));
                 }
             }
         }

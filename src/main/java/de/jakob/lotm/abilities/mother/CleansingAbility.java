@@ -18,7 +18,7 @@ import java.util.Map;
 //TODO: Rework effects using geckolib
 public class CleansingAbility extends SelectableAbility {
     public CleansingAbility(String id) {
-        super(id, 14, "cleansing");
+        super(id, 20, "cleansing");
     }
 
     @Override

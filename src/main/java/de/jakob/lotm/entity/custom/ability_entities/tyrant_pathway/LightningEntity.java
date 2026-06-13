@@ -1,6 +1,5 @@
 package de.jakob.lotm.entity.custom.ability_entities.tyrant_pathway;
 
-import de.jakob.lotm.abilities.core.AbilityUsedEvent;
 import de.jakob.lotm.abilities.tyrant.WaterMasteryAbility;
 import de.jakob.lotm.damage.ModDamageTypes;
 import de.jakob.lotm.entity.ModEntities;
@@ -27,7 +26,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +48,7 @@ public class LightningEntity extends Entity {
     private float currentDistance = 0f;
     private final List<Vec3> lightningPoints = new ArrayList<>();
     private final int updateInterval = 1; // Ticks between path updates
-    private float step = 16;
+    private float step = 4;
     private int color = 0x11A8DD;
     private boolean griefing;
     private float explosionPower;
@@ -80,7 +78,7 @@ public class LightningEntity extends Entity {
         this.explosionPower = explosionPower;
         this.griefing = griefing;
         this.currentDistance = 1.0f; // Start with some initial distance
-        this.step = 16f;
+        this.step = 4f;
         this.color = color;
         setPos(start.x, start.y, start.z);
 
@@ -93,7 +91,7 @@ public class LightningEntity extends Entity {
             entityData.set(DIR_Y, (float) -1);
             entityData.set(DIR_Z, (float) 0);
             entityData.set(MAX_DISTANCE, maxDistance);
-            entityData.set(STEP, 16f);
+            entityData.set(STEP, 4f);
             entityData.set(COLOR, color);
 
             for(int i = 0; i < branches; i++) {
@@ -269,8 +267,6 @@ public class LightningEntity extends Entity {
         if (!level().isClientSide && source != null) {
             explode(pos);
 
-            NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level(), pos, source, null, new String[]{"lightning", "explosion"}, explosionPower, 10));
-
             // Check for water interaction - lightning deals more damage in water
             boolean inWater = isNearWater(pos);
             float waterMultiplier = inWater ? 2.0f : 1.0f;
@@ -301,10 +297,8 @@ public class LightningEntity extends Entity {
         // Handle block hit - particles, sound, etc.
         if (!level().isClientSide) {
             Vec3 pos = hit.getLocation();
-            if(source != null) {
+            if(source != null)
                 explode(pos);
-                NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level(), pos, source, null, new String[]{"lightning", "explosion"}, explosionPower, 10));
-            }
 
             // Check for water interaction
             if(isNearWater(pos)) {

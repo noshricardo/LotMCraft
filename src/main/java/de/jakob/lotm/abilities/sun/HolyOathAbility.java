@@ -1,13 +1,9 @@
 package de.jakob.lotm.abilities.sun;
 
 import de.jakob.lotm.abilities.core.ToggleAbility;
-import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.ParticleUtil;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +20,7 @@ public class HolyOathAbility extends ToggleAbility {
 
     @Override
     protected float getSpiritualityCost() {
-        return 0;
+        return 1.5F;
     }
 
     @Override
@@ -47,34 +43,10 @@ public class HolyOathAbility extends ToggleAbility {
         if(level.isClientSide)
             return;
 
-        int sequence = BeyonderData.getSequence(entity);
-        float tickCost;
-
-        if (sequence <= 4) {
-            tickCost = (6 - sequence) * 32.0f;
-        }
-        else {
-            tickCost = 8.0f;
-        }
-        int effectlevel =  sequence<=4? 1: 0;
-        BeyonderData.reduceSpirituality(entity, tickCost);
-
-        if (BeyonderData.getSpirituality(entity) <= 0) {
-            if (entity instanceof ServerPlayer player) {
-                player.connection.send(new ClientboundSetActionBarTextPacket(
-                        Component.literal("Your spirituality is exhausted.").withColor(0xFF422a2a)
-                ));
-            }
-
-            stop(level, entity);
-
-            return;
-        }
-
         ParticleUtil.spawnParticles((ServerLevel) level, dustOptions, entity.getEyePosition().subtract(0, entity.getEyeHeight() / 2, 0), 3, .3, .6, .3, 0);
         entity.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 20, 1, false, false, false));
         entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20 * 6, 1, false, false, false));
-        entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20 * 6, effectlevel, false, false, false));
+        entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20 * 6, 0, false, false, false));
         entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 6, 2, false, false, false));
         entity.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 20 * 6, 6, false, false, false));
         entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 20 * 6, 1, false, false, false));

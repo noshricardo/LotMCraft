@@ -1,7 +1,7 @@
 package de.jakob.lotm.network.packets.toClient;
 
 import de.jakob.lotm.LOTMCraft;
-import de.jakob.lotm.util.shapeShifting.NameUtils;
+import de.jakob.lotm.util.shapeShifting.NameStorage;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -29,14 +29,7 @@ public record NameSyncPacket(UUID playerUuid, String nickname) implements Custom
 
     public static void handle(NameSyncPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
-            UUID uuid = packet.playerUuid();
-            String nickname = packet.nickname();
-
-            if (nickname == null || nickname.isEmpty()) {
-                NameUtils.mapping.remove(uuid);
-            } else {
-                NameUtils.mapping.put(uuid, nickname);
-            }
+            NameStorage.setNickname(packet.playerUuid(), packet.nickname());
         });
     }
 }

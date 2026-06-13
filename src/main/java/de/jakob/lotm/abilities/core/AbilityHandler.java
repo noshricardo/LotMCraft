@@ -1,23 +1,19 @@
 package de.jakob.lotm.abilities.core;
 
-import de.jakob.lotm.abilities.twilight_giant.*;
 import de.jakob.lotm.abilities.abyss.*;
 import de.jakob.lotm.abilities.common.*;
-import de.jakob.lotm.abilities.justiciar.*;
 import de.jakob.lotm.abilities.darkness.*;
-import de.jakob.lotm.abilities.death.*;
 import de.jakob.lotm.abilities.demoness.*;
 import de.jakob.lotm.abilities.door.*;
 import de.jakob.lotm.abilities.error.*;
 import de.jakob.lotm.abilities.fool.*;
+import de.jakob.lotm.abilities.hermit.*;
 import de.jakob.lotm.abilities.mother.*;
 import de.jakob.lotm.abilities.red_priest.*;
-import de.jakob.lotm.abilities.sefirah.*;
 import de.jakob.lotm.abilities.sun.*;
 import de.jakob.lotm.abilities.tyrant.*;
 import de.jakob.lotm.abilities.visionary.*;
 import de.jakob.lotm.abilities.wheel_of_fortune.*;
-import de.jakob.lotm.abilities.black_emperor.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -77,7 +73,6 @@ public class AbilityHandler {
         abilities.add(new WarSongAbility("war_song_ability"));
         abilities.add(new FogOfWarAbility("fog_of_war_ability"));
         abilities.add(new EssenceOfWarAbility("essence_of_war_ability"));
-        abilities.add(new SacrificeAbility("sacrifice_ability"));
         abilities.add(new FlightAbility("flight_ability"));
         abilities.add(new WeatherManipulationAbility("weather_manipulation_ability"));
         abilities.add(new ConqueringAbility("conquering_ability"));
@@ -85,8 +80,6 @@ public class AbilityHandler {
         abilities.add(new PuppetSoldierCreationAbility("puppet_soldier_creation_ability"));
 
         // TYRANT PATHWAY
-        abilities.add(new IllusoryScalesAbility("illusory_scales_ability"));
-        abilities.add(new WrathAbility("wrath_ability"));
         abilities.add(new RagingBlowsAbility("raging_blows_ability"));
         abilities.add(new WaterManipulationAbility("water_manipulation_ability"));
         abilities.add(new WindManipulationAbility("wind_manipulation_ability"));
@@ -102,6 +95,7 @@ public class AbilityHandler {
         abilities.add(new ThunderclapAbility("thunderclap_ability"));
         abilities.add(new LightningBranchAbility("lightning_branch_ability"));
         abilities.add(new CalamityCreationAbility("calamity_creation_ability"));
+        //abilities.add(new MythicalCreatureFormTyrantAbility("mythical_creature_tyrant_ability"));
         abilities.add(new EnergyTransformationAbility("energy_transformation_ability"));
         abilities.add(new HeavenlyPunishmentAbility("heavenly_punishment_ability"));
         abilities.add(new ElectromagneticTornadoAbility("electromagnetic_tornado_ability"));
@@ -125,7 +119,6 @@ public class AbilityHandler {
 
 
         // FOOL PATHWAY
-        abilities.add(new FoolingAbility("fooling_ability"));
         abilities.add(new AirBulletAbility("air_bullet_ability"));
         abilities.add(new FlameControllingAbility("flame_controlling_ability"));
         abilities.add(new PaperFigurineSubstituteAbility("paper_figurine_substitute_ability"));
@@ -146,11 +139,9 @@ public class AbilityHandler {
         abilities.add(new SpiritCommandingAbility("spirit_commanding_ability"));
         abilities.add(new NightDomainAbility("night_domain_ability"));
         abilities.add(new HairEntanglementAbility("hair_entanglement_ability"));
-        abilities.add(new LesserConcealmentAbility("lesser_concealment_ability"));
         abilities.add(new HorrorAuraAbility("horror_aura_ability"));
         abilities.add(new SurgeOfDarknessAbility("surge_of_darkness_ability"));
         abilities.add(new ConcealmentAbility("concealment_ability"));
-        abilities.add(new IdentityConcealmentAbility("identity_concealment_ability"));
         abilities.add(new ConcealedDomainAbility("concealed_domain_ability"));
         abilities.add(new SwordOfDarknessAbility("sword_of_darkness_ability"));
 
@@ -197,12 +188,11 @@ public class AbilityHandler {
         abilities.add(new RecordingAbility("recording_ability"));
         abilities.add(new BlinkAbility("blink_ability"));
         abilities.add(new TravelersDoorAbility("travelers_door_ability"));
-        abilities.add(new InvisibleHandAbility("invisible_hand_ability"));
         abilities.add(new SpaceConcealmentAbility("space_concealment_ability"));
         abilities.add(new ExileAbility("exile_ability"));
         abilities.add(new DoorSubstitutionAbility("door_substitution_ability"));
         abilities.add(new WanderingAbility("wandering_ability"));
-        abilities.add(new SymbolizationAbility("symbolization_ability"));
+        abilities.add(new ConceptualizationAbility("conceptualization_ability"));
         abilities.add(new SealingAbility("sealing_ability"));
         abilities.add(new SpaceTearingAbility("space_tearing_ability"));
         abilities.add(new WaypointAbility("waypoint_ability"));
@@ -211,18 +201,14 @@ public class AbilityHandler {
         abilities.add(new AreaMiniaturizationAbility("area_miniaturization_ability"));
         abilities.add(new SpaceDistortionAbility("space_distortion_ability"));
         abilities.add(new PocketDimensionAbility("pocket_dimension_ability"));
+        //abilities.add(new MythicalCreatureFormDoorAbility("mythical_creature_door_ability"));
+        abilities.add(new SpaceTimeStormAbility("space_time_storm_ability"));
         abilities.add(new BlackHoleAbility("black_hole_ability"));
         abilities.add(new PlayerTeleportationAbility("player_teleportation_ability"));
-        abilities.add(new SpaceTimeStormAbility("space_time_storm_ability"));
-        abilities.add(new SpaceFragmentationAbility("space_fragmentation_ability"));
-        abilities.add(new ConceptualizationAbility("conceptualization_ability"));
-        abilities.add(new DoorAuthorityAbility("door_authority_ability"));
-        abilities.add(new SealingAuthorityAbility("sealing_authority_ability"));
 
         // VISIONARY PATHWAY
         abilities.add(new SpectatingAbility("spectating_ability"));
         abilities.add(new TelepathyAbility("telepathy_ability"));
-        abilities.add(new PsychologicalCueAbility("psychological_cue_ability"));
         abilities.add(new FrenzyAbility("frenzy_ability"));
         abilities.add(new AweAbility("awe_ability"));
         abilities.add(new PlacateAbility("placate_ability"));
@@ -235,19 +221,16 @@ public class AbilityHandler {
         abilities.add(new VirtualPersonaAbility("virtual_persona_ability"));
         abilities.add(new ManipulationAbility("manipulation_ability"));
         abilities.add(new MentalPlagueAbility("mental_plague_ability"));
+        abilities.add(new MindInvasionAbility("mind_invasion_ability"));
         abilities.add(new DreamWeaveAbility("dream_weave_ability"));
         abilities.add(new DreamMazeAbility("dream_maze_ability"));
-        abilities.add(new DiscernmentAbility("discernment_ability"));
         abilities.add(new DisasterFantasiaAbility("disaster_fantasia_ability"));
         abilities.add(new StoryWritingAbility("story_writing_ability"));
-        abilities.add(new EnvisionPositionAbility("envision_position_ability"));
-
 
         // WHEEL OF FORTUNE PATHWAY
         abilities.add(new PsycheStormAbility("psyche_storm_ability"));
         abilities.add(new CalamityAttractionAbility("calamity_attraction_ability"));
         abilities.add(new LuckReleaseAbility("luck_release_ability"));
-        abilities.add(new LuckPerceptionAbility("luck_perception_ability"));
         abilities.add(new MisfortuneGiftingAbility("misfortune_gifting_ability"));
         abilities.add(new MisfortuneFieldAbility("misfortune_field_ability"));
         abilities.add(new BlessingAbility("blessing_ability"));
@@ -255,30 +238,7 @@ public class AbilityHandler {
         abilities.add(new WordsOfMisfortuneAbility("words_of_misfortune_ability"));
         abilities.add(new ProphecyAbility("prophecy_ability"));
         abilities.add(new CycleOfFateAbility("cycle_of_fate_ability"));
-
-        // JUSTICIAR PATHWAY
-        abilities.add(new AuthorityAbility("authority_ability"));
-        abilities.add(new RecognitionAbility("recognition_ability"));
-        abilities.add(new JurisdictionAbility("jurisdiction_ability"));
-        abilities.add(new EyeOfOrderAbility("eye_of_order_ability"));
-        abilities.add(new IllusionaryTortureDevicesAbility("illusionary_torture_devices_ability"));
-        abilities.add(new VerdictExileAbility("verdict_exile_ability"));
-        abilities.add(new ProhibitionAbility("prohibition_ability"));
-        abilities.add(new ImprisonAbility("imprison_ability"));
-        abilities.add(new JusticeLanguageAbility("justice_language_ability"));
-        abilities.add(new ConfinementAbility("confinement_ability"));
-        abilities.add(new PunishmentAbility("punishment_ability"));
-        abilities.add(new LawAbility("law_ability"));
-        abilities.add(new ExecutionAbility("execution_ability"));
-        abilities.add(new BalancingAbility("balancing_ability"));
-        abilities.add(new SwordOfJudgmentAbility("sword_of_judgment_ability"));
-        abilities.add(new DeliveringJudgmentAbility("delivering_judgment_ability"));
-        abilities.add(new ExileOfBalanceAbility("exile_of_balance_ability"));
-        abilities.add(new IndividualBalanceAbility("individual_balance_ability"));
-        abilities.add(new OrderProxyAbility("order_proxy_ability"));
-        abilities.add(new AncientCourtOfJudgmentAbility("ancient_court_of_judgment_ability"));
-        abilities.add(new WorldJudgmentAbility("world_judgment_ability"));
-
+        abilities.add(new FatedConnectionAbility("fated_connection_ability"));
 
         // ERROR PATHWAY
         abilities.add(new TheftAbility("theft_ability"));
@@ -296,60 +256,20 @@ public class AbilityHandler {
         abilities.add(new ConceptualTheftAbility("conceptual_theft_ability"));
         abilities.add(new TimeManipulationAbility("time_manipulation_ability"));
 
-        // BLACK EMPEROR PATHWAY
-        abilities.add(new Eloquence("eloquence_ability"));
-        abilities.add(new MausoleumDomainAbility("mausoleum_domain_ability"));
-        abilities.add(new BriberAbility("briber_ability"));
-        //abilities.add(new WeaknessDetectionAbility("weakness_detection_ability"));
-        abilities.add(new DistortionAbility("distortion_ability"));
-        abilities.add(new CorrosionAbility("corrosion_ability"));
-        abilities.add(new DisorderAbility("disorder_ability"));
-        abilities.add(new CommandingPresenceAbility("commanding_presence_ability"));
-        abilities.add(new ExploitAbility("exploit_ability"));
-        abilities.add(new BestowmentAbility("bestowment_ability"));
-        abilities.add(new MagnifyAbility("magnify_ability"));
-        abilities.add(new CommandingOrdersAbility("commanding_orders_ability"));
-
-        // DEATH PATHWAY
-        abilities.add(new EyeOfDeathAbility("eye_of_death_ability"));
-        abilities.add(new SpiritCommunicationAbility("spirit_communication_ability"));
-        abilities.add(new ZombieDisguiseAbility("zombie_disguise_ability"));
-        abilities.add(new SpiritChannelingAbility("spirit_channeling_ability"));
-        abilities.add(new RestructionAbility("restruction_ability"));
-        abilities.add(new WordOfSpiritAbility("word_of_spirit_ability"));
-        abilities.add(new DoorToTheUnderworldAbility("door_to_the_underworld_ability"));
-        abilities.add(new InternalUnderworldAbility("internal_underworld_ability"));
-        abilities.add(new DeathEnvoyAbility("death_envoy_ability"));
-        abilities.add(new UndyingSealAbility("undying_seal_ability"));
-        abilities.add(new SpiritWorldTraversalAbility("spirit_world_traversal_ability"));
-        abilities.add(new DeathSpellsAbility("death_spells_ability"));
-        abilities.add(new PaleEyeAbility("pale_eye_ability"));
-        abilities.add(new HandOfDeathAbility("hand_of_death_ability"));
-        abilities.add(new DeathFlameAbility("death_flame_ability"));
-        abilities.add(new NationOfTheDeadAbility("nation_of_the_dead_ability"));
-        abilities.add(new WordOfSpiritAbility("word_of_spirit_ability"));
-
-        //Twilight Giant Pathway
-        abilities.add(new CombatMasteryAbility("combat_mastery_ability"));
-        abilities.add(new SupernaturalResistanceAbility("supernatural_resistance_ability"));
-
-        // Sefirot Abilities
-        abilities.add(new SefirotAuthorityAbility("sefirot_authority_ability"));
-        abilities.add(new AboveTheSequenceAuthorityAbility("above_the_sequence_authority_ability"));
+        // HERMIT PATHWAY
+        abilities.add(new WarlockSpellsAbility("warlock_spells_ability"));
+        abilities.add(new CreateScrollAbility("create_scroll_ability"));
+        abilities.add(new StellarGuidanceAbility("stellar_guidance_ability"));
+        abilities.add(new MysticalReenactmentAbility("mystical_reenactment_ability"));
+        abilities.add(new DigitizeAbility("digitize_ability"));
+        abilities.add(new FalseInfoAbility("false_info_ability"));
+        abilities.add(new InfoAuthorityAbility("info_authority_ability"));
+        abilities.add(new EducationAuthorityAbility("education_authority_ability"));
+        abilities.add(new KnowledgeImbuementAbility("knowledge_imbuement_ability"));
 
 
 
 
-
-
-
-
-
-
-
-
-
-        //abilities.add(new DivineKingdomAbility("divine_kingdom_ability"));
     }
 
     public HashSet<Ability> getAbilities() {
@@ -366,15 +286,6 @@ public class AbilityHandler {
                 .filter(ability ->
                         ability.getRequirements().containsKey(pathway) && ability.getRequirements().get(pathway) == sequence)
                 .collect(Collectors.toCollection(HashSet::new));
-    }
-
-    public ArrayList<Ability> getByPathwayAndSequenceExactOrdered(String pathway, int sequence) {
-        return abilities
-                .stream()
-                .filter(ability ->
-                        ability.getRequirements().containsKey(pathway) && ability.getRequirements().get(pathway) == sequence)
-                .sorted(Comparator.comparing(Ability::getId))
-                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public HashSet<Ability> getByPathwayAndSequence(String pathway, int sequence) {

@@ -25,19 +25,11 @@ public class SolarEnvoyAbility extends ToggleAbility {
 
     public SolarEnvoyAbility(String id) {
         super(id, "light_strong", "light_weak");
-        canBeCopied = false;
-        canBeReplicated = false;
-        canBeUsedInArtifact = false;
-        autoClear = false;
-        canBeShared = false;
-        interactionRadius = 37;
-        cannotBeStolen = true;
-        canBeShared = false;
     }
 
     @Override
     protected float getSpiritualityCost() {
-        return 500;
+        return 20;
     }
 
     @Override
@@ -64,7 +56,7 @@ public class SolarEnvoyAbility extends ToggleAbility {
         if (BeyonderData.isGriefingEnabled(entity)) {
             // Get all blocks once
             List<BlockPos> sphereBlocks = AbilityUtil.getBlocksInSphereRadius(
-                    serverLevel, entity.position(), 25* (int) Math.max(multiplier(entity)/4,1), true, true, false
+                    serverLevel, entity.position(), 25, true, true, false
             );
 
             for (BlockPos pos : sphereBlocks) {
@@ -100,7 +92,7 @@ public class SolarEnvoyAbility extends ToggleAbility {
         }
 
         // Damage entities
-        AbilityUtil.damageNearbyEntities((ServerLevel) level, entity, 37* (int) Math.max(multiplier(entity)/4,1), DamageLookup.lookupDps(2, 1.1, 5, 20) * (int) Math.max(multiplier(entity)/4,1), entity.position(), true, true, 20 * 5, ModDamageTypes.source(level, ModDamageTypes.PURIFICATION_INDIRECT, entity));
+        AbilityUtil.damageNearbyEntities((ServerLevel) level, entity, 37, DamageLookup.lookupDps(2, .9, 5, 20) * multiplier(entity), entity.position(), true, true, 20 * 5, ModDamageTypes.source(level, ModDamageTypes.PURIFICATION, entity));
 
         // Particles
         ParticleUtil.spawnSphereParticles((ServerLevel) level, ParticleTypes.END_ROD, entity.position(), 2.6, 60);
@@ -129,6 +121,5 @@ public class SolarEnvoyAbility extends ToggleAbility {
             transformationComponent.setTransformedAndSync(false, entity);
         }
 
-        clearArtifactScaling(entity);
     }
 }

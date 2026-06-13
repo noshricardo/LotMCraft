@@ -2,8 +2,6 @@ package de.jakob.lotm.datagen;
 
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.abilities.PassiveAbilityHandler;
-import de.jakob.lotm.abilities.common.passives.ElevatedConcealmentAbility;
-import de.jakob.lotm.abilities.common.passives.ElevatedDivinationAbility;
 import de.jakob.lotm.item.ModIngredients;
 import de.jakob.lotm.item.ModItems;
 import de.jakob.lotm.potions.BeyonderCharacteristicItem;
@@ -36,35 +34,12 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.GUIDING_BOOK.get());
         basicItem(ModItems.CRYSTAL_BALL.get());
         basicItem(ModItems.CANE.get());
-        basicItem(ModItems.UPPER_FRAGMENT_OF_A_MYSTERIOUS_TABLET.get());
-        basicItem(ModItems.RIGHT_FRAGMENT_OF_A_MYSTERIOUS_TABLET.get());
-        basicItem(ModItems.LEFT_FRAGMENT_OF_A_MYSTERIOUS_TABLET.get());
-        basicItem(ModItems.LOWER_FRAGMENT_OF_A_MYSTERIOUS_TABLET.get());
-        basicItem(ModItems.MYSTERIOUS_TABLET.get());
-        basicItem(ModItems.GARBAGE.get());
-        // characteristics_exchange_tablet uses a hand-written model (mysterious_tablet texture)
-
         tintableItem(ModItems.SEALED_ARTIFACT.get());
         tintableItem(ModItems.SEALED_ARTIFACT_BELL.get());
         tintableItem(ModItems.SEALED_ARTIFACT_CHAIN.get());
         tintableItem(ModItems.SEALED_ARTIFACT_GEM.get());
         tintableItem(ModItems.SEALED_ARTIFACT_STAR.get());
         basicItem(ModItems.BLOOD.get());
-
-        uniqueness(ModItems.RED_PRIEST_UNIQUENESS.get());
-        uniqueness(ModItems.FOOL_UNIQUENESS.get());
-        uniqueness(ModItems.TYRANT_UNIQUENESS.get());
-        uniqueness(ModItems.SUN_UNIQUENESS.get());
-        uniqueness(ModItems.ERROR_UNIQUENESS.get());
-        uniqueness(ModItems.DARKNESS_UNIQUENESS.get());
-        uniqueness(ModItems.DOOR_UNIQUENESS.get());
-        uniqueness(ModItems.VISIONARY_UNIQUENESS.get());
-        uniqueness(ModItems.WHEEL_OF_FORTUNE_UNIQUENESS.get());
-        uniqueness(ModItems.ABYSS_UNIQUENESS.get());
-        uniqueness(ModItems.MOTHER_UNIQUENESS.get());
-        uniqueness(ModItems.DEMONESS_UNIQUENESS.get());
-        uniqueness(ModItems.JUSTICIAR_UNIQUENESS.get());
-
 
         PotionItemHandler.ITEMS.getEntries().forEach(i -> {
             basicItem(i.get());
@@ -86,100 +61,11 @@ public class ModItemModelProvider extends ItemModelProvider {
         });
 
         PassiveAbilityHandler.ITEMS.getEntries().forEach(i -> {
-            if (i.get() instanceof ElevatedDivinationAbility) {
-                itemWithCustomDisplayAbilityTexture(i.get(), "divination_ability");
-            } else if (i.get() instanceof ElevatedConcealmentAbility) {
-                itemWithCustomDisplayAbilityTexture(i.get(), "concealment_ability");
-            } else {
-                itemWithCustomDisplay(i.get());
-            }
+            itemWithCustomDisplay(i.get());
         });
 
         itemWithCustomDisplay(ModItems.FOOL_Card.get());
         basicItem(ModItems.MOD_ICON.get());
-
-        // Blasphemy Cards — uses own texture if it exists, else falls back to placeholder
-        blasphemyCard(ModItems.FOOL_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.DOOR_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.ERROR_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.SUN_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.TYRANT_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.VISIONARY_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.DARKNESS_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.DEATH_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.TWILIGHT_GIANT_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.DEMONESS_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.RED_PRIEST_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.MOTHER_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.ABYSS_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.WHEEL_OF_FORTUNE_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.BLACK_EMPEROR_BLASPHEMY_CARD.get());
-        blasphemyCard(ModItems.JUSTICIAR_BLASPHEMY_CARD.get());
-    }
-
-    private void uniqueness(Item item) {
-        String itemName = getItemName(item);
-        getBuilder(itemName)
-                .parent(getExistingFile(mcLoc("item/generated")))
-                .texture("layer0", modLoc("item/" + itemName))
-                .transforms()
-                .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
-                .rotation(0, -90, 0)
-                .translation(0, 8, 2)
-                .scale(1f, 1f, 1f)
-                .end()
-                .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND)
-                .rotation(0, 90, 0)
-                .translation(0, 8, 2)
-                .scale(1f, 1f, 1f)
-                .end()
-                .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)
-                .rotation(0, -90, 0)
-                .translation(1.13f, 4f, 1.13f)
-                .scale(0.68f, 0.68f, 0.68f)
-                .end()
-                .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
-                .rotation(0, 90, 0)
-                .translation(1.13f, 4f, 1.13f)
-                .scale(0.68f, 0.68f, 0.68f)
-                .end()
-                .transform(ItemDisplayContext.GUI)
-                .rotation(0, 0, 0)
-                .translation(0, 0, 0)
-                .scale(1.25f, 1.25f, 1.25f)
-                .end()
-                .transform(ItemDisplayContext.GROUND)
-                .translation(0, 5, 0)
-                .scale(2.5f, 2.5f, 2.5f)
-                .end()
-                .transform(ItemDisplayContext.FIXED)
-                .scale(1, 1, 1)
-                .end()
-                .end();
-    }
-
-    // Helper method for items that use an ability texture (textures/abilities/) instead of item texture
-    private void itemWithCustomDisplayAbilityTexture(Item item, String abilityTextureName) {
-        String itemName = getItemName(item);
-        getBuilder(itemName)
-                .parent(getExistingFile(mcLoc("item/generated")))
-                .texture("layer0", modLoc("abilities/" + abilityTextureName))
-                .transforms()
-                .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
-                .scale(0, 0, 0)
-                .end()
-                .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND)
-                .scale(0, 0, 0)
-                .end()
-                .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)
-                .translation(1.25f, 4.25f, 0.75f)
-                .scale(0.39f, 0.39f, 0.39f)
-                .end()
-                .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
-                .translation(1.25f, 4.25f, 0.75f)
-                .scale(0.39f, 0.39f, 0.39f)
-                .end()
-                .end();
     }
 
     // Helper method for items that need custom display properties (auto-detects texture name)
@@ -224,21 +110,6 @@ public class ModItemModelProvider extends ItemModelProvider {
     private String getItemName(Item item) {
         ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
         return itemId.getPath();
-    }
-
-    /**
-     * Blasphemy card model: uses own texture if the file exists in textures/item/,
-     * otherwise falls back to the placeholder texture.
-     */
-    private void blasphemyCard(Item item) {
-        String itemName = getItemName(item);
-        // Check whether the texture file exists on disk so datagen doesn't error.
-        java.nio.file.Path texPath = java.nio.file.Paths.get(
-                "src/main/resources/assets/lotmcraft/textures/item/" + itemName + ".png");
-        String textureName = texPath.toFile().exists() ? itemName : "placeholder";
-        getBuilder(itemName)
-                .parent(getExistingFile(mcLoc("item/generated")))
-                .texture("layer0", modLoc("item/" + textureName));
     }
 
     private void potionRecipeItem(Item item) {

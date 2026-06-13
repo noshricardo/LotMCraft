@@ -1,10 +1,10 @@
 package de.jakob.lotm.network.packets.toClient;
 
 import de.jakob.lotm.LOTMCraft;
+import de.jakob.lotm.gui.custom.SelectionGui.PlayerSelectionGui;
 import de.jakob.lotm.network.packets.handlers.ClientHandler;
-import de.jakob.lotm.util.PlayerSelectionWorkType;
 import de.jakob.lotm.util.data.PlayerInfo;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -16,16 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public record OpenPlayerDivinationScreenPacket(List<PlayerInfo> players, PlayerSelectionWorkType types) implements CustomPacketPayload {
-
+public record OpenPlayerDivinationScreenPacket(List<PlayerInfo> players) implements CustomPacketPayload {
     public static final Type<OpenPlayerDivinationScreenPacket> TYPE =
             new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "open_player_divination_screen"));
-
-    private static final StreamCodec<RegistryFriendlyByteBuf, PlayerSelectionWorkType> TYPE_CODEC =
-            StreamCodec.of(
-                    FriendlyByteBuf::writeEnum,
-                    buf -> buf.readEnum(PlayerSelectionWorkType.class)
-            );
 
     private static final StreamCodec<RegistryFriendlyByteBuf, PlayerInfo> PLAYER_INFO_CODEC =
             StreamCodec.of(
@@ -44,8 +37,6 @@ public record OpenPlayerDivinationScreenPacket(List<PlayerInfo> players, PlayerS
             StreamCodec.composite(
                     ByteBufCodecs.collection(ArrayList::new, PLAYER_INFO_CODEC),
                     OpenPlayerDivinationScreenPacket::players,
-                    TYPE_CODEC,
-                    OpenPlayerDivinationScreenPacket::types,
                     OpenPlayerDivinationScreenPacket::new
             );
 

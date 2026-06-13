@@ -1,10 +1,6 @@
 package de.jakob.lotm.entity.custom.spirits;
 
-import de.jakob.lotm.LOTMCraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
@@ -21,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,8 +48,9 @@ public class SpiritBubblesEntity extends Animal {
     public static AttributeSupplier.Builder createAttributes() {
         return Animal.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 20.0)
-                .add(Attributes.FLYING_SPEED, 4)
-                .add(Attributes.SCALE, 1);
+                .add(Attributes.MOVEMENT_SPEED, 0.25)
+                .add(Attributes.FLYING_SPEED, 2)
+                .add(Attributes.SCALE, 1.35);
     }
 
     @Override
@@ -88,8 +84,8 @@ public class SpiritBubblesEntity extends Animal {
     protected PathNavigation createNavigation(Level level) {
         FlyingPathNavigation flyingNavigation = new FlyingPathNavigation(this, level);
         flyingNavigation.setCanOpenDoors(false);
-        flyingNavigation.setCanFloat(true);
-        flyingNavigation.setCanPassDoors(true);
+        flyingNavigation.setCanFloat(false);
+        flyingNavigation.setCanPassDoors(false);
         return flyingNavigation;
     }
 

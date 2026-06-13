@@ -70,7 +70,7 @@ public class MiracleHandler {
                 targetLoc = targetLoc.subtract(0, 1, 0);
         }
 
-        GiantLightningEntity lightning = new GiantLightningEntity(level, caster, targetLoc, 50, 6, DamageLookup.lookupDamage(2, 1)  * (int) Math.max(BeyonderData.getMultiplier(caster)/2,1), BeyonderData.isGriefingEnabled(caster), 13, 200, 0x6522a8);
+        GiantLightningEntity lightning = new GiantLightningEntity(level, caster, targetLoc, 50, 6, DamageLookup.lookupDamage(2, .85) * BeyonderData.getMultiplier(caster), BeyonderData.isGriefingEnabled(caster), 13, 200, 0x6522a8);
         level.addFreshEntity(lightning);
     }
 
@@ -158,7 +158,7 @@ public class MiracleHandler {
 
             AbilityUtil.getNearbyEntities(caster, (ServerLevel) level, center, 70).forEach(e -> {
                 SanityComponent sanityComponent = e.getData(ModAttachments.SANITY_COMPONENT);
-                sanityComponent.decreaseSanityWithSequenceDifference(.0025f, e, BeyonderData.getSequence(caster), BeyonderData.getSequence(e));
+                sanityComponent.increaseSanityAndSync(-.0025f, e);
             });
         });
 
@@ -255,7 +255,7 @@ public class MiracleHandler {
 
         EffectManager.playEffect(EffectManager.Effect.MIRACLE, targetPos.x, targetPos.y, targetPos.z, level);
 
-        VolcanoEntity volcano = new VolcanoEntity(level, targetPos, (float) DamageLookup.lookupDamage(2, .5) * (int) Math.max(BeyonderData.getMultiplier(caster)/2,1), caster);
+        VolcanoEntity volcano = new VolcanoEntity(level, targetPos, (float) DamageLookup.lookupDamage(2, .5) * (float) BeyonderData.getMultiplier(caster), caster);
         level.addFreshEntity(volcano);
     }
 
@@ -264,13 +264,13 @@ public class MiracleHandler {
 
         Vec3 pos = AbilityUtil.getTargetLocation(caster, 12, 2);
 
-        TornadoEntity tornado = target == null ? new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) DamageLookup.lookupDamage(2, .75) * (int) Math.max(BeyonderData.getMultiplier(caster)/2,1), caster) : new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, 32.5f * (float) BeyonderData.getMultiplier(caster), caster, target, 5);
+        TornadoEntity tornado = target == null ? new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) DamageLookup.lookupDamage(2, .75) * (float) BeyonderData.getMultiplier(caster), caster) : new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, 32.5f * (float) BeyonderData.getMultiplier(caster), caster, target);
         tornado.setPos(pos);
         level.addFreshEntity(tornado);
 
         for(int i = 0; i < 5; i++) {
-            TornadoEntity additionalTornado = target == null || (new Random()).nextInt(4) != 0 ? new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) DamageLookup.lookupDamage(2, .75) * (int) Math.max(BeyonderData.getMultiplier(caster)/2,1), caster) : new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) DamageLookup.lookupDamage(2, .75) * (float) BeyonderData.getMultiplier(caster), caster, target, 4);
-            Vec3 randomOffset = new Vec3((level.random.nextDouble() - 0.5) * 70, 3, (level.random.nextDouble() - 0.5) * 70);
+            TornadoEntity additionalTornado = target == null || (new Random()).nextInt(4) != 0 ? new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) DamageLookup.lookupDamage(2, .75) * (float) BeyonderData.getMultiplier(caster), caster) : new TornadoEntity(ModEntities.TORNADO.get(), level, .15f, (float) DamageLookup.lookupDamage(2, .75) * (float) BeyonderData.getMultiplier(caster), caster, target);
+            Vec3 randomOffset = new Vec3((level.random.nextDouble() - 0.5) * 40, 3, (level.random.nextDouble() - 0.5) * 40);
             additionalTornado.setPos(pos.add(randomOffset));
             level.addFreshEntity(additionalTornado);
         }
@@ -283,7 +283,7 @@ public class MiracleHandler {
 
         EffectManager.playEffect(EffectManager.Effect.MIRACLE, targetLoc.x, targetLoc.y, targetLoc.z, level);
 
-        MeteorEntity meteor = new MeteorEntity(level, 3.25f,  (float) DamageLookup.lookupDamage(2, 1) * (int) Math.max(BeyonderData.getMultiplier(caster)/2,1), 4, caster, BeyonderData.isGriefingEnabled(caster), 17, 45);
+        MeteorEntity meteor = new MeteorEntity(level, 3.25f,  (float) DamageLookup.lookupDamage(2, 1) * (float) BeyonderData.getMultiplier(caster), 6, caster, BeyonderData.isGriefingEnabled(caster), 17, 45);
         meteor.setPosition(targetLoc);
         level.addFreshEntity(meteor);
     }

@@ -1,43 +1,25 @@
 package de.jakob.lotm.artifacts;
 
-import de.jakob.lotm.LOTMCraft;
-import de.jakob.lotm.abilities.abyss.LanguageOfFoulnessAbility;
 import de.jakob.lotm.abilities.core.Ability;
 import de.jakob.lotm.abilities.core.SelectableAbility;
-import de.jakob.lotm.attachments.DoorAuthorityData;
-import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.data.ModDataComponents;
-import de.jakob.lotm.gamerule.ModGameRules;
-import de.jakob.lotm.item.ModItems;
-import de.jakob.lotm.potions.BeyonderCharacteristicItem;
-import de.jakob.lotm.potions.BeyonderCharacteristicItemHandler;
-import de.jakob.lotm.rendering.effectRendering.EffectManager;
 import de.jakob.lotm.util.BeyonderData;
-import de.jakob.lotm.util.helper.AbilityUtil;
-import de.jakob.lotm.util.helper.ParticleUtil;
-import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 
 public class SealedArtifactItem extends Item {
 
@@ -53,18 +35,6 @@ public class SealedArtifactItem extends Item {
             return InteractionResultHolder.success(stack);
         }
 
-        if(!level.getGameRules().getBoolean(ModGameRules.ALLOW_ARTIFACTS)){
-            player.setItemInHand(hand, ItemStack.EMPTY);
-
-            return InteractionResultHolder.success(ItemStack.EMPTY);
-        }
-
-        DoorAuthorityData doorData = DoorAuthorityData.get((ServerLevel) level);
-        if (doorData.isActive() && doorData.getEffectId().equalsIgnoreCase("strengthen")) {
-            ParticleUtil.spawnParticles((ServerLevel) level, ParticleTypes.END_ROD, player.getEyePosition(), 40, .5, .05);
-            return InteractionResultHolder.fail(stack);
-        }
-
         SealedArtifactData data = stack.get(ModDataComponents.SEALED_ARTIFACT_DATA);
         if (data == null || data.abilities().isEmpty()) {
             return InteractionResultHolder.fail(stack);
@@ -75,10 +45,8 @@ public class SealedArtifactItem extends Item {
 
         Ability ability = data.abilities().get(selectedIndex);
 
-        AbilityUtil.setArtifactScaling(player, data.pathway(), data.sequence());
-
         // Use the ability
-        ability.useAbility((ServerLevel) level, player, true, false, true);
+        ability.useAbility((ServerLevel) level, player, false, false, true);
 
         // Apply Use-Only Negative Effects
         for (NegativeEffect effect : data.negativeEffect()) {
@@ -99,99 +67,64 @@ public class SealedArtifactItem extends Item {
 
         int selectedIndex = stack.getOrDefault(ModDataComponents.SEALED_ARTIFACT_SELECTED, 0);
         Ability selectedAbility = data.abilities().get(selectedIndex);
-        int pathwayColor = BeyonderData.pathwayInfos.get(data.pathway()).color();
 
         addDivider(tooltipComponents);
-        addPathwayInfo(tooltipComponents, data, pathwayColor);
-        addSelectedAbility(tooltipComponents, selectedAbility, pathwayColor);
+        addPathwayInfo(tooltipComponents, data);
+        addSelectedAbility(tooltipComponents, selectedAbility);
         addDivider(tooltipComponents);
-        addAbilityList(tooltipComponents, data, pathwayColor);
+        addAbilityList(tooltipComponents, data);
         addDivider(tooltipComponents);
         addNegativeEffects(tooltipComponents, data);
     }
 
-    @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected){
-        if (level.isClientSide) return;
+// ── Sections ────────────────────────────────────────────────
 
-        if (!(entity instanceof ServerPlayer player)) return;
-
-        boolean generated = stack.getOrDefault(ModDataComponents.SEALED_ARTIFACT_GENERATED, false);
-        boolean failed = stack.getOrDefault(ModDataComponents.SEALED_ARTIFACT_GENERATED_FAILED, false);
-        if (generated) return;
-
-        String baseType = stack.get(ModDataComponents.SEALED_ARTIFACT_BASE_TYPE);
-        Integer sequence = stack.get(ModDataComponents.SEALED_ARTIFACT_GENERATED_SEQ);
-        String path = stack.get(ModDataComponents.SEALED_ARTIFACT_GENERATED_PATH);
-
-        if(baseType == null || sequence == null || path == null) return;
-
-        if(!failed){
-            SealedArtifactData data = SealedArtifactHandler.createSealedArtifactData(path, sequence, baseType);
-
-            stack.set(ModDataComponents.SEALED_ARTIFACT_DATA, data);
-            stack.set(ModDataComponents.SEALED_ARTIFACT_GENERATED, true);
-        }
-        else{
-            ItemStack newStack = new ItemStack(Objects.requireNonNull(BeyonderCharacteristicItemHandler
-                    .selectCharacteristicOfPathwayAndSequence(path, sequence)));
-
-            level.playSound(null, player.blockPosition(), SoundEvents.ANVIL_PLACE, player.getSoundSource(), 1.0f, 1.0f);
-            player.closeContainer();
-            Vec3 explosionPos = player.position().add(0, player.getBbHeight() / 2, 0);
-            ServerScheduler.scheduleDelayed(10, () -> EffectManager.playEffect(EffectManager.Effect.ARTIFACT_EXPLOSION, explosionPos.x, explosionPos.y, explosionPos.z, (ServerLevel) level));
-            player.setDeltaMovement(new Vec3(level.random.nextDouble(), .65, level.random.nextDouble()).normalize());
-            player.hurtMarked = true;
-            player.getInventory().setItem(slot, newStack);
-        }
-
-    }
-
-    // ── Sections ────────────────────────────────────────────────
-
-    private void addPathwayInfo(List<Component> tooltip, SealedArtifactData data, int pathwayColor) {
+    private void addPathwayInfo(List<Component> tooltip, SealedArtifactData data) {
         tooltip.add(
-                label("lotm.pathway")
-                        .append(Component.translatable("lotm.pathway." + data.pathway()).withColor(pathwayColor))
+                label("lotm.pathway", ChatFormatting.LIGHT_PURPLE)
+                        .append(value("lotm.pathway." + data.pathway(), ChatFormatting.WHITE))
         );
         tooltip.add(
-                label("lotm.sequence")
-                        .append(Component.literal(String.valueOf(data.sequence())).withColor(pathwayColor))
+                label("lotm.sequence", ChatFormatting.LIGHT_PURPLE)
+                        .append(Component.literal(String.valueOf(data.sequence())).withStyle(ChatFormatting.WHITE))
         );
     }
 
-    private void addSelectedAbility(List<Component> tooltip, Ability ability, int pathwayColor) {
+    private void addSelectedAbility(List<Component> tooltip, Ability ability) {
         tooltip.add(Component.empty());
         tooltip.add(
-                Component.literal("✦ ").withColor(pathwayColor)
+                Component.literal("✦ ")
+                        .withStyle(ChatFormatting.YELLOW)
                         .append(Component.translatable("lotm.sealed_artifact.selected_ability")
                                 .withStyle(ChatFormatting.GRAY))
                         .append(Component.literal(" › ").withStyle(ChatFormatting.DARK_GRAY))
                         .append(Component.translatable("lotmcraft." + ability.getId())
-                                .withStyle(ChatFormatting.WHITE))
+                                .withStyle(ChatFormatting.AQUA))
         );
         tooltip.add(Component.empty());
     }
 
-    private void addAbilityList(List<Component> tooltip, SealedArtifactData data, int pathwayColor) {
-        tooltip.add(sectionHeader("lotm.sealed_artifact.abilities", pathwayColor));
+    private void addAbilityList(List<Component> tooltip, SealedArtifactData data) {
+        tooltip.add(sectionHeader("lotm.sealed_artifact.abilities", ChatFormatting.AQUA));
 
         for (Ability ability : data.abilities()) {
             tooltip.add(
-                    Component.literal("  ▸ ").withColor(pathwayColor)
+                    Component.literal("  ▸ ")
+                            .withStyle(ChatFormatting.DARK_AQUA)
                             .append(Component.translatable("lotmcraft." + ability.getId())
-                                    .withStyle(ChatFormatting.WHITE))
+                                    .withStyle(ChatFormatting.AQUA))
             );
         }
     }
 
     private void addNegativeEffects(List<Component> tooltip, SealedArtifactData data) {
-        tooltip.add(sectionHeader("lotm.sealed_artifact.negative_effect", ChatFormatting.DARK_RED));
+        tooltip.add(sectionHeader("lotm.sealed_artifact.negative_effect", ChatFormatting.DARK_PURPLE));
 
         for (NegativeEffect effect : data.negativeEffect()) {
             tooltip.add(
-                    Component.literal("  ▸ ").withStyle(ChatFormatting.DARK_RED)
-                            .append(effect.getDisplayName().copy().withStyle(ChatFormatting.RED))
+                    Component.literal("  ▸ ")
+                            .withStyle(ChatFormatting.DARK_PURPLE)
+                            .append(effect.getDisplayName().copy().withStyle(ChatFormatting.LIGHT_PURPLE))
             );
         }
     }
@@ -202,24 +135,23 @@ public class SealedArtifactItem extends Item {
         tooltip.add(
                 Component.literal("─────────────────")
                         .withStyle(ChatFormatting.DARK_GRAY)
-                        .withStyle(ChatFormatting.BOLD)
         );
     }
 
-    private static MutableComponent sectionHeader(String key, int color) {
-        return Component.literal("◆ ").withColor(color)
-                .append(Component.translatable(key).withStyle(ChatFormatting.GRAY));
-    }
-
     private static MutableComponent sectionHeader(String key, ChatFormatting color) {
-        return Component.literal("◆ ").withStyle(color)
-                .append(Component.translatable(key).withStyle(ChatFormatting.GRAY));
+        return Component.literal("◆ ")
+                .withStyle(color)
+                .append(Component.translatable(key).withStyle(color));
     }
 
-    private static MutableComponent label(String key) {
+    private static MutableComponent label(String key, ChatFormatting color) {
         return Component.translatable(key)
-                .withStyle(ChatFormatting.GRAY)
+                .withStyle(color)
                 .append(Component.literal(": ").withStyle(ChatFormatting.DARK_GRAY));
+    }
+
+    private static MutableComponent value(String key, ChatFormatting color) {
+        return Component.translatable(key).withStyle(color);
     }
 
     private boolean itemInAnvilOutputSlot(Player player, ItemStack stack){
@@ -243,11 +175,11 @@ public class SealedArtifactItem extends Item {
         String pathway = data.pathway();
 
         int color = BeyonderData.pathwayInfos.get(pathway).color();
-
+        
         // Fall back to generic name if no specific translation exists
-        return Component.translatable("lotm.sealed_artifact.generic",
-                        Component.translatable("lotm.sealed_artifact.type." + baseType),
-                        Component.translatable("lotm.sealed_artifact.pathway." + pathway + "_1"))
+        return Component.translatable("lotm.sealed_artifact.generic", 
+                Component.translatable("lotm.sealed_artifact.type." + baseType),
+                Component.translatable("lotm.sealed_artifact.pathway." + pathway + "_1"))
                 .withColor(color);
     }
 

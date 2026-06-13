@@ -1,11 +1,8 @@
 package de.jakob.lotm.entity.custom.ability_entities.wheel_of_fortune_pathway;
 
-import de.jakob.lotm.attachments.LuckComponent;
-import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.effect.ModEffects;
 import de.jakob.lotm.entity.ModEntities;
 import de.jakob.lotm.util.BeyonderData;
-import de.jakob.lotm.abilities.common.passives.FateResistanceAbility;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -66,23 +63,10 @@ public class MisfortuneWordsEntity extends Entity {
                 if(BeyonderData.isBeyonder(e) && BeyonderData.getPathway(e).equalsIgnoreCase("wheel_of_fortune") && BeyonderData.getSequence(e) <= 2)
                     return;
 
-                // Players with Elevated Fate are immune unless the caster is seq 1 or lower
-                if (FateResistanceAbility.FATE_RESISTANCE_ACTIVE.contains(e.getUUID())) {
-                    LivingEntity caster = getCasterEntity();
-                    int casterSeq = caster != null ? BeyonderData.getSequence(caster) : Integer.MAX_VALUE;
-                    if (casterSeq > 1) return;
-                }
-
                 if(getCasterEntity() != null && !AbilityUtil.mayTarget(getCasterEntity(), e))
                     return;
 
-                LuckComponent luckComponent = e.getData(ModAttachments.LUCK_COMPONENT.get());
-                int luck = luckComponent.getLuck();
-
-                if(luck < 1000 && luck > -3000) {
-                    luckComponent.setLuck(-3000);
-                }
-
+                e.addEffect(new MobEffectInstance(ModEffects.UNLUCK, 20 * 60 * 5, 12, false, false, false));
                 if(!affectedEntities.contains(e.getUUID())) {
                     affectedEntities.add(e.getUUID());
                     setAffectedEntitiesCount(getAffectedEntitiesCount() + (e instanceof Player ? 10 : 1));

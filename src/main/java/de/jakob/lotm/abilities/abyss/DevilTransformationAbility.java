@@ -14,9 +14,6 @@ import java.util.Map;
 public class DevilTransformationAbility extends ToggleAbility {
     public DevilTransformationAbility(String id) {
         super(id);
-        this.canBeUsedInArtifact = false;
-
-        this.cannotBeStolen = true; // as long as it is not implemented
     }
 
     @Override

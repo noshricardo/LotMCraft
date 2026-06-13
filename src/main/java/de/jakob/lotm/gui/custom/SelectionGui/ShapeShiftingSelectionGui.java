@@ -13,16 +13,11 @@ public class ShapeShiftingSelectionGui extends ButtonListGui<String> {
 
     @Override
     protected Component getItemName(String shape) {
-        String[] parts = shape.split(":");
-        if (parts.length == 0) return Component.literal(shape);
-
-        // to remove the uuid from player names, im not responsible for cracked minecraft players tho.. (they can have the same name)
-        if (shape.contains("player")) {
-            return Component.literal("Player : " + parts[1]);
+        int columnIndex = shape.indexOf(":");
+        if(columnIndex != -1 && columnIndex < shape.length() - 1) {
+            return Component.literal(shape.substring(columnIndex + 1));
         }
-
-        // to remove the "mod_id:" from other names
-        return Component.literal(parts[1]);
+        return Component.literal(shape);
     }
 
     @Override

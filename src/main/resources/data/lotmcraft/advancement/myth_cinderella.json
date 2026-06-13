@@ -1,0 +1,19 @@
+{
+  "parent": "lotmcraft:root",
+  "display": {
+    "icon": {
+      "id": "lotmcraft:myth_cinderella"
+    },
+    "title": "Myth: Cinderella",
+    "description": "Derive the myth of the Fairy Tale Dress.",
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "criteria": {
+    "myth_longinus": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}
