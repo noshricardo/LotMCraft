@@ -5,14 +5,21 @@ import de.jakob.lotm.beyonders.artifacts.SealedArtifactItem;
 import de.jakob.lotm.block.ModBlocks;
 import de.jakob.lotm.data.ModTags;
 import de.jakob.lotm.item.custom.*;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.common.SimpleTier;
+//import net.neoforged.neoforge.common.SimpleTier;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,10 +28,20 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 public class ModItems {
-    private static final Tier PAPER_TOOL_TIER = new SimpleTier(
-            BlockTags.INCORRECT_FOR_IRON_TOOL, 15, 6.0F, 2.0F, 14, () -> {
-        return Ingredient.of(Items.PAPER);
-    });
+    
+    private static final TagKey<Item> PAPER_REPAIR_ITEMS = TagKey.create(
+            Registries.ITEM,
+            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "paper_repair_items")
+    );
+
+    private static final ToolMaterial PAPER_TOOL_TIER = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_IRON_TOOL,
+            15,
+            6.0F,
+            2.0F,
+            14,
+            PAPER_REPAIR_ITEMS
+    );
 
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(LOTMCraft.MOD_ID);
 

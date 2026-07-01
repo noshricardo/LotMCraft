@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -31,11 +31,11 @@ public class ExcavatedAreaItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
 
-        if (level.isClientSide) {
-            return InteractionResultHolder.success(itemStack);
+        if (level.isClientSide()) {
+            return InteractionResult.SUCCESS;
         }
 
         // Get stored block data
@@ -44,7 +44,7 @@ public class ExcavatedAreaItem extends Item {
 
         if (blockData.isEmpty() || centerStr.isEmpty()) {
             player.displayClientMessage(Component.literal("No area data found!").withStyle(ChatFormatting.RED), true);
-            return InteractionResultHolder.fail(itemStack);
+            return InteractionResult.FAIL;
         }
 
         ServerLevel serverLevel = (ServerLevel) level;
@@ -107,7 +107,7 @@ public class ExcavatedAreaItem extends Item {
             itemStack.shrink(1);
         }
 
-        return InteractionResultHolder.sidedSuccess(itemStack, false);
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     private BlockState parseBlockState(String stateString) {

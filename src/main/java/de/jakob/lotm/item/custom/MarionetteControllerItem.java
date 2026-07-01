@@ -17,7 +17,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -43,18 +43,18 @@ public class MarionetteControllerItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
             CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
-            if (customData == null) return InteractionResultHolder.pass(stack);
+            if (customData == null) return InteractionResult.PASS;
 
             CompoundTag tag = customData.copyTag();
             String entityUUID = tag.getString("MarionetteUUID");
             boolean movementOnly = tag.getBoolean("MovementOnly");
 
-            if (entityUUID.isEmpty()) return InteractionResultHolder.pass(stack);
+            if (entityUUID.isEmpty()) return InteractionResult.PASS;
 
             Entity entity = ((ServerLevel) level).getEntity(UUID.fromString(entityUUID));
             if (entity == null) entity = searchInOtherLevels(player, entityUUID);
@@ -62,13 +62,13 @@ public class MarionetteControllerItem extends Item {
             if (!(entity instanceof LivingEntity livingEntity)) {
                 player.sendSystemMessage(Component.literal("Marionette not found!"));
                 stack.shrink(1);
-                return InteractionResultHolder.fail(stack);
+                return InteractionResult.FAIL;
             }
 
             MarionetteComponent component = livingEntity.getData(ModAttachments.MARIONETTE_COMPONENT.get());
             if (!component.isMarionette()) {
                 stack.shrink(1);
-                return InteractionResultHolder.fail(stack);
+                return InteractionResult.FAIL;
             }
 
             HitResult hitResult = player.pick(20.0D, 0.0F, false);
@@ -127,7 +127,7 @@ public class MarionetteControllerItem extends Item {
                                 .append(Component.literal(": "))
                                 .append(Component.translatable(component.shouldAttack() ? "lotm.on" : "lotm.off"))
                                 .withColor(0xa26fc9));
-                        return InteractionResultHolder.sidedSuccess(stack, false);
+                        return InteractionResult.SUCCESS_SERVER;
                     }
 
                     BlockHitResult blockHit = (BlockHitResult) hitResult;
@@ -136,7 +136,7 @@ public class MarionetteControllerItem extends Item {
 
                     if (!(entityLevel instanceof ServerLevel entityServerLevel)) {
                         player.sendSystemMessage(Component.literal("Marionette not in a valid dimension!"));
-                        return InteractionResultHolder.fail(stack);
+                        return InteractionResult.FAIL;
                     }
 
                     UUID marionetteUUID = livingEntity.getUUID();
@@ -166,7 +166,7 @@ public class MarionetteControllerItem extends Item {
                         livingEntity.hurt(livingEntity.damageSources().generic(), Float.MAX_VALUE);
                         stack.shrink(1);
                         player.sendSystemMessage(Component.translatable("ability.lotm.puppeteering.entity_released").withColor(0xa26fc9));
-                        return InteractionResultHolder.sidedSuccess(stack, false);
+                        return InteractionResult.SUCCESS_SERVER;
                     }
                     component.setFollowMode(!component.isFollowMode());
                     if (!component.isFollowMode() && livingEntity instanceof Mob mob) {

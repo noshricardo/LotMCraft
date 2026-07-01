@@ -18,7 +18,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AnvilMenu;
@@ -39,7 +39,7 @@ public class SealedArtifactItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         if(level.isClientSide) {
@@ -55,12 +55,12 @@ public class SealedArtifactItem extends Item {
         DoorAuthorityData doorData = DoorAuthorityData.get((ServerLevel) level);
         if (doorData.isActive() && doorData.getEffectId().equalsIgnoreCase("strengthen")) {
             ParticleUtil.spawnParticles((ServerLevel) level, ParticleTypes.END_ROD, player.getEyePosition(), 40, .5, .05);
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
 
         SealedArtifactData data = stack.get(ModDataComponents.SEALED_ARTIFACT_DATA);
         if (data == null || data.abilities().isEmpty()) {
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
 
         // Get the currently selected ability

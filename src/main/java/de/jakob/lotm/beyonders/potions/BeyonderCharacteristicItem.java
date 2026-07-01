@@ -5,7 +5,7 @@ import de.jakob.lotm.util.data.PathwayInfos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +39,7 @@ public class BeyonderCharacteristicItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         if(level.isClientSide) {
@@ -48,7 +48,7 @@ public class BeyonderCharacteristicItem extends Item {
 
         var item = stack.getItem();
 
-        if(!(item instanceof BeyonderCharacteristicItem beChar)) return InteractionResultHolder.fail(stack);
+        if(!(item instanceof BeyonderCharacteristicItem beChar)) return InteractionResult.FAIL;
 
         int seq = beChar.getSequence();
         String path = beChar.getPathway();
@@ -66,6 +66,6 @@ public class BeyonderCharacteristicItem extends Item {
             }
         }
 
-        return InteractionResultHolder.fail(stack);
+        return InteractionResult.FAIL;
     }
 }

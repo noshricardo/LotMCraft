@@ -15,7 +15,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -39,19 +39,19 @@ public class SubordinateControllerItem extends Item {
     }
     
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         
         if (!level.isClientSide && player instanceof ServerPlayer) {
             CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
             if (customData == null) {
-                return InteractionResultHolder.pass(stack);
+                return InteractionResult.PASS;
             }
 
             CompoundTag tag = customData.copyTag();
             String entityUUID = tag.getString("SubordinateUUID");
             if (entityUUID.isEmpty()) {
-                return InteractionResultHolder.pass(stack);
+                return InteractionResult.PASS;
             }
 
             Entity entity = ((ServerLevel) level).getEntity(UUID.fromString(entityUUID));
@@ -61,13 +61,13 @@ public class SubordinateControllerItem extends Item {
             if (!(entity instanceof LivingEntity livingEntity)) {
                 player.sendSystemMessage(Component.literal("Subordinate not found!"));
                 stack.shrink(1);
-                return InteractionResultHolder.fail(stack);
+                return InteractionResult.FAIL;
             }
             
             SubordinateComponent component = livingEntity.getData(ModAttachments.SUBORDINATE_COMPONENT.get());
             if (!component.isSubordinate()) {
                 stack.shrink(1);
-                return InteractionResultHolder.fail(stack);
+                return InteractionResult.FAIL;
             }
 
             HitResult hitResult = player.pick(20.0D, 0.0F, false);
@@ -76,7 +76,7 @@ public class SubordinateControllerItem extends Item {
                 if(player.isShiftKeyDown()) {
                     component.setShouldAttack(!component.shouldAttack());
                     player.sendSystemMessage(Component.translatable("ability.lotmcraft.puppeteering.attack").append(Component.literal(": ")).append(Component.translatable(component.shouldAttack() ? "lotm.on" : "lotm.off")).withColor(0xa26fc9));
-                    return InteractionResultHolder.sidedSuccess(stack, false);
+                    return InteractionResult.SUCCESS_SERVER;
                 }
                 BlockHitResult blockHit = (BlockHitResult) hitResult;
                 BlockPos pos = blockHit.getBlockPos().above();
@@ -84,7 +84,7 @@ public class SubordinateControllerItem extends Item {
                 Level entityLevel = livingEntity.level();
                 if(!(entityLevel instanceof ServerLevel entityServerLevel)) {
                     player.sendSystemMessage(Component.literal("Subordinate not in a valid dimension!"));
-                    return InteractionResultHolder.fail(stack);
+                    return InteractionResult.FAIL;
                 }
 
                 // Store UUID before teleporting
@@ -129,7 +129,7 @@ public class SubordinateControllerItem extends Item {
                     livingEntity.setHealth(0);
                     stack.shrink(1);
                     player.sendSystemMessage(Component.translatable("ability.lotm.chain_of_command.entity_released").withColor(0xa26fc9));
-                    return InteractionResultHolder.sidedSuccess(stack, false);
+                    return InteractionResult.SUCCESS_SERVER;
                 }
                 // Toggle follow mode
                 component.setFollowMode(!component.isFollowMode());
