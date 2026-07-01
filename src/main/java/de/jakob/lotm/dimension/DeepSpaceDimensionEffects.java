@@ -5,7 +5,7 @@ import de.jakob.lotm.LOTMCraft;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,7 +21,7 @@ public class DeepSpaceDimensionEffects {
     @SubscribeEvent
     public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event) {
         event.register(
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "deep_space"),
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "deep_space"),
                 new ExileEffects()
         );
     }

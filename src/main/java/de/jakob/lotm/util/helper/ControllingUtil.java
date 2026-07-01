@@ -20,7 +20,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
@@ -80,7 +80,7 @@ public class ControllingUtil {
             CompoundTag targetTag = new CompoundTag();
             target.saveWithoutId(targetTag);
 
-            ResourceLocation targetId = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+            Identifier targetId = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
             targetTag.putString("id", targetId.toString());
             data.setTargetEntity(targetTag);
         }
@@ -89,7 +89,7 @@ public class ControllingUtil {
         CompoundTag bodyTag = new CompoundTag();
         originalBody.saveWithoutId(bodyTag);
 
-        ResourceLocation bodyId = BuiltInRegistries.ENTITY_TYPE.getKey(originalBody.getType());
+        Identifier bodyId = BuiltInRegistries.ENTITY_TYPE.getKey(originalBody.getType());
         bodyTag.putString("id", bodyId.toString());
         if (!spawnOriginalBody) {
             // if the main body didn't spawn, pass an empty tag to return the player to his current location when resetting

@@ -9,7 +9,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -23,7 +23,7 @@ public record SetHonorificNamePacket(LinkedList<String> lines) implements Custom
 
     public static final CustomPacketPayload.Type<SetHonorificNamePacket> TYPE =
             new CustomPacketPayload.Type<>(
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "set_honorific_name"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "set_honorific_name"));
 
     public static final StreamCodec<FriendlyByteBuf, SetHonorificNamePacket> STREAM_CODEC =
             StreamCodec.of(

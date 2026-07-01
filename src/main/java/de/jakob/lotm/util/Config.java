@@ -2,7 +2,7 @@ package de.jakob.lotm.util;
 
 import de.jakob.lotm.LOTMCraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
@@ -34,18 +34,18 @@ public class Config
 
     public static final ModConfigSpec SPEC = BUILDER.build();
 
-    public static Set<ResourceLocation> biomes;
-    public static Set<ResourceLocation> items;
+    public static Set<Identifier> biomes;
+    public static Set<Identifier> items;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event)
     {
         biomes = Config.BANNED_BIOMES.get().stream()
-                .map(ResourceLocation::parse)
+                .map(Identifier::parse)
                 .collect(Collectors.toSet());
 
         items = Config.BANNED_SUMMONED_ITEMS.get().stream()
-                .map(ResourceLocation::parse)
+                .map(Identifier::parse)
                 .collect(Collectors.toSet());
     }
 }

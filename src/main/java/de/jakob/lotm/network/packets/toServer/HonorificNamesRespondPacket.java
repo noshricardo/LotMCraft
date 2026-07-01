@@ -6,7 +6,7 @@ import de.jakob.lotm.events.HonorificNamesEventHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -22,7 +22,7 @@ public record HonorificNamesRespondPacket(UUID senderUUID, boolean teleport) imp
 
     public static final CustomPacketPayload.Type<HonorificNamesRespondPacket> TYPE =
             new CustomPacketPayload.Type<>(
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "honorific_names_respond"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "honorific_names_respond"));
 
     public static final StreamCodec<FriendlyByteBuf, HonorificNamesRespondPacket> STREAM_CODEC =
             StreamCodec.of(

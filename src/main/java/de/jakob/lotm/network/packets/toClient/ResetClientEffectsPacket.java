@@ -7,12 +7,12 @@ import de.jakob.lotm.util.data.ClientData;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record ResetClientEffectsPacket() implements CustomPacketPayload {
     public static final Type<ResetClientEffectsPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "reset_client_effects"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "reset_client_effects"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ResetClientEffectsPacket> STREAM_CODEC =
             StreamCodec.unit(new ResetClientEffectsPacket());

@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.UUID;
@@ -17,7 +17,7 @@ import java.util.UUID;
 public record PendingAllyRequestPacket(UUID requesterUUID, String requesterName) implements CustomPacketPayload {
     
     public static final CustomPacketPayload.Type<PendingAllyRequestPacket> TYPE = 
-            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "pending_ally_request"));
+            new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "pending_ally_request"));
 
     public static final StreamCodec<ByteBuf, PendingAllyRequestPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8.map(UUID::fromString, UUID::toString),

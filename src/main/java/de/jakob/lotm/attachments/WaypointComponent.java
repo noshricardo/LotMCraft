@@ -8,13 +8,14 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
+//import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +82,7 @@ public class WaypointComponent {
     }
 
     public Waypoint findByClientWaypoint(ClientWaypoint clientWaypoint, MinecraftServer server) {
-        ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(clientWaypoint.levelKey()));
+        ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, Identifier.parse(clientWaypoint.levelKey()));
         ServerLevel level = server.getLevel(levelKey);
 
         if (level == null) {
@@ -120,7 +121,7 @@ public class WaypointComponent {
             double z = compoundTag.getDouble("zCoordinate");
 
             String levelString = compoundTag.getString("levelKey");
-            ResourceLocation levelLocation = ResourceLocation.parse(levelString);
+            Identifier levelLocation = Identifier.parse(levelString);
             ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, levelLocation);
 
             ServerLevel level = server.getLevel(levelKey);

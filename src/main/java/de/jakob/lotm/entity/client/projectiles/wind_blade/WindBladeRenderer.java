@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +49,7 @@ public class WindBladeRenderer extends EntityRenderer<WindBladeEntity> {
     protected int getBlockLightLevel(WindBladeEntity projectileEntity, BlockPos blockpos) { return 15; }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull WindBladeEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/wind_blade/wind_blade.png");
+    public @NotNull Identifier getTextureLocation(@NotNull WindBladeEntity entity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/wind_blade/wind_blade.png");
     }
 }

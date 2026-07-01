@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,7 +25,7 @@ public class ClientModEvents {
             
             if(persistentData.contains("HybridMobData")) {
                 HybridMobData hybridData = HybridMobData.load(persistentData.getCompound("HybridMobData"));
-                ResourceLocation modelEntityType = hybridData.getModelEntityType();
+                Identifier modelEntityType = hybridData.getModelEntityType();
                 
                 EntityType<?> originalType = EntityType.byString(modelEntityType.toString()).orElse(null);
                 

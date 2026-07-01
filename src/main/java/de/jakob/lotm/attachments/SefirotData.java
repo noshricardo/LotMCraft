@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -102,7 +102,7 @@ public class SefirotData extends SavedData {
         LocationWithLevelKey locationWithLevelKey = returnLocations.get(player.getUUID());
         String levelId = locationWithLevelKey.getLevelKey();
 
-        ResourceLocation levelLocation = ResourceLocation.parse(levelId);
+        Identifier levelLocation = Identifier.parse(levelId);
         ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, levelLocation);
 
         ServerLevel level = player.server.getLevel(levelKey);

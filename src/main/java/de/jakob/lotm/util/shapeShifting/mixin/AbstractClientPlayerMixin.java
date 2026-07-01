@@ -7,7 +7,7 @@ import de.jakob.lotm.util.shapeShifting.PlayerSkinData;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,7 +38,7 @@ public abstract class AbstractClientPlayerMixin extends Player {
                 // check if uuid exists or else the game will crash
                 if (parts[2] != null) {
                     UUID targetUUID = UUID.fromString(parts[2]);
-                    ResourceLocation texture = PlayerSkinData.getSkinTexture(targetUUID);
+                    Identifier texture = PlayerSkinData.getSkinTexture(targetUUID);
                     boolean slim = PlayerSkinData.isSlimModel(targetUUID);
 
                     if (texture != null) {

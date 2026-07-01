@@ -8,13 +8,13 @@ import de.jakob.lotm.network.packets.toClient.SyncAbilityWheelPacket;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record RequestAbilityWheelPacket() implements CustomPacketPayload {
 
-    public static final Type<RequestAbilityWheelPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "request_ability_wheel"));
+    public static final Type<RequestAbilityWheelPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "request_ability_wheel"));
 
     public static final StreamCodec<ByteBuf, RequestAbilityWheelPacket> STREAM_CODEC = StreamCodec.unit(new RequestAbilityWheelPacket());
 

@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,7 +52,7 @@ public class ExileDoorsRenderer extends EntityRenderer<ExileDoorsEntity> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull ExileDoorsEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/exile_doors/exile_doors.png");
+    public @NotNull Identifier getTextureLocation(@NotNull ExileDoorsEntity entity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/exile_doors/exile_doors.png");
     }
 }

@@ -2,7 +2,7 @@ package de.jakob.lotm.events;
 
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.dimension.ModDimensions;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -17,7 +17,7 @@ public class WorldBorderEventHandler {
             return;
         }
 
-        ResourceLocation dimensionId = serverLevel.dimension().location();
+        Identifier dimensionId = serverLevel.dimension().location();
         String dimensionPath = dimensionId.getPath();
 
         switch (dimensionPath) {

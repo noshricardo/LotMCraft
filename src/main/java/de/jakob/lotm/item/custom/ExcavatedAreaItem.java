@@ -6,7 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -126,7 +126,7 @@ public class ExcavatedAreaItem extends Item {
             String blockId = parts[0];
 
             // Get block from registry
-            ResourceLocation location = ResourceLocation.tryParse(blockId);
+            Identifier location = Identifier.tryParse(blockId);
             if (location == null) {
                 return null;
             }

@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -44,7 +44,7 @@ public class SpiritBlockProjectileRenderer extends EntityRenderer<SpiritBlockPro
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull SpiritBlockProjectileEntity entity) {
+    public @NotNull Identifier getTextureLocation(@NotNull SpiritBlockProjectileEntity entity) {
         return InventoryMenu.BLOCK_ATLAS;
     }
 }

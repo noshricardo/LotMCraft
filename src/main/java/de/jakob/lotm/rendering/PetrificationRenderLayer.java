@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 
 public class PetrificationRenderLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
@@ -28,7 +28,7 @@ public class PetrificationRenderLayer<T extends LivingEntity, M extends EntityMo
         }
 
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entitySolid(
-                ResourceLocation.withDefaultNamespace("textures/misc/white.png")
+                Identifier.withDefaultNamespace("textures/misc/white.png")
         ));
 
         float grayValue = 0.5f;

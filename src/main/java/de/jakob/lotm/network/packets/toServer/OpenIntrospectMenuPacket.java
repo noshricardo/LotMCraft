@@ -16,7 +16,7 @@ import de.jakob.lotm.util.helper.AbilityWheelHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -26,7 +26,7 @@ import java.util.List;
 
 public record OpenIntrospectMenuPacket(int sequence, String pathway) implements CustomPacketPayload {
     public static final Type<OpenIntrospectMenuPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "open_introspect"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "open_introspect"));
 
     public static final StreamCodec<FriendlyByteBuf, OpenIntrospectMenuPacket> STREAM_CODEC =
             StreamCodec.composite(

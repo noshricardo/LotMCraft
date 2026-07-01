@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class GraftingLocationRenderer extends EntityRenderer<LocationGraftingEntity> {
 
@@ -29,7 +29,7 @@ public class GraftingLocationRenderer extends EntityRenderer<LocationGraftingEnt
     }
 
     @Override
-    public ResourceLocation getTextureLocation(LocationGraftingEntity entity) {
+    public Identifier getTextureLocation(LocationGraftingEntity entity) {
         return null;
     }
 }

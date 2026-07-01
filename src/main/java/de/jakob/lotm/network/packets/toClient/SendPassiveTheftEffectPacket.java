@@ -8,7 +8,7 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -17,7 +17,7 @@ import org.joml.Vector3f;
 public record SendPassiveTheftEffectPacket(double x, double y, double z) implements CustomPacketPayload {
     
     public static final Type<SendPassiveTheftEffectPacket> TYPE =
-        new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "send_passive_theft_particles"));
+        new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "send_passive_theft_particles"));
     
     public static final StreamCodec<ByteBuf, SendPassiveTheftEffectPacket> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.DOUBLE,

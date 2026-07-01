@@ -10,7 +10,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,10 +39,10 @@ public class TeleportAction extends ActionBase {
 
         if(!(context instanceof ActionPositionContext position)) return;
 
-        ResourceLocation id = null;
+        Identifier id = null;
         if(!position.dimension.isEmpty()){
             try {
-                id = ResourceLocation.tryParse(position.dimension);
+                id = Identifier.tryParse(position.dimension);
             }catch (NullPointerException ignored) {}
         }
 

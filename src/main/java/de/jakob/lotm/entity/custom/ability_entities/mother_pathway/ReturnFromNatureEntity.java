@@ -7,7 +7,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -99,7 +99,7 @@ public class ReturnFromNatureEntity extends Entity {
         if (tag.contains("ReturnDimension")) {
             this.returnDimension = ResourceKey.create(
                 Registries.DIMENSION,
-                ResourceLocation.parse(tag.getString("ReturnDimension"))
+                Identifier.parse(tag.getString("ReturnDimension"))
             );
         }
     }

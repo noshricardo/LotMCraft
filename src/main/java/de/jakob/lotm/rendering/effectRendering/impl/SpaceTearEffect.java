@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
@@ -31,8 +31,8 @@ public class SpaceTearEffect extends ActiveMovableEffect {
     private final ObsidianRing[] rings = new ObsidianRing[3];
 
     private static final float CYCLE_DURATION = 60f;
-    private static final ResourceLocation OBSIDIAN_TEXTURE =
-            ResourceLocation.withDefaultNamespace("textures/block/obsidian.png");
+    private static final Identifier OBSIDIAN_TEXTURE =
+            Identifier.withDefaultNamespace("textures/block/obsidian.png");
 
     public SpaceTearEffect(Location location, int maxDuration, boolean infinite) {
         super(location, maxDuration, infinite);

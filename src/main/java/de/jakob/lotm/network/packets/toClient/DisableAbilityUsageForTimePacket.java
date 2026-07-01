@@ -6,13 +6,13 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record DisableAbilityUsageForTimePacket(int entityId, String cause, int ticks) implements CustomPacketPayload {
     
     public static final Type<DisableAbilityUsageForTimePacket> TYPE =
-        new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "disable_ability_usage_for_time"));
+        new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "disable_ability_usage_for_time"));
     
     public static final StreamCodec<ByteBuf, DisableAbilityUsageForTimePacket> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.INT,

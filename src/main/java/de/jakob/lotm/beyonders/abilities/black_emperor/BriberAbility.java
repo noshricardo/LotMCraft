@@ -6,7 +6,7 @@ import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -37,8 +37,8 @@ public class BriberAbility extends SelectableAbility {
     // This tracks who is currently weakened so their outgoing damage can be reduced too.
     private static final Set<UUID> WEAKENED = new HashSet<>();
 
-    private static final ResourceLocation WEAKEN_ARMOR_ID =
-            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "briber_weaken_armor");
+    private static final Identifier WEAKEN_ARMOR_ID =
+            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "briber_weaken_armor");
 
     private static final UUID WEAKEN_ARMOR_UUID =
             UUID.fromString("6d3f58b2-2d0e-4f7d-bd31-6f8f3f61c2a1");

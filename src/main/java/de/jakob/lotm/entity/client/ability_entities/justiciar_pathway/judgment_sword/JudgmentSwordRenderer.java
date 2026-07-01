@@ -9,13 +9,13 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Random;
 
 public class JudgmentSwordRenderer extends EntityRenderer<JudgmentSwordEntity> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
             LOTMCraft.MOD_ID, "textures/entity/judgment_sword/judgment_sword.png");
 
     private final JudgmentSwordModel<JudgmentSwordEntity> model;
@@ -49,7 +49,7 @@ public class JudgmentSwordRenderer extends EntityRenderer<JudgmentSwordEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(JudgmentSwordEntity entity) {
+    public Identifier getTextureLocation(JudgmentSwordEntity entity) {
         return TEXTURE;
     }
 }

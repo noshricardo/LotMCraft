@@ -125,7 +125,7 @@ public class LuckHandler {
         if (Math.random() < getMultipleBlocksChance(luck)) {
             List<ItemEntity> drops = event.getDrops();
             if (drops.isEmpty()) return;
-            if (drops.stream().anyMatch(ie -> ie.getItem().is(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "shulker_boxes"))))) return;
+            if (drops.stream().anyMatch(ie -> ie.getItem().is(ItemTags.create(Identifier.fromNamespaceAndPath("c", "shulker_boxes"))))) return;
 
             if (new Random().nextBoolean())
                 ParticleUtil.spawnParticles(level, LUCK_DUST, event.getPos().getCenter(), 12, .6, .6, .6, 0);

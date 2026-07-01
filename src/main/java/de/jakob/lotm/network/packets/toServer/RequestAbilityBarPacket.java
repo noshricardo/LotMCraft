@@ -7,13 +7,13 @@ import de.jakob.lotm.util.helper.AbilityBarHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record RequestAbilityBarPacket() implements CustomPacketPayload {
     public static final Type<RequestAbilityBarPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "request_ability_bar"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "request_ability_bar"));
 
     public static final StreamCodec<ByteBuf, RequestAbilityBarPacket> STREAM_CODEC = StreamCodec.unit(new RequestAbilityBarPacket());
 

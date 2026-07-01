@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class BeyonderNPCRenderer extends MobRenderer<BeyonderNPCEntity, PlayerModel<BeyonderNPCEntity>> {
@@ -36,11 +36,11 @@ public class BeyonderNPCRenderer extends MobRenderer<BeyonderNPCEntity, PlayerMo
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(BeyonderNPCEntity entity) {
+    public @NotNull Identifier getTextureLocation(BeyonderNPCEntity entity) {
         if (entity.getTargetPlayerUUID().isPresent()) {
 
             // try to get the cached skin
-            ResourceLocation cached = PlayerSkinData.getSkinTexture(entity.getTargetPlayerUUID().get());
+            Identifier cached = PlayerSkinData.getSkinTexture(entity.getTargetPlayerUUID().get());
             if (cached != null) {
                 return cached;
             }

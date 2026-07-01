@@ -8,12 +8,12 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class SpaceCollapseRenderer extends EntityRenderer<SpaceCollapseEntity> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/space_collapse/space_collapse.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/space_collapse/space_collapse.png");
     
     public SpaceCollapseRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -155,7 +155,7 @@ public class SpaceCollapseRenderer extends EntityRenderer<SpaceCollapseEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SpaceCollapseEntity entity) {
+    public Identifier getTextureLocation(SpaceCollapseEntity entity) {
         return TEXTURE;
     }
 }

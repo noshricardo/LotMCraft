@@ -16,7 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -135,7 +135,7 @@ public class AngelAuthorityAbility extends SelectableAbility {
         Vec3 targetPos;
 
         if (!player.level().dimension().equals(ModDimensions.SPIRIT_WORLD_DIMENSION_KEY)) {
-            ResourceKey spiritWorld = ResourceKey.create((ResourceKey) Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"));
+            ResourceKey spiritWorld = ResourceKey.create((ResourceKey) Registries.DIMENSION, Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"));
             targetLevel = player.getServer().getLevel(spiritWorld);
             targetPos = SpiritWorldHandler.getCoordinatesInSpiritWorld(player.position(), targetLevel);
             BlockPos pos = BlockPos.containing(targetPos);

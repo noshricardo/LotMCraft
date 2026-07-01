@@ -5,7 +5,7 @@ import de.jakob.lotm.attachments.ActiveShaderComponent;
 import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.attachments.TransformationComponent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -101,7 +101,7 @@ public class ShaderManager {
             !mc.gameRenderer.currentEffect().getName().equals(shaderName)) {
             try {
                 mc.gameRenderer.loadEffect(
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "shaders/post/" + shaderName + ".json")
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "shaders/post/" + shaderName + ".json")
                 );
             } catch (Exception ignored) {
             }

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ModRenderTypes extends RenderType {
     
@@ -40,7 +40,7 @@ public class ModRenderTypes extends RenderType {
             .createCompositeState(false));
     
     // Textured electric effect (if you want to use a lightning texture)
-    public static RenderType electricTextured(ResourceLocation texture) {
+    public static RenderType electricTextured(Identifier texture) {
         return create("electric_textured",
             DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, true,
             RenderType.CompositeState.builder()

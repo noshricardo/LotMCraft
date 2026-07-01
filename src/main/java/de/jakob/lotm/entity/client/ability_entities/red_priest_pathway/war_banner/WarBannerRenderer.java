@@ -11,11 +11,11 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class WarBannerRenderer extends EntityRenderer<WarBannerEntity> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/war_banner/war_banner.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/war_banner/war_banner.png");
     private final WarBannerModel<WarBannerEntity> model;
 
     public WarBannerRenderer(EntityRendererProvider.Context context) {
@@ -52,7 +52,7 @@ public class WarBannerRenderer extends EntityRenderer<WarBannerEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(WarBannerEntity entity) {
+    public Identifier getTextureLocation(WarBannerEntity entity) {
         return TEXTURE;
     }
 }

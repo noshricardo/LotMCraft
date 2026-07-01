@@ -7,7 +7,7 @@ import de.jakob.lotm.entity.custom.BeyonderNPCEntity;
 import de.jakob.lotm.network.packets.toClient.ShapeShiftingSyncPacket;
 import de.jakob.lotm.util.BeyonderData;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -76,9 +76,9 @@ public class ShapeShiftingUtil {
         var blockReachAttribute = player.getAttribute(Attributes.BLOCK_INTERACTION_RANGE);
 
         if (stepHeightAttribute != null) {
-            stepHeightAttribute.removeModifier(ResourceLocation.fromNamespaceAndPath("lotmcraft", "shape_shifting_step_height"));
+            stepHeightAttribute.removeModifier(Identifier.fromNamespaceAndPath("lotmcraft", "shape_shifting_step_height"));
             AttributeModifier stepHeightModifier = new AttributeModifier(
-                    ResourceLocation.fromNamespaceAndPath("lotmcraft", "shape_shifting_step_height"),
+                    Identifier.fromNamespaceAndPath("lotmcraft", "shape_shifting_step_height"),
                     (1 - calculateScale(player)),
                     AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
             );
@@ -86,9 +86,9 @@ public class ShapeShiftingUtil {
         }
 
         if (entityReachAttribute != null) {
-            entityReachAttribute.removeModifier(ResourceLocation.fromNamespaceAndPath("lotmcraft", "shape_shifting_entity_reach"));
+            entityReachAttribute.removeModifier(Identifier.fromNamespaceAndPath("lotmcraft", "shape_shifting_entity_reach"));
             AttributeModifier entityReachModifier = new AttributeModifier(
-                    ResourceLocation.fromNamespaceAndPath("lotmcraft", "shape_shifting_entity_reach"),
+                    Identifier.fromNamespaceAndPath("lotmcraft", "shape_shifting_entity_reach"),
                     (1 - calculateScale(player)),
                     AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
             );
@@ -96,9 +96,9 @@ public class ShapeShiftingUtil {
         }
 
         if (blockReachAttribute != null) {
-            blockReachAttribute.removeModifier(ResourceLocation.fromNamespaceAndPath("lotmcraft", "shape_shifting_block_reach"));
+            blockReachAttribute.removeModifier(Identifier.fromNamespaceAndPath("lotmcraft", "shape_shifting_block_reach"));
             AttributeModifier blockReachModifier = new AttributeModifier(
-                    ResourceLocation.fromNamespaceAndPath("lotmcraft", "shape_shifting_block_reach"),
+                    Identifier.fromNamespaceAndPath("lotmcraft", "shape_shifting_block_reach"),
                     (1 - calculateScale(player)),
                     AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
             );
@@ -159,13 +159,13 @@ public class ShapeShiftingUtil {
             // reset the modifiers if no shape or if player shape
             if (skinOnly || shape.isEmpty()) {
                 if (stepHeightAttribute != null) {
-                    stepHeightAttribute.removeModifier(ResourceLocation.fromNamespaceAndPath("lotmcraft", "shape_shifting_step_height"));
+                    stepHeightAttribute.removeModifier(Identifier.fromNamespaceAndPath("lotmcraft", "shape_shifting_step_height"));
                 }
                 if (entityReachAttribute != null) {
-                    entityReachAttribute.removeModifier(ResourceLocation.fromNamespaceAndPath("lotmcraft", "shape_shifting_entity_reach"));
+                    entityReachAttribute.removeModifier(Identifier.fromNamespaceAndPath("lotmcraft", "shape_shifting_entity_reach"));
                 }
                 if (blockReachAttribute != null) {
-                    blockReachAttribute.removeModifier(ResourceLocation.fromNamespaceAndPath("lotmcraft", "shape_shifting_block_reach"));
+                    blockReachAttribute.removeModifier(Identifier.fromNamespaceAndPath("lotmcraft", "shape_shifting_block_reach"));
                 }
             }
         }
@@ -181,7 +181,7 @@ public class ShapeShiftingUtil {
         if (shape != null && !shape.startsWith("player:") && !shape.startsWith("lotmcraft:beyonder_npc:")) {
             EntityType<?> type = null;
 
-            ResourceLocation id = ResourceLocation.tryParse(shape);
+            Identifier id = Identifier.tryParse(shape);
             if (id != null) {
                 type = BuiltInRegistries.ENTITY_TYPE.get(id);
             }

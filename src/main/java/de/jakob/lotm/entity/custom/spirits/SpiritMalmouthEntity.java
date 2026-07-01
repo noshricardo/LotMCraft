@@ -9,7 +9,7 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -78,7 +78,7 @@ public class SpiritMalmouthEntity extends Animal {
     public @NotNull ResourceKey<LootTable> getDefaultLootTable() {
         return ResourceKey.create(
                 Registries.LOOT_TABLE,
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "entities/spirit_malmouth")
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "entities/spirit_malmouth")
         );
     }
 

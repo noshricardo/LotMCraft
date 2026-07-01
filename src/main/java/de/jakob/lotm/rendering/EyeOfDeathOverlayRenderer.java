@@ -5,7 +5,7 @@ import de.jakob.lotm.LOTMCraft;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -23,7 +23,7 @@ public class EyeOfDeathOverlayRenderer {
 
     @SubscribeEvent
     public static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.HOTBAR, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "eye_of_death_overlay"), (guiGraphics, deltaTracker) -> {
+        event.registerAbove(VanillaGuiLayers.HOTBAR, Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "eye_of_death_overlay"), (guiGraphics, deltaTracker) -> {
             renderOverlay(guiGraphics);
         });
     }
@@ -37,7 +37,7 @@ public class EyeOfDeathOverlayRenderer {
 
         if (!entitiesLookedAt.containsKey(mc.player.getUUID())) return;
 
-        ResourceLocation backgroundTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/eye_of_death_overlay.png");
+        Identifier backgroundTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/eye_of_death_overlay.png");
         guiGraphics.pose().pushPose();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();

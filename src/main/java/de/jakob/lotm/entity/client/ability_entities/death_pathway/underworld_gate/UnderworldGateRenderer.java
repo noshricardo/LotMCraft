@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class UnderworldGateRenderer extends EntityRenderer<UnderworldGateEntity> {
@@ -63,9 +63,9 @@ public class UnderworldGateRenderer extends EntityRenderer<UnderworldGateEntity>
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull UnderworldGateEntity entity) {
+    public @NotNull Identifier getTextureLocation(@NotNull UnderworldGateEntity entity) {
         if(entity.hasTentacles() && entity.tickCount >= 21)
-            return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/underworld_gate/underworld_gate.png");
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/underworld_gate/underworld_gate_no_tentacles.png");
+            return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/underworld_gate/underworld_gate.png");
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/underworld_gate/underworld_gate_no_tentacles.png");
     }
 }

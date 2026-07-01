@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
@@ -65,7 +65,7 @@ public class UniquenessEntityRenderer extends EntityRenderer<UniquenessEntity> {
     private ItemStack getUniquenessItemStack(String pathway) {
         try {
             net.minecraft.world.item.Item item = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, pathway + "_uniqueness")
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, pathway + "_uniqueness")
             );
             if (item == Items.AIR) return ItemStack.EMPTY;
             return new ItemStack(item);
@@ -75,7 +75,7 @@ public class UniquenessEntityRenderer extends EntityRenderer<UniquenessEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(UniquenessEntity entity) {
+    public Identifier getTextureLocation(UniquenessEntity entity) {
         return TextureAtlas.LOCATION_BLOCKS;
     }
 }

@@ -93,7 +93,7 @@ public class DreamMazeEventHandler {
 
         ResourceKey<Level> returnDim = ResourceKey.create(
                 net.minecraft.core.registries.Registries.DIMENSION,
-                net.minecraft.resources.ResourceLocation.parse(dimStr));
+                net.minecraft.resources.Identifier.parse(dimStr));
         ServerLevel returnLevel = server.getLevel(returnDim);
 
         if (returnLevel == null) returnLevel = server.overworld();

@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 
 public class ConqueredRenderLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
@@ -29,7 +29,7 @@ public class ConqueredRenderLayer<T extends LivingEntity, M extends EntityModel<
         }
 
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entitySolid(
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/misc/conquered_overlay.png")
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/misc/conquered_overlay.png")
         ));
 
         int grayColor = packColor(1, 0, 0, 1.0f);

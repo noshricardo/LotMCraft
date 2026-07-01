@@ -6,14 +6,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record SyncSelectedMarionettePacket(boolean active, String name, double health, double maxHealth) implements CustomPacketPayload {
 
 
     public static final Type<SyncSelectedMarionettePacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sync_selected_marionette"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sync_selected_marionette"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncSelectedMarionettePacket> STREAM_CODEC =
             StreamCodec.composite(

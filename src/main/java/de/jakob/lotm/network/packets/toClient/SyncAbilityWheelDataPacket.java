@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public record SyncAbilityWheelDataPacket(ArrayList<String> abilityIds) implements CustomPacketPayload {
     
     public static final Type<SyncAbilityWheelDataPacket> TYPE = 
-        new Type<>(ResourceLocation.fromNamespaceAndPath("lotm", "sync_ability_wheel_data"));
+        new Type<>(Identifier.fromNamespaceAndPath("lotm", "sync_ability_wheel_data"));
 
     public static final StreamCodec<ByteBuf, SyncAbilityWheelDataPacket> STREAM_CODEC = 
         StreamCodec.composite(

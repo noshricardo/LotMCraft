@@ -11,7 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -203,8 +203,8 @@ public class AvatarEntity extends PathfinderMob {
                 .add(Attributes.ARMOR, 0.0D);
     }
 
-    public ResourceLocation getSkinTexture() {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID,
+    public Identifier getSkinTexture() {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID,
                 "textures/entity/npc/" + DEFAULT_SKIN + ".png");
     }
 

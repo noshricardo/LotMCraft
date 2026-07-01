@@ -107,7 +107,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -165,12 +165,12 @@ public class LOTMCraft
 
     public static AbilityHandler abilityHandler;
 
-    public static final ResourceLocation ANIMATION_LAYER_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "lotmcraft_animations");
+    public static final Identifier ANIMATION_LAYER_ID = Identifier.fromNamespaceAndPath(MOD_ID, "lotmcraft_animations");
 
-    public static final ResourceLocation STONE_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/misc/stone.png");
-    public static final ResourceLocation ICE_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/misc/ice.png");
+    public static final Identifier STONE_TEXTURE =
+            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/misc/stone.png");
+    public static final Identifier ICE_TEXTURE =
+            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/misc/ice.png");
 
     public LOTMCraft(IEventBus modEventBus, ModContainer modContainer)
     {

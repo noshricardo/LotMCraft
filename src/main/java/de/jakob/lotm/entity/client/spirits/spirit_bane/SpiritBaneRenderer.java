@@ -8,7 +8,7 @@ import de.jakob.lotm.entity.custom.spirits.SpiritBizarroBaneEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SpiritBaneRenderer extends MobRenderer<SpiritBaneEntity, SpiritBaneModel<SpiritBaneEntity>> {
     public SpiritBaneRenderer(EntityRendererProvider.Context context) {
@@ -26,7 +26,7 @@ public class SpiritBaneRenderer extends MobRenderer<SpiritBaneEntity, SpiritBane
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SpiritBaneEntity spiritBlueWizardEntity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_bane/spirit_bane.png");
+    public Identifier getTextureLocation(SpiritBaneEntity spiritBlueWizardEntity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_bane/spirit_bane.png");
     }
 }

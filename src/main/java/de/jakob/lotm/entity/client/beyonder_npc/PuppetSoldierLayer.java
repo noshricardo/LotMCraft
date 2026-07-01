@@ -11,10 +11,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class PuppetSoldierLayer extends RenderLayer<BeyonderNPCEntity, PlayerModel<BeyonderNPCEntity>> {
-    private static final ResourceLocation CREEPER_ARMOR = ResourceLocation.withDefaultNamespace("textures/entity/creeper/creeper_armor.png");
+    private static final Identifier CREEPER_ARMOR = Identifier.withDefaultNamespace("textures/entity/creeper/creeper_armor.png");
     private final PlayerModel<BeyonderNPCEntity> model;
 
     public PuppetSoldierLayer(RenderLayerParent<BeyonderNPCEntity, PlayerModel<BeyonderNPCEntity>> parent, EntityModelSet modelSet) {

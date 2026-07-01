@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -110,9 +110,9 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
 
     private EntityType<?> parseEntityTypeFromKey(String shapeKey) {
         if (shapeKey.startsWith("lotmcraft:beyonder_npc:")) {
-            return BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse("lotmcraft:beyonder_npc"));
+            return BuiltInRegistries.ENTITY_TYPE.get(Identifier.parse("lotmcraft:beyonder_npc"));
         } else {
-            ResourceLocation id = ResourceLocation.tryParse(shapeKey);
+            Identifier id = Identifier.tryParse(shapeKey);
             if (id != null) {
                 return BuiltInRegistries.ENTITY_TYPE.get(id);
             }

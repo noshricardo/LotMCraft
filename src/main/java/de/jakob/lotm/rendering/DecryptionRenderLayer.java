@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
@@ -38,7 +38,7 @@ public class DecryptionRenderLayer<T extends LivingEntity, M extends EntityModel
         }
 
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.outline(
-                ResourceLocation.withDefaultNamespace("textures/misc/white.png")
+                Identifier.withDefaultNamespace("textures/misc/white.png")
         ));
 
         int grayColor = packColor(.05f, .875f, .3f, 1);

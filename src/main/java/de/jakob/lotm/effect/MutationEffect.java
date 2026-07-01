@@ -7,7 +7,7 @@ import de.jakob.lotm.attachments.SanityComponent;
 import de.jakob.lotm.util.helper.DamageLookup;
 import net.minecraft.network.protocol.game.ClientboundRemoveMobEffectPacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
@@ -35,7 +35,7 @@ public class MutationEffect extends MobEffect {
         // Also using event handler to sync effect periodically
         this.addAttributeModifier(
                 Attributes.MOVEMENT_SPEED,
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mutation_sync_dummy"),
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mutation_sync_dummy"),
                 0.0D, // No actual effect on speed
                 AttributeModifier.Operation.ADD_VALUE
         );

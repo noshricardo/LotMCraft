@@ -20,7 +20,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.monster.Pillager;
 import net.minecraft.world.entity.monster.Ravager;
@@ -196,7 +196,7 @@ public class HelpBeyonderQuest extends Quest {
 
     private Entity createWarden(ServerLevel level, ServerPlayer player) {
         BlockPos spawnPos = BlockPos.containing(player.getX(), player.getY() + 1, player.getZ());
-        Warden warden = net.minecraft.world.entity.EntityType.WARDEN.spawn(level, spawnPos, MobSpawnType.EVENT);
+        Warden warden = net.minecraft.world.entity.EntityType.WARDEN.spawn(level, spawnPos, EntitySpawnReason.EVENT);
         if (warden == null) {
             warden = new Warden(net.minecraft.world.entity.EntityType.WARDEN, level);
             warden.setPos(spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5);

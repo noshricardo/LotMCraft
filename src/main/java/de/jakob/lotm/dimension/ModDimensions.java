@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import de.jakob.lotm.LOTMCraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
@@ -64,19 +64,19 @@ public class ModDimensions {
 
     public static final ResourceKey<LevelStem> DREAM_MAZE_LEVEL_KEY =
             ResourceKey.create(Registries.LEVEL_STEM,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "dream_maze"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "dream_maze"));
 
     public static final ResourceKey<Level> DREAM_MAZE_DIMENSION_KEY =
             ResourceKey.create(Registries.DIMENSION,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "dream_maze"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "dream_maze"));
 
     public static final ResourceKey<DimensionType> DREAM_MAZE_TYPE_KEY =
             ResourceKey.create(Registries.DIMENSION_TYPE,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "dream_maze"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "dream_maze"));
 
     public static final ResourceKey<Biome> DREAM_MAZE_BIOME_KEY =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "dream_maze_biome"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "dream_maze_biome"));
 
     
     // =========================================================================
@@ -85,19 +85,19 @@ public class ModDimensions {
 
     public static final ResourceKey<LevelStem> SPACE_LEVEL_KEY =
             ResourceKey.create(Registries.LEVEL_STEM,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space"));
 
     public static final ResourceKey<Level> SPACE_DIMENSION_KEY =
             ResourceKey.create(Registries.DIMENSION,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space"));
 
     public static final ResourceKey<DimensionType> SPACE_TYPE_KEY =
             ResourceKey.create(Registries.DIMENSION_TYPE,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space"));
 
     public static final ResourceKey<Biome> SPACE_BIOME_KEY =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space_biome"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space_biome"));
 
     // =========================================================================
     // SPACE dimension
@@ -105,15 +105,15 @@ public class ModDimensions {
 
     public static final ResourceKey<LevelStem> DEEP_SPACE_LEVEL_KEY =
             ResourceKey.create(Registries.LEVEL_STEM,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "deep_space"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "deep_space"));
 
     public static final ResourceKey<DimensionType> DEEP_SPACE_TYPE_KEY =
             ResourceKey.create(Registries.DIMENSION_TYPE,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "deep_space"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "deep_space"));
 
     public static final ResourceKey<Biome> DEEP_SPACE_BIOME_KEY =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "deep_space_biome"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "deep_space_biome"));
 
 
     // =========================================================================
@@ -122,15 +122,15 @@ public class ModDimensions {
 
     public static final ResourceKey<Biome> SPACE_TIME_LABYRINTH_BIOME_KEY =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space_time_labyrinth"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space_time_labyrinth"));
 
     public static final ResourceKey<DimensionType> SPACE_TIME_LABYRINTH_TYPE_KEY =
             ResourceKey.create(Registries.DIMENSION_TYPE,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space_time_labyrinth"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space_time_labyrinth"));
 
     public static final ResourceKey<LevelStem> SPACE_TIME_LABYRINTH_LEVEL_KEY =
             ResourceKey.create(Registries.LEVEL_STEM,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space_time_labyrinth"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space_time_labyrinth"));
 
 
     // =========================================================================
@@ -139,15 +139,15 @@ public class ModDimensions {
 
     public static final ResourceKey<LevelStem> WORLD_CREATION_LEVEL_KEY =
             ResourceKey.create(Registries.LEVEL_STEM,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "nature"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "nature"));
 
     public static final ResourceKey<DimensionType> WORLD_CREATION_TYPE_KEY =
             ResourceKey.create(Registries.DIMENSION_TYPE,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "nature"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "nature"));
 
     public static final ResourceKey<Biome> WORLD_CREATION_BIOME_KEY =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "nature_biome"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "nature_biome"));
 
     // =========================================================================
     // SPIRIT WORLD dimension
@@ -155,15 +155,15 @@ public class ModDimensions {
 
     public static final ResourceKey<LevelStem> SPIRIT_WORLD_LEVEL_KEY =
             ResourceKey.create(Registries.LEVEL_STEM,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"));
 
     public static final ResourceKey<Level> SPIRIT_WORLD_DIMENSION_KEY =
             ResourceKey.create(Registries.DIMENSION,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"));
 
     public static final ResourceKey<DimensionType> SPIRIT_WORLD_TYPE_KEY =
             ResourceKey.create(Registries.DIMENSION_TYPE,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"));
 
     // --- Spirit World per-biome keys ---
     // Index order MUST match SpiritWorldBiomeSource.BIOME_ORDER and
@@ -172,47 +172,47 @@ public class ModDimensions {
     /** index 0 */
     public static final ResourceKey<Biome> SPIRIT_BIOME_WOOL_MEADOWS =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_wool_meadows"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_wool_meadows"));
 
     /** index 1 */
     public static final ResourceKey<Biome> SPIRIT_BIOME_CRYSTALLINE_PEAKS =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_crystalline_peaks"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_crystalline_peaks"));
 
     /** index 2 */
     public static final ResourceKey<Biome> SPIRIT_BIOME_VOID_GARDENS =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_void_gardens"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_void_gardens"));
 
     /** index 3 */
     public static final ResourceKey<Biome> SPIRIT_BIOME_EMBER_WASTES =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_ember_wastes"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_ember_wastes"));
 
     /** index 4 */
     public static final ResourceKey<Biome> SPIRIT_BIOME_QUARTZ_FLATS =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_quartz_flats"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_quartz_flats"));
 
     /** index 5 */
     public static final ResourceKey<Biome> SPIRIT_BIOME_TERRACOTTA_CANYON =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_terracotta_canyon"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_terracotta_canyon"));
 
     /** index 6 */
     public static final ResourceKey<Biome> SPIRIT_BIOME_FUNGAL_DEPTHS =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_fungal_depths"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_fungal_depths"));
 
     /** index 7 */
     public static final ResourceKey<Biome> SPIRIT_BIOME_GLACIAL_SHELF =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_glacial_shelf"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_glacial_shelf"));
 
     /** index 8 */
     public static final ResourceKey<Biome> SPIRIT_BIOME_GILDED_RUINS =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_gilded_ruins"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_gilded_ruins"));
 
     /**
      * Convenience array — same order as {@link SpiritWorldBiome#values()} and
@@ -237,19 +237,19 @@ public class ModDimensions {
 
     public static final ResourceKey<LevelStem> SEFIRAH_CASTLE_LEVEL_KEY =
             ResourceKey.create(Registries.LEVEL_STEM,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sefirah_castle"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sefirah_castle"));
 
     public static final ResourceKey<Level> SEFIRAH_CASTLE_DIMENSION_KEY =
             ResourceKey.create(Registries.DIMENSION,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sefirah_castle"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sefirah_castle"));
 
     public static final ResourceKey<DimensionType> SEFIRAH_CASTLE_TYPE_KEY =
             ResourceKey.create(Registries.DIMENSION_TYPE,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sefirah_castle"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sefirah_castle"));
 
     public static final ResourceKey<Biome> SEFIRAH_CASTLE_BIOME_KEY =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sefirah_castle_biome"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sefirah_castle_biome"));
 
     // =========================================================================
     // CONCEALMENT WORLD dimension
@@ -257,19 +257,19 @@ public class ModDimensions {
 
     public static final ResourceKey<LevelStem> CONCEALMENT_WORLD_LEVEL_KEY =
             ResourceKey.create(Registries.LEVEL_STEM,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "concealment_world"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "concealment_world"));
 
     public static final ResourceKey<Level> CONCEALMENT_WORLD_DIMENSION_KEY =
             ResourceKey.create(Registries.DIMENSION,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "concealment_world"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "concealment_world"));
 
     public static final ResourceKey<DimensionType> CONCEALMENT_WORLD_TYPE_KEY =
             ResourceKey.create(Registries.DIMENSION_TYPE,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "concealment_world"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "concealment_world"));
 
     public static final ResourceKey<Biome> CONCEALMENT_WORLD_BIOME_KEY =
             ResourceKey.create(Registries.BIOME,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "concealment_world_biome"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "concealment_world_biome"));
 
     // -------------------------------------------------------------------------
     // Registration

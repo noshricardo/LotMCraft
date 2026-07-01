@@ -18,7 +18,7 @@ import de.jakob.lotm.util.helper.CopiedAbilityHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -310,8 +310,8 @@ public abstract class Ability {
         return (1f / (80f * Math.max(.5f, ((10 - requiredSequence) * .5f)))) * cooldownMultiplier;
     }
 
-    public ResourceLocation getTextureLocation() {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/abilities/" + id + ".png");
+    public Identifier getTextureLocation() {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/abilities/" + id + ".png");
     }
 
     public MutableComponent getName() {

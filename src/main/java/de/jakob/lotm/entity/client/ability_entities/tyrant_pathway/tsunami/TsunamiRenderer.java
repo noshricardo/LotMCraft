@@ -10,13 +10,13 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 
 public class TsunamiRenderer extends EntityRenderer<TsunamiEntity> {
 
     public static final float scale = 3.75F;
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/tsunami/tsunami.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/tsunami/tsunami.png");
     private final TsunamiModel<TsunamiEntity> model;
 
     public TsunamiRenderer(EntityRendererProvider.Context context) {
@@ -63,5 +63,5 @@ public class TsunamiRenderer extends EntityRenderer<TsunamiEntity> {
     protected int getSkyLightLevel(TsunamiEntity entity, BlockPos pos) { return 15; }
 
     @Override
-    public ResourceLocation getTextureLocation(TsunamiEntity entity) { return TEXTURE; }
+    public Identifier getTextureLocation(TsunamiEntity entity) { return TEXTURE; }
 }

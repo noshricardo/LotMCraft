@@ -8,13 +8,13 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record RequestActiveStatusOfAbilityPacket(String abilityId) implements CustomPacketPayload {
     public static final Type<RequestActiveStatusOfAbilityPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "request_ability_active_status"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "request_ability_active_status"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestActiveStatusOfAbilityPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8,

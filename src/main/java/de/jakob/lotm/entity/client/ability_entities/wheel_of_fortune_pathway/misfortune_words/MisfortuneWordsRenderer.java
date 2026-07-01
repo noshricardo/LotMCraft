@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class MisfortuneWordsRenderer extends EntityRenderer<MisfortuneWordsEntity> {
@@ -47,7 +47,7 @@ public class MisfortuneWordsRenderer extends EntityRenderer<MisfortuneWordsEntit
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull MisfortuneWordsEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/misfortune_words/misfortune_words.png");
+    public @NotNull Identifier getTextureLocation(@NotNull MisfortuneWordsEntity entity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/misfortune_words/misfortune_words.png");
     }
 }

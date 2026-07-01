@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class DesolateAreaRenderer extends EntityRenderer<DesolateAreaEntity> {
@@ -47,7 +47,7 @@ public class DesolateAreaRenderer extends EntityRenderer<DesolateAreaEntity> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull DesolateAreaEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/desolate_area/desolate_area.png");
+    public @NotNull Identifier getTextureLocation(@NotNull DesolateAreaEntity entity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/desolate_area/desolate_area.png");
     }
 }

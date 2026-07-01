@@ -10,7 +10,7 @@ import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundStopSoundPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -85,7 +85,7 @@ public class HolySongAbility extends SelectableAbility {
                     for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
                         if (player.distanceToSqr(entity) <= 64 * 64) { // Within hearing range
                             player.connection.send(new ClientboundStopSoundPacket(
-                                    ResourceLocation.fromNamespaceAndPath("minecraft", "music_disc.pigstep"),
+                                    Identifier.fromNamespaceAndPath("minecraft", "music_disc.pigstep"),
                                     entity.getSoundSource()
                             ));
                         }
@@ -132,7 +132,7 @@ public class HolySongAbility extends SelectableAbility {
                     for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
                         if (player.distanceToSqr(entity) <= 64 * 64) { // Within hearing range
                             player.connection.send(new ClientboundStopSoundPacket(
-                                    ResourceLocation.fromNamespaceAndPath("minecraft", "music_disc.pigstep"),
+                                    Identifier.fromNamespaceAndPath("minecraft", "music_disc.pigstep"),
                                     entity.getSoundSource()
                             ));
                         }

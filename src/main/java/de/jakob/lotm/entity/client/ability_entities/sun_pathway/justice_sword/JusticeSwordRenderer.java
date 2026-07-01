@@ -9,12 +9,12 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Random;
 
 public class JusticeSwordRenderer extends EntityRenderer<JusticeSwordEntity> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/justice_sword/justice_sword.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/justice_sword/justice_sword.png");
     private final JusticeSwordModel<JusticeSwordEntity> model;
 
     public JusticeSwordRenderer(EntityRendererProvider.Context context) {
@@ -47,7 +47,7 @@ public class JusticeSwordRenderer extends EntityRenderer<JusticeSwordEntity> {
 
 
     @Override
-    public ResourceLocation getTextureLocation(JusticeSwordEntity entity) {
+    public Identifier getTextureLocation(JusticeSwordEntity entity) {
         return TEXTURE;
     }
 }

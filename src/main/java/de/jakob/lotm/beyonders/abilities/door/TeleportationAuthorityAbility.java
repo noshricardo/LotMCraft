@@ -17,7 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -109,9 +109,9 @@ public class TeleportationAuthorityAbility extends SelectableAbility {
     private ServerLevel selectRandomLevel(ServerLevel level) {
          return switch (level.random.nextInt(3)) {
             case 0 -> level.getServer().getLevel(ResourceKey.create(Registries.DIMENSION,
-                        ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "exile")));
+                        Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "exile")));
             case 1 -> level.getServer().getLevel(ResourceKey.create(Registries.DIMENSION,
-                        ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world")));
+                        Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world")));
             default -> level;
         };
     }

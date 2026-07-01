@@ -9,7 +9,7 @@ import de.jakob.lotm.beyonders.abilities.visionary.prophecy.actions.context.impl
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,10 +38,10 @@ public class SpawnAction extends ActionBase {
 
         TokenStream stream = new TokenStream(string.string);
 
-        ResourceLocation id = null;
+        Identifier id = null;
 
         try {
-            id = ResourceLocation.tryParse(stream.peek());
+            id = Identifier.tryParse(stream.peek());
         }catch (NullPointerException ignored) {}
 
         if(id == null) return;

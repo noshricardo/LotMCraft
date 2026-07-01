@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +54,7 @@ public class FireballRenderer extends EntityRenderer<FireballEntity> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull FireballEntity flamingSpearProjectileEntity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/fireball/fireball.png");
+    public @NotNull Identifier getTextureLocation(@NotNull FireballEntity flamingSpearProjectileEntity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/fireball/fireball.png");
     }
 }

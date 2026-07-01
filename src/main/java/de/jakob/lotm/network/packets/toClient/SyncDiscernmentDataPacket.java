@@ -7,12 +7,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record SyncDiscernmentDataPacket (boolean isDiscerning, int entityId) implements CustomPacketPayload {
     public static final Type<SyncDiscernmentDataPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sync_discernment_data"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sync_discernment_data"));
 
     public static final StreamCodec<ByteBuf, SyncDiscernmentDataPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL,

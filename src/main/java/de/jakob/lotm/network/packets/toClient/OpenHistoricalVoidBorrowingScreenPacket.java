@@ -6,14 +6,14 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;
 
 public record OpenHistoricalVoidBorrowingScreenPacket(List<String> options) implements CustomPacketPayload {
     public static final Type<OpenHistoricalVoidBorrowingScreenPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "open_historical_void_borrowing_screen"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "open_historical_void_borrowing_screen"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpenHistoricalVoidBorrowingScreenPacket> STREAM_CODEC =
             StreamCodec.composite(

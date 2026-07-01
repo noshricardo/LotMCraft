@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public record ShapeShiftingSyncPacket(UUID playerId, String shapeString) implements CustomPacketPayload {
     public static final Type<ShapeShiftingSyncPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "shape_shifting_sync"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "shape_shifting_sync"));
 
     public static final StreamCodec<FriendlyByteBuf, ShapeShiftingSyncPacket> STREAM_CODEC =
             CustomPacketPayload.codec(

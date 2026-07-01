@@ -9,7 +9,7 @@ import de.jakob.lotm.util.ClientBeyonderCache;
 import de.jakob.lotm.util.data.ClientData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -25,7 +25,7 @@ public class AbilityIconRenderer {
 
     @SubscribeEvent
     public static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.HOTBAR, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "ability_icon_overlay"), (guiGraphics, deltaTracker) -> {
+        event.registerAbove(VanillaGuiLayers.HOTBAR, Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "ability_icon_overlay"), (guiGraphics, deltaTracker) -> {
             renderText(guiGraphics);
         });
     }
@@ -38,8 +38,8 @@ public class AbilityIconRenderer {
     private final static int ICON_WIDTH = 18;
     private final static int ICON_HEIGHT = 18;
 
-    private final static ResourceLocation backgroundTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/ability_frame.png");
-    private final static ResourceLocation foregroundTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/ability_frame_foreground.png");
+    private final static Identifier backgroundTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/ability_frame.png");
+    private final static Identifier foregroundTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/ability_frame_foreground.png");
 
     private static void renderText(GuiGraphics guiGraphics) {
         Minecraft mc = Minecraft.getInstance();

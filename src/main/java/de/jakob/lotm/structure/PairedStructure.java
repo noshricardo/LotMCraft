@@ -6,7 +6,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
@@ -34,7 +34,7 @@ public class PairedStructure extends Structure {
 
                     // Above-ground pool config
                     StructureTemplatePool.CODEC.fieldOf("above_start_pool").forGetter(s -> s.aboveStartPool),
-                    ResourceLocation.CODEC.optionalFieldOf("above_start_jigsaw_name").forGetter(s -> s.aboveStartJigsawName),
+                    Identifier.CODEC.optionalFieldOf("above_start_jigsaw_name").forGetter(s -> s.aboveStartJigsawName),
                     Codec.intRange(0, 30).fieldOf("above_size").forGetter(s -> s.aboveSize),
                     HeightProvider.CODEC.fieldOf("above_start_height").forGetter(s -> s.aboveStartHeight),
                     Heightmap.Types.CODEC.optionalFieldOf("above_project_start_to_heightmap").forGetter(s -> s.aboveProjectStartToHeightmap),
@@ -43,7 +43,7 @@ public class PairedStructure extends Structure {
 
                     // Below-ground pool config
                     StructureTemplatePool.CODEC.fieldOf("below_start_pool").forGetter(s -> s.belowStartPool),
-                    ResourceLocation.CODEC.optionalFieldOf("below_start_jigsaw_name").forGetter(s -> s.belowStartJigsawName),
+                    Identifier.CODEC.optionalFieldOf("below_start_jigsaw_name").forGetter(s -> s.belowStartJigsawName),
                     Codec.intRange(0, 30).fieldOf("below_size").forGetter(s -> s.belowSize),
                     HeightProvider.CODEC.fieldOf("below_start_height").forGetter(s -> s.belowStartHeight),
                     Codec.intRange(1, 128).fieldOf("below_max_distance_from_center").forGetter(s -> s.belowMaxDistanceFromCenter),
@@ -57,7 +57,7 @@ public class PairedStructure extends Structure {
 
     // Above ground
     private final Holder<StructureTemplatePool> aboveStartPool;
-    private final Optional<ResourceLocation> aboveStartJigsawName;
+    private final Optional<Identifier> aboveStartJigsawName;
     private final int aboveSize;
     private final HeightProvider aboveStartHeight;
     private final Optional<Heightmap.Types> aboveProjectStartToHeightmap;
@@ -66,7 +66,7 @@ public class PairedStructure extends Structure {
 
     // Below ground
     private final Holder<StructureTemplatePool> belowStartPool;
-    private final Optional<ResourceLocation> belowStartJigsawName;
+    private final Optional<Identifier> belowStartJigsawName;
     private final int belowSize;
     private final HeightProvider belowStartHeight;
     private final int belowMaxDistanceFromCenter;
@@ -79,14 +79,14 @@ public class PairedStructure extends Structure {
     public PairedStructure(
             StructureSettings config,
             Holder<StructureTemplatePool> aboveStartPool,
-            Optional<ResourceLocation> aboveStartJigsawName,
+            Optional<Identifier> aboveStartJigsawName,
             int aboveSize,
             HeightProvider aboveStartHeight,
             Optional<Heightmap.Types> aboveProjectStartToHeightmap,
             int aboveMaxDistanceFromCenter,
             TerrainAdjustment aboveTerrainAdaptation,
             Holder<StructureTemplatePool> belowStartPool,
-            Optional<ResourceLocation> belowStartJigsawName,
+            Optional<Identifier> belowStartJigsawName,
             int belowSize,
             HeightProvider belowStartHeight,
             int belowMaxDistanceFromCenter,

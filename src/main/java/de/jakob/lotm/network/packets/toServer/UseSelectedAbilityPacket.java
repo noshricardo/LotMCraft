@@ -11,14 +11,14 @@ import de.jakob.lotm.util.BeyonderData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record UseSelectedAbilityPacket() implements CustomPacketPayload {
 
-    public static final Type<UseSelectedAbilityPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "use_selected_ability"));
+    public static final Type<UseSelectedAbilityPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "use_selected_ability"));
 
     public static final StreamCodec<ByteBuf, UseSelectedAbilityPacket> STREAM_CODEC = StreamCodec.unit(new UseSelectedAbilityPacket());
 

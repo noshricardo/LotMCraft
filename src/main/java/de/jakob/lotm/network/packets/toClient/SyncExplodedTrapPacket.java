@@ -6,14 +6,14 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.UUID;
 
 public record SyncExplodedTrapPacket(UUID entityId) implements CustomPacketPayload {
     public static final Type<SyncExplodedTrapPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "stop_trap_particles"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "stop_trap_particles"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncExplodedTrapPacket> STREAM_CODEC =
             StreamCodec.composite(

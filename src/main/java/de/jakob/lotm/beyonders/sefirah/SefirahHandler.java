@@ -7,7 +7,7 @@ import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.data.ServerLocation;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -121,7 +121,7 @@ public class SefirahHandler {
         switch (sefirot) {
             case "sefirah_castle" -> {
                 ResourceKey<Level> sefirotDimension = ResourceKey.create(Registries.DIMENSION,
-                        ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sefirah_castle"));
+                        Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sefirah_castle"));
                 ServerLevel sefirotLevel = player.serverLevel().getServer().getLevel(sefirotDimension);
                 if (sefirotLevel == null) {
                     return;

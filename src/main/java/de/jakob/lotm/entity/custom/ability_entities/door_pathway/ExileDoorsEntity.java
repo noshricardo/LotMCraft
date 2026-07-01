@@ -18,7 +18,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -135,7 +135,7 @@ public class ExileDoorsEntity extends Entity {
             double origZ = entity.getZ();
 
             ServerLevel exileLevel = serverLevel.getServer().getLevel(ResourceKey.create(Registries.DIMENSION,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "deep_space")));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "deep_space")));
             if (exileLevel != null) {
                 double randomX = (serverLevel.random.nextDouble() - 0.5) * 200;
                 double randomZ = (serverLevel.random.nextDouble() - 0.5) * 200;

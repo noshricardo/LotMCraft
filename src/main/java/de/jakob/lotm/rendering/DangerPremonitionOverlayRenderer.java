@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.jakob.lotm.LOTMCraft;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -21,12 +21,12 @@ public class DangerPremonitionOverlayRenderer {
 
     @SubscribeEvent
     public static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.HOTBAR, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "danger_premonition_overlay"), (guiGraphics, deltaTracker) -> {
+        event.registerAbove(VanillaGuiLayers.HOTBAR, Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "danger_premonition_overlay"), (guiGraphics, deltaTracker) -> {
             renderText(guiGraphics);
         });
     }
 
-    private static final ResourceLocation iconTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/danger_premonition.png");
+    private static final Identifier iconTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/danger_premonition.png");
     private static final int x = 2;
     private static final int y = 120 + 60 + 12;
 

@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,7 +50,7 @@ public class PaperDaggerProjectileRenderer extends EntityRenderer<PaperDaggerPro
     protected int getBlockLightLevel(PaperDaggerProjectileEntity projectileEntity, BlockPos blockpos) { return 15; }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull PaperDaggerProjectileEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/paper_dagger/paper_dagger.png");
+    public @NotNull Identifier getTextureLocation(@NotNull PaperDaggerProjectileEntity entity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/paper_dagger/paper_dagger.png");
     }
 }

@@ -17,7 +17,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,7 +33,7 @@ import java.util.Set;
 public record WaypointSelectedPacket(WaypointComponent.ClientWaypoint waypoint, String use) implements CustomPacketPayload {
 
     public static final Type<WaypointSelectedPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "waypoint_selected"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "waypoint_selected"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, WaypointSelectedPacket> STREAM_CODEC =
             StreamCodec.composite(
@@ -82,7 +82,7 @@ public record WaypointSelectedPacket(WaypointComponent.ClientWaypoint waypoint, 
     public static ServerLevel resolveLevel(String levelKey, MinecraftServer server) {
         ResourceKey<Level> key = ResourceKey.create(
                 Registries.DIMENSION,
-                ResourceLocation.parse(levelKey)
+                Identifier.parse(levelKey)
         );
         return server.getLevel(key);
     }

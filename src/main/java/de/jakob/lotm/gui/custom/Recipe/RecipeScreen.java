@@ -5,16 +5,16 @@ import de.jakob.lotm.LOTMCraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class RecipeScreen extends AbstractContainerScreen<RecipeMenu> {
-    private final ResourceLocation containerBackground;
+    private final Identifier containerBackground;
 
     public RecipeScreen(RecipeMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
 
-        this.containerBackground = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/recipe.png");
+        this.containerBackground = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/recipe.png");
 
         this.imageHeight = 134;
         this.imageWidth = 216;

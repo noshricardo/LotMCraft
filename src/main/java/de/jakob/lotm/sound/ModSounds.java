@@ -2,7 +2,7 @@ package de.jakob.lotm.sound;
 
 import de.jakob.lotm.LOTMCraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -20,7 +20,7 @@ public class ModSounds {
     public static final Supplier<SoundEvent> LOUD_SOUND_1 = registerSound("loud_sound_1");
 
     private static Supplier<SoundEvent> registerSound(String name) {
-        return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, name)));
+        return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, name)));
     }
 
     public static void register(IEventBus eventBus) {

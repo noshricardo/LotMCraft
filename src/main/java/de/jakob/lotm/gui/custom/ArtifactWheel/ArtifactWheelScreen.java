@@ -11,15 +11,15 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.List;
 
 public class ArtifactWheelScreen extends AbstractContainerScreen<ArtifactWheelMenu> {
 
-    private static final ResourceLocation WHEEL_BACKGROUND =
-            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/ability_wheel_background.png");
+    private static final Identifier WHEEL_BACKGROUND =
+            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/ability_wheel_background.png");
 
     private static final int WHEEL_SIZE = 180;
     private static final int CENTER_X = WHEEL_SIZE / 2;
@@ -236,7 +236,7 @@ public class ArtifactWheelScreen extends AbstractContainerScreen<ArtifactWheelMe
 
         // Render ability icon
         try {
-            ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/abilities/" + abilityId + ".png");
+            Identifier texture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/abilities/" + abilityId + ".png");
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, texture);
 

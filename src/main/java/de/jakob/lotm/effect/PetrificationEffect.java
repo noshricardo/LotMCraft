@@ -8,7 +8,7 @@ import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.network.protocol.game.ClientboundRemoveMobEffectPacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
@@ -34,7 +34,7 @@ public class PetrificationEffect extends MobEffect {
         // Also using event handler to sync effect periodically
         this.addAttributeModifier(
                 Attributes.MOVEMENT_SPEED,
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "petrification_sync_dummy"),
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "petrification_sync_dummy"),
                 -10.0D, // No actual effect on speed
                 AttributeModifier.Operation.ADD_VALUE
         );

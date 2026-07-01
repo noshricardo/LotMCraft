@@ -12,7 +12,7 @@ import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.DamageLookup;
 import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -156,10 +156,10 @@ public class MundaneConceptualTheft extends SelectableAbility {
         if(movementSpeed == null) {
             return;
         }
-        if(movementSpeed.getModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk")) != null) {
+        if(movementSpeed.getModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk")) != null) {
             return;
         }
-        movementSpeed.addTransientModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"), -100, AttributeModifier.Operation.ADD_VALUE));
+        movementSpeed.addTransientModifier(new AttributeModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"), -100, AttributeModifier.Operation.ADD_VALUE));
 
         ServerScheduler.scheduleForDuration(0, 2, theftDuration, () -> {
             target.setDeltaMovement(new Vec3(0, 0, 0));
@@ -170,7 +170,7 @@ public class MundaneConceptualTheft extends SelectableAbility {
             AttributeInstance movementSpeedInner = target.getAttribute(Attributes.MOVEMENT_SPEED);
 
             if(movementSpeedInner != null) {
-                movementSpeedInner.removeModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"));
+                movementSpeedInner.removeModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"));
             }
         });
     }

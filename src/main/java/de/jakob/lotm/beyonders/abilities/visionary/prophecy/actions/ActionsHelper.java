@@ -5,7 +5,7 @@ import de.jakob.lotm.beyonders.abilities.visionary.prophecy.actions.context.Acti
 import de.jakob.lotm.beyonders.abilities.visionary.prophecy.actions.context.ActionContextEnum;
 import de.jakob.lotm.util.BeyonderData;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
@@ -112,7 +112,7 @@ public class ActionsHelper {
     }
 
     public static Item getItemFromString(String input) {
-        ResourceLocation id = ResourceLocation.tryParse(input);
+        Identifier id = Identifier.tryParse(input);
 
         if (id == null) {
             return null;

@@ -3,7 +3,7 @@ package de.jakob.lotm.effect;
 import de.jakob.lotm.LOTMCraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -17,7 +17,7 @@ public class ModEffects {
 
     public static final Holder<MobEffect> ASLEEP = MOB_EFFECTS.register("asleep",
             () -> new AsleepEffect(MobEffectCategory.HARMFUL, 0x2E2E5C)
-                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "asleep"), -10f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)); // Dark blue color
+                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "asleep"), -10f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)); // Dark blue color
 
     public static final Holder<MobEffect> MENTAL_PLAGUE = MOB_EFFECTS.register("mental_plague",
             () -> new MentalPlagueEffect(MobEffectCategory.HARMFUL, 0xf0b05d));
@@ -30,12 +30,12 @@ public class ModEffects {
 
     public static final Holder<MobEffect> CONQUERED = MOB_EFFECTS.register("conquered",
             () -> new ConqueredEffect(MobEffectCategory.HARMFUL, 0x701010)
-                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "conquered"), -20f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "conquered"), -20f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 
 
     public static final Holder<MobEffect> LOOSING_CONTROL = MOB_EFFECTS.register("loosing_control",
             () -> new LoosingControlEffect(MobEffectCategory.HARMFUL, 0x493269)
-                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "loosing_control"), -.45f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "loosing_control"), -.45f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 
     public static final Holder<MobEffect> CONCEALMENT = MOB_EFFECTS.register("concealment",
             () -> new ConcealmentEffect(MobEffectCategory.BENEFICIAL, 0x161718));

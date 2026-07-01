@@ -6,7 +6,7 @@ import de.jakob.lotm.attachments.ModAttachments;
 import de.jakob.lotm.attachments.TransformationComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -18,7 +18,7 @@ public class DreamDivinationOverlay {
 
     @SubscribeEvent
     public static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.HOTBAR, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "dream_divination_overlay"), (guiGraphics, deltaTracker) -> {
+        event.registerAbove(VanillaGuiLayers.HOTBAR, Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "dream_divination_overlay"), (guiGraphics, deltaTracker) -> {
             renderOverlay(guiGraphics);
         });
     }
@@ -33,7 +33,7 @@ public class DreamDivinationOverlay {
         TransformationComponent transformationComponent = mc.player.getData(ModAttachments.TRANSFORMATION_COMPONENT);
 
         if (transformationComponent.isTransformed() && transformationComponent.getTransformationIndex() == TransformationComponent.TransformationType.DREAM_DIVINATION.getIndex()) {
-            ResourceLocation backgroundTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/dream_divination_overlay.png");
+            Identifier backgroundTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/dream_divination_overlay.png");
             // Push the current pose
             guiGraphics.pose().pushPose();
 

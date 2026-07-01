@@ -9,16 +9,17 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class QuestAcceptanceScreen extends Screen {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
             LOTMCraft.MOD_ID, "textures/gui/quest_acceptance.png");
     
     private static final int WINDOW_WIDTH = 256;
@@ -77,6 +78,7 @@ public class QuestAcceptanceScreen extends Screen {
 
         // Render window background
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
 
         //guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         guiGraphics.fill(leftPos, topPos, leftPos + WINDOW_WIDTH, topPos + WINDOW_HEIGHT, 0xCC000000);

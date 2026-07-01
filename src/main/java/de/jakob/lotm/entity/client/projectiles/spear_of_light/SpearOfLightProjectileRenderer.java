@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,7 +50,7 @@ public class SpearOfLightProjectileRenderer extends EntityRenderer<SpearOfLightP
     protected int getBlockLightLevel(SpearOfLightProjectileEntity projectileEntity, BlockPos blockpos) { return 15; }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull SpearOfLightProjectileEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spear_of_light/spear_of_light.png");
+    public @NotNull Identifier getTextureLocation(@NotNull SpearOfLightProjectileEntity entity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spear_of_light/spear_of_light.png");
     }
 }

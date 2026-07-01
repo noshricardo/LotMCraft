@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
@@ -25,8 +25,8 @@ public class BanishEffect extends ActiveEffect {
     private final RandomSource random = RandomSource.create();
     private final BanishRing[] rings = new BanishRing[3];
 
-    private static final ResourceLocation OBSIDIAN_TEXTURE =
-            ResourceLocation.withDefaultNamespace("textures/block/obsidian.png");
+    private static final Identifier OBSIDIAN_TEXTURE =
+            Identifier.withDefaultNamespace("textures/block/obsidian.png");
 
     private static final float CONTRACT_DURATION_TICKS = 30f;
     private static final float START_RADIUS = 10.0f;

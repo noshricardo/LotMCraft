@@ -5,7 +5,7 @@ import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.effect.ModEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -17,7 +17,7 @@ public class LoosingControlOverlayRenderer {
 
     @SubscribeEvent
     public static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.HOTBAR, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "loosing_control_overlay"), (guiGraphics, deltaTracker) -> {
+        event.registerAbove(VanillaGuiLayers.HOTBAR, Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "loosing_control_overlay"), (guiGraphics, deltaTracker) -> {
             renderOverlay(guiGraphics);
         });
     }
@@ -30,7 +30,7 @@ public class LoosingControlOverlayRenderer {
         int screenHeight = mc.getWindow().getGuiScaledHeight();
 
         if (mc.player.hasEffect(ModEffects.LOOSING_CONTROL)) {
-            ResourceLocation backgroundTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/loosing_control_overlay.png");
+            Identifier backgroundTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/loosing_control_overlay.png");
             // Push the current pose
             guiGraphics.pose().pushPose();
 

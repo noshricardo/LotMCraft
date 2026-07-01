@@ -11,7 +11,7 @@ import de.jakob.lotm.beyonders.potions.PotionRecipeItemHandler;
 import de.jakob.lotm.util.BeyonderData;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
@@ -174,7 +174,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     // Helper method to get the item's registry name
     private String getItemName(Item item) {
-        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
+        Identifier itemId = BuiltInRegistries.ITEM.getKey(item);
         return itemId.getPath();
     }
 

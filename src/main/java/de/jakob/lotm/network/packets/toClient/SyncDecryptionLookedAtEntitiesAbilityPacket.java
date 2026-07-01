@@ -6,14 +6,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record SyncDecryptionLookedAtEntitiesAbilityPacket(boolean active, int entityId) implements CustomPacketPayload {
 
 
     public static final Type<SyncDecryptionLookedAtEntitiesAbilityPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sync_decryption_entities"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sync_decryption_entities"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncDecryptionLookedAtEntitiesAbilityPacket> STREAM_CODEC =
             StreamCodec.composite(

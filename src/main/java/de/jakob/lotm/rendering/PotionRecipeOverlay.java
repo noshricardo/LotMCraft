@@ -8,7 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 public class PotionRecipeOverlay {
     @SubscribeEvent
     public static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.HOTBAR, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "recipe_overlay"), (guiGraphics, deltaTracker) -> {
+        event.registerAbove(VanillaGuiLayers.HOTBAR, Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "recipe_overlay"), (guiGraphics, deltaTracker) -> {
             render(guiGraphics);
         });
     }
@@ -73,7 +73,7 @@ public class PotionRecipeOverlay {
     }
 
     private static void renderBackground(GuiGraphics guiGraphics, int x, int y) {
-        ResourceLocation textureLocation = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/recipe_background.png");
+        Identifier textureLocation = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/recipe_background.png");
         guiGraphics.blit(textureLocation, x, y, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, WIDTH, HEIGHT);
     }
 

@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.resources.SkinManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Map;
 import java.util.UUID;
@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerSkinData {
-    private static final Map<UUID, ResourceLocation> SKIN_TEXTURES = new ConcurrentHashMap<>();
+    private static final Map<UUID, Identifier> SKIN_TEXTURES = new ConcurrentHashMap<>();
     private static final Map<UUID, PlayerSkin.Model> SKIN_MODELS = new ConcurrentHashMap<>();
 
 
@@ -34,7 +34,7 @@ public class PlayerSkinData {
                 SkinManager skinManager = mc.getSkinManager();
 
                 skinManager.getOrLoad(profile).thenAccept(skin -> {
-                    ResourceLocation texture = skin.texture();
+                    Identifier texture = skin.texture();
                     PlayerSkin.Model model = skin.model();
 
                     SKIN_TEXTURES.put(playerId, texture);
@@ -50,8 +50,8 @@ public class PlayerSkinData {
         });
     }
 
-    public static ResourceLocation getSkinTexture(UUID playerId) {
-        ResourceLocation texture = SKIN_TEXTURES.get(playerId);
+    public static Identifier getSkinTexture(UUID playerId) {
+        Identifier texture = SKIN_TEXTURES.get(playerId);
         return texture;
     }
 

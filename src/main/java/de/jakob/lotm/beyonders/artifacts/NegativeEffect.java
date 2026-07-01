@@ -24,7 +24,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -172,17 +172,17 @@ public class NegativeEffect {
                         if(movementSpeed == null) {
                             return;
                         }
-                        if(movementSpeed.getModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk")) != null) {
+                        if(movementSpeed.getModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk")) != null) {
                             return;
                         }
-                        movementSpeed.addTransientModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"), -100, AttributeModifier.Operation.ADD_VALUE));
+                        movementSpeed.addTransientModifier(new AttributeModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"), -100, AttributeModifier.Operation.ADD_VALUE));
                         loseConceptsCooldown = 20 * 16;
 
                         ServerScheduler.scheduleDelayed(20 * 15, () -> {
                             AttributeInstance movementSpeedInner = player.getAttribute(Attributes.MOVEMENT_SPEED);
 
                             if(movementSpeedInner != null) {
-                                movementSpeedInner.removeModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"));
+                                movementSpeedInner.removeModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"));
                             }
                         });
                     }

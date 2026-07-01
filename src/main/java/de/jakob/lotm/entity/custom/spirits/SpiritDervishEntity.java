@@ -6,7 +6,7 @@ import de.jakob.lotm.util.helper.AbilityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
@@ -63,7 +63,7 @@ public class SpiritDervishEntity extends Animal {
     public @NotNull ResourceKey<LootTable> getDefaultLootTable() {
         return ResourceKey.create(
                 Registries.LOOT_TABLE,
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "entities/spirit_dervish")
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "entities/spirit_dervish")
         );
     }
 

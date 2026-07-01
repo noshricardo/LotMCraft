@@ -14,7 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
@@ -40,7 +40,7 @@ public class SpaceTimeLabyrinthAbility extends Ability {
         }
 
         ServerLevel labyrinthLevel = ((ServerLevel) level).getServer().getLevel(ResourceKey.create(Registries.DIMENSION,
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space_time_labyrinth")));
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space_time_labyrinth")));
 
         if(BeyonderData.getSequence(target) < BeyonderData.getSequence(entity) || labyrinthLevel == null) {
             ParticleUtil.spawnParticles((ServerLevel) level, ModParticles.STAR.get(), entity.getEyePosition(), 80, .8, 0.075);

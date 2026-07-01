@@ -7,13 +7,13 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record DiscernmentSelectedPacket(Pair<String, Integer> pair) implements CustomPacketPayload {
     public static final Type<DiscernmentSelectedPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "discernment_selected"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "discernment_selected"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Pair<String, Integer>> PAIR_CODEC =
             StreamCodec.composite(

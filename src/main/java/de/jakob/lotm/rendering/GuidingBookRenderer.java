@@ -5,7 +5,7 @@ import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.item.custom.GuidingBookItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -21,7 +21,7 @@ import java.util.List;
 @EventBusSubscriber(modid = LOTMCraft.MOD_ID, value = Dist.CLIENT)
 public class GuidingBookRenderer {
 
-    private static List<ResourceLocation> pages = new ArrayList<>();
+    private static List<Identifier> pages = new ArrayList<>();
     private static int currentPage = -1; // -1 means closed
     private static ItemStack lastHeldItem = ItemStack.EMPTY;
     private static boolean pagesLoaded = false;
@@ -33,7 +33,7 @@ public class GuidingBookRenderer {
         pages.clear();
 
         for (int i = 1; i <= 4; i++) {
-            pages.add(ResourceLocation.fromNamespaceAndPath(modId, "textures/guiding_book/page_" + i + ".png"));
+            pages.add(Identifier.fromNamespaceAndPath(modId, "textures/guiding_book/page_" + i + ".png"));
         }
 
         pagesLoaded = true;
@@ -85,7 +85,7 @@ public class GuidingBookRenderer {
         }
     }
 
-    private static void renderPage(GuiGraphics graphics, ResourceLocation pageTexture) {
+    private static void renderPage(GuiGraphics graphics, Identifier pageTexture) {
         Minecraft mc = Minecraft.getInstance();
         int screenWidth = mc.getWindow().getGuiScaledWidth();
         int screenHeight = mc.getWindow().getGuiScaledHeight();

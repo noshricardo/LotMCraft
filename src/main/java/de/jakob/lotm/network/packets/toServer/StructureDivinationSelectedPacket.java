@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 public record StructureDivinationSelectedPacket(String structureId) implements CustomPacketPayload {
 
     public static final Type<StructureDivinationSelectedPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "structure_divination_selected"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "structure_divination_selected"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, StructureDivinationSelectedPacket> STREAM_CODEC =
             StreamCodec.composite(
@@ -38,7 +38,7 @@ public record StructureDivinationSelectedPacket(String structureId) implements C
         if (!(context.player() instanceof ServerPlayer player)) return;
 
         ServerLevel level = player.serverLevel();
-        ResourceLocation structureKey = ResourceLocation.tryParse(packet.structureId());
+        Identifier structureKey = Identifier.tryParse(packet.structureId());
 
         if (structureKey == null) {
             player.sendSystemMessage(Component.literal("§cInvalid structure id"));

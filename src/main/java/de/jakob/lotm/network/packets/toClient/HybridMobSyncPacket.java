@@ -6,7 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -14,7 +14,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 public record HybridMobSyncPacket(int entityId, CompoundTag hybridData) implements CustomPacketPayload {
     
     public static final Type<HybridMobSyncPacket> TYPE = 
-        new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "hybrid_mob_sync"));
+        new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "hybrid_mob_sync"));
 
     public static final StreamCodec<FriendlyByteBuf, HybridMobSyncPacket> STREAM_CODEC =
             StreamCodec.composite(

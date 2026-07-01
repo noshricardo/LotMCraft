@@ -5,12 +5,12 @@ import de.jakob.lotm.network.packets.handlers.ClientHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record OpenCoordinateScreenForTeleportationPacket() implements CustomPacketPayload {
     public static final Type<OpenCoordinateScreenForTeleportationPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "open_coordinate_screen_teleportation"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "open_coordinate_screen_teleportation"));
 
     public static final StreamCodec<FriendlyByteBuf, OpenCoordinateScreenForTeleportationPacket> STREAM_CODEC =
             StreamCodec.unit(new OpenCoordinateScreenForTeleportationPacket());

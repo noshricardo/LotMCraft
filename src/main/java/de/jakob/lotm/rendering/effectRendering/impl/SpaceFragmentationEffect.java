@@ -7,7 +7,7 @@ import com.mojang.math.Axis;
 import de.jakob.lotm.rendering.effectRendering.ActiveEffect;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SpaceFragmentationEffect extends ActiveEffect {
-    private static final ResourceLocation DISTORTION_TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/obsidian.png");
-    private static final ResourceLocation CRACK_TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/glass.png");
+    private static final Identifier DISTORTION_TEXTURE = Identifier.withDefaultNamespace("textures/block/obsidian.png");
+    private static final Identifier CRACK_TEXTURE = Identifier.withDefaultNamespace("textures/block/glass.png");
 
     // Cached data structures for massive visual density
     private final List<MassiveRealityCrack> realityCracks;

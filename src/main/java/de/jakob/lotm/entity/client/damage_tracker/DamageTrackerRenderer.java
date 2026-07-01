@@ -6,7 +6,7 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class DamageTrackerRenderer extends MobRenderer<DamageTrackerEntity, PlayerModel<DamageTrackerEntity>> {
@@ -16,7 +16,7 @@ public class DamageTrackerRenderer extends MobRenderer<DamageTrackerEntity, Play
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(DamageTrackerEntity entity) {
+    public @NotNull Identifier getTextureLocation(DamageTrackerEntity entity) {
         return DefaultPlayerSkin.getDefaultTexture();
     }
 }

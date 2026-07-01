@@ -5,12 +5,12 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record TeleportPlayerToLocationPacket(double x, double y, double z, int id) implements CustomPacketPayload {
     public static final Type<TeleportPlayerToLocationPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "teleport_to_location_packet"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "teleport_to_location_packet"));
 
     public static final StreamCodec<FriendlyByteBuf, TeleportPlayerToLocationPacket> STREAM_CODEC =
             StreamCodec.composite(

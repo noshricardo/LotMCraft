@@ -10,12 +10,12 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Random;
 
 public class VolcanoRenderer extends EntityRenderer<VolcanoEntity> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/volcano/volcano.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/volcano/volcano.png");
     private final VolcanoModel<VolcanoEntity> model;
 
     public VolcanoRenderer(EntityRendererProvider.Context context) {
@@ -49,5 +49,5 @@ public class VolcanoRenderer extends EntityRenderer<VolcanoEntity> {
     protected int getBlockLightLevel(VolcanoEntity projectileEntity, BlockPos blockpos) { return 15; }
 
     @Override
-    public ResourceLocation getTextureLocation(VolcanoEntity entity) { return TEXTURE; }
+    public Identifier getTextureLocation(VolcanoEntity entity) { return TEXTURE; }
 }

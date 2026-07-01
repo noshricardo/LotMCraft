@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -37,7 +37,7 @@ public class WeaknessDetectionRenderLayer<T extends LivingEntity, M extends Enti
         float[] c = colorForTier(tier);
 
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.outline(
-                ResourceLocation.withDefaultNamespace("textures/misc/white.png")
+                Identifier.withDefaultNamespace("textures/misc/white.png")
         ));
 
         int packedColor = packColor(c[0], c[1], c[2], 1.0f);

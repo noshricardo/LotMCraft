@@ -5,12 +5,12 @@ import de.jakob.lotm.network.packets.handlers.ClientHandler;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record PlayActingEffectPacket() implements CustomPacketPayload {
     public static final Type<PlayActingEffectPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "play_acting_effect"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "play_acting_effect"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PlayActingEffectPacket> STREAM_CODEC =
             StreamCodec.unit(new PlayActingEffectPacket());

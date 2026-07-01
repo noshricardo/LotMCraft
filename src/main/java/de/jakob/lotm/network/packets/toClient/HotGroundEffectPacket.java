@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public record HotGroundEffectPacket(
 ) implements CustomPacketPayload {
     
     public static final Type<HotGroundEffectPacket> TYPE =
-        new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "hot_ground_effect"));
+        new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "hot_ground_effect"));
     
     public static final StreamCodec<ByteBuf, HotGroundEffectPacket> STREAM_CODEC = StreamCodec.composite(
         BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()),

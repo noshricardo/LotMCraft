@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,8 +21,8 @@ public class SpiritBubblesRenderer extends MobRenderer<SpiritBubblesEntity, Spir
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(SpiritBubblesEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_bubbles/spirit_bubbles.png");
+    public @NotNull Identifier getTextureLocation(SpiritBubblesEntity entity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_bubbles/spirit_bubbles.png");
     }
 
     @Override

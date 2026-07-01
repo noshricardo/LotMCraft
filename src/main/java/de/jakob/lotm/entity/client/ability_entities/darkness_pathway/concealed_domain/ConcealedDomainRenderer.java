@@ -5,7 +5,7 @@ import de.jakob.lotm.entity.custom.ability_entities.darkness_pathway.ConcealedDo
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class ConcealedDomainRenderer extends EntityRenderer<ConcealedDomainEntity> {
@@ -21,7 +21,7 @@ public class ConcealedDomainRenderer extends EntityRenderer<ConcealedDomainEntit
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull ConcealedDomainEntity entity) {
-        return ResourceLocation.withDefaultNamespace("textures/misc/white.png");
+    public @NotNull Identifier getTextureLocation(@NotNull ConcealedDomainEntity entity) {
+        return Identifier.withDefaultNamespace("textures/misc/white.png");
     }
 }

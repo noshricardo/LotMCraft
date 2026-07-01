@@ -2,7 +2,7 @@ package de.jakob.lotm.util.shapeShifting.mixin;
 
 import de.jakob.lotm.util.shapeShifting.ShapeShiftAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
@@ -36,7 +36,7 @@ public abstract class EntityMixin {
         EntityType<?> type = null;
 
         // get the entity type (like minecraft:something or lotmcraft:something)
-        ResourceLocation entityID = ResourceLocation.tryParse(shapeKey);
+        Identifier entityID = Identifier.tryParse(shapeKey);
         if (entityID != null) {
             type = BuiltInRegistries.ENTITY_TYPE.get(entityID);
         }

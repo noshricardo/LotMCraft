@@ -22,7 +22,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -235,16 +235,16 @@ public class MiracleHandler {
                     return;
                 }
 
-                if(!affectedEntities.contains(living) && ! attribute.hasModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "reverse_gravity"))) {
+                if(!affectedEntities.contains(living) && ! attribute.hasModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "reverse_gravity"))) {
                     affectedEntities.add(living);
-                    attribute.addTransientModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "reverse_gravity"), -2, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+                    attribute.addTransientModifier(new AttributeModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "reverse_gravity"), -2, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
                 }
             });
         }, () -> {
             for(LivingEntity e : affectedEntities) {
                 AttributeInstance attribute =  e.getAttribute(Attributes.GRAVITY);
-                if(attribute != null && attribute.hasModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "reverse_gravity"))) {
-                    attribute.removeModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "reverse_gravity"));
+                if(attribute != null && attribute.hasModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "reverse_gravity"))) {
+                    attribute.removeModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "reverse_gravity"));
                 }
             }
         }, level);
@@ -294,7 +294,7 @@ public class MiracleHandler {
         // Get the structure from registry
         ResourceKey<Structure> structureKey = ResourceKey.create(
                 Registries.STRUCTURE,
-                ResourceLocation.fromNamespaceAndPath(namespace, structureName)
+                Identifier.fromNamespaceAndPath(namespace, structureName)
         );
 
         Optional<Holder.Reference<Structure>> structureHolder = level.registryAccess()

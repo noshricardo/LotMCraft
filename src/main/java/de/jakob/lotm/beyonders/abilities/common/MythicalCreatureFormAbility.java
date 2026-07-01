@@ -9,7 +9,7 @@ import de.jakob.lotm.entity.custom.ability_entities.tyrant_pathway.LightningEnti
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.helper.AbilityUtil;
 import de.jakob.lotm.util.helper.DamageLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -86,7 +86,7 @@ public class MythicalCreatureFormAbility extends ToggleAbility {
 
         AttributeInstance scaleAttribute = entity.getAttribute(Attributes.SCALE);
         if(scaleAttribute != null) {
-            scaleAttribute.addTransientModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mythical_creature_form"), 1.9, AttributeModifier.Operation.ADD_VALUE));
+            scaleAttribute.addTransientModifier(new AttributeModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mythical_creature_form"), 1.9, AttributeModifier.Operation.ADD_VALUE));
         }
 
         BeyonderData.addModifier(entity, "mythical_creature_form", getAmplifier(BeyonderData.getSequence(entity)));
@@ -118,7 +118,7 @@ public class MythicalCreatureFormAbility extends ToggleAbility {
 
         AttributeInstance scaleAttribute = entity.getAttribute(Attributes.SCALE);
         if(scaleAttribute != null) {
-            scaleAttribute.removeModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mythical_creature_form"));
+            scaleAttribute.removeModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mythical_creature_form"));
         }
 
         BeyonderData.removeModifier(entity, "mythical_creature_form");

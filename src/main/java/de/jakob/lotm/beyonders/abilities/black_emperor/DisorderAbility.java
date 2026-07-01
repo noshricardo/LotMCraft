@@ -10,7 +10,7 @@ import de.jakob.lotm.util.helper.ParticleUtil;
 import de.jakob.lotm.util.helper.RingEffectManager;
 import de.jakob.lotm.util.scheduling.ServerScheduler;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -41,11 +41,11 @@ public class DisorderAbility extends SelectableAbility {
     // Casters currently protected by the Defensive Veil
     private static final Set<UUID> DEFENSIVE_VEIL = new HashSet<>();
 
-    private static final ResourceLocation DISTANCE_WARP_SPEED_ID =
-            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "distance_warp_speed");
+    private static final Identifier DISTANCE_WARP_SPEED_ID =
+            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "distance_warp_speed");
 
-    private static final ResourceLocation DISTANCE_WARP_STEP_ID =
-            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "distance_warp_step");
+    private static final Identifier DISTANCE_WARP_STEP_ID =
+            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "distance_warp_step");
 
     public DisorderAbility(String id) {
         super(id, 7.0f);

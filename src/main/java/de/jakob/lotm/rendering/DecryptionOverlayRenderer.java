@@ -5,7 +5,7 @@ import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.beyonders.abilities.error.handler.TheftHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -30,7 +30,7 @@ public class DecryptionOverlayRenderer {
 
     @SubscribeEvent
     public static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.HOTBAR, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "decryption_overlay"), (guiGraphics, deltaTracker) -> {
+        event.registerAbove(VanillaGuiLayers.HOTBAR, Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "decryption_overlay"), (guiGraphics, deltaTracker) -> {
             renderOverlay(guiGraphics);
         });
     }
@@ -55,7 +55,7 @@ public class DecryptionOverlayRenderer {
                 !mc.gameRenderer.currentEffect().getName().equals(shaderName)) {
             try {
                 mc.gameRenderer.loadEffect(
-                        ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "shaders/post/" + shaderName + ".json")
+                        Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "shaders/post/" + shaderName + ".json")
                 );
             } catch (Exception ignored) {
             }
@@ -118,7 +118,7 @@ public class DecryptionOverlayRenderer {
     }
 
     private static void renderDecryptionOverlay(GuiGraphics guiGraphics, int screenWidth, int screenHeight) {
-        ResourceLocation backgroundTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/decryption_overlay.png");
+        Identifier backgroundTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/decryption_overlay.png");
         // Push the current pose
         guiGraphics.pose().pushPose();
 

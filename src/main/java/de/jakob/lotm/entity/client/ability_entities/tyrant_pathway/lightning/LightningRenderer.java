@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
@@ -93,7 +93,7 @@ public class LightningRenderer extends EntityRenderer<LightningEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(LightningEntity entity) {
+    public Identifier getTextureLocation(LightningEntity entity) {
         // Lightning render type doesn't use textures
         return null;
     }

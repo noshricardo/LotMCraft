@@ -9,7 +9,7 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.UUID;
 
@@ -21,7 +21,7 @@ public class OriginalBodyRenderer extends LivingEntityRenderer<OriginalBodyEntit
     }
 
     @Override
-    public ResourceLocation getTextureLocation(OriginalBodyEntity entity) {
+    public Identifier getTextureLocation(OriginalBodyEntity entity) {
         ControllingDataComponent originalBodyData = entity.getData(ModAttachments.CONTROLLING_DATA);
         UUID ownerUUID = originalBodyData.getOwnerUUID();
 
@@ -29,7 +29,7 @@ public class OriginalBodyRenderer extends LivingEntityRenderer<OriginalBodyEntit
             return DefaultPlayerSkin.getDefaultTexture();
         }
 
-        ResourceLocation location = PlayerSkinData.getSkinTexture(ownerUUID);
+        Identifier location = PlayerSkinData.getSkinTexture(ownerUUID);
 
         if (location == null) {
             PlayerSkinData.fetchAndCacheSkin(ownerUUID);

@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class CoffinRenderer extends EntityRenderer<CoffinEntity> {
@@ -56,7 +56,7 @@ public class CoffinRenderer extends EntityRenderer<CoffinEntity> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull CoffinEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/coffin/coffin.png");
+    public @NotNull Identifier getTextureLocation(@NotNull CoffinEntity entity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/coffin/coffin.png");
     }
 }

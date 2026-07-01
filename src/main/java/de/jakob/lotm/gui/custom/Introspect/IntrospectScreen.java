@@ -25,7 +25,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 public class IntrospectScreen extends AbstractContainerScreen<IntrospectMenu> {
-    private final ResourceLocation containerBackground;
+    private final Identifier containerBackground;
     private final Inventory playerInventory;
 
     private boolean showAbilities = false;
@@ -147,7 +147,7 @@ public class IntrospectScreen extends AbstractContainerScreen<IntrospectMenu> {
     public IntrospectScreen(IntrospectMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         this.playerInventory = playerInventory;
-        this.containerBackground = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/introspect.png");
+        this.containerBackground = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/introspect.png");
         this.imageHeight = 231;
         this.imageWidth = 192;
     }
@@ -2193,7 +2193,7 @@ public class IntrospectScreen extends AbstractContainerScreen<IntrospectMenu> {
         String pathway = ClientUniquenessCache.getPathway();
         if (pathway.isEmpty()) return;
 
-        ResourceLocation textureLocation = ResourceLocation.fromNamespaceAndPath(
+        Identifier textureLocation = Identifier.fromNamespaceAndPath(
                 LOTMCraft.MOD_ID, "textures/item/" + pathway + "_uniqueness.png");
 
         int iconSize = 16;
@@ -2268,7 +2268,7 @@ public class IntrospectScreen extends AbstractContainerScreen<IntrospectMenu> {
     }
 
     private void renderPathwaySymbol(GuiGraphics guiGraphics, int x, int y) {
-        ResourceLocation iconTexture = ResourceLocation.fromNamespaceAndPath(
+        Identifier iconTexture = Identifier.fromNamespaceAndPath(
                 LOTMCraft.MOD_ID, "textures/gui/icons/" + menu.getPathway() + "_icon.png");
         guiGraphics.blit(iconTexture, x + 126, y + 3, 0, 0, 62, 62, 62, 62);
     }

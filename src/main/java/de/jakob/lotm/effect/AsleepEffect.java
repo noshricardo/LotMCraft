@@ -3,7 +3,7 @@ package de.jakob.lotm.effect;
 
 import de.jakob.lotm.LOTMCraft;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -71,7 +71,7 @@ public class AsleepEffect extends MobEffect {
     private static void applyBlurEffect(Minecraft mc) {
         if (mc.gameRenderer.currentEffect() == null) {
             try {
-                ResourceLocation blurShader = ResourceLocation.fromNamespaceAndPath( LOTMCraft.MOD_ID, "shaders/post/blur.json");
+                Identifier blurShader = Identifier.fromNamespaceAndPath( LOTMCraft.MOD_ID, "shaders/post/blur.json");
                 mc.gameRenderer.loadEffect(blurShader);
             } catch (Exception ignored) {
             }

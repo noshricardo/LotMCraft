@@ -18,7 +18,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -86,7 +86,7 @@ public class ConcealmentAbility extends SelectableAbility {
         }
 
         ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION,
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "concealment_world"));
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "concealment_world"));
         ServerLevel concealedLevel = serverLevel.getServer().getLevel(dimension);
         if (concealedLevel == null) {
             return;

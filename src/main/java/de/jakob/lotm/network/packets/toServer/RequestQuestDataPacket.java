@@ -9,7 +9,7 @@ import de.jakob.lotm.quest.QuestRegistry;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -21,7 +21,7 @@ import static de.jakob.lotm.LOTMCraft.MOD_ID;
 public record RequestQuestDataPacket() implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<RequestQuestDataPacket> TYPE =
-            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MOD_ID, "request_quest_data"));
+            new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(MOD_ID, "request_quest_data"));
 
     public static final StreamCodec<ByteBuf, RequestQuestDataPacket> STREAM_CODEC = new StreamCodec<>() {
         @Override

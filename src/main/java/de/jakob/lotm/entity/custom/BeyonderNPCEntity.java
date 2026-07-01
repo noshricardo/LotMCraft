@@ -21,7 +21,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -47,7 +47,8 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.AABB;
-import org.checkerframework.checker.nullness.qual.NonNull;
+//import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -162,13 +163,13 @@ public class BeyonderNPCEntity extends PathfinderMob {
 
     // ========================= Entity Data Initialization =========================
     @Override
-    public boolean checkSpawnRules(LevelAccessor level, MobSpawnType type) {
+    public boolean checkSpawnRules(LevelAccessor level, EntitySpawnReason type) {
         return super.checkSpawnRules(level, type);
     }
 
     public static boolean canSpawn(EntityType<BeyonderNPCEntity> type,
                                    LevelAccessor level,
-                                   MobSpawnType reason,
+                                   EntitySpawnReason reason,
                                    BlockPos pos,
                                    RandomSource random) {
 
@@ -566,9 +567,9 @@ public class BeyonderNPCEntity extends PathfinderMob {
         this.entityData.set(SKIN_NAME, skinName);
     }
 
-    public ResourceLocation getSkinTexture() {
+    public Identifier getSkinTexture() {
         if (getTargetPlayerUUID().isPresent()) {
-            ResourceLocation cached = PlayerSkinData.getSkinTexture(getTargetPlayerUUID().get());
+            Identifier cached = PlayerSkinData.getSkinTexture(getTargetPlayerUUID().get());
             if (cached != null) {
                 return cached;
             }
@@ -577,7 +578,7 @@ public class BeyonderNPCEntity extends PathfinderMob {
             }
         }
         String skinName = getSkinName();
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID,
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID,
                 "textures/entity/npc/" + skinName + ".png");
     }
 

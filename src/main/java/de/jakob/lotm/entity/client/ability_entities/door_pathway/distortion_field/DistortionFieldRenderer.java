@@ -8,13 +8,13 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 
 public class DistortionFieldRenderer extends EntityRenderer<DistortionFieldEntity> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/particle/soul_fire_flame.png");
+    private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/particle/soul_fire_flame.png");
 
     public DistortionFieldRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -603,7 +603,7 @@ public class DistortionFieldRenderer extends EntityRenderer<DistortionFieldEntit
     }
 
     @Override
-    public ResourceLocation getTextureLocation(DistortionFieldEntity entity) {
+    public Identifier getTextureLocation(DistortionFieldEntity entity) {
         return TEXTURE;
     }
 }

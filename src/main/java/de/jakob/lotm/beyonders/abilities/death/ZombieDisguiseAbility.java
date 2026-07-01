@@ -5,7 +5,7 @@ import de.jakob.lotm.beyonders.abilities.core.interaction.InteractionHandler;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.util.data.Location;
 import de.jakob.lotm.util.shapeShifting.ShapeShiftingUtil;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -21,8 +21,8 @@ import java.util.Map;
 
 public class ZombieDisguiseAbility extends ToggleAbility {
 
-    private static final ResourceLocation HEALTH_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath("lotmcraft", "zombie_disguise_health");
-    private static final ResourceLocation STRENGTH_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath("lotmcraft", "zombie_disguise_strength");
+    private static final Identifier HEALTH_MODIFIER_ID = Identifier.fromNamespaceAndPath("lotmcraft", "zombie_disguise_health");
+    private static final Identifier STRENGTH_MODIFIER_ID = Identifier.fromNamespaceAndPath("lotmcraft", "zombie_disguise_strength");
 
     // Sequence 6 equivalent values from PhysicalEnhancementsDeathAbility:
     // HEALTH 7 -> 7 * 4.0 = 28 extra max HP

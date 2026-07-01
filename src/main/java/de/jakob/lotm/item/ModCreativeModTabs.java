@@ -8,7 +8,7 @@ import de.jakob.lotm.beyonders.potions.PotionItemHandler;
 import de.jakob.lotm.beyonders.potions.PotionRecipeItemHandler;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +48,7 @@ public class ModCreativeModTabs {
 
     public static final Supplier<CreativeModeTab> PASSIVE_ABILITIES_TAB = CREATIVE_MODE_TABS.register("passive_abilities_tab",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(PassiveAbilityHandler.PHYSICAL_ENHANCEMENTS_RED_PRIEST.get()))
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "lotm_tab"))
+                    .withTabsBefore(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "lotm_tab"))
                     .title(Component.translatable("creativetab.lotmcraft.passive_abilities_tab"))
                     .displayItems((parameters, output) -> {
                         PassiveAbilityHandler.ITEMS.getEntries().forEach(itemHolder -> {
@@ -59,7 +59,7 @@ public class ModCreativeModTabs {
 
     public static final Supplier<CreativeModeTab> BEYONDER_POTIONS_TAB = CREATIVE_MODE_TABS.register("beyonder_potions_tab",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(PotionItemHandler.SEER_POTION.get()))
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "passive_abilities_tab"))
+                    .withTabsBefore(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "passive_abilities_tab"))
                     .title(Component.translatable("creativetab.lotmcraft.beyonder_potions_tab"))
                     .displayItems((parameters, output) -> {
                         PotionItemHandler.ITEMS.getEntries().forEach(itemHolder -> {
@@ -70,7 +70,7 @@ public class ModCreativeModTabs {
 
     public static final Supplier<CreativeModeTab> BEYONDER_INGREDIENTS_TAB = CREATIVE_MODE_TABS.register("beyonder_ingredients_tab",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModIngredients.LAVOS_SQUID_BLOOD.get()))
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "beyonder_potions_tab"))
+                    .withTabsBefore(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "beyonder_potions_tab"))
                     .title(Component.translatable("creativetab.lotmcraft.beyonder_ingredients_tab"))
                     .displayItems((parameters, output) -> {
                         ModIngredients.ITEMS.getEntries().forEach(itemHolder -> {
@@ -85,7 +85,7 @@ public class ModCreativeModTabs {
                 Optional<DeferredHolder<Item, ? extends Item>> optionalItem = PotionRecipeItemHandler.ITEMS.getEntries().stream().findFirst();
                         return optionalItem.map(itemDeferredHolder -> new ItemStack(itemDeferredHolder.get())).orElseGet(() -> new ItemStack(ModItems.FOOL_Card.get()));
                     })
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "beyonder_ingredients_tab"))
+                    .withTabsBefore(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "beyonder_ingredients_tab"))
                     .title(Component.translatable("creativetab.lotmcraft.beyonder_recipes_tab"))
                     .displayItems((parameters, output) -> {
                         PotionRecipeItemHandler.ITEMS.getEntries().forEach(itemHolder -> {
@@ -99,7 +99,7 @@ public class ModCreativeModTabs {
                         Optional<DeferredHolder<Item, ? extends Item>> optionalItem = BeyonderCharacteristicItemHandler.ITEMS.getEntries().stream().findFirst();
                         return optionalItem.map(itemDeferredHolder -> new ItemStack(itemDeferredHolder.get())).orElseGet(() -> new ItemStack(ModItems.FOOL_Card.get()));
                     })
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "beyonder_recipes_tab"))
+                    .withTabsBefore(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "beyonder_recipes_tab"))
                     .title(Component.translatable("creativetab.lotmcraft.beyonder_characteristic_tab"))
                     .displayItems((parameters, output) -> {
                         BeyonderCharacteristicItemHandler.ITEMS.getEntries().forEach(itemHolder -> {

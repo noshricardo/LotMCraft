@@ -11,7 +11,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,7 +27,7 @@ import java.util.Set;
 public record WanderingSelectedPacket(String dimensionId) implements CustomPacketPayload {
 
     public static final Type<WanderingSelectedPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "wandering_selected"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "wandering_selected"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, WanderingSelectedPacket> STREAM_CODEC =
             StreamCodec.composite(
@@ -49,7 +49,7 @@ public record WanderingSelectedPacket(String dimensionId) implements CustomPacke
 
             ResourceKey<Level> targetKey = ResourceKey.create(
                     net.minecraft.core.registries.Registries.DIMENSION,
-                    ResourceLocation.parse(packet.dimensionId())
+                    Identifier.parse(packet.dimensionId())
             );
 
             // Validate the target is not a forbidden dimension

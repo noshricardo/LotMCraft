@@ -8,10 +8,10 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ReturnPortalRenderer extends EntityRenderer<ReturnPortalEntity> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_3.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_3.png");
     private final HighSequenceDoorsModel<ReturnPortalEntity> model;
 
     public ReturnPortalRenderer(EntityRendererProvider.Context context) {
@@ -45,7 +45,7 @@ public class ReturnPortalRenderer extends EntityRenderer<ReturnPortalEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(ReturnPortalEntity entity) {
+    public Identifier getTextureLocation(ReturnPortalEntity entity) {
         return TEXTURE;
     }
 }

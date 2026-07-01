@@ -9,7 +9,7 @@ import de.jakob.lotm.util.playerMap.PendingPrayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -19,7 +19,7 @@ public record OpenHonorificNamesMenuPacket() implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<OpenHonorificNamesMenuPacket> TYPE =
             new CustomPacketPayload.Type<>(
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "open_honorific_names_menu"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "open_honorific_names_menu"));
 
     public static final StreamCodec<FriendlyByteBuf, OpenHonorificNamesMenuPacket> STREAM_CODEC =
             StreamCodec.of(

@@ -8,7 +8,7 @@ import de.jakob.lotm.util.BeyonderData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
@@ -17,7 +17,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record InventoryOpenedPacket() implements CustomPacketPayload {
     public static final Type<InventoryOpenedPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "opened_inventory_screen"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "opened_inventory_screen"));
 
     public static final StreamCodec<FriendlyByteBuf, InventoryOpenedPacket> STREAM_CODEC =
             StreamCodec.unit(new InventoryOpenedPacket());

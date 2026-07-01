@@ -6,7 +6,7 @@ import de.jakob.lotm.entity.custom.FireRavenEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class FireRavenRenderer extends MobRenderer<FireRavenEntity, FireRavenModel<FireRavenEntity>> {
     public FireRavenRenderer(EntityRendererProvider.Context context) {
@@ -14,8 +14,8 @@ public class FireRavenRenderer extends MobRenderer<FireRavenEntity, FireRavenMod
     }
 
     @Override
-    public ResourceLocation getTextureLocation(FireRavenEntity fireRavenEntity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/fire_raven/fire_raven.png");
+    public Identifier getTextureLocation(FireRavenEntity fireRavenEntity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/fire_raven/fire_raven.png");
     }
 
     @Override

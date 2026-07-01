@@ -4,7 +4,7 @@ import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.beyonders.abilities.core.Ability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -21,7 +21,7 @@ public class ActiveToggleAbilitiesRenderer {
 
     @SubscribeEvent
     public static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.HOTBAR, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "active_toggle_abilities_overlay"), (guiGraphics, deltaTracker) -> {
+        event.registerAbove(VanillaGuiLayers.HOTBAR, Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "active_toggle_abilities_overlay"), (guiGraphics, deltaTracker) -> {
             renderOverlay(guiGraphics);
         });
     }
@@ -37,7 +37,7 @@ public class ActiveToggleAbilitiesRenderer {
             Ability ability = LOTMCraft.abilityHandler.getById(abilityId);
             if(ability == null) continue;
 
-            ResourceLocation texture = ability.getTextureLocation();
+            Identifier texture = ability.getTextureLocation();
             guiGraphics.blit(texture, x, y, 0, 0, 24, 24, 24, 24);
             x += 29;
         }

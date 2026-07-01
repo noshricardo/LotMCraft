@@ -7,7 +7,7 @@ import de.jakob.lotm.entity.custom.ability_entities.mother_pathway.ReturnFromNat
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -55,7 +55,7 @@ public class WorldCreationAbility extends Ability {
 
         // Get Space Level
         ResourceKey<Level> spaceDimension = ResourceKey.create(Registries.DIMENSION,
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "nature"));
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "nature"));
         ServerLevel spaceLevel = serverLevel.getServer().getLevel(spaceDimension);
         if (spaceLevel == null) {
             return;

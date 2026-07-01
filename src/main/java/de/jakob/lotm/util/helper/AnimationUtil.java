@@ -6,13 +6,13 @@ import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.network.PacketHandler;
 import de.jakob.lotm.network.packets.toClient.PlayAnimationPacket;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 
 public class AnimationUtil {
 
-    private static final ResourceLocation openArmsAnimationID = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "animation.model.open_arms");
+    private static final Identifier openArmsAnimationID = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "animation.model.open_arms");
 
 
     public static void playOpenArmAnimation(Player player) {
@@ -24,7 +24,7 @@ public class AnimationUtil {
         }
     }
 
-    public static void playAnimation(AbstractClientPlayer player, ResourceLocation id) {
+    public static void playAnimation(AbstractClientPlayer player, Identifier id) {
         PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess.getPlayerAnimationLayer(player, LOTMCraft.ANIMATION_LAYER_ID);
         if(controller == null) {
             return;
@@ -32,7 +32,7 @@ public class AnimationUtil {
         controller.triggerAnimation(id);
     }
 
-    public static ResourceLocation getResourceLocationById(String id) {
+    public static Identifier getIdentifierById(String id) {
         return switch (id) {
             case "open_arms" -> openArmsAnimationID;
             default -> null;

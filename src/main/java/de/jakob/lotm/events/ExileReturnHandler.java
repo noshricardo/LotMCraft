@@ -7,7 +7,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -37,7 +37,7 @@ public class ExileReturnHandler {
             return;
 
         ServerLevel endLevel = server.getLevel(ResourceKey.create(Registries.DIMENSION,
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "deep_space")));
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "deep_space")));
         if(endLevel == null)
             return;
 
@@ -48,7 +48,7 @@ public class ExileReturnHandler {
                 // Now handle teleport back
                 String returnLevelStr = tag.getString("ReturnLevel");
                 ResourceKey<Level> returnLevelKey =
-                        ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(returnLevelStr));
+                        ResourceKey.create(Registries.DIMENSION, Identifier.parse(returnLevelStr));
                 ServerLevel returnLevel = server.getLevel(returnLevelKey);
                 if (returnLevel != null) {
                     double x = tag.getDouble("ReturnX");

@@ -7,12 +7,12 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record SyncBeyonderDataPacket(String pathway, int sequence, float spirituality, boolean griefingEnabled, float digestionProgress, String[] pathwayHistory, int[] charStacks, int cowardWormAmount) implements CustomPacketPayload {
     public static final Type<SyncBeyonderDataPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sync_beyonder_data"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sync_beyonder_data"));
 
     private static final StreamCodec<FriendlyByteBuf, String[]> PATHWAY_HISTORY_CODEC =
             StreamCodec.of(

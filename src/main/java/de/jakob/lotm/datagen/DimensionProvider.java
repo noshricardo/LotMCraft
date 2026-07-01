@@ -6,7 +6,7 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.biome.*;
@@ -350,7 +350,7 @@ public class DimensionProvider {
                                             OptionalLong.of(18000), false, false, false, false,
                                             1.0, false, false, 0, 256, 256,
                                             BlockTags.INFINIBURN_OVERWORLD,
-                                            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "dream_maze"),
+                                            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "dream_maze"),
                                             0.1f,
                                             new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 0), 0)));
 
@@ -358,7 +358,7 @@ public class DimensionProvider {
                                             OptionalLong.empty(), true, false, false, false,
                                             1.0, true, false, -64, 384, 384,
                                             BlockTags.INFINIBURN_OVERWORLD,
-                                            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space"),
+                                            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space"),
                                             1.0f,
                                             new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 7), 0)));
 
@@ -366,7 +366,7 @@ public class DimensionProvider {
                                             OptionalLong.empty(), true, false, false, false,
                                             1.0, true, false, -64, 384, 384,
                                             BlockTags.INFINIBURN_OVERWORLD,
-                                            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "deep_space"),
+                                            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "deep_space"),
                                             1.0f,
                                             new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 7), 0)));
 
@@ -383,7 +383,7 @@ public class DimensionProvider {
                                             256,                      // height
                                             256,                      // logicalHeight
                                             BlockTags.INFINIBURN_OVERWORLD,
-                                            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space_time_labyrinth"),
+                                            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space_time_labyrinth"),
                                             0.05f,                    // ambientLight – very dark
                                             new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 0), 0)));
 
@@ -391,7 +391,7 @@ public class DimensionProvider {
                                             OptionalLong.empty(), true, false, false, false,
                                             1.0, true, false, -64, 384, 384,
                                             BlockTags.INFINIBURN_OVERWORLD,
-                                            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "nature"),
+                                            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "nature"),
                                             1.0f,
                                             new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 7), 0)));
 
@@ -399,7 +399,7 @@ public class DimensionProvider {
                                             OptionalLong.of(6000), false, true, false, false,
                                             1.0, false, false, -64, 384, 384,
                                             BlockTags.INFINIBURN_OVERWORLD,
-                                            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sefirah_castle"),
+                                            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sefirah_castle"),
                                             1.0f,
                                             new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 0), 0)));
 
@@ -407,7 +407,7 @@ public class DimensionProvider {
                                             OptionalLong.empty(), true, false, false, false,
                                             1.0, false, false, 0, 256, 256,
                                             BlockTags.INFINIBURN_OVERWORLD,
-                                            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"),
+                                            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"),
                                             1.0f,
                                             new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 0), 0)));
 
@@ -415,7 +415,7 @@ public class DimensionProvider {
                                             OptionalLong.of(6000), true, false, false, false,
                                             1.0, true, false, -64, 384, 384,
                                             BlockTags.INFINIBURN_OVERWORLD,
-                                            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "concealment_world"),
+                                            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "concealment_world"),
                                             1.0f,
                                             new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 0), 0)));
                                 })

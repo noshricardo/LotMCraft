@@ -9,12 +9,12 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 
 public class FlameVortexEffect extends ActiveEffect {
-    private static final ResourceLocation FLAME_TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/netherrack.png");
+    private static final Identifier FLAME_TEXTURE = Identifier.withDefaultNamespace("textures/block/netherrack.png");
 
     public FlameVortexEffect(double x, double y, double z) {
         super(x, y, z, 20 * 6);

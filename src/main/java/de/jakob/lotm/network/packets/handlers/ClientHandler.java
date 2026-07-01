@@ -678,7 +678,7 @@ public class ClientHandler {
             return;
         }
 
-        AnimationUtil.playAnimation(player, AnimationUtil.getResourceLocationById(packet.animId()));
+        AnimationUtil.playAnimation(player, AnimationUtil.getIdentifierById(packet.animId()));
     }
 
     public static void handleAbilitySelectionPacket(SyncAbilitySelectionPacket packet) {

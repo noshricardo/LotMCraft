@@ -9,15 +9,15 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class DeathDivineKingdomEntityRenderer extends EntityRenderer<DeathDivineKingdomEntity> {
 
-    private static final ResourceLocation BLACK_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/black_hole/black.png");
+    private static final Identifier BLACK_TEXTURE =
+            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/black_hole/black.png");
 
     public DeathDivineKingdomEntityRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -89,7 +89,7 @@ public class DeathDivineKingdomEntityRenderer extends EntityRenderer<DeathDivine
     }
 
     @Override
-    public ResourceLocation getTextureLocation(DeathDivineKingdomEntity entity) {
+    public Identifier getTextureLocation(DeathDivineKingdomEntity entity) {
         return BLACK_TEXTURE;
     }
 }

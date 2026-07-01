@@ -13,13 +13,13 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class ElectromagneticTornadoRenderer extends EntityRenderer<ElectromagneticTornadoEntity> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/glass.png");
+    private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/block/glass.png");
 
     public ElectromagneticTornadoRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -407,7 +407,7 @@ public class ElectromagneticTornadoRenderer extends EntityRenderer<Electromagnet
     }
 
     @Override
-    public ResourceLocation getTextureLocation(ElectromagneticTornadoEntity entity) {
+    public Identifier getTextureLocation(ElectromagneticTornadoEntity entity) {
         return TEXTURE;
     }
 }

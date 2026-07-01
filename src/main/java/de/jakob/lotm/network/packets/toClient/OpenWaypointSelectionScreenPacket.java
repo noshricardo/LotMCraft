@@ -7,7 +7,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
 public record OpenWaypointSelectionScreenPacket(List<WaypointComponent.ClientWaypoint> waypoints, String use) implements CustomPacketPayload {
 
     public static final Type<OpenWaypointSelectionScreenPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "open_waypoint_selection_screen"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "open_waypoint_selection_screen"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpenWaypointSelectionScreenPacket> STREAM_CODEC =
             StreamCodec.composite(

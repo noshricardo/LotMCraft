@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public class SpiritTranslucentWizardRenderer extends MobRenderer<SpiritTranslucentWizardEntity, SpiritTranslucentWizardModel<SpiritTranslucentWizardEntity>> {
@@ -27,8 +27,8 @@ public class SpiritTranslucentWizardRenderer extends MobRenderer<SpiritTransluce
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SpiritTranslucentWizardEntity spiritBlueWizardEntity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_blue_wizard/spirit_blue_wizard.png");
+    public Identifier getTextureLocation(SpiritTranslucentWizardEntity spiritBlueWizardEntity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_blue_wizard/spirit_blue_wizard.png");
     }
 
     @Nullable

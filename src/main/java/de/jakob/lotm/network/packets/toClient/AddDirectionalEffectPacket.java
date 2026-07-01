@@ -5,7 +5,7 @@ import de.jakob.lotm.network.packets.handlers.ClientHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record AddDirectionalEffectPacket(int index,
@@ -26,7 +26,7 @@ public record AddDirectionalEffectPacket(int index,
     }
 
     public static final Type<AddDirectionalEffectPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "add_directional_effect"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "add_directional_effect"));
 
     public static final StreamCodec<ByteBuf, AddDirectionalEffectPacket> STREAM_CODEC =
             new StreamCodec<>() {

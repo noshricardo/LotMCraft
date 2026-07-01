@@ -5,7 +5,7 @@ import de.jakob.lotm.network.packets.handlers.ClientHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -19,7 +19,7 @@ public record RingEffectPacket(
 ) implements CustomPacketPayload {
 
     public static final Type<RingEffectPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "ring_effect"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "ring_effect"));
 
     public static final StreamCodec<FriendlyByteBuf, RingEffectPacket> STREAM_CODEC =
             StreamCodec.of(RingEffectPacket::write, RingEffectPacket::read);

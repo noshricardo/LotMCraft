@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -19,8 +19,8 @@ import org.joml.Matrix4f;
 import java.util.*;
 
 public class MeteorRenderer extends EntityRenderer<MeteorEntity> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/meteor/meteor.png");
-    private static final ResourceLocation TRAIL_TEXTURE = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/meteor/meteor_trail.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/meteor/meteor.png");
+    private static final Identifier TRAIL_TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/meteor/meteor_trail.png");
     private final MeteorModel<MeteorEntity> model;
 
     private static class ParticleData {
@@ -323,5 +323,5 @@ public class MeteorRenderer extends EntityRenderer<MeteorEntity> {
     protected int getBlockLightLevel(MeteorEntity entity, BlockPos pos) { return 15; }
 
     @Override
-    public ResourceLocation getTextureLocation(MeteorEntity entity) { return TEXTURE; }
+    public Identifier getTextureLocation(MeteorEntity entity) { return TEXTURE; }
 }

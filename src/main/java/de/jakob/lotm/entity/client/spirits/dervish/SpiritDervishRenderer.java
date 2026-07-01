@@ -6,7 +6,7 @@ import de.jakob.lotm.entity.custom.spirits.SpiritDervishEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Random;
 
@@ -16,8 +16,8 @@ public class SpiritDervishRenderer extends MobRenderer<SpiritDervishEntity, Spir
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SpiritDervishEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_dervish/spirit_dervish.png");
+    public Identifier getTextureLocation(SpiritDervishEntity entity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_dervish/spirit_dervish.png");
     }
 
     @Override

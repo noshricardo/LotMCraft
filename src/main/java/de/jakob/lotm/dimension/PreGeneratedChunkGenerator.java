@@ -267,9 +267,9 @@ public class PreGeneratedChunkGenerator extends ChunkGenerator {
 
     private BlockState parseBlockState(String blockName, CompoundTag blockTag) {
         try {
-            // Parse the block name into a ResourceLocation
-            net.minecraft.resources.ResourceLocation blockId =
-                    net.minecraft.resources.ResourceLocation.parse(blockName);
+            // Parse the block name into a Identifier
+            net.minecraft.resources.Identifier blockId =
+                    net.minecraft.resources.Identifier.parse(blockName);
 
             // Get block from registry
             net.minecraft.world.level.block.Block block =

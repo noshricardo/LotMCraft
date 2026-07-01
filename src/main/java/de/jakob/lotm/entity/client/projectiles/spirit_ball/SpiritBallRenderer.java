@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Random;
@@ -48,7 +48,7 @@ public class SpiritBallRenderer extends EntityRenderer<SpiritBallEntity> {
         float pg = Math.min(1f, green * pulse);
         float pb = Math.min(1f, blue  * pulse);
 
-        ResourceLocation texture = getTextureLocation(entity);
+        Identifier texture = getTextureLocation(entity);
 
         // --- Inner solid octahedron-faceted shape ---
         poseStack.pushPose();
@@ -80,8 +80,8 @@ public class SpiritBallRenderer extends EntityRenderer<SpiritBallEntity> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull SpiritBallEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID,
+    public @NotNull Identifier getTextureLocation(@NotNull SpiritBallEntity entity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID,
                 "textures/entity/spirit_ball/spirit_ball.png");
     }
 

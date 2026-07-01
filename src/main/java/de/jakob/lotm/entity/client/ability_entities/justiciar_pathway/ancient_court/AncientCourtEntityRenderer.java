@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 
@@ -300,7 +300,7 @@ public class AncientCourtEntityRenderer extends EntityRenderer<AncientCourtEntit
     }
 
     @Override
-    public ResourceLocation getTextureLocation(AncientCourtEntity entity) {
-        return ResourceLocation.withDefaultNamespace("textures/misc/white.png");
+    public Identifier getTextureLocation(AncientCourtEntity entity) {
+        return Identifier.withDefaultNamespace("textures/misc/white.png");
     }
 }

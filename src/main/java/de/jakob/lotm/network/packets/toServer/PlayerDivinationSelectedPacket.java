@@ -15,7 +15,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -26,7 +26,7 @@ import static de.jakob.lotm.beyonders.abilities.visionary.handlers.VisionaryHand
 
 public record PlayerDivinationSelectedPacket(UUID selectedPlayerUuid, PlayerSelectionWorkType types) implements CustomPacketPayload {
     public static final Type<PlayerDivinationSelectedPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "player_divination_selected"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "player_divination_selected"));
 
     private static final StreamCodec<RegistryFriendlyByteBuf, UUID> UUID_CODEC =
             StreamCodec.of(

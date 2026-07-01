@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,7 +31,7 @@ public class HybridMobRenderer extends LivingEntityRenderer<LivingEntity, Entity
         
         if(persistentData.contains("HybridMobData")) {
             HybridMobData hybridData = HybridMobData.load(persistentData.getCompound("HybridMobData"));
-            ResourceLocation modelEntityType = hybridData.getModelEntityType();
+            Identifier modelEntityType = hybridData.getModelEntityType();
             
             // Get the original entity type's renderer
             EntityType<?> originalType = EntityType.byString(modelEntityType.toString()).orElse(null);
@@ -67,12 +67,12 @@ public class HybridMobRenderer extends LivingEntityRenderer<LivingEntity, Entity
     }
 
     @Override
-    public ResourceLocation getTextureLocation(LivingEntity entity) {
+    public Identifier getTextureLocation(LivingEntity entity) {
         CompoundTag persistentData = entity.getPersistentData();
 
         if(persistentData.contains("HybridMobData")) {
             HybridMobData hybridData = HybridMobData.load(persistentData.getCompound("HybridMobData"));
-            ResourceLocation modelEntityType = hybridData.getModelEntityType();
+            Identifier modelEntityType = hybridData.getModelEntityType();
 
             EntityType<?> originalType = EntityType.byString(modelEntityType.toString()).orElse(null);
             if(originalType != null) {
@@ -86,7 +86,7 @@ public class HybridMobRenderer extends LivingEntityRenderer<LivingEntity, Entity
             }
         }
 
-        return ResourceLocation.withDefaultNamespace("textures/entity/pig/pig.png");
+        return Identifier.withDefaultNamespace("textures/entity/pig/pig.png");
     }
 
     private <T extends Entity> void renderEntity(EntityRenderer<T> renderer, T entity,
@@ -95,7 +95,7 @@ public class HybridMobRenderer extends LivingEntityRenderer<LivingEntity, Entity
         renderer.render(entity, yaw, partialTicks, poseStack, buffer, light);
     }
 
-    private <T extends Entity> ResourceLocation getEntityTexture(EntityRenderer<T> renderer, T entity) {
+    private <T extends Entity> Identifier getEntityTexture(EntityRenderer<T> renderer, T entity) {
         return renderer.getTextureLocation(entity);
     }
 }

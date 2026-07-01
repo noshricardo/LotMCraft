@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -24,8 +24,8 @@ public class SpaceTearingEffect extends ActiveEffect {
     private static final float STORM_RADIUS    = 76.0f;
     private static final int   MAX_DEPTH       = 6;
 
-    private static final ResourceLocation OBSIDIAN_TEXTURE =
-            ResourceLocation.withDefaultNamespace("textures/block/obsidian.png");
+    private static final Identifier OBSIDIAN_TEXTURE =
+            Identifier.withDefaultNamespace("textures/block/obsidian.png");
 
     private final List<CrackSegment>  allSegments  = new ArrayList<>();
     private final List<SpiralArm>     spiralArms   = new ArrayList<>();

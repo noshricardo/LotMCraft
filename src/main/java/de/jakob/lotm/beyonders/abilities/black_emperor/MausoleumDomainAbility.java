@@ -9,7 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -39,7 +39,7 @@ public final class MausoleumDomainAbility extends Ability {
 
     private static final ResourceKey<Level> MAUSOLEUM_DIMENSION = ResourceKey.create(
             Registries.DIMENSION,
-            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mausoleum")
+            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mausoleum")
     );
 
     private static final BlockPos MAUSOLEUM_SPAWN = new BlockPos(75, 1, 75);
@@ -347,8 +347,8 @@ public final class MausoleumDomainAbility extends Ability {
         return new Vec3(x, pos.y, z);
     }
 
-    private static final ResourceLocation STRUCTURE_ID =
-            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mausoleum_room");
+    private static final Identifier STRUCTURE_ID =
+            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mausoleum_room");
     public static void prePlaceStructure(net.minecraft.server.MinecraftServer server) {
         ServerLevel mausoleum = server.getLevel(MAUSOLEUM_DIMENSION);
         if (mausoleum == null) {

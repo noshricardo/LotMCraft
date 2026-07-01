@@ -11,7 +11,7 @@ import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -111,7 +111,7 @@ public class AdvancementsEventHandler {
     private static boolean isInStructure(ServerLevel level, ServerPlayer player, String structureName) {
         ResourceKey<Structure> structureKey = ResourceKey.create(
                 Registries.STRUCTURE,
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, structureName)
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, structureName)
         );
         return level.registryAccess()
                 .registry(Registries.STRUCTURE)
@@ -158,7 +158,7 @@ public class AdvancementsEventHandler {
         if (player.getServer() == null) return;
         AdvancementHolder advancement = player.getServer()
                 .getAdvancements()
-                .get(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, advancementPath));
+                .get(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, advancementPath));
         if (advancement == null) return;
         AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
         if (!progress.isDone()) {
@@ -172,7 +172,7 @@ public class AdvancementsEventHandler {
         if (player.getServer() == null) return false;
         AdvancementHolder advancement = player.getServer()
                 .getAdvancements()
-                .get(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, advancementPath));
+                .get(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, advancementPath));
         if (advancement == null) return false;
         return player.getAdvancements().getOrStartProgress(advancement).isDone();
     }

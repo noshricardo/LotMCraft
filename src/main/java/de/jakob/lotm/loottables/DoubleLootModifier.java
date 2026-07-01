@@ -9,7 +9,7 @@ import de.jakob.lotm.util.BeyonderData;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -92,7 +92,7 @@ public class DoubleLootModifier extends LootModifier {
         return generatedLoot;
     }
 
-    private boolean isChestLootTable(ResourceLocation lootTableLocation) {
+    private boolean isChestLootTable(Identifier lootTableLocation) {
         String path = lootTableLocation.getPath();
 
         return path.startsWith("chests/");

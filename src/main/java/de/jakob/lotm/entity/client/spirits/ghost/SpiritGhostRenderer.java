@@ -8,7 +8,7 @@ import de.jakob.lotm.entity.custom.spirits.SpiritGhostEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SpiritGhostRenderer extends MobRenderer<SpiritGhostEntity, SpiritGhostModel<SpiritGhostEntity>> {
     public SpiritGhostRenderer(EntityRendererProvider.Context context) {
@@ -16,8 +16,8 @@ public class SpiritGhostRenderer extends MobRenderer<SpiritGhostEntity, SpiritGh
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SpiritGhostEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_ghost/spirit_ghost.png");
+    public Identifier getTextureLocation(SpiritGhostEntity entity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_ghost/spirit_ghost.png");
     }
 
     @Override

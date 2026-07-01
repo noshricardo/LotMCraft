@@ -8,7 +8,7 @@ import de.jakob.lotm.beyonders.potions.PotionRecipeItemHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public record OpenRecipeMenuPacket(int sequence, String pathway) implements CustomPacketPayload {
     public static final Type<OpenRecipeMenuPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "open_recipe"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "open_recipe"));
 
     public static final StreamCodec<FriendlyByteBuf, OpenRecipeMenuPacket> STREAM_CODEC =
             StreamCodec.composite(

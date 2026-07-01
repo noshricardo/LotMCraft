@@ -23,7 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.ItemTags;
@@ -175,7 +175,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
                             ItemStack clickedItem = displayContainer.getItem(slotId);
                             if(!clickedItem.isEmpty()) {
                                 // excluding some items from being summoned
-                                if (clickedItem.is((ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "shulker_boxes"))))) return;
+                                if (clickedItem.is((ItemTags.create(Identifier.fromNamespaceAndPath("c", "shulker_boxes"))))) return;
                                 if (clickedItem.getItem() instanceof BeyonderCharacteristicItem) return;
                                 if (clickedItem.getItem() instanceof BeyonderPotion) return;
                                 if (Config.items.contains(BuiltInRegistries.ITEM.getKey(clickedItem.getItem()))) return;
@@ -497,7 +497,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
 
                     });
                 }
-                if (stack.is((ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "shulker_boxes"))))) {
+                if (stack.is((ItemTags.create(Identifier.fromNamespaceAndPath("c", "shulker_boxes"))))) {
                     container.setItem(i, ItemStack.EMPTY);
                 }
             }
@@ -782,12 +782,12 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
                 CompoundTag tag = specificInfo.originalBeforeBorrowing();
                 if (tag.getBoolean("WalkStolen")) {
                     AttributeInstance movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-                    movementSpeed.addTransientModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"), -100, AttributeModifier.Operation.ADD_VALUE));
+                    movementSpeed.addTransientModifier(new AttributeModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"), -100, AttributeModifier.Operation.ADD_VALUE));
                     ServerScheduler.scheduleDelayed(20 * 20, () -> {
                         AttributeInstance movementSpeedInner = player.getAttribute(Attributes.MOVEMENT_SPEED);
 
                         if(movementSpeedInner != null) {
-                            movementSpeedInner.removeModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"));
+                            movementSpeedInner.removeModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"));
                         }
                     });
                 }
@@ -905,7 +905,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
 
             // remove walk theft
             if(movementSpeedInner != null) {
-                movementSpeedInner.removeModifier(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"));
+                movementSpeedInner.removeModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"));
             }
 
             // enable all abilities

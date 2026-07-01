@@ -9,7 +9,7 @@ import de.jakob.lotm.util.helper.AbilityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -58,7 +58,7 @@ public class PocketDimensionAbility extends Ability {
 
         // Get Space Level
         ResourceKey<Level> spaceDimension = ResourceKey.create(Registries.DIMENSION,
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space"));
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "space"));
         ServerLevel spaceLevel = serverLevel.getServer().getLevel(spaceDimension);
         if (spaceLevel == null) {
             return;

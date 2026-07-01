@@ -11,7 +11,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -39,10 +39,10 @@ public class PositionTrigger extends TriggerBase {
         if (!(context instanceof TriggerPositionContext position)) return -1;
         if (!(entity instanceof ServerPlayer serverPlayer)) return -1;
 
-        ResourceLocation id = null;
+        Identifier id = null;
         if(!position.dimension.isEmpty()){
             try {
-                id = ResourceLocation.tryParse(position.dimension);
+                id = Identifier.tryParse(position.dimension);
             }catch (NullPointerException ignored) {}
         }
 

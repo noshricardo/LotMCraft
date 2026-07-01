@@ -5,7 +5,7 @@ import de.jakob.lotm.network.packets.handlers.ClientHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.UUID;
@@ -26,7 +26,7 @@ public record AddMovableEffectPacket(UUID effectId, int index,
     }
 
     public static final Type<AddMovableEffectPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "add_movable_effect"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "add_movable_effect"));
 
     public static final StreamCodec<ByteBuf, AddMovableEffectPacket> STREAM_CODEC =
             new StreamCodec<>() {

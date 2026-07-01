@@ -8,7 +8,7 @@ import de.jakob.lotm.util.helper.AbilityUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -34,7 +34,7 @@ public class SpiritWorldAwarenessAbility extends PassiveAbilityItem {
         }
 
         ResourceKey<Level> spiritWorld = ResourceKey.create(Registries.DIMENSION,
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"));
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"));
         ServerLevel spiritWorldLevel = serverLevel.getServer().getLevel(spiritWorld);
         if (spiritWorldLevel == null) {
             return;

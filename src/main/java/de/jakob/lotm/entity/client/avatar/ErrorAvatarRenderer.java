@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.PlayerSkin;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,14 +20,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ErrorAvatarRenderer extends MobRenderer<AvatarEntity, PlayerModel<AvatarEntity>> {
     // Cache for player skins to avoid repeated lookups
-    private static final Map<UUID, ResourceLocation> SKIN_CACHE = new ConcurrentHashMap<>();
+    private static final Map<UUID, Identifier> SKIN_CACHE = new ConcurrentHashMap<>();
 
     public ErrorAvatarRenderer(EntityRendererProvider.Context context) {
         super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(AvatarEntity entity) {
+    public @NotNull Identifier getTextureLocation(AvatarEntity entity) {
         UUID ownerUUID = entity.getOriginalOwner();
 
         // If no owner, use fallback
@@ -41,7 +41,7 @@ public class ErrorAvatarRenderer extends MobRenderer<AvatarEntity, PlayerModel<A
         }
 
         // Try to get the player's skin
-        ResourceLocation playerSkin = getPlayerSkin(ownerUUID);
+        Identifier playerSkin = getPlayerSkin(ownerUUID);
 
         // Cache and return the result (either player skin or fallback)
         SKIN_CACHE.put(ownerUUID, playerSkin);
@@ -51,9 +51,9 @@ public class ErrorAvatarRenderer extends MobRenderer<AvatarEntity, PlayerModel<A
     /**
      * Attempts to retrieve the player's skin texture
      * @param playerUUID The UUID of the player
-     * @return The ResourceLocation of the player's skin, or fallback texture
+     * @return The Identifier of the player's skin, or fallback texture
      */
-    private ResourceLocation getPlayerSkin(UUID playerUUID) {
+    private Identifier getPlayerSkin(UUID playerUUID) {
         Minecraft mc = Minecraft.getInstance();
 
         // Method 1: Try to get the player from the current level

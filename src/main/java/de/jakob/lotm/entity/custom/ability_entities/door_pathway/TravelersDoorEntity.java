@@ -15,7 +15,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -112,7 +112,7 @@ public class TravelersDoorEntity extends Entity {
     private void spiritWorldHandling() {
         if (this.level() instanceof ServerLevel serverLevel) {
             ResourceKey<Level> spiritWorld = ResourceKey.create(Registries.DIMENSION,
-                    ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"));
+                    Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"));
             ServerLevel spiritWorldLevel = serverLevel.getServer().getLevel(spiritWorld);
             if (spiritWorldLevel == null) return;
 
@@ -167,7 +167,7 @@ public class TravelersDoorEntity extends Entity {
         }
 
         ServerLevel level = (ServerLevel) this.level();
-        ResourceKey<Level> spiritWorld = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"));
+        ResourceKey<Level> spiritWorld = ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_world"));
         ServerLevel spiritWorldLevel = level.getServer().getLevel(spiritWorld);
         if (spiritWorldLevel == null) return;
 

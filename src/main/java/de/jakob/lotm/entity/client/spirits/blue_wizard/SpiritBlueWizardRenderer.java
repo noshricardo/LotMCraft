@@ -8,7 +8,7 @@ import de.jakob.lotm.entity.custom.spirits.SpiritBubblesEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SpiritBlueWizardRenderer extends MobRenderer<SpiritBlueWizardEntity, SpiritBlueWizardModel<SpiritBlueWizardEntity>> {
     public SpiritBlueWizardRenderer(EntityRendererProvider.Context context) {
@@ -26,7 +26,7 @@ public class SpiritBlueWizardRenderer extends MobRenderer<SpiritBlueWizardEntity
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SpiritBlueWizardEntity spiritBlueWizardEntity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_blue_wizard/spirit_blue_wizard.png");
+    public Identifier getTextureLocation(SpiritBlueWizardEntity spiritBlueWizardEntity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_blue_wizard/spirit_blue_wizard.png");
     }
 }

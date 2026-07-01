@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
@@ -75,7 +75,7 @@ public class ApprenticeDoorRenderer extends EntityRenderer<ApprenticeDoorEntity>
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull ApprenticeDoorEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/apprentice_door/apprentice_door.png");
+    public @NotNull Identifier getTextureLocation(@NotNull ApprenticeDoorEntity entity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/apprentice_door/apprentice_door.png");
     }
 }

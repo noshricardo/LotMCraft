@@ -6,7 +6,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public record SyncSharedAbilitiesPacket(ArrayList<String> abilityIds) implements CustomPacketPayload {
 
     public static final Type<SyncSharedAbilitiesPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sync_shared_abilities"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sync_shared_abilities"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncSharedAbilitiesPacket> STREAM_CODEC =
             StreamCodec.composite(

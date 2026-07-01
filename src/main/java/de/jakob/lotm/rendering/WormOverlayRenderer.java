@@ -4,7 +4,7 @@ import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.util.ClientBeyonderCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -17,14 +17,14 @@ import java.util.Arrays;
 public class WormOverlayRenderer {
     @SubscribeEvent
     public static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.HOTBAR, ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "coward_worms_overlay"), (guiGraphics, deltaTracker) -> {
+        event.registerAbove(VanillaGuiLayers.HOTBAR, Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "coward_worms_overlay"), (guiGraphics, deltaTracker) -> {
             renderText(guiGraphics);
         });
     }
 
-    private static final ResourceLocation iconTextureFool = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/misc/worm_of_spirit.png");
-    private static final ResourceLocation iconTextureDoor = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/misc/worm_of_star.png");
-    private static final ResourceLocation iconTextureError = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/misc/worm_of_time.png");
+    private static final Identifier iconTextureFool = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/misc/worm_of_spirit.png");
+    private static final Identifier iconTextureDoor = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/misc/worm_of_star.png");
+    private static final Identifier iconTextureError = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/misc/worm_of_time.png");
     private static final int size = 24;
     private final static int hotbarWidth = 182;
     private final static int hotbarheight = 22;
@@ -45,7 +45,7 @@ public class WormOverlayRenderer {
         int x = hotbarEndX - size;
         int y = mc.getWindow().getGuiScaledHeight() - (hotbarheight) - size - 15;
 
-        ResourceLocation iconTexture = switch (ClientBeyonderCache.getPathway(mc.player.getUUID())) {
+        Identifier iconTexture = switch (ClientBeyonderCache.getPathway(mc.player.getUUID())) {
             case "fool" -> iconTextureFool;
             case "door" -> iconTextureDoor;
             case "error" -> iconTextureError;

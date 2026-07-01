@@ -7,7 +7,7 @@ import de.jakob.lotm.effect.ModEffects;
 import de.jakob.lotm.gamerule.ModGameRules;
 import de.jakob.lotm.util.BeyonderData;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -33,10 +33,10 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
 
     private static final String BASE_MODIFIER_ID = "lotm_physical_enhancement";
 
-    private static final Map<EnhancementType, ResourceLocation> PERMANENT_MODIFIER_IDS = new EnumMap<>(EnhancementType.class);
+    private static final Map<EnhancementType, Identifier> PERMANENT_MODIFIER_IDS = new EnumMap<>(EnhancementType.class);
     static {
         for (EnhancementType type : EnhancementType.values()) {
-            PERMANENT_MODIFIER_IDS.put(type, ResourceLocation.parse(BASE_MODIFIER_ID + "_" + type.name().toLowerCase()));
+            PERMANENT_MODIFIER_IDS.put(type, Identifier.parse(BASE_MODIFIER_ID + "_" + type.name().toLowerCase()));
         }
     }
 
@@ -445,7 +445,7 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         if (enhancement.getAttribute() != null) {
             AttributeInstance instance = entity.getAttribute(enhancement.getAttribute());
             if (instance != null) {
-                ResourceLocation modifierId = PERMANENT_MODIFIER_IDS.get(enhancement.getType());
+                Identifier modifierId = PERMANENT_MODIFIER_IDS.get(enhancement.getType());
 
                 instance.removeModifier(modifierId);
 
@@ -492,7 +492,7 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         if (enhancement.getAttribute() != null) {
             AttributeInstance instance = entity.getAttribute(enhancement.getAttribute());
             if (instance != null) {
-                ResourceLocation modifierId = tempModifierId(id);
+                Identifier modifierId = tempModifierId(id);
                 instance.removeModifier(modifierId);
 
                 double value = enhancement.calculateValue();
@@ -539,7 +539,7 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         if (type.getAttribute() != null) {
             AttributeInstance instance = entity.getAttribute(type.getAttribute());
             if (instance != null) {
-                ResourceLocation modifierId = boostModifierId(id);
+                Identifier modifierId = boostModifierId(id);
                 instance.removeModifier(modifierId);
 
 
@@ -559,12 +559,12 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         }
     }
 
-    private static ResourceLocation boostModifierId(String id) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, BASE_MODIFIER_ID + "_boost_" + id);
+    private static Identifier boostModifierId(String id) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, BASE_MODIFIER_ID + "_boost_" + id);
     }
 
-    private static ResourceLocation tempModifierId(String id) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, BASE_MODIFIER_ID + "_temp_" + id);
+    private static Identifier tempModifierId(String id) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, BASE_MODIFIER_ID + "_temp_" + id);
     }
 
     private void updateTemporaryEnhancements(LivingEntity entity) {

@@ -9,7 +9,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -88,7 +88,7 @@ public class FindStructureQuest extends Quest {
     }
 
     private boolean isPlayerInsideStructure(ServerLevel level, BlockPos pos, String structureId) {
-        ResourceLocation structureKey = ResourceLocation.tryParse(structureId);
+        Identifier structureKey = Identifier.tryParse(structureId);
         if (structureKey == null) return false;
 
         var structureRegistry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);

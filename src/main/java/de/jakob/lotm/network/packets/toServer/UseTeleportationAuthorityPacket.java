@@ -6,14 +6,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record UseTeleportationAuthorityPacket(String use, double x, double y, double z, int id) implements CustomPacketPayload {
     public static final Type<UseTeleportationAuthorityPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "use_teleportation_authority"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "use_teleportation_authority"));
 
     public static final StreamCodec<FriendlyByteBuf, UseTeleportationAuthorityPacket> STREAM_CODEC =
             StreamCodec.composite(

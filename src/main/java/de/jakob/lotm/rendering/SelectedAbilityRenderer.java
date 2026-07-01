@@ -9,7 +9,7 @@ import de.jakob.lotm.util.data.ClientData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -23,7 +23,7 @@ public class SelectedAbilityRenderer {
     public static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
         event.registerAbove(
                 VanillaGuiLayers.HOTBAR,
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "selected_ability_overlay"),
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "selected_ability_overlay"),
                 (guiGraphics, deltaTracker) -> renderOverlay(guiGraphics)
         );
     }

@@ -1,19 +1,19 @@
 package de.jakob.lotm.beyonders.abilities.mother.handler;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityDimensions;
 
 public class HybridMobData {
-    private final ResourceLocation modelEntityType;
+    private final Identifier modelEntityType;
     private final EntityDimensions dimensions;
 
-    public HybridMobData(ResourceLocation modelEntityType, EntityDimensions dimensions) {
+    public HybridMobData(Identifier modelEntityType, EntityDimensions dimensions) {
         this.modelEntityType = modelEntityType;
         this.dimensions = dimensions;
     }
 
-    public ResourceLocation getModelEntityType() {
+    public Identifier getModelEntityType() {
         return modelEntityType;
     }
 
@@ -31,7 +31,7 @@ public class HybridMobData {
     }
 
     public static HybridMobData load(CompoundTag tag) {
-        ResourceLocation modelType = ResourceLocation.parse(tag.getString("ModelEntityType"));
+        Identifier modelType = Identifier.parse(tag.getString("ModelEntityType"));
         float width = tag.getFloat("Width");
         float height = tag.getFloat("Height");
         boolean fixed = tag.getBoolean("Fixed");

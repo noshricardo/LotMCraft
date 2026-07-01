@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.PlayerSkin;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,14 +19,14 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BlinkAfterimageRenderer extends MobRenderer<BlinkAfterimageEntity, PlayerModel<BlinkAfterimageEntity>> {
-    private static final Map<UUID, ResourceLocation> SKIN_CACHE = new ConcurrentHashMap<>();
+    private static final Map<UUID, Identifier> SKIN_CACHE = new ConcurrentHashMap<>();
 
     public BlinkAfterimageRenderer(EntityRendererProvider.Context context) {
         super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(BlinkAfterimageEntity entity) {
+    public @NotNull Identifier getTextureLocation(BlinkAfterimageEntity entity) {
         UUID ownerUUID = entity.getOwnerUUID();
 
         if (ownerUUID == null) {
@@ -37,13 +37,13 @@ public class BlinkAfterimageRenderer extends MobRenderer<BlinkAfterimageEntity, 
             return SKIN_CACHE.get(ownerUUID);
         }
 
-        ResourceLocation playerSkin = getPlayerSkin(ownerUUID);
+        Identifier playerSkin = getPlayerSkin(ownerUUID);
 
         SKIN_CACHE.put(ownerUUID, playerSkin);
         return playerSkin;
     }
 
-    private ResourceLocation getPlayerSkin(UUID playerUUID) {
+    private Identifier getPlayerSkin(UUID playerUUID) {
         Minecraft mc = Minecraft.getInstance();
 
         if (mc.level != null) {

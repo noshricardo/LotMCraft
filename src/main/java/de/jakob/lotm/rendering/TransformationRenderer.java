@@ -19,7 +19,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -39,32 +39,32 @@ import org.joml.Vector3f;
 public class TransformationRenderer {
 
     private static TyrantMythicalCreatureModel<Entity> tyrantMythicalCreatureModel;
-    private static final ResourceLocation tyrantMythicalCreatureTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/mythical_creatures/tyrant.png");
+    private static final Identifier tyrantMythicalCreatureTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/mythical_creatures/tyrant.png");
 
     private static DoorMythicalCreatureModel<Entity> doorMythicalCreatureModel;
-    private static final ResourceLocation doorMythicalCreatureTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/mythical_creatures/door.png");
+    private static final Identifier doorMythicalCreatureTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/mythical_creatures/door.png");
 
     private static FoolMythicalCreatureModel<Entity> foolMythicalCreatureModel;
-    private static final ResourceLocation foolMythicalCreatureTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/mythical_creatures/fool.png");
+    private static final Identifier foolMythicalCreatureTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/mythical_creatures/fool.png");
 
     private static WheelOfFortuneMythicalCreatureModel<Entity> wofMythicalCreatureModel;
-    private static final ResourceLocation wofMythicalCreatureTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/mythical_creatures/wheel_of_fortune.png");
+    private static final Identifier wofMythicalCreatureTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/mythical_creatures/wheel_of_fortune.png");
 
     private static RedPriestMythicalCreatureModel<Entity> redPriestMythicalCreatureModel;
-    private static final ResourceLocation redPriestMythicalCreatureTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/mythical_creatures/red_priest.png");
+    private static final Identifier redPriestMythicalCreatureTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/mythical_creatures/red_priest.png");
 
     private static SunMythicalCreatureModel<Entity> sunMythicalCreatureModel;
-    private static final ResourceLocation sunMythicalCreatureTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/mythical_creatures/sun.png");
+    private static final Identifier sunMythicalCreatureTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/mythical_creatures/sun.png");
 
     private static DoorHighMythicalCreatureModel<Entity> doorHighMythicalCreatureModel;
-    private static final ResourceLocation doorHighMythicalCreatureTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/mythical_creatures/door_high.png");
+    private static final Identifier doorHighMythicalCreatureTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/mythical_creatures/door_high.png");
 
     private static HighSequenceDoorsModel<Entity> mysticalDoorsModel;
-    private static final ResourceLocation mysticalDoorsTexture = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_1.png");
-    private static final ResourceLocation mysticalDoorsTexture2 = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_2.png");
-    private static final ResourceLocation mysticalDoorsTexture3 = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_3.png");
-    private static final ResourceLocation mysticalDoorsTexture4 = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_4.png");
-    private static final ResourceLocation mysticalDoorsTextur5 = ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_5.png");
+    private static final Identifier mysticalDoorsTexture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_1.png");
+    private static final Identifier mysticalDoorsTexture2 = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_2.png");
+    private static final Identifier mysticalDoorsTexture3 = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_3.png");
+    private static final Identifier mysticalDoorsTexture4 = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_4.png");
+    private static final Identifier mysticalDoorsTextur5 = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_5.png");
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onRenderLivingPre(RenderLivingEvent.Pre<?, ?> event) {
@@ -112,7 +112,7 @@ public class TransformationRenderer {
 
         RandomSource random = RandomSource.create(sizeMultiplier * 1000L);
         int textureIndex = random.nextInt(5) + 1;
-        ResourceLocation selectedTexture = switch (textureIndex) {
+        Identifier selectedTexture = switch (textureIndex) {
             case 2 -> mysticalDoorsTexture2;
             case 3 -> mysticalDoorsTexture3;
             case 4 -> mysticalDoorsTexture4;
@@ -152,7 +152,7 @@ public class TransformationRenderer {
         poseStack.popPose();
     }
 
-    private static final ResourceLocation WHITE_TEXTURE = ResourceLocation.withDefaultNamespace("textures/misc/white.png");
+    private static final Identifier WHITE_TEXTURE = Identifier.withDefaultNamespace("textures/misc/white.png");
 
     private static void renderMysticalDoorParticles(PoseStack poseStack, MultiBufferSource multiBufferSource,
                                                     int packedLight, LivingEntity entity, float partialTick, float doorSize) {
@@ -549,7 +549,7 @@ public class TransformationRenderer {
         poseStack.mulPose(Axis.XP.rotationDegrees(time * 7.3F));
 
         VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.energySwirl(
-                ResourceLocation.withDefaultNamespace("textures/entity/creeper/creeper_armor.png"),
+                Identifier.withDefaultNamespace("textures/entity/creeper/creeper_armor.png"),
                 time * 0.01F,
                 time * 0.01F
         ));
@@ -583,7 +583,7 @@ public class TransformationRenderer {
 
         // === INNER CORE — bright, tight, fast-pulsing ===
         VertexConsumer coreConsumer = multiBufferSource.getBuffer(RenderType.eyes(
-                ResourceLocation.withDefaultNamespace("textures/entity/enderman/enderman_eyes.png")
+                Identifier.withDefaultNamespace("textures/entity/enderman/enderman_eyes.png")
         ));
         float coreScale = 0.7F + Mth.sin(time * 6.0F) * 0.15F; // fast flicker
         poseStack.pushPose();
@@ -771,7 +771,7 @@ public class TransformationRenderer {
 
         // Use entity translucent emissive for glowing effect
         RenderType renderType = RenderType.entityTranslucentEmissive(
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/sun/gold.png")
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/sun/gold.png")
         );
         VertexConsumer consumer = buffer.getBuffer(renderType);
 
@@ -793,7 +793,7 @@ public class TransformationRenderer {
 
         // Add outer glow layer for extra radiance
         RenderType glowType = RenderType.energySwirl(
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/sun/gold.png"),
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/sun/gold.png"),
                 0, 0
         );
         VertexConsumer glowConsumer = buffer.getBuffer(glowType);
@@ -915,7 +915,7 @@ public class TransformationRenderer {
         float radius = 2.5f;
         float height = 2.5f;
 
-        RenderType renderType = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID,"textures/entity/sun/gold.png"));
+        RenderType renderType = RenderType.entitySolid(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID,"textures/entity/sun/gold.png"));
         VertexConsumer vertexConsumer = buffer.getBuffer(renderType);
 
         // Render sphere using latitude/longitude rings
@@ -967,7 +967,7 @@ public class TransformationRenderer {
         float pulse = 1.0f + (Mth.sin(entity.tickCount * 0.1f) * 0.05f);
 
         // Use a solid translucent render type for a more ethereal look
-        RenderType renderType = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID,"textures/entity/black_hole/black.png"));
+        RenderType renderType = RenderType.entitySolid(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID,"textures/entity/black_hole/black.png"));
         VertexConsumer vertexConsumer = buffer.getBuffer(renderType);
 
         // Render sphere using latitude/longitude rings

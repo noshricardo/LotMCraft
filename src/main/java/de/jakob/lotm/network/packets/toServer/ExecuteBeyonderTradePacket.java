@@ -8,7 +8,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +21,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 public record ExecuteBeyonderTradePacket(int npcEntityId, int tradeIndex) implements CustomPacketPayload {
 
     public static final Type<ExecuteBeyonderTradePacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "execute_beyonder_trade"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "execute_beyonder_trade"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ExecuteBeyonderTradePacket> STREAM_CODEC =
             StreamCodec.composite(

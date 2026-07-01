@@ -6,13 +6,13 @@ import de.jakob.lotm.util.helper.PureIdealismUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record StopDiscernmentPacket() implements CustomPacketPayload {
     public static final Type<StopDiscernmentPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "stop_discernment"));
+            new Type<>(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "stop_discernment"));
 
     public static final StreamCodec<ByteBuf, StopDiscernmentPacket> STREAM_CODEC = StreamCodec.unit(new StopDiscernmentPacket());
 

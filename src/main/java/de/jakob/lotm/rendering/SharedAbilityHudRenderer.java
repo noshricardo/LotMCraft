@@ -7,7 +7,7 @@ import de.jakob.lotm.util.data.ClientData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -30,16 +30,16 @@ public class SharedAbilityHudRenderer {
     private static final int COLOR_BG      = 0xCC0A0A0F;
     private static final int COLOR_ACCENT  = 0xFF4444AA;
 
-    private static final ResourceLocation backgroundTexture =
-            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/ability_frame.png");
-    private static final ResourceLocation foregroundTexture =
-            ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/ability_frame_foreground.png");
+    private static final Identifier backgroundTexture =
+            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/ability_frame.png");
+    private static final Identifier foregroundTexture =
+            Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/gui/ability_frame_foreground.png");
 
     @SubscribeEvent
     public static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
         event.registerAbove(
                 VanillaGuiLayers.HOTBAR,
-                ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "shared_ability_hud"),
+                Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "shared_ability_hud"),
                 (guiGraphics, deltaTracker) -> renderOverlay(guiGraphics)
         );
     }

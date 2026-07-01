@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class MysticalDoorRenderer extends EntityRenderer<MysticalDoorEntity> {
     private final HighSequenceDoorsModel<MysticalDoorEntity> model;
@@ -48,8 +48,8 @@ public class MysticalDoorRenderer extends EntityRenderer<MysticalDoorEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(MysticalDoorEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_" + entity.getTextureIndex() + ".png");
+    public Identifier getTextureLocation(MysticalDoorEntity entity) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_" + entity.getTextureIndex() + ".png");
 
     }
 }
