@@ -69,9 +69,9 @@ public class ModItems {
                     "item.lotmcraft.uniqueness_map",
                     new Item.Properties()
             ));
-
-    public static final DeferredItem<Item> PAPER_SWORD = ITEMS.registerItem("paper_sword", props -> new SwordItem(PAPER_TOOL_TIER, props.attributes(SwordItem.createAttributes(PAPER_TOOL_TIER, 3, -2.4f))), new Item.Properties().durability(15));
-    public static final DeferredItem<Item> PAPER_PICKAXE = ITEMS.registerItem("paper_pickaxe", props -> new PickaxeItem(PAPER_TOOL_TIER, props.attributes(PickaxeItem.createAttributes(PAPER_TOOL_TIER, 1, -2.8f))), new Item.Properties().durability(15));
+    //COPPER_SWORD = registerItem("copper_sword", (new Item.Properties()).sword(ToolMaterial.COPPER, 3.0F, -2.4F));
+    public static final DeferredItem<Item> PAPER_SWORD = ITEMS.registerItem("paper_sword", (new Item.Properties()).sword(PAPER_TOOL_TIER, 3, -2.4f));
+    public static final DeferredItem<Item> PAPER_PICKAXE = ITEMS.registerItem("paper_pickaxe", (new Item.Properties()).pickaxe(PAPER_TOOL_TIER, 1, -2.8f));
     public static final DeferredItem<Item> PAPER_AXE = ITEMS.registerItem("paper_axe", props -> new AxeItem(PAPER_TOOL_TIER, props.attributes(AxeItem.createAttributes(PAPER_TOOL_TIER, 6, -3.1f))), new Item.Properties().durability(15));
     public static final DeferredItem<Item> PAPER_SHOVEL = ITEMS.registerItem("paper_shovel", props -> new ShovelItem(PAPER_TOOL_TIER, props.attributes(ShovelItem.createAttributes(PAPER_TOOL_TIER, 1.5f, -3))), new Item.Properties().durability(15));
 

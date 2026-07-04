@@ -16,7 +16,7 @@ public class GuidingBookItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             GuidingBookRenderer.nextPage();
         }
         return InteractionResult.SUCCESS;
