@@ -5,11 +5,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.common.util.ValueInput;
+import net.neoforged.neoforge.common.util.ValueOutput;
 
 import java.util.ArrayList;
 
-public class AbilityBarComponent implements INBTSerializable<CompoundTag> {
+public class AbilityBarComponent implements ValueIOSerializable {
     private ArrayList<String> abilities = new ArrayList<>();
 
     public ArrayList<String> getAbilities() {
@@ -28,27 +30,13 @@ public class AbilityBarComponent implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-
-        ListTag list = new ListTag();
-        for (String ability : abilities) {
-            list.add(StringTag.valueOf(ability));
-        }
-
-        tag.put("Abilities", list);
-        return tag;
+    public void serialize(ValueOutput output) {
+        output.putCollection("Abilities", abilities, (ability, out) -> out.putString(null, ability));
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
+    public void deserialize(ValueInput input) {
         abilities.clear();
-
-        if (tag.contains("Abilities", Tag.TAG_LIST)) {
-            ListTag list = tag.getList("Abilities", Tag.TAG_STRING);
-            for (int i = 0; i < list.size(); i++) {
-                abilities.add(list.getString(i));
-            }
-        }
+        abilities.addAll(input.readCollection("Abilities", ArrayList::new, in -> in.getStringOr(null, "")));
     }
 }

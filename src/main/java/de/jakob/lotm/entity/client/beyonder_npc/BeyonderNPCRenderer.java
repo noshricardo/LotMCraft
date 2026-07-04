@@ -3,7 +3,7 @@ package de.jakob.lotm.entity.client.beyonder_npc;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.jakob.lotm.entity.custom.BeyonderNPCEntity;
 import de.jakob.lotm.util.shapeShifting.PlayerSkinData;
-import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

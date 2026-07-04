@@ -2,10 +2,12 @@ package de.jakob.lotm.attachments;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.common.util.ValueInput;
+import net.neoforged.neoforge.common.util.ValueOutput;
 import org.jetbrains.annotations.UnknownNullability;
 
-public class FoolingComponent implements INBTSerializable<CompoundTag> {
+public class FoolingComponent implements ValueIOSerializable {
 
     private int ticksRemaining = 0;
     private int stunTicksRemaining = 0;
@@ -36,20 +38,14 @@ public class FoolingComponent implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        tag.putInt("fooling_ticks", ticksRemaining);
-        tag.putInt("stun_ticks", stunTicksRemaining);
-        return tag;
+    public void serialize(ValueOutput output) {
+        output.putInt("fooling_ticks", ticksRemaining);
+        output.putInt("stun_ticks", stunTicksRemaining);
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
-        if (tag.contains("fooling_ticks")) {
-            ticksRemaining = tag.getInt("fooling_ticks");
-        }
-        if (tag.contains("stun_ticks")) {
-            stunTicksRemaining = tag.getInt("stun_ticks");
-        }
+    public void deserialize(ValueInput input) {
+        ticksRemaining = input.getIntOr("fooling_ticks", 0);
+        stunTicksRemaining = input.getIntOr("stun_ticks", 0);
     }
 }

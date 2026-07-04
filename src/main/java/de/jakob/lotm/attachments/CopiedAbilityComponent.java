@@ -4,31 +4,31 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.common.util.ValueInput;
+import net.neoforged.neoforge.common.util.ValueOutput;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CopiedAbilityComponent implements INBTSerializable<CompoundTag> {
+public class CopiedAbilityComponent implements ValueIOSerializable {
 
     public static final int MAX_ABILITIES = 24;
 
     public record CopiedAbilityData(String abilityId, String copyType, int remainingUses, String originalOwnerUUID) {
 
-        public CompoundTag toTag() {
-            CompoundTag tag = new CompoundTag();
-            tag.putString("AbilityId", abilityId);
-            tag.putString("CopyType", copyType);
-            tag.putInt("RemainingUses", remainingUses);
-            tag.putString("OriginalOwnerUUID", originalOwnerUUID != null ? originalOwnerUUID : "");
-            return tag;
+        public void serialize(ValueOutput output) {
+            output.putString("AbilityId", abilityId);
+            output.putString("CopyType", copyType);
+            output.putInt("RemainingUses", remainingUses);
+            output.putString("OriginalOwnerUUID", originalOwnerUUID != null ? originalOwnerUUID : "");
         }
 
-        public static CopiedAbilityData fromTag(CompoundTag tag) {
-            String abilityId = tag.getString("AbilityId");
-            String copyType = tag.getString("CopyType");
-            int remainingUses = tag.getInt("RemainingUses");
-            String ownerUUID = tag.getString("OriginalOwnerUUID");
+        public static CopiedAbilityData deserialize(ValueInput input) {
+            String abilityId = input.getStringOr("AbilityId", "");
+            String copyType = input.getStringOr("CopyType", "");
+            int remainingUses = input.getIntOr("RemainingUses", 0);
+            String ownerUUID = input.getStringOr("OriginalOwnerUUID", "");
             return new CopiedAbilityData(abilityId, copyType, remainingUses, ownerUUID.isEmpty() ? null : ownerUUID);
         }
 
@@ -76,27 +76,13 @@ public class CopiedAbilityComponent implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-
-        ListTag list = new ListTag();
-        for (CopiedAbilityData data : abilities) {
-            list.add(data.toTag());
-        }
-
-        tag.put("CopiedAbilities", list);
-        return tag;
+    public void serialize(ValueOutput output) {
+        output.putCollection("CopiedAbilities", abilities, (data, out) -> data.serialize(out));
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
+    public void deserialize(ValueInput input) {
         abilities.clear();
-
-        if (tag.contains("CopiedAbilities", Tag.TAG_LIST)) {
-            ListTag list = tag.getList("CopiedAbilities", Tag.TAG_COMPOUND);
-            for (int i = 0; i < list.size(); i++) {
-                abilities.add(CopiedAbilityData.fromTag(list.getCompound(i)));
-            }
-        }
+        abilities.addAll(input.readCollection("CopiedAbilities", ArrayList::new, CopiedAbilityData::deserialize));
     }
 }

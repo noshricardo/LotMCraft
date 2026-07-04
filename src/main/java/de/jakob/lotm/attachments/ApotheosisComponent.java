@@ -6,9 +6,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.common.util.ValueInput;
+import net.neoforged.neoforge.common.util.ValueOutput;
 
-public class ApotheosisComponent implements INBTSerializable<CompoundTag> {
+public class ApotheosisComponent implements ValueIOSerializable {
     private int apotheosisTicksLeft;
     private String pathway;
 
@@ -38,17 +40,14 @@ public class ApotheosisComponent implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-
-        tag.putInt("apotheosisTicksLeft", apotheosisTicksLeft);
-        tag.putString("pathway", pathway == null ? "" : pathway);
-        return tag;
+    public void serialize(ValueOutput output) {
+        output.putInt("apotheosisTicksLeft", apotheosisTicksLeft);
+        output.putString("pathway", pathway == null ? "" : pathway);
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
-        this.apotheosisTicksLeft = tag.getInt("apotheosisTicksLeft");
-        this.pathway = tag.getString("pathway");
+    public void deserialize(ValueInput input) {
+        this.apotheosisTicksLeft = input.getIntOr("apotheosisTicksLeft", 0);
+        this.pathway = input.getStringOr("pathway", "");
     }
 }

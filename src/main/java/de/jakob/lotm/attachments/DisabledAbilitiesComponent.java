@@ -9,14 +9,16 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.common.util.ValueInput;
+import net.neoforged.neoforge.common.util.ValueOutput;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class DisabledAbilitiesComponent implements INBTSerializable<CompoundTag> {
+public class DisabledAbilitiesComponent implements ValueIOSerializable {
 
     private final HashMap<String, Integer> hasAllAbilitiesDisabled = new HashMap<>();
     private final HashMap<String, List<DisabledAbility>> disabledAbilities = new HashMap<>();
@@ -106,59 +108,37 @@ public class DisabledAbilitiesComponent implements INBTSerializable<CompoundTag>
     }
 
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
+    public void serialize(ValueOutput output) {
+        output.putMap("allDisabled", hasAllAbilitiesDisabled, (k, out) -> out.putString(null, k), (v, out) -> out.putInt(null, v));
 
-        ListTag allDisabledList = new ListTag();
-        hasAllAbilitiesDisabled.forEach((cause, amount) -> {
-            CompoundTag causeTag = new CompoundTag();
-            causeTag.putString("cause", cause);
-            causeTag.putInt("amount", amount);
-            allDisabledList.add(causeTag);
-        });
-        tag.put("allDisabled", allDisabledList);
-
-        ListTag specificDisabledList = new ListTag();
+        List<Triple<String, String, Integer>> flatList = new ArrayList<>();
         disabledAbilities.forEach((cause, abilities) -> {
-            abilities.forEach(da -> {
-                CompoundTag abilityTag = new CompoundTag();
-                abilityTag.putString("cause", cause);
-                abilityTag.putString("ability", da.ability);
-                abilityTag.putInt("amount", da.amountDisabled);
-                specificDisabledList.add(abilityTag);
-            });
+            abilities.forEach(da -> flatList.add(new Triple<>(cause, da.ability, da.amountDisabled)));
         });
-        tag.put("specificDisabled", specificDisabledList);
 
-        return tag;
+        output.putCollection("specificDisabled", flatList, (t, out) -> {
+            out.putString("cause", t.left());
+            out.putString("ability", t.middle());
+            out.putInt("amount", t.right());
+        });
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
+    public void deserialize(ValueInput input) {
         hasAllAbilitiesDisabled.clear();
+        hasAllAbilitiesDisabled.putAll(input.readMap("allDisabled", HashMap::new, in -> in.getStringOr(null, ""), in -> in.getIntOr(null, 0)));
+
         disabledAbilities.clear();
-
-        if (compoundTag.contains("allDisabled", Tag.TAG_LIST)) {
-            ListTag allDisabledList = compoundTag.getList("allDisabled", Tag.TAG_COMPOUND);
-            for (int i = 0; i < allDisabledList.size(); i++) {
-                CompoundTag causeTag = allDisabledList.getCompound(i);
-                String cause = causeTag.getString("cause");
-                int amount = causeTag.getInt("amount");
-                hasAllAbilitiesDisabled.put(cause, amount);
-            }
-        }
-
-        if (compoundTag.contains("specificDisabled", Tag.TAG_LIST)) {
-            ListTag specificDisabledList = compoundTag.getList("specificDisabled", Tag.TAG_COMPOUND);
-            for (int i = 0; i < specificDisabledList.size(); i++) {
-                CompoundTag abilityTag = specificDisabledList.getCompound(i);
-                String cause = abilityTag.getString("cause");
-                String ability = abilityTag.getString("ability");
-                int amount = abilityTag.getInt("amount");
-                disabledAbilities.computeIfAbsent(cause, k -> new ArrayList<>()).add(new DisabledAbility(ability, amount));
-            }
-        }
+        input.readCollection("specificDisabled", ArrayList::new, in -> {
+            String cause = in.getStringOr("cause", "");
+            String ability = in.getStringOr("ability", "");
+            int amount = in.getIntOr("amount", 0);
+            disabledAbilities.computeIfAbsent(cause, k -> new ArrayList<>()).add(new DisabledAbility(ability, amount));
+            return null;
+        });
     }
+
+    private record Triple<L, M, R>(L left, M middle, R right) {}
 
     public record DisabledAbility(String ability, int amountDisabled) {
 

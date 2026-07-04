@@ -1,7 +1,7 @@
 package de.jakob.lotm.attachments;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.neoforged.neoforge.common.util.ValueInput;
+import net.neoforged.neoforge.common.util.ValueOutput;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 
@@ -31,24 +31,23 @@ public class ParasitationComponent {
         this.parasiteUUID = parasiteUUID;
     }
 
-    public static final IAttachmentSerializer<CompoundTag, ParasitationComponent> SERIALIZER =
+    public static final IAttachmentSerializer<ParasitationComponent> SERIALIZER =
             new IAttachmentSerializer<>() {
                 @Override
-                public ParasitationComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
+                public ParasitationComponent read(IAttachmentHolder holder, ValueInput input) {
                     ParasitationComponent component = new ParasitationComponent();
-                    component.parasiteUUID = tag.hasUUID("hostUUID") ? tag.getUUID("hostUUID") : null;
-                    component.isParasited = tag.getBoolean("isParasited");
+                    String uuidStr = input.getStringOr("hostUUID", "");
+                    component.parasiteUUID = uuidStr.isEmpty() ? null : UUID.fromString(uuidStr);
+                    component.isParasited = input.getBooleanOr("isParasited", false);
                     return component;
                 }
 
                 @Override
-                public CompoundTag write(ParasitationComponent component, HolderLookup.Provider lookup) {
-                    CompoundTag tag = new CompoundTag();
+                public void write(ParasitationComponent component, ValueOutput output) {
                     if (component.parasiteUUID != null) {
-                        tag.putUUID("hostUUID", component.parasiteUUID);
+                        output.putString("hostUUID", component.parasiteUUID.toString());
                     }
-                    tag.putBoolean("isParasited", component.isParasited);
-                    return tag;
+                    output.putBoolean("isParasited", component.isParasited);
                 }
             };
 }

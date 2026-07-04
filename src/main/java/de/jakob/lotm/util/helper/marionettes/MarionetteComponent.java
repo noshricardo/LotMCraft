@@ -4,6 +4,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
+import net.neoforged.neoforge.common.util.ValueInput;
+import net.neoforged.neoforge.common.util.ValueOutput;
 
 public class MarionetteComponent {
     private boolean isMarionette = false;
@@ -28,26 +30,24 @@ public class MarionetteComponent {
     public boolean shouldAttack() { return shouldAttack; }
     public void setShouldAttack(boolean shouldAttack) { this.shouldAttack = shouldAttack; }
     
-    public static final IAttachmentSerializer<CompoundTag, MarionetteComponent> SERIALIZER =
+    public static final IAttachmentSerializer<MarionetteComponent> SERIALIZER =
             new IAttachmentSerializer<>() {
                 @Override
-                public MarionetteComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
+                public MarionetteComponent read(IAttachmentHolder holder, ValueInput input) {
                     MarionetteComponent component = new MarionetteComponent();
-                    component.isMarionette = tag.getBoolean("isMarionette");
-                    component.controllerUUID = tag.getString("controllerUUID");
-                    component.followMode = tag.getBoolean("followMode");
-                    component.shouldAttack = tag.getBoolean("shouldAttack");
+                    component.isMarionette = input.getBooleanOr("isMarionette", false);
+                    component.controllerUUID = input.getStringOr("controllerUUID", "");
+                    component.followMode = input.getBooleanOr("followMode", false);
+                    component.shouldAttack = input.getBooleanOr("shouldAttack", false);
                     return component;
                 }
 
                 @Override
-                public CompoundTag write(MarionetteComponent component, HolderLookup.Provider lookup) {
-                    CompoundTag tag = new CompoundTag();
-                    tag.putBoolean("isMarionette", component.isMarionette);
-                    tag.putString("controllerUUID", component.controllerUUID);
-                    tag.putBoolean("followMode", component.followMode);
-                    tag.putBoolean("shouldAttack", component.shouldAttack);
-                    return tag;
+                public void write(MarionetteComponent component, ValueOutput output) {
+                    output.putBoolean("isMarionette", component.isMarionette);
+                    output.putString("controllerUUID", component.controllerUUID);
+                    output.putBoolean("followMode", component.followMode);
+                    output.putBoolean("shouldAttack", component.shouldAttack);
                 }
             };
 }

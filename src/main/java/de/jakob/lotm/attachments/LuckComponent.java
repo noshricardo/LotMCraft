@@ -2,10 +2,12 @@ package de.jakob.lotm.attachments;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.common.util.ValueInput;
+import net.neoforged.neoforge.common.util.ValueOutput;
 import org.jetbrains.annotations.UnknownNullability;
 
-public class LuckComponent implements INBTSerializable<CompoundTag> {
+public class LuckComponent implements ValueIOSerializable {
 
     private int luck = 0;
 
@@ -50,16 +52,12 @@ public class LuckComponent implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        tag.putInt("luck", luck);
-        return tag;
+    public void serialize(ValueOutput output) {
+        output.putInt("luck", luck);
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
-        if (compoundTag.contains("luck")) {
-            this.luck = compoundTag.getInt("luck");
-        }
+    public void deserialize(ValueInput input) {
+        this.luck = input.getIntOr("luck", 0);
     }
 }

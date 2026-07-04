@@ -3,13 +3,18 @@ package de.jakob.lotm.attachments;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
 import net.minecraft.world.level.levelgen.structure.structures.OceanMonumentPieces;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import java.util.ArrayList;
 import org.jetbrains.annotations.UnknownNullability;
+
 
 import java.util.Arrays;
 import java.util.List;
 
-public class BeyonderComponent implements INBTSerializable<CompoundTag> {
+public class BeyonderComponent implements ValueIOSerializable {
+
 
     private int sequence = 10;
     private String pathway = "none";
@@ -98,65 +103,50 @@ public class BeyonderComponent implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        tag.putInt("sequence", sequence);
-        tag.putString("pathway", pathway);
+    public void serialize(ValueOutput output) {
+        output.putInt("sequence", sequence);
+        output.putString("pathway", pathway);
 
-        ListTag pathwayHistoryTag = new ListTag();
-        for (String pathwayEntry : pathwayHistory) {
-            if(pathwayEntry == null) {
-                pathwayHistoryTag.add(StringTag.valueOf(""));
-                continue;
-            }
-            pathwayHistoryTag.add(StringTag.valueOf(pathwayEntry));
-        }
-        tag.put("pathwayHistory", pathwayHistoryTag);
+        output.putCollection("pathwayHistory", Arrays.asList(pathwayHistory), (pathwayEntry, out) -> {
+            out.putString(null, pathwayEntry == null ? "" : pathwayEntry);
+        });
 
-        ListTag characteristicStackTag = new ListTag();
-        for (int i = 0; i < characteristicStack.length; i++) {
-            CompoundTag entry = new CompoundTag();
-            entry.putInt("index", i);
-            entry.putInt("value", characteristicStack[i]);
-            characteristicStackTag.add(entry);
-        }
-        tag.put("characteristicStack", characteristicStackTag);
 
-        tag.putFloat("spirituality", spirituality);
-        tag.putFloat("digestionProgress", digestionProgress);
-        tag.putBoolean("isGriefingEnabled", isGriefingEnabled);
-        tag.putInt("cowardWormAmount", cowardWormAmount);
-        return tag;
+        output.putCollection("characteristicStack", () -> {
+            List<Integer> list = new ArrayList<>();
+            for (int i : characteristicStack) list.add(i);
+            return list.iterator();
+        }, (val, out) -> out.putInt(null, val));
+
+        output.putFloat("spirituality", spirituality);
+        output.putFloat("digestionProgress", digestionProgress);
+        output.putBoolean("isGriefingEnabled", isGriefingEnabled);
+        output.putInt("cowardWormAmount", cowardWormAmount);
     }
+
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
-        this.sequence = compoundTag.getInt("sequence");
-        this.pathway = compoundTag.getString("pathway");
+    public void deserialize(ValueInput input) {
+        this.sequence = input.getIntOr("sequence", 10);
+        this.pathway = input.getStringOr("pathway", "none");
 
-        ListTag pathwayHistoryTag = compoundTag.getList("pathwayHistory", 8); // 8 is the ID for StringTag
-        this.pathwayHistory = new String[pathwayHistoryTag.size()];
-        for (int i = 0; i < pathwayHistoryTag.size(); i++) {
-            String pathwayEntry = pathwayHistoryTag.getString(i);
-            if(pathwayEntry.isEmpty()) {
-                this.pathwayHistory[i] = null;
-            } else {
-                this.pathwayHistory[i] = pathwayEntry;
-            }
+        List<String> history = input.readCollection("pathwayHistory", ArrayList::new, in -> {
+            String s = in.getStringOr(null, "");
+            return s.isEmpty() ? null : s;
+        });
+        this.pathwayHistory = history.toArray(new String[0]);
+
+        List<Integer> stack = input.readCollection("characteristicStack", ArrayList::new, in -> in.getIntOr(null, 0));
+        this.characteristicStack = new int[stack.size()];
+        for (int i = 0; i < stack.size(); i++) {
+            this.characteristicStack[i] = stack.get(i);
         }
 
-        this.characteristicStack = new int[11];
-        ListTag characteristicStackTag = compoundTag.getList("characteristicStack", 10); // 10 = CompoundTag
-        for (int i = 0; i < characteristicStackTag.size(); i++) {
-            CompoundTag entry = characteristicStackTag.getCompound(i);
-            int index = entry.getInt("index");
-            int value = entry.getInt("value");
-            this.characteristicStack[index] = value;
-        }
-
-        this.spirituality = compoundTag.getFloat("spirituality");
-        this.digestionProgress = compoundTag.getFloat("digestionProgress");
-        this.isGriefingEnabled = compoundTag.getBoolean("isGriefingEnabled");
-        this.cowardWormAmount = compoundTag.getInt("cowardWormAmount");
+        this.spirituality = input.getFloatOr("spirituality", 0f);
+        this.digestionProgress = input.getFloatOr("digestionProgress", 0f);
+        this.isGriefingEnabled = input.getBooleanOr("isGriefingEnabled", true);
+        this.cowardWormAmount = input.getIntOr("cowardWormAmount", 0);
     }
+
+
 }

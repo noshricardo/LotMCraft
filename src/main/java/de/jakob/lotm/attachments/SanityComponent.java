@@ -4,8 +4,8 @@ import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.network.PacketHandler;
 import de.jakob.lotm.network.packets.toClient.SyncSanityPacket;
 import de.jakob.lotm.util.BeyonderData;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.neoforged.neoforge.common.util.ValueInput;
+import net.neoforged.neoforge.common.util.ValueOutput;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -104,20 +104,18 @@ public class SanityComponent {
         }
     }
 
-    public static final IAttachmentSerializer<CompoundTag, SanityComponent> SERIALIZER =
+    public static final IAttachmentSerializer<SanityComponent> SERIALIZER =
             new IAttachmentSerializer<>() {
                 @Override
-                public SanityComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
+                public SanityComponent read(IAttachmentHolder holder, ValueInput input) {
                     SanityComponent component = new SanityComponent();
-                    component.sanity = tag.getFloat("sanity");
+                    component.sanity = input.getFloatOr("sanity", 1.0f);
                     return component;
                 }
 
                 @Override
-                public CompoundTag write(SanityComponent component, HolderLookup.Provider lookup) {
-                    CompoundTag tag = new CompoundTag();
-                    tag.putFloat("sanity", component.sanity);
-                    return tag;
+                public void write(SanityComponent component, ValueOutput output) {
+                    output.putFloat("sanity", component.sanity);
                 }
             };
 }

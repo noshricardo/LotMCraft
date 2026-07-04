@@ -2,12 +2,14 @@ package de.jakob.lotm.attachments;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.common.util.ValueInput;
+import net.neoforged.neoforge.common.util.ValueOutput;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class AbilityCooldownComponent implements INBTSerializable<CompoundTag> {
+public class AbilityCooldownComponent implements ValueIOSerializable {
     private final Map<String, Integer> cooldowns = new HashMap<>();
     
     public void setCooldown(String abilityId, int ticks) {
@@ -32,22 +34,13 @@ public class AbilityCooldownComponent implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        CompoundTag cooldownsTag = new CompoundTag();
-        for (Map.Entry<String, Integer> entry : cooldowns.entrySet()) {
-            cooldownsTag.putInt(entry.getKey(), entry.getValue());
-        }
-        tag.put("cooldowns", cooldownsTag);
-        return tag;
+    public void serialize(ValueOutput output) {
+        output.putMap("cooldowns", cooldowns, (k, out) -> out.putString(null, k), (v, out) -> out.putInt(null, v));
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
+    public void deserialize(ValueInput input) {
         cooldowns.clear();
-        CompoundTag cooldownsTag = tag.getCompound("cooldowns");
-        for (String key : cooldownsTag.getAllKeys()) {
-            cooldowns.put(key, cooldownsTag.getInt(key));
-        }
+        cooldowns.putAll(input.readMap("cooldowns", HashMap::new, in -> in.getStringOr(null, ""), in -> in.getIntOr(null, 0)));
     }
 }

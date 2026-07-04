@@ -1,7 +1,7 @@
 package de.jakob.lotm.attachments;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.neoforged.neoforge.common.util.ValueInput;
+import net.neoforged.neoforge.common.util.ValueOutput;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 
@@ -22,20 +22,18 @@ public class DisabledFlightComponent {
     }
 
 
-    public static final IAttachmentSerializer<CompoundTag, DisabledFlightComponent> SERIALIZER =
+    public static final IAttachmentSerializer<DisabledFlightComponent> SERIALIZER =
             new IAttachmentSerializer<>() {
                 @Override
-                public DisabledFlightComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
+                public DisabledFlightComponent read(IAttachmentHolder holder, ValueInput input) {
                     DisabledFlightComponent component = new DisabledFlightComponent();
-                    component.cooldownTicks = tag.getInt("cooldownTicks");
+                    component.cooldownTicks = input.getIntOr("cooldownTicks", 0);
                     return component;
                 }
 
                 @Override
-                public CompoundTag write(DisabledFlightComponent component, HolderLookup.Provider lookup) {
-                    CompoundTag tag = new CompoundTag();
-                    tag.putInt("cooldownTicks", component.cooldownTicks);
-                    return tag;
+                public void write(DisabledFlightComponent component, ValueOutput output) {
+                    output.putInt("cooldownTicks", component.cooldownTicks);
                 }
             };
 }

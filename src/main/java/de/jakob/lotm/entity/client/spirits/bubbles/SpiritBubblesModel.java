@@ -9,7 +9,6 @@ import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.entity.client.spirits.dervish.SpiritDervishAnimations;
 import de.jakob.lotm.entity.custom.spirits.SpiritBubblesEntity;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -17,17 +16,16 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-public class SpiritBubblesModel<T extends SpiritBubblesEntity> extends HierarchicalModel<T> {
+public class SpiritBubblesModel extends EntityModel<SpiritBubblesRenderState> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_bubbles"), "main");
-	private final ModelPart root;
 	private final ModelPart bubbles;
 	private final ModelPart bone;
 	private final ModelPart bone2;
 	private final ModelPart bone3;
 
 	public SpiritBubblesModel(ModelPart root) {
-		this.root = root;
+		super(root);
 		this.bubbles = root.getChild("bubbles");
 		this.bone = this.bubbles.getChild("bone");
 		this.bone2 = this.bubbles.getChild("bone2");
@@ -54,11 +52,12 @@ public class SpiritBubblesModel<T extends SpiritBubblesEntity> extends Hierarchi
 	}
 
 	@Override
-	public void setupAnim(SpiritBubblesEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.root().getAllParts().forEach(ModelPart::resetPose);
-		this.applyHeadRotation(netHeadYaw, headPitch);
+	public void setupAnim(SpiritBubblesRenderState state) {
+		super.setupAnim(state);
+		this.root.getAllParts().forEach(ModelPart::resetPose);
+		this.applyHeadRotation(state.headYaw, state.headPitch);
 
-		this.animate(entity.IDLE_ANIMATION, SpiritBubblesAnimations.IDLE, ageInTicks, 1f);
+		this.animate(state.idleAnimationState, SpiritBubblesAnimations.IDLE, state.ageInTicks, 1f);
 	}
 
 	private void applyHeadRotation(float headYaw, float headPitch) {

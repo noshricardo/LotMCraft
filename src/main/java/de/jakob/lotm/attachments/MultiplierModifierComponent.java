@@ -9,14 +9,16 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.common.util.ValueInput;
+import net.neoforged.neoforge.common.util.ValueOutput;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MultiplierModifierComponent implements INBTSerializable<CompoundTag> {
+public class MultiplierModifierComponent implements ValueIOSerializable {
 
     public HashMap<String, MultiplierModifier> modifiers = new HashMap<>();
 
@@ -43,31 +45,21 @@ public class MultiplierModifierComponent implements INBTSerializable<CompoundTag
     }
 
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        ListTag modifiersList = new ListTag();
-        for (var entry : modifiers.entrySet()) {
-            CompoundTag modifierTag = new CompoundTag();
-            modifierTag.putString("cause", entry.getKey());
-            modifierTag.putFloat("multiplier", entry.getValue().multiplier);
-            modifierTag.putInt("amount", entry.getValue().amount);
-            modifiersList.add(modifierTag);
-        }
-        tag.put("modifiers", modifiersList);
-        return tag;
+    public void serialize(ValueOutput output) {
+        output.putMap("modifiers", modifiers, (k, out) -> out.putString(null, k), (v, out) -> {
+            out.putFloat("multiplier", v.multiplier);
+            out.putInt("amount", v.amount);
+        });
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
+    public void deserialize(ValueInput input) {
         modifiers.clear();
-        ListTag modifiersList = compoundTag.getList("modifiers", Tag.TAG_COMPOUND);
-        for (int i = 0; i < modifiersList.size(); i++) {
-            CompoundTag modifierTag = modifiersList.getCompound(i);
-            String cause = modifierTag.getString("cause");
-            float multiplier = modifierTag.getFloat("multiplier");
-            int amount = modifierTag.getInt("amount");
-            modifiers.put(cause, new MultiplierModifier(multiplier, amount));
-        }
+        modifiers.putAll(input.readMap("modifiers", HashMap::new, in -> in.getStringOr(null, ""), in -> {
+            float multiplier = in.getFloatOr("multiplier", 1.0f);
+            int amount = in.getIntOr("amount", 0);
+            return new MultiplierModifier(multiplier, amount);
+        }));
     }
 
     public record MultiplierModifier(float multiplier, int amount) {

@@ -3,7 +3,7 @@ package de.jakob.lotm.entity.client.avatar;
 import com.mojang.authlib.GameProfile;
 import de.jakob.lotm.entity.custom.AvatarEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

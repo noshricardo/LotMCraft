@@ -1,7 +1,7 @@
 package de.jakob.lotm.util.helper.subordinates;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.neoforged.neoforge.common.util.ValueInput;
+import net.neoforged.neoforge.common.util.ValueOutput;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 
@@ -28,26 +28,24 @@ public class SubordinateComponent {
     public boolean shouldAttack() { return shouldAttack; }
     public void setShouldAttack(boolean shouldAttack) { this.shouldAttack = shouldAttack; }
     
-    public static final IAttachmentSerializer<CompoundTag, SubordinateComponent> SERIALIZER =
+    public static final IAttachmentSerializer<SubordinateComponent> SERIALIZER =
             new IAttachmentSerializer<>() {
                 @Override
-                public SubordinateComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
+                public SubordinateComponent read(IAttachmentHolder holder, ValueInput input) {
                     SubordinateComponent component = new SubordinateComponent();
-                    component.isSubordinate = tag.getBoolean("isSubordinate");
-                    component.controllerUUID = tag.getString("controllerUUID");
-                    component.followMode = tag.getBoolean("followMode");
-                    component.shouldAttack = tag.getBoolean("shouldAttack");
+                    component.isSubordinate = input.getBooleanOr("isSubordinate", false);
+                    component.controllerUUID = input.getStringOr("controllerUUID", "");
+                    component.followMode = input.getBooleanOr("followMode", false);
+                    component.shouldAttack = input.getBooleanOr("shouldAttack", false);
                     return component;
                 }
 
                 @Override
-                public CompoundTag write(SubordinateComponent component, HolderLookup.Provider lookup) {
-                    CompoundTag tag = new CompoundTag();
-                    tag.putBoolean("isSubordinate", component.isSubordinate);
-                    tag.putString("controllerUUID", component.controllerUUID);
-                    tag.putBoolean("followMode", component.followMode);
-                    tag.putBoolean("shouldAttack", component.shouldAttack);
-                    return tag;
+                public void write(SubordinateComponent component, ValueOutput output) {
+                    output.putBoolean("isSubordinate", component.isSubordinate);
+                    output.putString("controllerUUID", component.controllerUUID);
+                    output.putBoolean("followMode", component.followMode);
+                    output.putBoolean("shouldAttack", component.shouldAttack);
                 }
             };
 }
