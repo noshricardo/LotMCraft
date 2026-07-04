@@ -56,7 +56,7 @@ public class SealingAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         int radius = 5*(int) multiplier(entity);

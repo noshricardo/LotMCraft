@@ -56,7 +56,7 @@ public class JurisdictionAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         ServerLevel serverLevel = (ServerLevel) level;
         Optional<JurisdictionZone> existing = ACTIVE_ZONES.stream()
@@ -198,7 +198,7 @@ public class JurisdictionAbility extends Ability {
 
         ClientScheduler.scheduleUntil(null, () -> {
             Level clientLevel = owner.level();
-            if (!clientLevel.isClientSide) return;
+            if (!clientLevel.isClientSide()) return;
             ClientLevel cl = (ClientLevel) clientLevel;
 
             for (JurisdictionZone z : ACTIVE_ZONES) {

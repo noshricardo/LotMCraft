@@ -84,7 +84,7 @@ public class ExplodingFallingBlockHelper {
      * Ticked
      */
     public static void tickExplodingBlocks(Level level) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         Set<FallingBlockEntity> toRemove = new HashSet<>();
 

@@ -93,7 +93,7 @@ public class WaterManipulationAbility extends SelectableAbility {
     }
 
     private void disperseWater(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.PLAYER_SPLASH, entity.getSoundSource(), 1.0f, 1.0f);
 
@@ -135,7 +135,7 @@ public class WaterManipulationAbility extends SelectableAbility {
     }
 
     private void suffocate(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, 10, 1.5f);
@@ -174,7 +174,7 @@ public class WaterManipulationAbility extends SelectableAbility {
     }
 
     private void waterSurge(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 startPos = entity.getEyePosition().add(0, .5, 0);
@@ -195,7 +195,7 @@ public class WaterManipulationAbility extends SelectableAbility {
     }
 
     private void corrosiveRain(Level level, LivingEntity entity) {
-        if (level.isClientSide)
+        if (level.isClientSide())
             return;
 
         if (castingCorrosiveRain.contains(entity.getUUID()))
@@ -221,7 +221,7 @@ public class WaterManipulationAbility extends SelectableAbility {
     }
 
     private void waterBolt(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 startPos = VectorUtil.getRelativePosition(entity.getEyePosition().add(entity.getLookAngle().normalize()), entity.getLookAngle().normalize(), 0, random.nextDouble(-.65, .65), random.nextDouble(-.1, .6));
@@ -277,7 +277,7 @@ public class WaterManipulationAbility extends SelectableAbility {
     private void aqueousLight(Level level, LivingEntity entity) {
         BlockPos targetBlock = AbilityUtil.getTargetBlock(entity, 8, true);
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockState lightBlock = Blocks.LIGHT.defaultBlockState();
             level.setBlock(targetBlock, lightBlock, 3);
 

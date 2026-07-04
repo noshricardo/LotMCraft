@@ -44,12 +44,12 @@ public class MindFogAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
     }
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         ServerLevel serverLevel = (ServerLevel) level;
         double fogRadius = 20* (int) Math.max(multiplier(entity)/2,1);
@@ -91,7 +91,7 @@ public class MindFogAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         clearArtifactScaling(entity);
     }

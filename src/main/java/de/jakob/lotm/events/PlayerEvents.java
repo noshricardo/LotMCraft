@@ -150,7 +150,7 @@ public class PlayerEvents {
 
     @SubscribeEvent
     public static void onDamage(LivingIncomingDamageEvent event) {
-        if(event.getEntity().level().isClientSide)
+        if(event.getEntity().level().isClientSide())
             return;
 
         if(DivinationAbility.dangerPremonitionActive.contains(event.getEntity().getUUID()) && random.nextFloat() < .1) {
@@ -177,7 +177,7 @@ public class PlayerEvents {
         Entity damager = event.getSource().getEntity();
         if(damager instanceof LivingEntity source && ((ToggleAbility) LOTMCraft.abilityHandler.getById("cull_ability")).isActiveForEntity(source)) {
             Level level = event.getEntity().level();
-            if(!level.isClientSide) {
+            if(!level.isClientSide()) {
                 ParticleUtil.spawnParticles((ServerLevel) level, dust, event.getEntity().getEyePosition().subtract(0, .4, 0), 40, .4, .8, .4, 0);
             }
         }

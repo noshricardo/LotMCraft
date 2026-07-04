@@ -84,7 +84,7 @@ public class StrongLightningEntity extends Entity {
         this.color = color;
         setPos(start.x, start.y, start.z);
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             entityData.set(START_X, (float) start.add(0, height + 60, 0).x);
             entityData.set(START_Y, (float) start.add(0, height + 60, 0).y);
             entityData.set(START_Z, (float) start.add(0, height + 60, 0).z);
@@ -121,7 +121,7 @@ public class StrongLightningEntity extends Entity {
         this.color = color;
         setPos(start.x, start.y, start.z);
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             entityData.set(START_X, (float) start.x);
             entityData.set(START_Y, (float) start.y);
             entityData.set(START_Z, (float) start.z);
@@ -146,7 +146,7 @@ public class StrongLightningEntity extends Entity {
     public void tick() {
         super.tick();
 
-        if (level().isClientSide && (startPos == null || direction == null)) {
+        if (level() .isClientSide() && (startPos == null || direction == null)) {
             startPos = new Vec3(entityData.get(START_X), entityData.get(START_Y), entityData.get(START_Z));
             direction = new Vec3(entityData.get(DIR_X), entityData.get(DIR_Y), entityData.get(DIR_Z));
             maxDistance = entityData.get(MAX_DISTANCE);
@@ -159,7 +159,7 @@ public class StrongLightningEntity extends Entity {
             return;
         }
 
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             updateLightningPath();
         }
 
@@ -181,7 +181,7 @@ public class StrongLightningEntity extends Entity {
             return;
         }
 
-        if(!level().isClientSide) {
+        if(!level().isClientSide()) {
             List<Float> branchesToSpawn = new ArrayList<>();
             for(float d : distancesAtWhichToSpawnNewBranches) {
                 if(Math.abs(d - currentDistance) < step * 0.5f) {
@@ -216,7 +216,7 @@ public class StrongLightningEntity extends Entity {
         if(currentDistance < maxDistance)
             currentDistance += step;
 
-        if (currentDistance >= maxDistance && !level().isClientSide) {
+        if (currentDistance >= maxDistance && !level().isClientSide()) {
             ServerScheduler.scheduleDelayed(15, this::discard);
         }
 
@@ -272,7 +272,7 @@ public class StrongLightningEntity extends Entity {
             return;
         hasHit = true;
 
-        if (!level().isClientSide && source != null) {
+        if (!level() .isClientSide() && source != null) {
             explode(pos);
 
             NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level(), pos, source, null, new String[]{"lightning", "explosion"}, explosionPower, 12));
@@ -297,7 +297,7 @@ public class StrongLightningEntity extends Entity {
             dealWaterWallDamage(pos);
 
             ServerScheduler.scheduleDelayed(15, this::discardEntityAndBranches);
-        } else if(level().isClientSide) {
+        } else if(level().isClientSide()) {
             ClientHandler.applyCameraShakeToPlayersInRadius(3f, 25, (ClientLevel) level(), pos, 50);
         }
     }
@@ -314,7 +314,7 @@ public class StrongLightningEntity extends Entity {
             return;
         hasHit = true;
 
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             Vec3 pos = hit.getLocation();
             if(source != null) {
                 explode(pos);
@@ -355,7 +355,7 @@ public class StrongLightningEntity extends Entity {
     }
 
     private void dealWaterConductionDamage(Vec3 pos) {
-        if(source == null || level().isClientSide) return;
+        if(source == null || level().isClientSide()) return;
 
         ServerLevel serverLevel = (ServerLevel) level();
         AbilityUtil.getNearbyEntities(source, serverLevel, pos, 15).forEach(e -> {
@@ -367,7 +367,7 @@ public class StrongLightningEntity extends Entity {
     }
 
     private void dealWaterWallDamage(Vec3 pos) {
-        if(source == null || level().isClientSide) return;
+        if(source == null || level().isClientSide()) return;
 
         ServerLevel serverLevel = (ServerLevel) level();
         for(WaterMasteryAbility.ActiveWaterWall wall : WaterMasteryAbility.getActiveWaterWalls()) {

@@ -73,7 +73,7 @@ public class ParasitationAbility extends SelectableAbility {
     }
 
     private void controlling(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (!(entity instanceof ServerPlayer player)) return;
 
@@ -204,7 +204,7 @@ public class ParasitationAbility extends SelectableAbility {
 
     // conceal mode
     private void concealed(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (!(entity instanceof ServerPlayer player)) return;
 
@@ -304,7 +304,7 @@ public class ParasitationAbility extends SelectableAbility {
 
         if (!(player instanceof ServerPlayer serverPlayer)) return;
 
-        if (serverPlayer.level().isClientSide) return;
+        if (serverPlayer.level().isClientSide()) return;
         if (!(serverPlayer.level() instanceof ServerLevel serverLevel)) return;
 
 

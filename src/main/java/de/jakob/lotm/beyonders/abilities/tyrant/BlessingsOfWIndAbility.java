@@ -45,7 +45,7 @@ public class BlessingsOfWIndAbility extends SelectableAbility {
 
     @Override
     public void castSelectedAbility(Level level, LivingEntity entity, int abilityIndex) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
         if(!(entity instanceof Player) && abilityIndex == 3) {
             abilityIndex = 0;
         }
@@ -61,7 +61,7 @@ public class BlessingsOfWIndAbility extends SelectableAbility {
     }
 
     private void glide(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         entity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 20 * 8, 1, false, false, false));
 
@@ -73,7 +73,7 @@ public class BlessingsOfWIndAbility extends SelectableAbility {
     }
 
     private void airCushion(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         PhysicalEnhancementsAbility.addEnhancementBoost(entity, PhysicalEnhancementsAbility.EnhancementType.RESISTANCE, "blessings_of_wind_resistance", 2);
         UUID entityId = entity.getUUID();
@@ -92,7 +92,7 @@ public class BlessingsOfWIndAbility extends SelectableAbility {
     }
 
     private void penetariveWind(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         BeyonderData.addModifier(entity, "blessings_of_wind_strength", 1.3f);
         PhysicalEnhancementsAbility.addEnhancementBoost(entity, PhysicalEnhancementsAbility.EnhancementType.STRENGTH, "blessings_of_wind", 2);
@@ -113,7 +113,7 @@ public class BlessingsOfWIndAbility extends SelectableAbility {
     }
 
     private void speedOfWind(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         PhysicalEnhancementsAbility.addEnhancementBoost(entity, PhysicalEnhancementsAbility.EnhancementType.SPEED, "blessings_of_wind", 6);
         UUID entityId = entity.getUUID();

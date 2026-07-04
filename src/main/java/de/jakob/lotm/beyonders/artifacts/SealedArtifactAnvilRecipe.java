@@ -64,7 +64,7 @@ public class SealedArtifactAnvilRecipe {
         result.set(ModDataComponents.SEALED_ARTIFACT_GENERATED, false);
 
         var level = event.getPlayer().level();
-        if(!level.isClientSide)
+        if(!level.isClientSide())
             result.set(ModDataComponents.SEALED_ARTIFACT_GENERATED_FAILED,
                 isFailed((ServerLevel) level, characteristic.getSequence()));
 

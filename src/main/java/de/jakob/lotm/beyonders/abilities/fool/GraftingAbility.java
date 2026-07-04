@@ -286,7 +286,7 @@ public class GraftingAbility extends SelectableAbility {
 
     @Override
     public void onHold(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             level.getEntitiesOfClass(LocationGraftingEntity.class, entity.getBoundingBox().inflate(20)).forEach(e -> {
                 ParticleUtil.spawnParticles((ClientLevel) level, ParticleTypes.WITCH, e.position(), 30, .6, .1, .6, 0);
                 ParticleUtil.spawnParticles((ClientLevel) level, ParticleTypes.END_ROD, e.position(), 5, .6, .1, .6, 0);

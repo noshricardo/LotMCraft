@@ -156,7 +156,7 @@ public class QuestManager {
 
     @SubscribeEvent
     public static void onServerPlayerTick(PlayerTickEvent.Post event) {
-        if(event.getEntity().level().isClientSide || !(event.getEntity() instanceof ServerPlayer player))
+        if(event.getEntity().level() .isClientSide() || !(event.getEntity() instanceof ServerPlayer player))
             return;
 
         QuestComponent component = player.getData(ModAttachments.QUEST_COMPONENT);

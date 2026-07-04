@@ -52,7 +52,7 @@ public class LesserConcealmentAbility extends SelectableAbility {
     }
 
     private void conceal_self(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         if(!(entity instanceof ServerPlayer player)) return;
         int durationTicks =300*20*(10-BeyonderData.getSequence(entity));
@@ -71,7 +71,7 @@ public class LesserConcealmentAbility extends SelectableAbility {
     }
 
     private void conceal_target(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         if(!(entity instanceof ServerPlayer player)) return;
 

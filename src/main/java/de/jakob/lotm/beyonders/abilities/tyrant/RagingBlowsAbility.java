@@ -34,7 +34,7 @@ public class RagingBlowsAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(!level.isClientSide) {
+        if(!level.isClientSide()) {
             double multiplier = multiplier(entity)/1.5;
             ServerScheduler.scheduleForDuration(0, 6, 6 * 9, () -> {
                 Vec3 pos = VectorUtil.getRelativePosition(entity.getEyePosition(), entity.getLookAngle().normalize(), random.nextDouble(1, 2), random.nextDouble(-1.5, 1.5), random.nextDouble(-.5, .5));

@@ -57,7 +57,7 @@ public class RequiemAbility extends Ability {
         if(!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         for(int i = 0; i < 8; i++) {

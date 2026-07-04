@@ -91,7 +91,7 @@ public class ExileDoorsEntity extends Entity {
             return;
         }
 
-        if(this.level().isClientSide) {
+        if(this.level().isClientSide()) {
             this.IDLE.startIfStopped(this.tickCount);
             return;
         }

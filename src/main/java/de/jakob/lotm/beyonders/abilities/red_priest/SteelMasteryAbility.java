@@ -50,7 +50,7 @@ public class SteelMasteryAbility extends SelectableAbility {
 
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int abilityIndex) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
         switch (abilityIndex) {
             case 0 -> steelSkin((ServerLevel) level, entity);

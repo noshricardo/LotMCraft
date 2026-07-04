@@ -36,7 +36,7 @@ public class DivineKingdomAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity caster) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         level.playSound(null, caster.blockPosition(),

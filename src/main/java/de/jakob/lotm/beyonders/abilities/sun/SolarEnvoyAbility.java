@@ -86,7 +86,7 @@ public class SolarEnvoyAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             ClientHandler.changeToThirdPerson(entity);
             return;
         }
@@ -117,7 +117,7 @@ public class SolarEnvoyAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             ClientHandler.changeToFirstPerson(entity);
             return;
         }

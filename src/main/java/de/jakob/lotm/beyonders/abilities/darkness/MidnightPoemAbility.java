@@ -140,7 +140,7 @@ public class MidnightPoemAbility extends SelectableAbility {
     }
 
     private void wilt(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         level.playSound(null, entity.blockPosition(), ModSounds.MIDNIGHT_POEM.get(), entity.getSoundSource(), 1.0f, 1.0f);
@@ -160,7 +160,7 @@ public class MidnightPoemAbility extends SelectableAbility {
     }
 
     private void lullaby(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         level.playSound(null, entity.blockPosition(), ModSounds.MIDNIGHT_POEM.get(), entity.getSoundSource(), 1.0f, 1.0f);
@@ -199,7 +199,7 @@ public class MidnightPoemAbility extends SelectableAbility {
 
     private  void console (Level level, LivingEntity entity)
     {
-        if(level.isClientSide || !(level instanceof ServerLevel serverLevel)) {
+        if(level .isClientSide() || !(level instanceof ServerLevel serverLevel)) {
             return;
         }
 
@@ -229,7 +229,7 @@ public class MidnightPoemAbility extends SelectableAbility {
     }
     private  void agitate (Level level, LivingEntity entity)
     {
-        if(level.isClientSide || !(level instanceof ServerLevel serverLevel)) {
+        if(level .isClientSide() || !(level instanceof ServerLevel serverLevel)) {
             return;
         }
 
@@ -278,7 +278,7 @@ public class MidnightPoemAbility extends SelectableAbility {
     }
     private  void pacify (Level level, LivingEntity entity)
     {
-        if(level.isClientSide || !(level instanceof ServerLevel serverLevel)) {
+        if(level .isClientSide() || !(level instanceof ServerLevel serverLevel)) {
             return;
         }
 

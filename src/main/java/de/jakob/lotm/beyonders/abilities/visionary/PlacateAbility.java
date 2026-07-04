@@ -71,7 +71,7 @@ public class PlacateAbility extends SelectableAbility {
     }
 
     private void removeCue(Level level, LivingEntity entity){
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
         if (!(entity instanceof ServerPlayer player)) return;
 
@@ -145,7 +145,7 @@ public class PlacateAbility extends SelectableAbility {
     }
 
     private void checkCue(Level level, LivingEntity entity){
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
         if (!(entity instanceof ServerPlayer player)) return;
 
@@ -193,7 +193,7 @@ public class PlacateAbility extends SelectableAbility {
     }
 
     private void placateOthers(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         level.playSound(null, entity.position().x, entity.position().y, entity.position().z, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1, 1);
@@ -204,7 +204,7 @@ public class PlacateAbility extends SelectableAbility {
     }
 
     private void placateYourself(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         level.playSound(null, entity.position().x, entity.position().y, entity.position().z, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1, 1);

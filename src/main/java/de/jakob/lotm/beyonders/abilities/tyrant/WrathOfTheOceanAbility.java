@@ -43,7 +43,7 @@ public class WrathOfTheOceanAbility extends SelectableAbility {
 
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int selectedAbility) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         switch (selectedAbility) {
             case 0 -> boilingWater((ServerLevel) level, entity);

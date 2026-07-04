@@ -119,12 +119,12 @@ public class StoryBookItem extends Item {
         // World item entity — discard any dropped story books immediately
         if (event.getEntity() instanceof ItemEntity itemEntity) {
             if (!(itemEntity.getItem().getItem() instanceof StoryBookItem)) return;
-            if (!itemEntity.level().isClientSide) itemEntity.discard();
+            if (!itemEntity.level().isClientSide()) itemEntity.discard();
             return;
         }
 
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        if (player.level().isClientSide) return;
+        if (player.level().isClientSide()) return;
         if (player.tickCount % 20 != 0) return;
 
         int bookCount = 0;

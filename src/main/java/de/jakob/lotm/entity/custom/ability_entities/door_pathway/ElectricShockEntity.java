@@ -62,7 +62,7 @@ public class ElectricShockEntity extends Entity {
         setPos(start.x, start.y, start.z);
 
         // Set synced data
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             entityData.set(START_X, (float) start.x);
             entityData.set(START_Y, (float) start.y);
             entityData.set(START_Z, (float) start.z);
@@ -81,7 +81,7 @@ public class ElectricShockEntity extends Entity {
         super.tick();
 
         // Initialize from synced data on client side
-        if (level().isClientSide && (startPos == null || direction == null)) {
+        if (level() .isClientSide() && (startPos == null || direction == null)) {
             startPos = new Vec3(entityData.get(START_X), entityData.get(START_Y), entityData.get(START_Z));
             direction = new Vec3(entityData.get(DIR_X), entityData.get(DIR_Y), entityData.get(DIR_Z));
             maxDistance = entityData.get(MAX_DISTANCE);
@@ -94,7 +94,7 @@ public class ElectricShockEntity extends Entity {
             return; // Wait for NBT data to be synced
         }
 
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             updateLightningPath();
         }
 
@@ -180,7 +180,7 @@ public class ElectricShockEntity extends Entity {
 
     private void onHitEntity(Entity entity) {
         // Handle entity hit - damage, effects, etc.
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             DamageSource dmg = (source != null)
                     ? ModDamageTypes.source(entity.level(), ModDamageTypes.BEYONDER_GENERIC)
                     : level().damageSources().generic();
@@ -194,7 +194,7 @@ public class ElectricShockEntity extends Entity {
 
     private void onHitBlock(HitResult hit) {
         // Handle block hit - particles, sound, etc.
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             // Add your block hit logic here
         }
     }

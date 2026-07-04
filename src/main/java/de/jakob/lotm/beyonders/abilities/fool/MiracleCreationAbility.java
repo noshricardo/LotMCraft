@@ -60,7 +60,7 @@ public class MiracleCreationAbility extends SelectableAbility {
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int abilityIndex) {
         if(!(entity instanceof Player player)) return; // Will be handled later
-        if(!level.isClientSide) return; // Client-side only for opening the wheel
+        if(!level.isClientSide()) return; // Client-side only for opening the wheel
         switch (abilityIndex) {
             case 0 -> {
                 if(!BeyonderData.isGriefingEnabled(entity)) {

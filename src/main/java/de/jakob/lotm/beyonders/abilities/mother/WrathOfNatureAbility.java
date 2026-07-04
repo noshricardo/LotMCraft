@@ -73,7 +73,7 @@ public class WrathOfNatureAbility extends SelectableAbility {
     }
 
     private void fire(Level level, LivingEntity entity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             Vec3 center = entity.position();
 
             NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level, center, entity, this, new String[]{"burning"}, 55, 20 * 15));
@@ -139,7 +139,7 @@ public class WrathOfNatureAbility extends SelectableAbility {
         Vec3 targetLocFinak = AbilityUtil.getTargetLocation(entity, 70, 2, true);
         double multiplier = (int) Math.max(multiplier(entity)/2,1);
 
-        if(!level.isClientSide)
+        if(!level.isClientSide())
             NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level, targetLocFinak, entity, this, new String[]{"explosion"}, 50, 20 * 4));
 
         ServerScheduler.scheduleForDuration(0, 20, 20 * 4, () -> {

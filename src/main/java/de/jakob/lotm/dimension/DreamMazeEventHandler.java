@@ -43,7 +43,7 @@ public class DreamMazeEventHandler {
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
         if (!(event.getEntity() instanceof LivingEntity entity)) return;
-        if (entity.level().isClientSide) return;
+        if (entity.level().isClientSide()) return;
         if (!(entity.level() instanceof ServerLevel serverLevel)) return;
         if (!serverLevel.dimension().equals(ModDimensions.DREAM_MAZE_DIMENSION_KEY)) {
             entryTicks.remove(entity.getUUID());

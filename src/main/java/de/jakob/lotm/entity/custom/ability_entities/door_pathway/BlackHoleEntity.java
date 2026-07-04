@@ -116,7 +116,7 @@ public class BlackHoleEntity extends Entity {
     public void tick() {
         super.tick();
 
-        if(level().isClientSide)
+        if(level().isClientSide())
             return;
 
         if(age == 0) {

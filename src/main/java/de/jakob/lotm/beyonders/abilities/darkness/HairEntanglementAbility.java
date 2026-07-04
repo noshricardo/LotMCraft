@@ -50,7 +50,7 @@ public class HairEntanglementAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
         float multiplier = multiplier(entity);
         for(int i = 0; i < 8; i++) {

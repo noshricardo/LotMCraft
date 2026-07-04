@@ -40,7 +40,7 @@ public class ProvokingAbility extends Ability {
     public void onAbilityUse(Level level, LivingEntity entity) {
         Vec3 pos = entity.getEyePosition();
 
-        if(!level.isClientSide) {
+        if(!level.isClientSide()) {
             List<LivingEntity> nearbyEntities = AbilityUtil.getNearbyEntities(entity, (ServerLevel) level, pos, 18);
             nearbyEntities.forEach(e -> {
                 if(e instanceof Mob mob)

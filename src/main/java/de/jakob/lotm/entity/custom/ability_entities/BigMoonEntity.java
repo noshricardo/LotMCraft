@@ -81,7 +81,7 @@ public class BigMoonEntity extends Entity {
     }
 
     public LivingEntity getOwnerEntity() {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return null;
         }
         Optional<UUID> ownerUUID = this.getOwnerUUID();

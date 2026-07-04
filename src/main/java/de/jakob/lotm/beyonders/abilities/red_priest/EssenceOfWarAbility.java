@@ -29,7 +29,7 @@ public class EssenceOfWarAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         WarBannerEntity banner = new WarBannerEntity(ModEntities.WAR_BANNER.get(), level, 20 * 90, entity.getUUID());

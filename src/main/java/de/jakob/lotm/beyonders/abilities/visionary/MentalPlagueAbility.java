@@ -82,7 +82,7 @@ public class MentalPlagueAbility extends SelectableAbility {
     }
 
     private void place(LivingEntity entity, Level level){
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, (int) (30* multiplier(entity)), 2);
         if(target == null) {
@@ -111,7 +111,7 @@ public class MentalPlagueAbility extends SelectableAbility {
     }
 
     private void activateSight(LivingEntity entity, Level level){
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, 30* (int) Math.max(multiplier(entity)/4,1), 2);
         if(target == null) {
@@ -131,7 +131,7 @@ public class MentalPlagueAbility extends SelectableAbility {
     }
 
     private void activateAoe(LivingEntity entity, Level level){
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         float multiplier = multiplier(entity);
         int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
@@ -149,7 +149,7 @@ public class MentalPlagueAbility extends SelectableAbility {
     }
 
     private void list(LivingEntity entity, Level level){
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
         if(!(entity instanceof ServerPlayer player)) return;
 
         var list = player.server.getPlayerList().getPlayers();

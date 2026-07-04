@@ -40,7 +40,7 @@ public class RoarOfTheThunderGodAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             ClientHandler.applyCameraShakeToPlayersInRadius(2F, (int) (30* multiplier(entity)), (ClientLevel) level, entity.position(), 60);
             return;
         }

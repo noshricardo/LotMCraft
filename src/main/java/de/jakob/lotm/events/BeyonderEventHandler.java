@@ -573,7 +573,7 @@ public class BeyonderEventHandler {
         if (!(victim instanceof Player)) return;
 
         if (source.getEntity() instanceof ServerPlayer player) {
-            if (player.level().isClientSide) return;
+            if (player.level().isClientSide()) return;
 
             if (!BeyonderData.isBeyonder(player) || !BeyonderData.isBeyonder(victim)) return;
 

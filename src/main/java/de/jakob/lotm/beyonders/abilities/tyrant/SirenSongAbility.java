@@ -48,7 +48,7 @@ public class SirenSongAbility extends SelectableAbility {
 
     @Override
     public void castSelectedAbility(Level level, LivingEntity entity, int abilityIndex) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         switch (abilityIndex) {
@@ -68,14 +68,14 @@ public class SirenSongAbility extends SelectableAbility {
 
         final UUID[] posTrackerHolder = new UUID[1];
         posTrackerHolder[0] = ServerScheduler.scheduleForDuration(0,  2, (int) (20 * 20* multiplier(entity)), () -> {
-            if(entity.level().isClientSide)
+            if(entity.level().isClientSide())
                 return;
             supplier.setPosition(entity.position());
             supplier.setLevel(entity.level());
         }, level);
         final UUID[] effectHolder = new UUID[1];
         effectHolder[0] = ServerScheduler.scheduleForDuration(0,  18, (int) (20 * 20* multiplier(entity)), () -> {
-            if(entity.level().isClientSide)
+            if(entity.level().isClientSide())
                 return;
 
             if(InteractionHandler.isInteractionPossible(new Location(entity.position(), entity.level()), "explosion", entitySeq)) {
@@ -106,7 +106,7 @@ public class SirenSongAbility extends SelectableAbility {
         entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, (int) (20 * 20* multiplier(entity)), speedLevel, false, false, false));
 
         ServerScheduler.scheduleForDuration(0,  2, (int) (20 * 20* multiplier(entity)), () -> {
-            if(entity.level().isClientSide)
+            if(entity.level().isClientSide())
                 return;
             loc.setPosition(entity.position());
             loc.setLevel(entity.level());
@@ -123,14 +123,14 @@ public class SirenSongAbility extends SelectableAbility {
         int entitySeq = AbilityUtil.getSeqWithArt(entity, this);
         final UUID[] posTrackerHolder = new UUID[1];
         posTrackerHolder[0] = ServerScheduler.scheduleForDuration(0,  2, (int) (20 * 20* multiplier(entity)), () -> {
-            if(entity.level().isClientSide)
+            if(entity.level().isClientSide())
                 return;
             supplier.setPosition(entity.position());
             supplier.setLevel(entity.level());
         }, level);
         final UUID[] effectHolder = new UUID[1];
         effectHolder[0] = ServerScheduler.scheduleForDuration(0,  18, (int) (20 * 20* multiplier(entity)), () -> {
-            if(entity.level().isClientSide)
+            if(entity.level().isClientSide())
                 return;
 
             if(InteractionHandler.isInteractionPossible(new Location(entity.position(), entity.level()), "explosion", entitySeq)) {

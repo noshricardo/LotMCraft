@@ -43,7 +43,7 @@ public class SpiritWorldTraversalAbility extends Ability {
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
         if(!(entity instanceof ServerPlayer player)) return;
-        if (player.level().isClientSide) return;
+        if (player.level().isClientSide()) return;
         ServerLevel targetLevel;
         Vec3 targetPos;
 

@@ -104,7 +104,7 @@ public class VirtualPersonaAbility extends SelectableAbility {
     }
 
     private void createAvatar(Level level, LivingEntity entity){
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         int seq = BeyonderData.getSequence(entity);
         if(seq > 3) return;
@@ -224,7 +224,7 @@ public class VirtualPersonaAbility extends SelectableAbility {
     }
 
     private void move(Level level, LivingEntity entity){
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         var component = entity.getData(ModAttachments.VIRTUAL_PERSONAS.get());
         int seq = BeyonderData.getSequence(entity);

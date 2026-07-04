@@ -27,7 +27,7 @@ public class EnhancedMentalAttributesAbility extends PassiveAbilityItem {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         // Divination immunity — refresh every tick call (every 5 ticks)
         DivinationAbility.DIVINATION_IMMUNE.add(entity.getUUID());

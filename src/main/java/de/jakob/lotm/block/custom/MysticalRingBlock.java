@@ -81,7 +81,7 @@ public class MysticalRingBlock extends Block implements EntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                               Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             spawnBeyonder(player, (ServerLevel) level, pos);
             return ItemInteractionResult.SUCCESS;
         }
@@ -183,7 +183,7 @@ public class MysticalRingBlock extends Block implements EntityBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                                                Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             spawnBeyonder(player, (ServerLevel) level, pos);
             return InteractionResult.SUCCESS;
         }

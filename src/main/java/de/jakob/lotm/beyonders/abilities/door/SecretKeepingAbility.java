@@ -22,7 +22,7 @@ public class SecretKeepingAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity caster) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         level.playSound(null, caster.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, caster.getSoundSource(), 1, 1);
         List<LivingEntity> affectedEntities = AbilityUtil.getNearbyEntities(null, (ServerLevel) level, caster.position(), 5)

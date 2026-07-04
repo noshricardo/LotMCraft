@@ -31,7 +31,7 @@ public class BeyonderPotion extends Item {
 
     @Override
     public @NotNull ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             AdvancementUtil.advance(entity, pathway, sequence);
         }
 

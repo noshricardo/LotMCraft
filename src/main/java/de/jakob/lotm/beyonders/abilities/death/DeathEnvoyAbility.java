@@ -52,7 +52,7 @@ public class DeathEnvoyAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         if (InteractionHandler.isInteractionPossibleStrictlyHigher(new Location(entity.position(), serverLevel), "purification", BeyonderData.getSequence(entity), -1)) return;

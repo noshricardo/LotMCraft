@@ -623,7 +623,7 @@ public class NegativeEffect {
      */
 
     public void apply(Player player, boolean inMainHand, List<String> pathway) {
-        if(!player.level().isClientSide) {
+        if(!player.level().isClientSide()) {
             DoorAuthorityData doorData = DoorAuthorityData.get((ServerLevel) player.level());
             if (doorData.isActive()) {
                 if(doorData.getEffectId().equalsIgnoreCase("strengthen")) return;

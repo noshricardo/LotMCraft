@@ -124,7 +124,7 @@ public class BeyonderNPCEntity extends PathfinderMob {
         if(!BeyonderData.isBeyonder(this) && !pathway.equalsIgnoreCase("none") && !pathway.isEmpty()) {
             this._pathway = pathway;
             this._sequence = sequence;
-            if(!level.isClientSide) {
+            if(!level.isClientSide()) {
                 BeyonderData.setBeyonder(this, pathway, sequence);
             }
         }
@@ -136,7 +136,7 @@ public class BeyonderNPCEntity extends PathfinderMob {
                 Random random = new Random();
                 _sequence = random.nextInt(BeyonderData.getHighestImplementedSequence(_pathway), 10);
             }
-            if(!level.isClientSide) {
+            if(!level.isClientSide()) {
                 BeyonderData.setBeyonder(this, _pathway, _sequence);
             }
         }
@@ -193,7 +193,7 @@ public class BeyonderNPCEntity extends PathfinderMob {
     public void onAddedToLevel() {
         super.onAddedToLevel();
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             // Initialize quest data on first spawn
             if (!this.getPersistentData().getBoolean("Initialized")) {
                 this.getPersistentData().putBoolean("Initialized", true);
@@ -270,7 +270,7 @@ public class BeyonderNPCEntity extends PathfinderMob {
     public void tick() {
         super.tick();
 
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return;
         }
 
@@ -554,7 +554,7 @@ public class BeyonderNPCEntity extends PathfinderMob {
 
     public void setHostile(boolean hostile) {
         this.entityData.set(IS_HOSTILE, hostile);
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             updateGoalsBasedOnHostilityAndTrades();
         }
     }
@@ -573,7 +573,7 @@ public class BeyonderNPCEntity extends PathfinderMob {
             if (cached != null) {
                 return cached;
             }
-            if (this.level().isClientSide) {
+            if (this.level().isClientSide()) {
                 PlayerSkinData.fetchAndCacheSkin(getTargetPlayerUUID().get());
             }
         }

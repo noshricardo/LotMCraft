@@ -99,7 +99,7 @@ public class AbilityUseGoal extends Goal {
     }
 
     private void useAbility(Level level, List<Ability> usableAbilities) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
 

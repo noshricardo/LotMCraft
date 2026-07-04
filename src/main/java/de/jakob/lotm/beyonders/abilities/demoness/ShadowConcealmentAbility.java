@@ -53,7 +53,7 @@ public class ShadowConcealmentAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(!level.isClientSide) {
+        if(!level.isClientSide()) {
 
             // make invisible
             invisiblePlayers.add(entity.getUUID());

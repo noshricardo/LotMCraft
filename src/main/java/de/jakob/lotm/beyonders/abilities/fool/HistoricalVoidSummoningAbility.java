@@ -1015,7 +1015,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
 
         // run every 30s
         if (player.tickCount % 600 != 0) return;
-        if (level.isClientSide || !(level instanceof ServerLevel serverLevel) || !(player instanceof ServerPlayer serverPlayer)) return;
+        if (level .isClientSide() || !(level instanceof ServerLevel serverLevel) || !(player instanceof ServerPlayer serverPlayer)) return;
 
         // decrease the borrow count and return back to original state
         HistoricalVoidComponent data = serverPlayer.getData(ModAttachments.HISTORICAL_VOID_COMPONENT.get());
@@ -1061,7 +1061,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
 
         // run every 30s
         if (entity.tickCount % 600 != 0) return;
-        if (level.isClientSide || !(level instanceof ServerLevel serverLevel)) return;
+        if (level .isClientSide() || !(level instanceof ServerLevel serverLevel)) return;
 
         if(entity.getPersistentData().getBoolean("VoidSummoned")) {
             if (entity.getPersistentData().getLong("VoidSummonTime") < serverLevel.getGameTime()) {
@@ -1118,7 +1118,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
     // Event handler for item toss
     @SubscribeEvent
     public static void onItemToss(ItemTossEvent event) {
-        if(event.getPlayer().level().isClientSide) return;
+        if(event.getPlayer().level().isClientSide()) return;
 
         ItemStack tossedItem = event.getEntity().getItem();
 

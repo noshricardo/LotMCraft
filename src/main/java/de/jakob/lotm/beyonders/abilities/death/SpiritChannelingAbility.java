@@ -125,7 +125,7 @@ public class SpiritChannelingAbility extends SelectableAbility {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if (InteractionHandler.isInteractionPossibleStrictlyHigher(new Location(entity.position(), (ServerLevel) level), "purification", de.jakob.lotm.util.BeyonderData.getSequence(entity), -1)) return;
 
@@ -140,7 +140,7 @@ public class SpiritChannelingAbility extends SelectableAbility {
 
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int abilityIndex) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         String[] names = getAbilityNamesForPlayer(entity.getUUID());
         if (abilityIndex >= names.length) return;
@@ -378,7 +378,7 @@ public class SpiritChannelingAbility extends SelectableAbility {
     // -------------------------------------------------------------------------
 
     private void frozenDomain(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         int casterSeq = de.jakob.lotm.util.BeyonderData.getSequence(entity);
         Vec3 startPos = entity.position();
@@ -403,7 +403,7 @@ public class SpiritChannelingAbility extends SelectableAbility {
     }
 
     private void glacialAegis(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if (glacialAegisActive.contains(entity.getUUID())) {
             AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.spirit_channeling.aegis_already_active").withColor(0xFF334f23));
@@ -430,7 +430,7 @@ public class SpiritChannelingAbility extends SelectableAbility {
     // -------------------------------------------------------------------------
 
     private void stoneRestrainment(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, 20, 1.5f);
         if (target == null) {
@@ -463,7 +463,7 @@ public class SpiritChannelingAbility extends SelectableAbility {
     }
 
     private void earthenFist(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         Vec3 startPos = entity.getEyePosition();
         Vec3 direction = entity.getLookAngle().normalize();
@@ -515,7 +515,7 @@ public class SpiritChannelingAbility extends SelectableAbility {
     }
 
     private void quicksand(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, (int) (25 * multiplier(entity)), 1.5f);
         if (target == null) {
@@ -550,7 +550,7 @@ public class SpiritChannelingAbility extends SelectableAbility {
     }
 
     private void earthHeal(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         float healAmount = entity.getMaxHealth() * 0.10f;
         float newHealth = Math.min(entity.getHealth() + healAmount, entity.getMaxHealth());

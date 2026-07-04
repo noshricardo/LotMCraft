@@ -38,7 +38,7 @@ public class WarSongAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Location loc = new Location(entity.getEyePosition().add(0, .1, 0), level);
@@ -57,7 +57,7 @@ public class WarSongAbility extends Ability {
         entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, (int) (20 * 30*multiplier(entity)), speedLevel, false, false, false));
 
         ServerScheduler.scheduleForDuration(0,  2, 20 * 30, () -> {
-            if(entity.level().isClientSide)
+            if(entity.level().isClientSide())
                 return;
             loc.setPosition(entity.position());
             loc.setLevel(entity.level());

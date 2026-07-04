@@ -330,7 +330,7 @@ public class ConcealmentAbility extends SelectableAbility {
         if(!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         float multiplier = multiplier(entity);

@@ -51,7 +51,7 @@ public class ChainOfCommandAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide || !(level instanceof ServerLevel serverLevel)) {
+        if(level .isClientSide() || !(level instanceof ServerLevel serverLevel)) {
             return;
         }
 
@@ -87,7 +87,7 @@ public class ChainOfCommandAbility extends Ability {
     private static ArrayList<LivingEntity> getSubordinatesOfPlayerInAllLevelsOrderedById(LivingEntity entity) {
         Level level = entity.level();
 
-        if(level.isClientSide || !(level instanceof ServerLevel serverLevel)) {
+        if(level .isClientSide() || !(level instanceof ServerLevel serverLevel)) {
             return new ArrayList<>();
         }
 

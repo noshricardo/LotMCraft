@@ -7,7 +7,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.entity.custom.spirits.SpiritDervishEntity;
-import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.animation.KeyframeAnimation;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -15,21 +17,22 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-public class SpiritDervishModel<T extends SpiritDervishEntity> extends HierarchicalModel<T> {
+public class SpiritDervishModel<T extends SpiritDervishRenderState> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_dervish"), "main");
-	private final ModelPart root;
 	private final ModelPart head;
 	private final ModelPart ring;
 	private final ModelPart bone;
 	private final ModelPart bone2;
+	private final KeyframeAnimation idleAnimation;
 
 	public SpiritDervishModel(ModelPart root) {
-		this.root = root;
+		super(root);
 		this.head = root.getChild("head");
 		this.ring = root.getChild("ring");
 		this.bone = this.ring.getChild("bone");
 		this.bone2 = this.ring.getChild("bone2");
+		this.idleAnimation = SpiritDervishAnimations.IDLE.bake(root);
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -52,29 +55,19 @@ public class SpiritDervishModel<T extends SpiritDervishEntity> extends Hierarchi
 	}
 
 	@Override
-	public void setupAnim(SpiritDervishEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.root().getAllParts().forEach(ModelPart::resetPose);
-		this.applyHeadRotation(netHeadYaw, headPitch);
+	public void setupAnim(T state) {
+		super.setupAnim(state);
+		this.applyHeadRotation(state.yRot, state.xRot);
 
-		this.animate(entity.IDLE_ANIMATION, SpiritDervishAnimations.IDLE, ageInTicks, 1f);
+		this.idleAnimation.apply(state.idleAnimationState, state.ageInTicks, 1f);
 	}
 
-	private void applyHeadRotation(float headYaw, float headPitch) {
-		headYaw = Mth.clamp(headYaw, -30f, 30f);
-		headPitch = Mth.clamp(headPitch, -25f, 45);
+	private void applyHeadRotation(float yRot, float xRot) {
+		yRot = Mth.clamp(yRot, -30f, 30f);
+		xRot = Mth.clamp(xRot, -25f, 45);
 
-		this.head.yRot = headYaw * ((float)Math.PI / 180f);
-		this.head.xRot = headPitch *  ((float)Math.PI / 180f);
+		this.head.yRot = yRot * ((float)Math.PI / 180f);
+		this.head.xRot = xRot *  ((float)Math.PI / 180f);
 	}
 
-	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-		head.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		ring.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-	}
-
-	@Override
-	public ModelPart root() {
-		return this.root;
-	}
 }

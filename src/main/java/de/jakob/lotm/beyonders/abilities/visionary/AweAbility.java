@@ -50,7 +50,7 @@ public class AweAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             ParticleUtil.spawnParticles((ClientLevel) level, dust, entity.position(), 1300, 17, 3, 17, 0);
             return;
         }

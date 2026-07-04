@@ -44,7 +44,7 @@ public class WallOfLightAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 targetPos = AbilityUtil.getTargetLocation(entity, 12* (int) multiplier(entity), 1.4f);

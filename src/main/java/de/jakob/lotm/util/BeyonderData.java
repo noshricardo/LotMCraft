@@ -299,7 +299,7 @@ public class BeyonderData {
     }
 
     public static int getCowardWormAmount(LivingEntity entity) {
-        if(entity.level().isClientSide) {
+        if(entity.level().isClientSide()) {
             return ClientBeyonderCache.getCowardWormAmount(entity.getUUID());
         }
         return entity.getData(ModAttachments.BEYONDER_COMPONENT).getCowardWormAmount();
@@ -330,7 +330,7 @@ public class BeyonderData {
     }
 
     public static String getPathway(LivingEntity entity) {
-        if(entity.level().isClientSide) {
+        if(entity.level().isClientSide()) {
             return ClientBeyonderCache.getPathway(entity.getUUID());
         }
         BeyonderComponent component = entity.getData(ModAttachments.BEYONDER_COMPONENT);
@@ -345,7 +345,7 @@ public class BeyonderData {
     public static int getSequence(LivingEntity entity, boolean returnTrueMarionetteLvl) {
         if(entity == null) return LOTMCraft.NON_BEYONDER_SEQ;
 
-        if(entity.level().isClientSide) {
+        if(entity.level().isClientSide()) {
             return ClientBeyonderCache.getSequence(entity.getUUID());
         }
 
@@ -373,7 +373,7 @@ public class BeyonderData {
     }
 
     public static float getSpirituality(LivingEntity entity) {
-        if(entity.level().isClientSide) {
+        if(entity.level().isClientSide()) {
             return ClientBeyonderCache.getSpirituality(entity.getUUID());
         }
         if(!(entity instanceof Player))
@@ -541,7 +541,7 @@ public class BeyonderData {
     }
 
     public static boolean isBeyonder(LivingEntity entity) {
-        if (entity.level().isClientSide) {
+        if (entity.level().isClientSide()) {
             return ClientBeyonderCache.isBeyonder(entity.getUUID());
         }
 
@@ -592,7 +592,7 @@ public class BeyonderData {
     }
 
     public static float getDigestionProgress(Player player) {
-        if(player.level().isClientSide) {
+        if(player.level().isClientSide()) {
             return ClientBeyonderCache.getDigestionProgress(player.getUUID());
         }
 
@@ -600,7 +600,7 @@ public class BeyonderData {
     }
 
     public static int getCharStack(LivingEntity entity, int sequence) {
-        if(entity.level().isClientSide) {
+        if(entity.level().isClientSide()) {
             return ClientBeyonderCache.getCharStack(entity.getUUID());
         }
 
@@ -610,7 +610,7 @@ public class BeyonderData {
     }
 
     public static int[] getCharStacks(LivingEntity entity) {
-        if(entity.level().isClientSide) {
+        if(entity.level().isClientSide()) {
             return ClientBeyonderCache.getCharStacks(entity.getUUID());
         }
 
@@ -657,7 +657,7 @@ public class BeyonderData {
     }
 
     public static int getCurrentCharStack(LivingEntity entity) {
-        if(entity.level().isClientSide) {
+        if(entity.level().isClientSide()) {
             return ClientBeyonderCache.getCharStack(entity.getUUID());
         }
 
@@ -669,7 +669,7 @@ public class BeyonderData {
     }
 
     public static String[] getPathwayHistory(LivingEntity entity) {
-        if(entity.level().isClientSide) {
+        if(entity.level().isClientSide()) {
             return ClientBeyonderCache.getPathwayHistory(entity.getUUID());
         }
 
@@ -683,7 +683,7 @@ public class BeyonderData {
     public static boolean hasSwitchedPathway(LivingEntity entity) {
         String currentPathway = getPathway(entity);
         String[] history;
-        if (entity.level().isClientSide) {
+        if (entity.level().isClientSide()) {
             history = ClientBeyonderCache.getPathwayHistory(entity.getUUID());
         } else {
             var data = playerMap.get(entity);

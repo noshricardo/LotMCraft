@@ -66,7 +66,7 @@ public class SpiritCommunicationAbility extends SelectableAbility {
 
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int abilityIndex) {
-        if (!level.isClientSide && level instanceof net.minecraft.server.level.ServerLevel serverLevel
+        if (!level .isClientSide() && level instanceof net.minecraft.server.level.ServerLevel serverLevel
                 && InteractionHandler.isInteractionPossibleStrictlyHigher(new Location(entity.position(), serverLevel), "purification", BeyonderData.getSequence(entity), -1)) return;
 
         switch (abilityIndex) {
@@ -80,7 +80,7 @@ public class SpiritCommunicationAbility extends SelectableAbility {
     // --- Divination sub-modes (copied from DivinationAbility) ---
 
     private void dangerPremonition(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if (DivinationAbility.dangerPremonitionActive.contains(entity.getUUID())) {
             DivinationAbility.dangerPremonitionActive.remove(entity.getUUID());
@@ -137,7 +137,7 @@ public class SpiritCommunicationAbility extends SelectableAbility {
 
 
     private void spectralBind(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, (int) (20* multiplier(entity)), 1.5f);
         if (target == null) return;

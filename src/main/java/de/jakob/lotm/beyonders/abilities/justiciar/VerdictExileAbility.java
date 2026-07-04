@@ -47,7 +47,7 @@ public class VerdictExileAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         ServerLevel serverLevel = (ServerLevel) level;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, (int) (25 * multiplier(entity)), 1.4f);

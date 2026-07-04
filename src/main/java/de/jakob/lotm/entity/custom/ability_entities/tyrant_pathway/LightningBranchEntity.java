@@ -66,7 +66,7 @@ public class LightningBranchEntity extends Entity {
         this.currentDistance = 1.0f;
         setPos(start.x, start.y, start.z);
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             entityData.set(START_X, (float) start.x);
             entityData.set(START_Y, (float) start.y);
             entityData.set(START_Z, (float) start.z);
@@ -83,7 +83,7 @@ public class LightningBranchEntity extends Entity {
     public void tick() {
         super.tick();
 
-        if (level().isClientSide && (startPos == null || direction == null)) {
+        if (level() .isClientSide() && (startPos == null || direction == null)) {
             startPos = new Vec3(entityData.get(START_X), entityData.get(START_Y), entityData.get(START_Z));
             direction = new Vec3(entityData.get(DIR_X), entityData.get(DIR_Y), entityData.get(DIR_Z));
             maxDistance = entityData.get(MAX_DISTANCE);
@@ -95,12 +95,12 @@ public class LightningBranchEntity extends Entity {
             return;
         }
 
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             updateAllBranches();
         }
 
         // Check collisions for all active branches
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             checkBranchCollisions();
         }
 
@@ -226,7 +226,7 @@ public class LightningBranchEntity extends Entity {
     }
 
     private void onHitEntity(Entity entity, int branchDepth) {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             // Damage reduces with branch depth
             float damageMultiplier = (float)Math.pow(0.7, branchDepth);
 

@@ -14,7 +14,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Rabbit;
+import net.minecraft.world.entity.animal.rabbit.Rabbit;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.SmallFireball;
@@ -49,7 +49,7 @@ public class SpiritBallEntity extends AbstractHurtingProjectile {
     @Override
     public void tick() {
         super.tick();
-        if(level().isClientSide)
+        if(level().isClientSide())
             return;
 
         if (this.tickCount > 20 * 5) {

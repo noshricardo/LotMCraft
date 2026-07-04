@@ -57,7 +57,7 @@ public class FrenzyAbility extends Ability {
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, (int) (20 * Math.max(multiplier(entity), 1)), 2);
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             if(target != null)
                 ParticleUtil.spawnParticles((ClientLevel) level, dust, target.getEyePosition(), 35, .5);
             return;

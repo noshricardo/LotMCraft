@@ -127,7 +127,7 @@ public class DreamTraversalAbility extends SelectableAbility {
             return;
         }
 
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             ParticleUtil.spawnParticles((ClientLevel) level, dust, target.position().add(0, entity.getEyeHeight() / 2, 0), 100, .35, entity.getEyeHeight() / 2, .35, 0);
             return;
         }
@@ -163,7 +163,7 @@ public class DreamTraversalAbility extends SelectableAbility {
     }
 
     private void hide(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (!(entity instanceof ServerPlayer player)) return;
 
@@ -276,7 +276,7 @@ public class DreamTraversalAbility extends SelectableAbility {
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
         if (!(event.getEntity() instanceof ServerPlayer entity)) return;
-        if (entity.level().isClientSide) return;
+        if (entity.level().isClientSide()) return;
         if (!(entity.level() instanceof ServerLevel serverLevel)) return;
         if (!hideMap.containsKey(entity.getUUID())) return;
 

@@ -26,7 +26,7 @@ public class DecryptionAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if(!level.isClientSide) {
+        if(!level.isClientSide()) {
             if(entity instanceof ServerPlayer player) {
                 PacketHandler.sendToPlayer(player, new SyncDecryptionLookedAtEntitiesAbilityPacket(true, -1));
             }
@@ -38,7 +38,7 @@ public class DecryptionAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(!(entity instanceof ServerPlayer player) || level.isClientSide)
+        if(!(entity instanceof ServerPlayer player) || level.isClientSide())
             return;
 
         LivingEntity lookedAt = AbilityUtil.getTargetEntity(entity, 40* (int) multiplier(entity), 1.2f);
@@ -55,7 +55,7 @@ public class DecryptionAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if(!level.isClientSide) {
+        if(!level.isClientSide()) {
             if(entity instanceof ServerPlayer player) {
                 PacketHandler.sendToPlayer(player, new SyncDecryptionLookedAtEntitiesAbilityPacket(false, -1));
             }

@@ -53,7 +53,7 @@ public class MirrorWorldTraversalAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide || !(level instanceof ServerLevel serverLevel)) {
+        if(level .isClientSide() || !(level instanceof ServerLevel serverLevel)) {
             return;
         }
 

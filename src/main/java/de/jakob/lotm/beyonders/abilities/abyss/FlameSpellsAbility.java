@@ -60,7 +60,7 @@ public class FlameSpellsAbility extends SelectableAbility {
     }
 
     private void eruption(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 startPos = entity.position();
@@ -113,7 +113,7 @@ public class FlameSpellsAbility extends SelectableAbility {
     }
 
     private void fireball(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 startPos = VectorUtil.getRelativePosition(entity.getEyePosition().add(entity.getLookAngle().normalize()), entity.getLookAngle().normalize(), 0, random.nextDouble(1, 2.85f), random.nextDouble(-.1, .6));

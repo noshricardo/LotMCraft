@@ -31,7 +31,7 @@ public class TsunamiAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         Vec3 position = VectorUtil.getRelativePosition(entity.position(), entity.getLookAngle().normalize(), 10, random.nextDouble(-11, 11), 0);
         Vec3 targetPos = AbilityUtil.getTargetLocation(entity, 40, 2);

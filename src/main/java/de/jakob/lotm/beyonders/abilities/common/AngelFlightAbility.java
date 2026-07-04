@@ -29,7 +29,7 @@ public class AngelFlightAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return;
         }
 

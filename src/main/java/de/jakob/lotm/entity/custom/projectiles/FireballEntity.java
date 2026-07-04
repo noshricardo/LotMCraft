@@ -88,7 +88,7 @@ public class FireballEntity extends AbstractArrow {
         }
 
         super.tick();
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         ticks++;
@@ -123,7 +123,7 @@ public class FireballEntity extends AbstractArrow {
             target.hurt(ModDamageTypes.source(level, ModDamageTypes.BEYONDER_GENERIC), (float) damage);
         }
         target.setRemainingFireTicks(target.getRemainingFireTicks() + 20 * 6);
-        if(!level.isClientSide)
+        if(!level.isClientSide())
             NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level, position(), owner, null, new String[]{"explosion", "burning"}, 3, 10));
     }
 
@@ -136,7 +136,7 @@ public class FireballEntity extends AbstractArrow {
         else {
             level.explode(owner, result.getLocation().x, result.getLocation().y, result.getLocation().z, 4f, false, Level.ExplosionInteraction.NONE);
         }
-        if(!level.isClientSide)
+        if(!level.isClientSide())
             NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level, position(), owner, null, new String[]{"explosion", "burning"}, 3, 10));
     }
 

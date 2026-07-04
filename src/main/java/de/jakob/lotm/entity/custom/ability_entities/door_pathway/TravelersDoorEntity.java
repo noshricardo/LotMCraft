@@ -162,7 +162,7 @@ public class TravelersDoorEntity extends Entity {
 
 
     private void teleportNearbyEntities() {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return;
         }
 

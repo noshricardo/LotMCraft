@@ -10,23 +10,26 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
 
-public class SpiritBlueWizardRenderer extends MobRenderer<SpiritBlueWizardEntity, SpiritBlueWizardModel<SpiritBlueWizardEntity>> {
+public class SpiritBlueWizardRenderer extends MobRenderer<SpiritBlueWizardEntity, SpiritBlueWizardRenderState, SpiritBlueWizardModel<SpiritBlueWizardRenderState>> {
     public SpiritBlueWizardRenderer(EntityRendererProvider.Context context) {
         super(context, new SpiritBlueWizardModel<>(context.bakeLayer(SpiritBlueWizardModel.LAYER_LOCATION)), .3f);
     }
+
     @Override
-    public void render(SpiritBlueWizardEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        poseStack.pushPose();
-
-        poseStack.translate(0.0D, -.2D, 0.0D);
-        poseStack.scale(4, 4, 4);
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-        poseStack.popPose();
+    public SpiritBlueWizardRenderState createRenderState() {
+        return new SpiritBlueWizardRenderState();
     }
 
     @Override
-    public Identifier getTextureLocation(SpiritBlueWizardEntity spiritBlueWizardEntity) {
+    public void extractRenderState(SpiritBlueWizardEntity entity, SpiritBlueWizardRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        state.walkAnimationState.copyFrom(entity.WALK_ANIMATION);
+        state.idleAnimationState.copyFrom(entity.IDLE_ANIMATION);
+        state.isWalking = entity.isFlying() || entity.getDeltaMovement().horizontalDistance() > 0.01;
+    }
+
+    @Override
+    public Identifier getTextureLocation(SpiritBlueWizardRenderState state) {
         return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_blue_wizard/spirit_blue_wizard.png");
     }
 }

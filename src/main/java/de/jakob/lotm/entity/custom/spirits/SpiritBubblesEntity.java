@@ -99,7 +99,7 @@ public class SpiritBubblesEntity extends Animal {
         super.aiStep();
 
         // Add some upward movement when the entity is too low
-        if (!this.level().isClientSide && this.isAlive()) {
+        if (!this.level() .isClientSide() && this.isAlive()) {
             // Try to maintain altitude above ground
             BlockPos belowPos = this.blockPosition().below(3);
             if (!this.level().isEmptyBlock(belowPos) && this.getDeltaMovement().y < 0.1) {
@@ -124,7 +124,7 @@ public class SpiritBubblesEntity extends Animal {
 
         Level level = this.level();
 
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             this.setupAnimationStates();
         }
     }

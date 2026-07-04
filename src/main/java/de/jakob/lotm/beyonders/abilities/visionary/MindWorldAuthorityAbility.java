@@ -118,7 +118,7 @@ public class MindWorldAuthorityAbility extends SelectableAbility {
     }
 
     private void envisioning(Level level, LivingEntity player){
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         if(envisioningToggle == null)
             envisioningToggle = (MindWorldAuthorityEnvisioningAbility) LOTMCraft.abilityHandler.getById("mind_world_authority_envisioning_ability");

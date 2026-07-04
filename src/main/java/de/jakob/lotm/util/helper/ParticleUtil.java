@@ -308,7 +308,7 @@ public class ParticleUtil {
             if(shouldStop.get())
                 return;
 
-            if(positionSupplier.getLevel() == null || positionSupplier.getLevel().isClientSide)
+            if(positionSupplier.getLevel() == null || positionSupplier.getLevel().isClientSide())
                 return;
 
             ServerLevel level = (ServerLevel) positionSupplier.getLevel();
@@ -370,7 +370,7 @@ public class ParticleUtil {
             if(shouldStop.get())
                 return;
 
-            if(positionSupplier.getLevel() == null || positionSupplier.getLevel().isClientSide)
+            if(positionSupplier.getLevel() == null || positionSupplier.getLevel().isClientSide())
                 return;
 
             ServerLevel level = (ServerLevel) positionSupplier.getLevel();
@@ -440,7 +440,7 @@ public class ParticleUtil {
             if(shouldStop.get())
                 return;
 
-            if(positionSupplier.getLevel() == null || positionSupplier.getLevel().isClientSide)
+            if(positionSupplier.getLevel() == null || positionSupplier.getLevel().isClientSide())
                 return;
 
             ServerLevel level = (ServerLevel) positionSupplier.getLevel();

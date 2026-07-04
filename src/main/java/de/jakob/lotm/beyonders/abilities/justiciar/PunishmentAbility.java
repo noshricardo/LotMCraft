@@ -69,7 +69,7 @@ public class PunishmentAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         ServerLevel serverLevel = (ServerLevel) level;
         UUID casterUUID = entity.getUUID();
 
@@ -228,7 +228,7 @@ public class PunishmentAbility extends Ability {
 
     @SubscribeEvent
     public static void onDamagePre(LivingDamageEvent.Pre event) {
-        if (event.getEntity().level().isClientSide) return;
+        if (event.getEntity().level().isClientSide()) return;
         ServerLevel serverLevel = (ServerLevel) event.getEntity().level();
 
         LivingEntity hurt     = event.getEntity();
@@ -247,7 +247,7 @@ public class PunishmentAbility extends Ability {
 
     @SubscribeEvent
     public static void onAbilityUsed(AbilityUsedEvent event) {
-        if (event.getLevel().isClientSide) return;
+        if (event.getLevel().isClientSide()) return;
         ServerLevel serverLevel = event.getLevel();
 
         LivingEntity user      = event.getEntity();
@@ -272,7 +272,7 @@ public class PunishmentAbility extends Ability {
 
     @SubscribeEvent
     public static void onEntityKilled(LivingDeathEvent event) {
-        if (event.getEntity().level().isClientSide) return;
+        if (event.getEntity().level().isClientSide()) return;
         if (!(event.getEntity().level() instanceof ServerLevel serverLevel)) return;
         if(!(event.getSource().getEntity() instanceof LivingEntity)) return;
 

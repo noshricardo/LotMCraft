@@ -42,7 +42,7 @@ public class SealedArtifactItem extends Item {
     public @NotNull InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return InteractionResultHolder.success(stack);
         }
 
@@ -105,7 +105,7 @@ public class SealedArtifactItem extends Item {
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected){
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if (!(entity instanceof ServerPlayer player)) return;
 

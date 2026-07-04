@@ -60,7 +60,7 @@ public class StoryWritingAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             if (entity.isShiftKeyDown())
                 ClientHandler.openStoryWritingExplanation();
             return;
@@ -89,7 +89,7 @@ public class StoryWritingAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         writingMap.remove(entity.getUUID());
         clearArtifactScaling(entity);
@@ -209,7 +209,7 @@ public class StoryWritingAbility extends ToggleAbility {
 //
 //    @Override
 //    protected void castSelectedAbility(Level level, LivingEntity entity, int abilityIndex) {
-//        if (level.isClientSide) return;
+//        if (level.isClientSide()) return;
 //        if (!(level instanceof ServerLevel serverLevel)) return;
 //        if (!(entity instanceof ServerPlayer author)) return;
 //
@@ -364,7 +364,7 @@ public class StoryWritingAbility extends ToggleAbility {
 //    @SubscribeEvent
 //    public static void onEntityTick(EntityTickEvent.Post event) {
 //        if (!(event.getEntity() instanceof ServerPlayer target)) return;
-//        if (target.level().isClientSide) return;
+//        if (target.level().isClientSide()) return;
 //        if (!(target.level() instanceof ServerLevel serverLevel)) return;
 //
 //        UUID targetUUID = target.getUUID();

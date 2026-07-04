@@ -46,7 +46,7 @@ public class PaperDaggersAbility extends PassiveAbilityItem {
     @SubscribeEvent
     public static void onRightClickWithPaper(PlayerInteractEvent.RightClickItem event) {
         Level level = event.getLevel();
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         ItemStack stack = event.getItemStack();

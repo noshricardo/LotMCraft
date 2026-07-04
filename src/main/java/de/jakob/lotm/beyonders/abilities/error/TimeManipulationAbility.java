@@ -37,7 +37,7 @@ public class TimeManipulationAbility extends SelectableAbility {
 
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int selectedAbility) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         level.playSound(null, entity.blockPosition(), SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1f, 1f);

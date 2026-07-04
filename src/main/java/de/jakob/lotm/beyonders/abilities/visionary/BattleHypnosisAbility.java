@@ -90,7 +90,7 @@ public class BattleHypnosisAbility extends SelectableAbility {
             return;
         }
 
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             ParticleUtil.createParticleSpirals((ClientLevel) level, dust, target.position(), target.getBbWidth() + .25, target.getBbWidth() + .25, target.getEyeHeight(), 1, 5, 30, 15, 1);
             return;
         }
@@ -116,7 +116,7 @@ public class BattleHypnosisAbility extends SelectableAbility {
     }
 
     private void aoe(Level level, LivingEntity entity){
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             ParticleUtil.spawnParticles((ClientLevel) level, dust, entity.position(), 1300, 17, 3, 17, 0);
             return;
         }

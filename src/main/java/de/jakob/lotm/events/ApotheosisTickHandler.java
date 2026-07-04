@@ -33,7 +33,7 @@ public class ApotheosisTickHandler {
 
         Player player = event.getEntity();
 
-        if(player.level().isClientSide) {
+        if(player.level().isClientSide()) {
             ClientHandler.applyCameraShakeToPlayersInRadius(4, 20, (ClientLevel) player.level(), player.position(), 1064);
             return;
         }
@@ -77,14 +77,14 @@ public class ApotheosisTickHandler {
     @SubscribeEvent
     public static void onPlayerDeath(LivingDeathEvent event) {
         if(!(event.getEntity() instanceof Player player)) return;
-        if(player.level().isClientSide) return;
+        if(player.level().isClientSide()) return;
         player.getData(ModAttachments.APOTHEOSIS_COMPONENT).setApotheosisTicksLeftAndSync(0, (ServerLevel) player.level(), player);
     }
 
     @SubscribeEvent
     public static void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
         Player player = event.getEntity();
-        if(player.level().isClientSide) return;
+        if(player.level().isClientSide()) return;
         player.getData(ModAttachments.APOTHEOSIS_COMPONENT).setApotheosisTicksLeftAndSync(0, (ServerLevel) player.level(), player);
     }
 

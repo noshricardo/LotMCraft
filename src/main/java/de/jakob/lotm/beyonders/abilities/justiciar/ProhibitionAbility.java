@@ -73,7 +73,7 @@ public class ProhibitionAbility extends SelectableAbility {
 
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int abilityIndex) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         ServerLevel serverLevel = (ServerLevel) level;
 
         int casterSeq = BeyonderData.getSequence(entity);
@@ -140,7 +140,7 @@ public class ProhibitionAbility extends SelectableAbility {
 
     @Override
     public void onHold(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(entity instanceof ServerPlayer player)) return;
 
         Vec3 pos = entity.position();

@@ -70,7 +70,7 @@ public class BlackFlameAbility extends SelectableAbility {
     DustParticleOptions dust = new DustParticleOptions(new Vector3f(0, 0, 0), 2f);
 
     private void burn(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 targetPos = AbilityUtil.getTargetLocation(entity, (int) (10*multiplier(entity)), 1.4f);
@@ -92,7 +92,7 @@ public class BlackFlameAbility extends SelectableAbility {
 
     //TODO: Place Black Flames on griefing
     private void expel(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 startPos = entity.getEyePosition().add(0, .5, 0);
@@ -113,7 +113,7 @@ public class BlackFlameAbility extends SelectableAbility {
     }
 
     private void shoot(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 startPos = VectorUtil.getRelativePosition(entity.getEyePosition().add(entity.getLookAngle().normalize()), entity.getLookAngle().normalize(), 0, random.nextDouble(-.65, .65), random.nextDouble(-.1, .6));

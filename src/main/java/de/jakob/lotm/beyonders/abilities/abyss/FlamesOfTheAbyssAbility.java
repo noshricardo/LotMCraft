@@ -60,7 +60,7 @@ public class FlamesOfTheAbyssAbility extends SelectableAbility {
     // ── Spell 1: Abyssal Meteor Rain ──────────────────────────────────────────
 
     private void meteorRain(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         ServerLevel serverLevel = (ServerLevel) level;
 
         Vec3 targetPos = AbilityUtil.getTargetLocation(entity, 80, 1.5f);
@@ -96,7 +96,7 @@ public class FlamesOfTheAbyssAbility extends SelectableAbility {
     // ── Spell 2: Pillars of the Abyss ────────────────────────────────────────
 
     private void abyssPillars(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         ServerLevel serverLevel = (ServerLevel) level;
 
         level.playSound(null, BlockPos.containing(entity.position()),

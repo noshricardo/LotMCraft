@@ -7,7 +7,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.jakob.lotm.entity.client.spirits.blue_wizard.SpiritBlueWizardAnimations;
 import de.jakob.lotm.entity.custom.spirits.SpiritBizarroBaneEntity;
-import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.animation.KeyframeAnimation;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -15,25 +17,28 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-public class SpiritBizarroBaneModel<T extends SpiritBizarroBaneEntity> extends HierarchicalModel<T> {
+public class SpiritBizarroBaneModel<T extends SpiritBizarroBaneRenderState> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("modid", "bizarro_bane"), "main");
-	private final ModelPart root;
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(de.jakob.lotm.LOTMCraft.MOD_ID, "bizarro_bane"), "main");
 	private final ModelPart body;
 	private final ModelPart head;
 	private final ModelPart extra_eyes;
 	private final ModelPart right_arm;
 	private final ModelPart left_arm;
 	private final ModelPart leg;
+	private final KeyframeAnimation walkAnimation;
+	private final KeyframeAnimation idleAnimation;
 
 	public SpiritBizarroBaneModel(ModelPart root) {
-		this.root = root;
+		super(root);
 		this.body = root.getChild("body");
 		this.head = root.getChild("head");
 		this.extra_eyes = root.getChild("extra_eyes");
 		this.right_arm = root.getChild("right_arm");
 		this.left_arm = root.getChild("left_arm");
 		this.leg = root.getChild("leg");
+		this.walkAnimation = SpiritBizarroBaneAnimations.WALK.bake(root);
+		this.idleAnimation = SpiritBizarroBaneAnimations.IDLE.bake(root);
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -67,49 +72,23 @@ public class SpiritBizarroBaneModel<T extends SpiritBizarroBaneEntity> extends H
 	}
 
 	@Override
-	public void setupAnim(SpiritBizarroBaneEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.root().getAllParts().forEach(ModelPart::resetPose);
-		this.applyHeadRotation(netHeadYaw, headPitch);
+	public void setupAnim(T state) {
+		super.setupAnim(state);
+		this.applyHeadRotation(state.yRot, state.xRot);
 
-		boolean isWalking = limbSwingAmount > 0.01F;
-
-		if (isWalking) {
-			// Stop idle animation and start/continue walk animation
-			entity.IDLE_ANIMATION.stop();
-			if (!entity.WALK_ANIMATION.isStarted()) {
-				entity.WALK_ANIMATION.start((int) ageInTicks);
-			}
-			this.animate(entity.WALK_ANIMATION, SpiritBizarroBaneAnimations.WALK, ageInTicks, 1.0F);
+		if (state.isWalking) {
+			this.walkAnimation.apply(state.walkAnimationState, state.ageInTicks, 1.0F);
 		} else {
-			// Stop walk animation and start/continue idle animation
-			entity.WALK_ANIMATION.stop();
-			if (!entity.IDLE_ANIMATION.isStarted()) {
-				entity.IDLE_ANIMATION.start((int) ageInTicks);
-			}
-			this.animate(entity.IDLE_ANIMATION, SpiritBizarroBaneAnimations.IDLE, ageInTicks, 1.0F);
+			this.idleAnimation.apply(state.idleAnimationState, state.ageInTicks, 1.0F);
 		}
 	}
 
-	private void applyHeadRotation(float headYaw, float headPitch) {
-		headYaw = Mth.clamp(headYaw, -30f, 30f);
-		headPitch = Mth.clamp(headPitch, -25f, 45);
+	private void applyHeadRotation(float yRot, float xRot) {
+		yRot = Mth.clamp(yRot, -30f, 30f);
+		xRot = Mth.clamp(xRot, -25f, 45);
 
-		this.head.yRot = headYaw * ((float)Math.PI / 180f);
-		this.head.xRot = headPitch *  ((float)Math.PI / 180f);
+		this.head.yRot = yRot * ((float)Math.PI / 180f);
+		this.head.xRot = xRot *  ((float)Math.PI / 180f);
 	}
 
-	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-		body.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		head.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		extra_eyes.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-	}
-
-	@Override
-	public ModelPart root() {
-		return this.root;
-	}
 }

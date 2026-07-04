@@ -106,7 +106,7 @@ public class SpiritBlockProjectileEntity extends Entity {
         // Move the entity
         this.move(MoverType.SELF, this.getDeltaMovement());
 
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
 
         // Check for collision with the ground - discard without placing
         if (this.onGround() && this.tickCount > 5) {

@@ -41,7 +41,7 @@ public class MysticalDoorEntity extends Entity {
     public void tick() {
         super.tick();
 
-        if(!level().isClientSide && maxLifeTime > 0 && tickCount > maxLifeTime) {
+        if(!level() .isClientSide() && maxLifeTime > 0 && tickCount > maxLifeTime) {
             discard();
         }
     }

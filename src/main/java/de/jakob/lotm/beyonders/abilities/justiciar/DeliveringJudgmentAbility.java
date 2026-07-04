@@ -34,7 +34,7 @@ public class DeliveringJudgmentAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         ServerLevel serverLevel = (ServerLevel) level;
 
         if (ProhibitionAbility.FAIL_COUNT_BY_ENTITY.isEmpty()) {

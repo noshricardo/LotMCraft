@@ -66,7 +66,7 @@ public class SunSpellsAbility extends SelectableAbility {
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int selectedAbility) {
         if(!(entity instanceof Player)) selectedAbility = 0;
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
         switch (selectedAbility) {
             case 0 -> sunshine(level, entity);
             case 1 -> blessing(level, entity);

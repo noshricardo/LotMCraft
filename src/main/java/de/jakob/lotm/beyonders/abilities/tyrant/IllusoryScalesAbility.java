@@ -31,7 +31,7 @@ public class IllusoryScalesAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
         PhysicalEnhancementsAbility.addEnhancementBoost(entity, PhysicalEnhancementsAbility.EnhancementType.RESISTANCE, "illusory_scales", 5);
     }
 
@@ -39,7 +39,7 @@ public class IllusoryScalesAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         ParticleUtil.spawnParticles((ServerLevel) level, blueDust, entity.position().add(0, entity.getEyeHeight() / 2, 0), 12, .4, entity.getEyeHeight() / 2, .4, 0);
@@ -47,7 +47,7 @@ public class IllusoryScalesAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
         PhysicalEnhancementsAbility.removeEnhancementBoost(entity, "illusory_scales");
     }
 }

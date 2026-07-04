@@ -24,7 +24,7 @@ public class SubordinateEventHandler {
     
     @SubscribeEvent
     public static void onEntityJoinWorld(EntityJoinLevelEvent event) {
-        if (event.getEntity() instanceof Mob mob && !event.getLevel().isClientSide) {
+        if (event.getEntity() instanceof Mob mob && !event.getLevel().isClientSide()) {
             SubordinateComponent component = mob.getData(ModAttachments.SUBORDINATE_COMPONENT.get());
 
             // Re-add marionette goals if this entity is a marionette
@@ -66,7 +66,7 @@ public class SubordinateEventHandler {
 
     @SubscribeEvent
     public static void onEntityTeleport(EntityTeleportEvent event) {
-        if(!(event.getEntity() instanceof Mob mob) || mob.level().isClientSide || !(mob.level() instanceof ServerLevel level)) {
+        if(!(event.getEntity() instanceof Mob mob) || mob.level() .isClientSide() || !(mob.level() instanceof ServerLevel level)) {
             return;
         }
 

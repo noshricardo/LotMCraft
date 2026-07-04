@@ -404,7 +404,7 @@ public class BestowmentAbility extends SelectableAbility {
     @SubscribeEvent
     public static void onAbilityUse(AbilityUseEvent event) {
         LivingEntity entity = event.getEntity();
-        if (entity == null || entity.level().isClientSide) return;
+        if (entity == null || entity.level().isClientSide()) return;
 
         long now = entity.level().getGameTime();
         long sealedUntil = entity.getPersistentData().getLong(SEALED_UNTIL_KEY);

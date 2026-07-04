@@ -79,7 +79,7 @@ public class OrderProxyAbility extends SelectableAbility {
 
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int abilityIndex) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         ServerLevel serverLevel = (ServerLevel) level;
 
         switch (abilityIndex) {

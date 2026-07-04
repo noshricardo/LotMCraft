@@ -49,7 +49,7 @@ public class WarBannerEntity extends Entity {
     public void onAddedToLevel() {
         super.onAddedToLevel();
 
-        if(level().isClientSide)
+        if(level().isClientSide())
             return;
 
         if(getDuration() <= 0)
@@ -84,7 +84,7 @@ public class WarBannerEntity extends Entity {
     public void tick() {
         super.tick();
 
-        if(level().isClientSide)
+        if(level().isClientSide())
             return;
 
         lifetime++;
@@ -164,7 +164,7 @@ public class WarBannerEntity extends Entity {
     }
 
     public Entity getCasterEntity() {
-        if(level().isClientSide) {
+        if(level().isClientSide()) {
             return null;
         }
         UUID casterUUID = this.getCasterUUID();

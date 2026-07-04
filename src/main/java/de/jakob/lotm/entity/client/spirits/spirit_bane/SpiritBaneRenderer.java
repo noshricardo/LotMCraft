@@ -10,23 +10,26 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
 
-public class SpiritBaneRenderer extends MobRenderer<SpiritBaneEntity, SpiritBaneModel<SpiritBaneEntity>> {
+public class SpiritBaneRenderer extends MobRenderer<SpiritBaneEntity, SpiritBaneRenderState, SpiritBaneModel<SpiritBaneRenderState>> {
     public SpiritBaneRenderer(EntityRendererProvider.Context context) {
         super(context, new SpiritBaneModel<>(context.bakeLayer(SpiritBaneModel.LAYER_LOCATION)), .3f);
     }
+
     @Override
-    public void render(SpiritBaneEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        poseStack.pushPose();
-
-        poseStack.scale(2.5f, 2.5f, 2.5f);
-        poseStack.translate(0.0D, -.2D, 0.0D);
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-        poseStack.popPose();
+    public SpiritBaneRenderState createRenderState() {
+        return new SpiritBaneRenderState();
     }
 
     @Override
-    public Identifier getTextureLocation(SpiritBaneEntity spiritBlueWizardEntity) {
+    public void extractRenderState(SpiritBaneEntity entity, SpiritBaneRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        state.walkAnimationState.copyFrom(entity.WALK_ANIMATION);
+        state.idleAnimationState.copyFrom(entity.IDLE_ANIMATION);
+        state.isWalking = entity.walkAnimation.speed() > 0.01f;
+    }
+
+    @Override
+    public Identifier getTextureLocation(SpiritBaneRenderState state) {
         return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_bane/spirit_bane.png");
     }
 }

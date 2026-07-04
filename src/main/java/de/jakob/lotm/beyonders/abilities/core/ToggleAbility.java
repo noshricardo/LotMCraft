@@ -33,7 +33,7 @@ public abstract class ToggleAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return;
         }
 
@@ -69,7 +69,7 @@ public abstract class ToggleAbility extends Ability {
     }
 
     public void prepareTick(Level level, LivingEntity entity) {
-        if(!level.isClientSide && shouldConsumeSpirituality(entity)) {
+        if(!level .isClientSide() && shouldConsumeSpirituality(entity)) {
             float cost = getSpiritualityCost();
             if (level instanceof ServerLevel sl) {
                 var pdata = entity.getPersistentData();
@@ -99,7 +99,7 @@ public abstract class ToggleAbility extends Ability {
     public abstract void stop(Level level, LivingEntity entity);
 
     public boolean isActiveForEntity(LivingEntity entity) {
-        if(!entity.level().isClientSide) {
+        if(!entity.level().isClientSide()) {
             return activeAbilities.containsKey(entity.getUUID()) && activeAbilities.get(entity.getUUID()).contains(this);
         }
         else {
@@ -108,7 +108,7 @@ public abstract class ToggleAbility extends Ability {
     }
 
     public void updateClientCache(LivingEntity entity, boolean active) {
-        if(!entity.level().isClientSide) {
+        if(!entity.level().isClientSide()) {
             return;
         }
 

@@ -50,7 +50,7 @@ public class HistoricalVoidHidingAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return;
         }
 
@@ -63,7 +63,7 @@ public class HistoricalVoidHidingAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return;
         }
 
@@ -105,7 +105,7 @@ public class HistoricalVoidHidingAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         entity.setNoGravity(false);

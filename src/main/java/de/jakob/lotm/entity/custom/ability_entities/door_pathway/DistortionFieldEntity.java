@@ -43,7 +43,7 @@ public class DistortionFieldEntity extends Entity {
     public void onAddedToLevel() {
         super.onAddedToLevel();
 
-        if(level().isClientSide)
+        if(level().isClientSide())
             return;
 
         if(getDuration() <= 0)
@@ -125,7 +125,7 @@ public class DistortionFieldEntity extends Entity {
     }
 
     public LivingEntity getCasterEntity() {
-        if(level().isClientSide) {
+        if(level().isClientSide()) {
             return null;
         }
         UUID casterUUID = this.getCasterUUID();

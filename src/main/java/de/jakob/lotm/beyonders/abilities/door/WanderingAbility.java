@@ -39,7 +39,7 @@ public class WanderingAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide || !(level instanceof ServerLevel serverLevel) || !(entity instanceof ServerPlayer player))
+        if (level .isClientSide() || !(level instanceof ServerLevel serverLevel) || !(entity instanceof ServerPlayer player))
             return;
 
         List<String> dimensionIds = StreamSupport.stream(serverLevel.getServer().getAllLevels().spliterator(), false)

@@ -26,7 +26,7 @@ public class ActingHandler {
                     ActingHelper.setCooldown(player, task.getId(), task.getCooldownTicks());
 
                     if(!ActingHelper.isTriggerUnlocked(pathway, sequence, player, task.getId())) {
-                        if(!player.level().isClientSide) {
+                        if(!player.level().isClientSide()) {
                             ActingHelper.unlockTrigger(pathway, sequence, player, task.getId());
                             ActingCapHelper.onActingUnlocked(player, pathway, sequence, task.getId());
                             PacketHandler.sendToPlayer((ServerPlayer) player, new PlayActingEffectPacket());
@@ -34,7 +34,7 @@ public class ActingHandler {
                     }
                 });
 
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             ActingCapHelper.tryCompleteMissedActing(player, taskId);
         }
     }

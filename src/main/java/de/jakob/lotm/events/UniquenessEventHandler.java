@@ -27,7 +27,7 @@ public class UniquenessEventHandler {
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
-        if (entity.level().isClientSide) return;
+        if (entity.level().isClientSide()) return;
         if (!(entity.level() instanceof ServerLevel serverLevel)) return;
 
         if (entity instanceof Player player) {

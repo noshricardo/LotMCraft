@@ -18,7 +18,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -121,7 +121,7 @@ public class SpiritGhostEntity extends Animal {
     @Override
     public void aiStep() {
         super.aiStep();
-        if (!this.level().isClientSide && this.isAlive()) {
+        if (!this.level() .isClientSide() && this.isAlive()) {
             BlockPos belowPos = this.blockPosition().below(1);
             if (!this.level().isEmptyBlock(belowPos) && this.getDeltaMovement().y < 0.1) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0, 0.02, 0));

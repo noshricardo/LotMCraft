@@ -53,7 +53,7 @@ public class MirrorSubstituteAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             if(entity instanceof Player player)
                 player.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1, 1);
             return;

@@ -137,7 +137,7 @@ public class SealingAuthorityAbility extends SelectableAbility {
     }
 
     private void lockDimension(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             ClientHandler.applyCameraShakeToPlayersInRadius(3, 40, (ClientLevel) level, entity.position(), 20*multiplier(entity));
             return;
         }

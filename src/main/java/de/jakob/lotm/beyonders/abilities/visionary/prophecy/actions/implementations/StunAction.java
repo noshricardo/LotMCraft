@@ -30,7 +30,7 @@ public class StunAction extends ActionBase {
 
     @Override
     public void action(Level level, LivingEntity entity, UUID casterId) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         ServerScheduler.scheduleForDuration(0, 1, 20 * 10, () -> {
             var pos = entity.position();

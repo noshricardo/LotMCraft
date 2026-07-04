@@ -114,7 +114,7 @@ public class SpiritBizarroBaneEntity extends Animal {
     @Override
     public void tick() {
         super.tick();
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
         if (chargeCooldown > 0) chargeCooldown--;
 
         if (!isMarionettizing && !this.hasEffect(MobEffects.INVISIBILITY)) {

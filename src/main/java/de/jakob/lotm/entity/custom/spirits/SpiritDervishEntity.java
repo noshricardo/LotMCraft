@@ -21,7 +21,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.monster.Blaze;
+import net.minecraft.world.entity.monster.blaze.Blaze;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.item.ItemStack;
@@ -115,7 +115,7 @@ public class SpiritDervishEntity extends Animal {
         super.aiStep();
 
         // Add some upward movement when the entity is too low
-        if (!this.level().isClientSide && this.isAlive()) {
+        if (!this.level() .isClientSide() && this.isAlive()) {
             BlockPos belowPos = this.blockPosition().below(this.getTarget() == null ? 1 : 2);
             if (!this.level().isEmptyBlock(belowPos) && this.getDeltaMovement().y < 0.1) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0, 0.02, 0));
@@ -138,7 +138,7 @@ public class SpiritDervishEntity extends Animal {
 
         Level level = this.level();
 
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             this.setupAnimationStates();
         }
     }

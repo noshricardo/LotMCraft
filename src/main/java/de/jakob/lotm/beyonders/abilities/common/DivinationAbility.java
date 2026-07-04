@@ -92,7 +92,7 @@ public class DivinationAbility extends SelectableAbility {
     }
 
     private void dangerPremonition(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         if(dangerPremonitionActive.contains(entity.getUUID())) {
@@ -127,7 +127,7 @@ public class DivinationAbility extends SelectableAbility {
     }
 
     private void dreamDivination(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return;
         }
 
@@ -216,7 +216,7 @@ public class DivinationAbility extends SelectableAbility {
     }
 
     private void antiDivination(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         if(!(entity instanceof ServerPlayer player)) return;
 

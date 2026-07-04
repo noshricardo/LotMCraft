@@ -118,7 +118,7 @@ public class SpiritMalmouthEntity extends Animal {
     @Override
     public void aiStep() {
         super.aiStep();
-        if (!this.level().isClientSide && this.isAlive()) {
+        if (!this.level() .isClientSide() && this.isAlive()) {
             BlockPos belowPos = this.blockPosition().below(3);
             if (!this.level().isEmptyBlock(belowPos) && this.getDeltaMovement().y < 0.1) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0, 0.02, 0));

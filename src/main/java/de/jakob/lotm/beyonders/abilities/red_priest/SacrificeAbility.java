@@ -59,7 +59,7 @@ public class SacrificeAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(entity instanceof ServerPlayer player)) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 

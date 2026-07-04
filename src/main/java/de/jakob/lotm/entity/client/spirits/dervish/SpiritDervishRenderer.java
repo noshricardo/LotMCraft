@@ -10,27 +10,26 @@ import net.minecraft.resources.Identifier;
 
 import java.util.Random;
 
-public class SpiritDervishRenderer extends MobRenderer<SpiritDervishEntity, SpiritDervishModel<SpiritDervishEntity>> {
+public class SpiritDervishRenderer extends MobRenderer<SpiritDervishEntity, SpiritDervishRenderState, SpiritDervishModel<SpiritDervishRenderState>> {
     public SpiritDervishRenderer(EntityRendererProvider.Context context) {
         super(context, new SpiritDervishModel<>(context.bakeLayer(SpiritDervishModel.LAYER_LOCATION)), .3f);
     }
 
     @Override
-    public Identifier getTextureLocation(SpiritDervishEntity entity) {
-        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_dervish/spirit_dervish.png");
+    public SpiritDervishRenderState createRenderState() {
+        return new SpiritDervishRenderState();
     }
 
     @Override
-    public void render(SpiritDervishEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        poseStack.pushPose();
+    public void extractRenderState(SpiritDervishEntity entity, SpiritDervishRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        state.idleAnimationState.copyFrom(entity.IDLE_ANIMATION);
+        state.mostSignificantBits = entity.getUUID().getMostSignificantBits();
+        state.leastSignificantBits = entity.getUUID().getLeastSignificantBits();
+    }
 
-        poseStack.translate(0, -.32, 0);
-
-        Random random = new Random(entity.getUUID().getMostSignificantBits() ^ entity.getUUID().getLeastSignificantBits());
-        float scale = 1f + random.nextFloat();
-        poseStack.scale(scale, scale, scale);
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-        poseStack.popPose();
+    @Override
+    public Identifier getTextureLocation(SpiritDervishRenderState state) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_dervish/spirit_dervish.png");
     }
 }

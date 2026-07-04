@@ -14,7 +14,7 @@ public class VoidBlock extends Block {
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             entity.hurt(level.damageSources().fellOutOfWorld(), 55.0F);
         }
         super.entityInside(state, level, pos, entity);

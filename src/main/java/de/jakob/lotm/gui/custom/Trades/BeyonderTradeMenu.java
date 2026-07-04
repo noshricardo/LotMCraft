@@ -166,7 +166,7 @@ public class BeyonderTradeMenu extends AbstractContainerMenu {
     @Override
     public void removed(@NotNull Player player) {
         super.removed(player);
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             for (int i = 0; i < inputSlotsContainer.getContainerSize(); i++) {
                 ItemStack stack = inputSlotsContainer.getItem(i);
                 if (!stack.isEmpty()) {

@@ -20,7 +20,7 @@ public class RiptideAbility extends PassiveAbilityItem {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         if(!BeyonderData.isBeyonder(entity))

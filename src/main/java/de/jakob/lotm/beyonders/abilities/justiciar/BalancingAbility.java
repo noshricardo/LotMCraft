@@ -46,7 +46,7 @@ public class BalancingAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         ServerLevel serverLevel = (ServerLevel) level;
         int ZONE_DURATION = (int) (3600 * multiplier(entity));
         long expiryTick = serverLevel.getGameTime() + ZONE_DURATION;

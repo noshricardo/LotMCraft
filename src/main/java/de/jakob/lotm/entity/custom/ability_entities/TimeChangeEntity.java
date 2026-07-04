@@ -83,7 +83,7 @@ public class TimeChangeEntity extends Entity {
     public void onAddedToLevel() {
         super.onAddedToLevel();
 
-        if (level().isClientSide) return;
+        if (level().isClientSide()) return;
 
         if (getDuration() <= 0) setDuration(20 * 60 * 2);
         if (getRadius()   <= 0) setRadius(25);
@@ -105,7 +105,7 @@ public class TimeChangeEntity extends Entity {
     public void tick() {
         super.tick();
 
-        if (level().isClientSide) return;
+        if (level().isClientSide()) return;
 
         lifetime++;
         if (lifetime >= getDuration()) {
@@ -220,7 +220,7 @@ public class TimeChangeEntity extends Entity {
 
     @SubscribeEvent
     public static void onEntityTickPre(EntityTickEvent.Pre event) {
-        if (event.getEntity().level().isClientSide) return;
+        if (event.getEntity().level().isClientSide()) return;
 
         Entity entity = event.getEntity();
         if (entity instanceof ServerPlayer) return;
@@ -267,7 +267,7 @@ public class TimeChangeEntity extends Entity {
 
     @SubscribeEvent
     public static void onEntityTickPost(EntityTickEvent.Post event) {
-        if (event.getEntity().level().isClientSide) return;
+        if (event.getEntity().level().isClientSide()) return;
 
         UUID uuid = event.getEntity().getUUID();
         if (!controlledEntities.containsKey(uuid)) return;
@@ -295,7 +295,7 @@ public class TimeChangeEntity extends Entity {
     public void  setTimeMultiplier(float mult)    { this.entityData.set(TIME_MULTIPLIER, mult); }
 
     public LivingEntity getCasterEntity() {
-        if (level().isClientSide) return null;
+        if (level().isClientSide()) return null;
         UUID casterUUID = getCasterUUID();
         if (casterUUID == null) return null;
         Entity entity = ((ServerLevel) level()).getEntity(casterUUID);

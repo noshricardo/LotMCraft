@@ -71,7 +71,7 @@ public class UniquenessEntity extends Entity {
     public void tick() {
         super.tick();
 
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             ticksExisted++;
             return;
         }
@@ -190,7 +190,7 @@ public class UniquenessEntity extends Entity {
     @Override
     public void remove(RemovalReason reason) {
         super.remove(reason);
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             String pathway = getPathway();
             if (!pathway.isEmpty()) {
                 ACTIVE_ENTITIES.remove(pathway);
@@ -201,7 +201,7 @@ public class UniquenessEntity extends Entity {
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         setPathway(tag.getString("Pathway"));
-        if (!level().isClientSide && !getPathway().isEmpty()) {
+        if (!level() .isClientSide() && !getPathway().isEmpty()) {
             ACTIVE_ENTITIES.put(getPathway(), this.getId());
         }
     }

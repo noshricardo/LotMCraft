@@ -58,7 +58,7 @@ public class EyeOfDeathAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             activePlayers.add(entity.getUUID());
             if (entity instanceof ServerPlayer player) {
                 PacketHandler.sendToPlayer(player, new SyncEyeOfDeathAbilityPacket(true, -1));
@@ -94,7 +94,7 @@ public class EyeOfDeathAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             entity.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1, 1);
         } else {
             activePlayers.remove(entity.getUUID());

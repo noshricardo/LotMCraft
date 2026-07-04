@@ -47,7 +47,7 @@ public class CleansingAbility extends SelectableAbility {
     }
 
     private void cleanseOthers(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         RingEffectManager.createRingForAll(entity.getEyePosition().subtract(0, .4, 0), 8, 60, 122 / 255f, 235 / 255f, 124 / 255f, 1, 1f, .75f, (ServerLevel) level);
@@ -71,7 +71,7 @@ public class CleansingAbility extends SelectableAbility {
     }
 
     private void cleanseYourself(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         RingEffectManager.createRingForAll(entity.getEyePosition().subtract(0, .4, 0), 2, 60, 122 / 255f, 235 / 255f, 124 / 255f, 1, .5f, .75f, (ServerLevel) level);

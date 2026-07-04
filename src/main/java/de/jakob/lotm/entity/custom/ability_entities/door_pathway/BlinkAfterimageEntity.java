@@ -75,7 +75,7 @@ public class BlinkAfterimageEntity extends Mob {
     public void tick() {
         super.tick();
 
-        if(this.tickCount == (LIFETIME / 2) && abilityToUse != null && !level().isClientSide) {
+        if(this.tickCount == (LIFETIME / 2) && abilityToUse != null && !level().isClientSide()) {
             abilityToUse.useAbility((ServerLevel) level(), this, false, false, false, false);
         }
 

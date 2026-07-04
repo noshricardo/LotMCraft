@@ -110,7 +110,7 @@ public class CalamityAction extends ActionBase {
     }
 
     private void createPlague(Level level, LivingEntity entity, float multiplier){
-        if(level.isClientSide || !(level instanceof ServerLevel serverLevel))
+        if(level .isClientSide() || !(level instanceof ServerLevel serverLevel))
             return;
 
         ServerScheduler.scheduleForDuration(0, 20, 20 * 80, () -> {

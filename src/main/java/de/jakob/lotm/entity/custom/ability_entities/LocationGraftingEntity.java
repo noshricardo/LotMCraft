@@ -38,7 +38,7 @@ public class LocationGraftingEntity extends Entity {
     public void tick() {
         super.tick();
         
-        if (!level().isClientSide && teleportPos != null && teleportDimension != null) {
+        if (!level() .isClientSide() && teleportPos != null && teleportDimension != null) {
             // Check for nearby players
             AABB checkBox = this.getBoundingBox().inflate(1.0);
             List<LivingEntity> nearbyEntities = level().getEntitiesOfClass(

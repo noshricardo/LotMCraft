@@ -36,7 +36,7 @@ public class EvilDetectionAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
         if(!(entity instanceof ServerPlayer player)) return;
 
         List<LivingEntity> nearby = AbilityUtil.getNearbyEntities(entity, (ServerLevel) level, entity.getEyePosition(), 50)
@@ -69,7 +69,7 @@ public class EvilDetectionAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
         if(!(entity instanceof ServerPlayer player)) return;
 
         HashSet<LivingEntity> currentlyGlowing = glowingEntities.remove(player.getUUID());

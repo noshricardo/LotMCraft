@@ -38,7 +38,7 @@ public class PlantNurturingAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
         try {
 

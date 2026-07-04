@@ -38,7 +38,7 @@ public class InvisibleHandAbility extends SelectableAbility {
 
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int selectedAbility) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, (int) (15*multiplier(entity)), 3);

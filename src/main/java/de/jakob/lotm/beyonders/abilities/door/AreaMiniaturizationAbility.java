@@ -45,7 +45,7 @@ public class AreaMiniaturizationAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if(!BeyonderData.isGriefingEnabled(entity)) {
             AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.petrification.griefing_disabled").withColor(0xa0e2fa));

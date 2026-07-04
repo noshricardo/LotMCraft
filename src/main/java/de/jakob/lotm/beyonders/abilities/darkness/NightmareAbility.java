@@ -97,7 +97,7 @@ public class NightmareAbility extends SelectableAbility {
     }
 
     private void teleport(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         if(!activeNightmaresServer.containsKey(entity.getUUID())) {
@@ -118,7 +118,7 @@ public class NightmareAbility extends SelectableAbility {
     }
 
     private void attack(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         if(!activeNightmaresServer.containsKey(entity.getUUID())) {
@@ -164,7 +164,7 @@ public class NightmareAbility extends SelectableAbility {
     }
 
     private void restrict(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         if(!activeNightmaresServer.containsKey(entity.getUUID())) {
@@ -186,7 +186,7 @@ public class NightmareAbility extends SelectableAbility {
         ParticleUtil.createParticleSpirals(dustVerySmall, loc, 1.2, 1.2, 2.5, .5, 8, 20 * 20, 11, 8);
 
         ServerScheduler.scheduleForDuration(0, 2, 20 * 20* (int)(Math.max(multiplier(entity)/2,1)), () -> {
-            if(entity.level().isClientSide)
+            if(entity.level().isClientSide())
                 return;
             loc.setPosition(targetEntity.position());
             loc.setLevel(entity.level());
@@ -207,7 +207,7 @@ public class NightmareAbility extends SelectableAbility {
     }
 
     private void reshape(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         if(isReshaping.contains(entity.getUUID())) {
@@ -290,7 +290,7 @@ public class NightmareAbility extends SelectableAbility {
     private final DustParticleOptions dustVerySmall = new DustParticleOptions(new Vector3f(250 / 255f, 40 / 255f, 64 / 255f), .7f);
 
     private void nightmare(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return;
         }
 

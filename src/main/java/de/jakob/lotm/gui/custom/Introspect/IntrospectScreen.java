@@ -2250,7 +2250,7 @@ public class IntrospectScreen extends AbstractContainerScreen<IntrospectMenu> {
     private void renderSequenceNumber(GuiGraphics guiGraphics, int x, int y) {
         Player player = playerInventory.player;
         int charStackCount = 0;
-        if (player.level().isClientSide) {
+        if (player.level().isClientSide()) {
             charStackCount = ClientBeyonderCache.getCharStack(player.getUUID());
         }
         Component sequenceText = Component.translatable("lotm.sequence")

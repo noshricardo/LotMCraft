@@ -65,7 +65,7 @@ public class WindBladeEntity extends AbstractArrow {
         }
 
         super.tick();
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         ticks++;
@@ -89,7 +89,7 @@ public class WindBladeEntity extends AbstractArrow {
             return;
         if(owner != null) target.hurt(ModDamageTypes.source(target.level(), ModDamageTypes.BEYONDER_GENERIC, owner), (float) damage);
         else              target.hurt(ModDamageTypes.source(target.level(), ModDamageTypes.BEYONDER_GENERIC), (float) damage);
-        if(!level.isClientSide && owner != null)
+        if(!level .isClientSide() && owner != null)
             NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level, target.position(), owner, null, new String[]{"explosion"}, 1.75, 10));
     }
 
@@ -102,7 +102,7 @@ public class WindBladeEntity extends AbstractArrow {
         else {
             level.explode(owner, result.getLocation().x, result.getLocation().y, result.getLocation().z, 1.75f, false, Level.ExplosionInteraction.NONE);
         }
-        if(!level.isClientSide && owner != null)
+        if(!level .isClientSide() && owner != null)
             NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level, result.getLocation(), owner, null, new String[]{"explosion"}, 1.75, 10));
     }
 

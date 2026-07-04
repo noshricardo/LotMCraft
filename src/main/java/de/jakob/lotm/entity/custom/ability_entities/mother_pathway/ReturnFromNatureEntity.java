@@ -44,7 +44,7 @@ public class ReturnFromNatureEntity extends Entity {
     public void tick() {
         super.tick();
         
-        if (!level().isClientSide && returnPosition != null && returnDimension != null) {
+        if (!level() .isClientSide() && returnPosition != null && returnDimension != null) {
             tickCount++;
 
             ParticleUtil.spawnParticles((ServerLevel) level(), ParticleTypes.HAPPY_VILLAGER, position(), 1, .6, 1.2, .6, 0);

@@ -46,7 +46,7 @@ public class PsychologicalCueAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         map.put(entity.getUUID(), AbilityUtil.getSeqWithArt(entity, this));
 
@@ -62,7 +62,7 @@ public class PsychologicalCueAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             if(entity.isShiftKeyDown())
                 ClientHandler.openPsychologicalCueExplanation();
             return;

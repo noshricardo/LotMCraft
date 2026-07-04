@@ -50,7 +50,7 @@ public class DragonScalesAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         set.add(entity.getUUID());
     }
@@ -65,7 +65,7 @@ public class DragonScalesAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         set.remove(entity.getUUID());
     }

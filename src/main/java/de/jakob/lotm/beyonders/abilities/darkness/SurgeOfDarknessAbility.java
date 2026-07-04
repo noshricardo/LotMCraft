@@ -44,7 +44,7 @@ public class SurgeOfDarknessAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             Vec3 center = entity.position();
             float multiplier = multiplier(entity);
             // Affect entities

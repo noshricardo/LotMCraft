@@ -41,7 +41,7 @@ public class ExecutionAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity caster) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         ServerLevel serverLevel = (ServerLevel) level;
         LivingEntity target = AbilityUtil.getTargetEntity(caster, (int) (20 * multiplier(caster)), 1.5f);
 

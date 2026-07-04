@@ -37,7 +37,7 @@ public class FoolingAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         ServerLevel serverLevel = (ServerLevel) level;
         int EFFECT_DURATION_TICKS = (int) (20 * 60 *multiplier(entity)); // 5 minutes

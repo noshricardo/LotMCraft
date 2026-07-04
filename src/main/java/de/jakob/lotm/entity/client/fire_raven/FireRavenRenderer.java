@@ -8,24 +8,28 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
 
-public class FireRavenRenderer extends MobRenderer<FireRavenEntity, FireRavenModel<FireRavenEntity>> {
+public class FireRavenRenderer extends MobRenderer<FireRavenEntity, FireRavenRenderState, FireRavenModel<FireRavenRenderState>> {
     public FireRavenRenderer(EntityRendererProvider.Context context) {
         super(context, new FireRavenModel<>(context.bakeLayer(FireRavenModel.LAYER_LOCATION)), .3f);
     }
 
     @Override
-    public Identifier getTextureLocation(FireRavenEntity fireRavenEntity) {
-        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/fire_raven/fire_raven.png");
+    public FireRavenRenderState createRenderState() {
+        return new FireRavenRenderState();
     }
 
     @Override
-    public void render(FireRavenEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        poseStack.pushPose();
+    public void extractRenderState(FireRavenEntity entity, FireRavenRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        state.flyAnimationState.copyFrom(entity.FLY_ANIMATION);
+        state.idleAnimationState.copyFrom(entity.IDLE_ANIMATION);
+        state.isFlying = entity.isFlying();
+        state.walkLimbSwing = entity.walkAnimation.position(partialTicks);
+        state.walkLimbSwingAmount = entity.walkAnimation.speed(partialTicks);
+    }
 
-        // This translates the *visual model* upwards — try adjusting the Y value
-        poseStack.translate(0.0D, -1.8D, 0.0D); // ← Try 0.3, 0.5, 0.6, etc. as needed
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-        poseStack.popPose();
+    @Override
+    public Identifier getTextureLocation(FireRavenRenderState state) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/fire_raven/fire_raven.png");
     }
 }

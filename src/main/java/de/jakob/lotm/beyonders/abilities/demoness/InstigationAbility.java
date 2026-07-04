@@ -50,7 +50,7 @@ public class InstigationAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, 20*(int) Math.max(multiplier(entity)/2,1), 2);

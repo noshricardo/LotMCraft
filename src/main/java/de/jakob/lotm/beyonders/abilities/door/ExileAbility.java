@@ -32,7 +32,7 @@ public class ExileAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 targetPos = AbilityUtil.getTargetLocation(entity, 20*(int) multiplier(entity), 2);

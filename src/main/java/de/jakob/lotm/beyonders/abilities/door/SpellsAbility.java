@@ -72,7 +72,7 @@ public class SpellsAbility extends SelectableAbility {
     }
 
     private void burning(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         ParticleUtil.spawnParticles((ServerLevel) level, ParticleTypes.FLAME, entity.getEyePosition().subtract(0, .25, 0), 30, .4, .25);
@@ -80,7 +80,7 @@ public class SpellsAbility extends SelectableAbility {
     }
 
     private void tumble(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         Vec3 targetLoc = AbilityUtil.getTargetLocation(entity, 12*(int) multiplier(entity), 1);
 
@@ -112,7 +112,7 @@ public class SpellsAbility extends SelectableAbility {
     }
 
     private void fog(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         if(isCastingFog.contains(entity.getUUID()))
@@ -138,7 +138,7 @@ public class SpellsAbility extends SelectableAbility {
     }
 
     private void freeze(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 targetPos = AbilityUtil.getTargetLocation(entity, 4*(int) multiplier(entity), 2);
@@ -151,7 +151,7 @@ public class SpellsAbility extends SelectableAbility {
     private void flash(Level level, LivingEntity entity) {
         Vec3 targetLoc = AbilityUtil.getTargetLocation(entity, 12*(int) multiplier(entity), 1);
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockState lightBlock = Blocks.LIGHT.defaultBlockState();
             level.setBlock(BlockPos.containing(targetLoc.x, targetLoc.y, targetLoc.z), lightBlock, 3);
 
@@ -167,7 +167,7 @@ public class SpellsAbility extends SelectableAbility {
     }
 
     private void electricShock(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 start = VectorUtil.getRelativePosition(entity.getEyePosition().add(entity.getLookAngle().normalize()), entity.getLookAngle().normalize(), 0, random.nextDouble(1, 2.85f), random.nextDouble(-.1, .6));
@@ -182,7 +182,7 @@ public class SpellsAbility extends SelectableAbility {
     private final Random random = new Random();
 
     private void wind(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         if(isCastingWind.contains(entity.getUUID()))
@@ -232,7 +232,7 @@ public class SpellsAbility extends SelectableAbility {
             return;
 
         Level level = event.getEntity().level();
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         event.getEntity().getPersistentData().remove("lotm_trickmaster_burning");
@@ -254,7 +254,7 @@ public class SpellsAbility extends SelectableAbility {
             return;
 
         Level level = event.getEntity().level();
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         event.getEntity().getPersistentData().remove("lotm_trickmaster_burning");

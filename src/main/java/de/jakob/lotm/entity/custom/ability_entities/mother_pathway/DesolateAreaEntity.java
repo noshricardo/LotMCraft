@@ -80,7 +80,7 @@ public class DesolateAreaEntity extends Entity {
     public void tick() {
         super.tick();
 
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             spawnClientParticles();
             return;
         }

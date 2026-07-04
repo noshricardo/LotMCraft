@@ -72,7 +72,7 @@ public class WaterMasteryAbility extends SelectableAbility {
 
     @Override
     public void castSelectedAbility(Level level, LivingEntity entity, int abilityIndex) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
         if(!(entity instanceof Player))
             abilityIndex = 0;

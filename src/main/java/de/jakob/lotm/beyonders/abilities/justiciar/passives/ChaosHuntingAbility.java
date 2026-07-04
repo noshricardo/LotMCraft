@@ -31,7 +31,7 @@ public class ChaosHuntingAbility extends PassiveAbilityItem {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(entity instanceof ServerPlayer player)) return;
 
         int casterSeq = BeyonderData.getSequence(entity);

@@ -53,7 +53,7 @@ public class AvatarEntity extends PathfinderMob {
         super(entityType, level);
         setOriginalOwner(owner);
 
-        if (!level.isClientSide && !pathway.equalsIgnoreCase("none") && !pathway.isEmpty()) {
+        if (!level .isClientSide() && !pathway.equalsIgnoreCase("none") && !pathway.isEmpty()) {
             this.pathway = pathway;
             this.sequence = sequence;
             BeyonderData.setBeyonder(this, pathway, sequence);
@@ -74,7 +74,7 @@ public class AvatarEntity extends PathfinderMob {
     public void onAddedToLevel() {
         super.onAddedToLevel();
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.sequence != LOTMCraft.NON_BEYONDER_SEQ && !this.pathway.equals("none")) {
                 BeyonderData.setBeyonder(this, this.pathway, this.sequence);
                 this.entityData.set(PATHWAY, this.pathway);
@@ -89,7 +89,7 @@ public class AvatarEntity extends PathfinderMob {
     public void onSyncedDataUpdated(EntityDataAccessor<?> dataAccessor) {
         super.onSyncedDataUpdated(dataAccessor);
 
-        if (this.level().isClientSide && (dataAccessor.equals(PATHWAY) || dataAccessor.equals(SEQUENCE))) {
+        if (this.level() .isClientSide() && (dataAccessor.equals(PATHWAY) || dataAccessor.equals(SEQUENCE))) {
             String p = this.entityData.get(PATHWAY);
             int s = this.entityData.get(SEQUENCE);
             ClientBeyonderCache.updateData(this.getUUID(), p, s,
@@ -132,7 +132,7 @@ public class AvatarEntity extends PathfinderMob {
     public void tick() {
         super.tick();
 
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
 
         validateTarget(getTarget());
 
@@ -181,7 +181,7 @@ public class AvatarEntity extends PathfinderMob {
             this.sequence = compound.getInt("Sequence");
             UUID originalOwner = compound.getUUID("OriginalOwner");
 
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 BeyonderData.setBeyonder(this, this.pathway, this.sequence);
                 this.entityData.set(PATHWAY, this.pathway);
                 this.entityData.set(SEQUENCE, this.sequence);
@@ -209,11 +209,11 @@ public class AvatarEntity extends PathfinderMob {
     }
 
     public String getPathway() {
-        return this.level().isClientSide ? this.entityData.get(PATHWAY) : BeyonderData.getPathway(this);
+        return this.level() .isClientSide() ? this.entityData.get(PATHWAY) : BeyonderData.getPathway(this);
     }
 
     public int getSequence() {
-        return this.level().isClientSide ? this.entityData.get(SEQUENCE) : BeyonderData.getSequence(this);
+        return this.level() .isClientSide() ? this.entityData.get(SEQUENCE) : BeyonderData.getSequence(this);
     }
 
     public void setOriginalOwner(UUID ownerUUID) {

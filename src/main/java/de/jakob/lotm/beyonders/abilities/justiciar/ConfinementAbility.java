@@ -54,7 +54,7 @@ public class ConfinementAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         ServerLevel serverLevel = (ServerLevel) level;
 
         ACTIVE_ZONES.stream()
@@ -173,7 +173,7 @@ public class ConfinementAbility extends Ability {
     @SubscribeEvent
     public static void onEntityTeleport(EntityTeleportEvent event) {
         if (!(event.getEntity() instanceof LivingEntity entity)) return;
-        if (entity.level().isClientSide) return;
+        if (entity.level().isClientSide()) return;
         if (!(entity.level() instanceof ServerLevel serverLevel)) return;
 
         Vec3 destination = new Vec3(event.getTargetX(), event.getTargetY(), event.getTargetZ());

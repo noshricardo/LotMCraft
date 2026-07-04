@@ -134,7 +134,7 @@ public class BrewingCauldronBlockEntity extends BlockEntity implements MenuProvi
     }
 
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return;
         }
 

@@ -50,7 +50,7 @@ public class MarionetteUseAbilityGoal extends TargetGoal {
 
     @Override
     public void tick() {
-        if(marionette.level().isClientSide) {
+        if(marionette.level().isClientSide()) {
             return;
         }
         if(random.nextInt(100) >= 40) {

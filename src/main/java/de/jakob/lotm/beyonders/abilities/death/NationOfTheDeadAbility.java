@@ -170,7 +170,7 @@ public class NationOfTheDeadAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         int casterSeq = BeyonderData.getSequence(entity);

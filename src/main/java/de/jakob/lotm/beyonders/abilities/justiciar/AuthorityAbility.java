@@ -103,7 +103,7 @@ public class AuthorityAbility extends SelectableAbility {
     }
 
     private void stripDefense(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         ServerLevel serverLevel = (ServerLevel) level;
         int radius = scaledRadius(entity);
         int scale = scaledDuration(entity);
@@ -134,7 +134,7 @@ public class AuthorityAbility extends SelectableAbility {
     }
 
     private void slow(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         ServerLevel serverLevel = (ServerLevel) level;
         int radius = scaledRadius(entity);
         int scale = scaledDuration(entity);
@@ -166,7 +166,7 @@ public class AuthorityAbility extends SelectableAbility {
     }
 
     private void armorRemove(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         ServerLevel serverLevel = (ServerLevel) level;
         int radius = scaledRadius(entity);
         int scale = scaledDuration(entity);

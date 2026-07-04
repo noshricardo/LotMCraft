@@ -51,7 +51,7 @@ public class CopiedAbilityHelper {
             component.getAbilities().set(index, data.withRemainingUses(newUses));
         }
 
-        if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
             if(entity instanceof ServerPlayer player)
                 AbilityWheelHelper.removeUnusableAbilities(player);
             syncToClient((ServerPlayer) entity);

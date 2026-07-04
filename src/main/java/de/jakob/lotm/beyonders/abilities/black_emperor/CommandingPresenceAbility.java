@@ -84,7 +84,7 @@ public class CommandingPresenceAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         ACTIVE_CASTERS.add(entity.getUUID());
@@ -147,7 +147,7 @@ public class CommandingPresenceAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         int selfSeq = BeyonderData.getSequence(entity);
@@ -361,7 +361,7 @@ public class CommandingPresenceAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         UUID casterId = entity.getUUID();

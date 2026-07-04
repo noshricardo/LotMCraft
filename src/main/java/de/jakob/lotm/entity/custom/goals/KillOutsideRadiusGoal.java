@@ -34,7 +34,7 @@ public class KillOutsideRadiusGoal extends Goal {
 
     @Override
     public void tick() {
-        if (mob.level().isClientSide) return;
+        if (mob.level().isClientSide()) return;
         if (!mob.isAlive()) return;
 
         double dist = mob.position().distanceToSqr(center);

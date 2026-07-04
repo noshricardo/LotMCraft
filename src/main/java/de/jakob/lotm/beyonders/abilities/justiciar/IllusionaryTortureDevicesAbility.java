@@ -85,7 +85,7 @@ public class IllusionaryTortureDevicesAbility extends SelectableAbility {
     }
 
     private void brandingIron(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(entity instanceof Player player)) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
@@ -147,7 +147,7 @@ public class IllusionaryTortureDevicesAbility extends SelectableAbility {
     }
 
     private void psychicLashing(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(entity instanceof Player player)) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
@@ -176,7 +176,7 @@ public class IllusionaryTortureDevicesAbility extends SelectableAbility {
     }
 
     private void psychicPiercing(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, scaledRange(entity, 18), 1.3f);
@@ -219,7 +219,7 @@ public class IllusionaryTortureDevicesAbility extends SelectableAbility {
     }
 
     private void whipOfPain(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, scaledRange(entity, 12), 1.3f);

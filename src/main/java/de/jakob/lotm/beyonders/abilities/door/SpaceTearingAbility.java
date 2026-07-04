@@ -31,7 +31,7 @@ public class SpaceTearingAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 targetLoc = AbilityUtil.getTargetLocation(entity, 27*(int) multiplier(entity), 2);

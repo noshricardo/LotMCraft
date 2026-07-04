@@ -36,7 +36,7 @@ public class LightningStormAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         ServerLevel serverLevel = (ServerLevel) level;

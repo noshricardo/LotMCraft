@@ -60,7 +60,7 @@ public class HolyLightAbility extends Ability {
 
         List<BlockPos> lights = new ArrayList<>();
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             AtomicReference<Vec3> currentPos = new AtomicReference<>(initialPos);
 
             level.playSound(null, initialPos.x, initialPos.y - 14, initialPos.z, SoundEvents.BEACON_ACTIVATE, entity.getSoundSource(), 3.0f, 1.0f);

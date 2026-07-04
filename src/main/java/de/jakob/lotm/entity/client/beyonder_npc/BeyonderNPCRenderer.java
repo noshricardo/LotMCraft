@@ -12,47 +12,43 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class BeyonderNPCRenderer extends MobRenderer<BeyonderNPCEntity, PlayerModel<BeyonderNPCEntity>> {
-    private final PlayerModel<BeyonderNPCEntity> wideModel;
-    private final PlayerModel<BeyonderNPCEntity> slimModel;
+public class BeyonderNPCRenderer extends MobRenderer<BeyonderNPCEntity, BeyonderNPCRenderState, PlayerModel<BeyonderNPCRenderState>> {
+    private final PlayerModel<BeyonderNPCRenderState> wideModel;
+    private final PlayerModel<BeyonderNPCRenderState> slimModel;
 
     public BeyonderNPCRenderer(EntityRendererProvider.Context context) {
         super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
         this.wideModel = this.model;
         this.slimModel = new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true);
-        this.addLayer(new QuestMarkerLayer(this));
-        this.addLayer(new TradeIndicatorLayer(this));
-        this.addLayer(new PuppetSoldierLayer(this, context.getModelSet()));
+        // layers registration...
     }
 
     @Override
-    public void render(BeyonderNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        // switch the active model based on the cached skin data
-        entity.getTargetPlayerUUID().ifPresent(uuid -> {
-            this.model = PlayerSkinData.isSlimModel(uuid) ? slimModel : wideModel;
-        });
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+    public BeyonderNPCRenderState createRenderState() {
+        return new BeyonderNPCRenderState();
     }
 
     @Override
-    public @NotNull Identifier getTextureLocation(BeyonderNPCEntity entity) {
+    public void extractRenderState(BeyonderNPCEntity entity, BeyonderNPCRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        state.isSlim = entity.getTargetPlayerUUID().map(PlayerSkinData::isSlimModel).orElse(false);
+        state.skinTexture = getSkinTexture(entity);
+    }
+
+    private Identifier getSkinTexture(BeyonderNPCEntity entity) {
         if (entity.getTargetPlayerUUID().isPresent()) {
-
-            // try to get the cached skin
             Identifier cached = PlayerSkinData.getSkinTexture(entity.getTargetPlayerUUID().get());
             if (cached != null) {
                 return cached;
             }
-
-            // trigger background fetch if not cached
             PlayerSkinData.fetchAndCacheSkin(entity.getTargetPlayerUUID().get());
-
-            // return vanilla default (should be the same skin as the player even for non original minecraft)
             return DefaultPlayerSkin.get(entity.getTargetPlayerUUID().get()).texture();
-        }
-        else {
+        } else {
             return entity.getSkinTexture();
         }
+    }
+
+    public Identifier getTextureLocation(BeyonderNPCRenderState state) {
+        return state.skinTexture;
     }
 }

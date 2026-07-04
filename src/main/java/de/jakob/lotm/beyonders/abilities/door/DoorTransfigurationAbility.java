@@ -39,7 +39,7 @@ public class DoorTransfigurationAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             ClientHandler.changeToThirdPerson(entity);
             return;
         }
@@ -64,7 +64,7 @@ public class DoorTransfigurationAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         doorSizeModifier.put(entity.getUUID(), 2);
 
@@ -75,7 +75,7 @@ public class DoorTransfigurationAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             ClientHandler.changeToFirstPerson(entity);
             return;
         }
@@ -103,7 +103,7 @@ public class DoorTransfigurationAbility extends ToggleAbility {
     @SubscribeEvent
     public static void onIncomingDamage(LivingIncomingDamageEvent event) {
         LivingEntity entity = event.getEntity();
-        if(entity.level().isClientSide) {
+        if(entity.level().isClientSide()) {
             return;
         }
 

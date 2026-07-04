@@ -63,7 +63,7 @@ public class DisasterFantasiaAbility extends SelectableAbility {
 
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int abilityIndex) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         Vec3 targetPos = AbilityUtil.getTargetLocation(entity, (int) (150* multiplier(entity)), 3);
@@ -123,13 +123,13 @@ public class DisasterFantasiaAbility extends SelectableAbility {
     }
 
     private void createPlague(Level level, LivingEntity entity){
-        if(level.isClientSide || !(level instanceof ServerLevel serverLevel))
+        if(level .isClientSide() || !(level instanceof ServerLevel serverLevel))
             return;
 
         float multiplier = multiplier(entity);
 
         ServerScheduler.scheduleForDuration(0, 20, 20 * 80, () -> {
-            if (entity.level().isClientSide)
+            if (entity.level().isClientSide())
                 return;
 
             // Disease is suppressed by purification, cleansing, life aura, or blooming interactions

@@ -69,7 +69,7 @@ public class AngelAuthorityAbility extends SelectableAbility {
     }
 
     protected void castSelectedAbility(Level level, LivingEntity entity, int abilityIndex) {
-        if (!level.isClientSide && entity instanceof ServerPlayer player) {
+        if (!level .isClientSide() && entity instanceof ServerPlayer player) {
             switch (abilityIndex) {
                 case 0:
                     this.spiritWorldPassage(player);
@@ -130,7 +130,7 @@ public class AngelAuthorityAbility extends SelectableAbility {
     }
 
     public void spiritWorldPassage(ServerPlayer player) {
-        if (player.level().isClientSide) return;
+        if (player.level().isClientSide()) return;
         ServerLevel targetLevel;
         Vec3 targetPos;
 

@@ -64,7 +64,7 @@ public class CharmAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, 18, 1.5f);

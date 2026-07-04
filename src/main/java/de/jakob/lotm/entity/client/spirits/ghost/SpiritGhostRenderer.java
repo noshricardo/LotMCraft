@@ -10,23 +10,26 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
 
-public class SpiritGhostRenderer extends MobRenderer<SpiritGhostEntity, SpiritGhostModel<SpiritGhostEntity>> {
+public class SpiritGhostRenderer extends MobRenderer<SpiritGhostEntity, SpiritGhostRenderState, SpiritGhostModel<SpiritGhostRenderState>> {
     public SpiritGhostRenderer(EntityRendererProvider.Context context) {
         super(context, new SpiritGhostModel<>(context.bakeLayer(SpiritGhostModel.LAYER_LOCATION)), .3f);
     }
 
     @Override
-    public Identifier getTextureLocation(SpiritGhostEntity entity) {
-        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_ghost/spirit_ghost.png");
+    public SpiritGhostRenderState createRenderState() {
+        return new SpiritGhostRenderState();
     }
 
     @Override
-    public void render(SpiritGhostEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        poseStack.pushPose();
+    public void extractRenderState(SpiritGhostEntity entity, SpiritGhostRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        state.walkAnimationState.copyFrom(entity.WALK_ANIMATION);
+        state.idleAnimationState.copyFrom(entity.IDLE_ANIMATION);
+        state.isFlying = entity.isFlying();
+    }
 
-        poseStack.translate(0.0D, -.2D, 0.0D);
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-        poseStack.popPose();
+    @Override
+    public Identifier getTextureLocation(SpiritGhostRenderState state) {
+        return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_ghost/spirit_ghost.png");
     }
 }

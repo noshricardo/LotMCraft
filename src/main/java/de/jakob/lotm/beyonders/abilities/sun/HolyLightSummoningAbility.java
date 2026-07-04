@@ -55,7 +55,7 @@ public class HolyLightSummoningAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         Vec3 initialPos = AbilityUtil.getTargetLocation(entity, radius, 1.5f, true).add(0, 18, 0);
 

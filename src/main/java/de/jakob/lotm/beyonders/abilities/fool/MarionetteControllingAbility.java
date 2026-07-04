@@ -62,7 +62,7 @@ public class MarionetteControllingAbility extends SelectableAbility {
 
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int abilityIndex) {
-        if(level.isClientSide || !(entity instanceof ServerPlayer player))
+        if(level .isClientSide() || !(entity instanceof ServerPlayer player))
             return;
 
         switch (abilityIndex) {
@@ -176,7 +176,7 @@ public class MarionetteControllingAbility extends SelectableAbility {
     private static ArrayList<LivingEntity> getMarionettesOfPlayerInAllLevelsOrderedById(LivingEntity entity) {
         Level level = entity.level();
 
-        if(level.isClientSide || !(level instanceof ServerLevel serverLevel)) {
+        if(level .isClientSide() || !(level instanceof ServerLevel serverLevel)) {
             return new ArrayList<>();
         }
 
@@ -235,7 +235,7 @@ public class MarionetteControllingAbility extends SelectableAbility {
 
     @Override
     public void onHold(Level level, LivingEntity entity) {
-        if(level.isClientSide || !(entity instanceof ServerPlayer player))
+        if(level .isClientSide() || !(entity instanceof ServerPlayer player))
             return;
 
         checkIndex(entity);
@@ -278,7 +278,7 @@ public class MarionetteControllingAbility extends SelectableAbility {
     }
 
     public static void control(Level level, ServerPlayer player) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if(CycleOfFateHelper.isInsideOfCycleOfFate(player)) {
             return;

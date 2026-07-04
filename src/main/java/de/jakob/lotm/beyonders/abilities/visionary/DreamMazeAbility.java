@@ -77,7 +77,7 @@ public class DreamMazeAbility extends SelectableAbility {
     }
 
     private void bringSelf(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (!(entity instanceof ServerPlayer player)) return;
 
@@ -107,7 +107,7 @@ public class DreamMazeAbility extends SelectableAbility {
 
 
     private void bringOthers(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (!(entity instanceof ServerPlayer caster)) return;
 

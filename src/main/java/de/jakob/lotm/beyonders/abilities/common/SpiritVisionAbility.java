@@ -63,7 +63,7 @@ public class SpiritVisionAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (entity instanceof ServerPlayer player) {
                 PacketHandler.sendToPlayer(player, new SyncSpiritVisionAbilityPacket(true, -1));
             }
@@ -159,7 +159,7 @@ public class SpiritVisionAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             entity.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1, 1);
         } else {
             if (!(entity instanceof ServerPlayer player))

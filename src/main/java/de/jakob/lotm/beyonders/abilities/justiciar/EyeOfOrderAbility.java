@@ -68,7 +68,7 @@ public class EyeOfOrderAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         int sequence = BeyonderData.getSequence(entity);
         int radius = (int) (getRadiusForSequence(sequence) *multiplier(entity));
@@ -83,7 +83,7 @@ public class EyeOfOrderAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         Optional<EyeZone> zoneOpt = ACTIVE_ZONES.stream()
                 .filter(z -> z.ownerId.equals(entity.getUUID()))
@@ -119,7 +119,7 @@ public class EyeOfOrderAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         Optional<EyeZone> existing = ACTIVE_ZONES.stream()
                 .filter(z -> z.ownerId.equals(entity.getUUID()))

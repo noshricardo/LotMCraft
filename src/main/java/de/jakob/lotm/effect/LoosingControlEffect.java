@@ -31,7 +31,7 @@ public class LoosingControlEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
-        if(livingEntity.level().isClientSide) return true;
+        if(livingEntity.level().isClientSide()) return true;
 
         var personas = livingEntity.getData(ModAttachments.VIRTUAL_PERSONAS);
 

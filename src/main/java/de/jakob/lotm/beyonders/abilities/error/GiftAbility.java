@@ -124,7 +124,7 @@ public class GiftAbility extends SelectableAbility {
 
     private void giftLuck(Level level, LivingEntity entity){
         if(!(entity instanceof ServerPlayer player)) {
-            if(entity instanceof Player player && entity.level().isClientSide) {
+            if(entity instanceof Player player && entity.level().isClientSide()) {
                 player.playSound(SoundEvents.BELL_RESONATE, 1, 1);
             }
             return;
@@ -163,7 +163,7 @@ public class GiftAbility extends SelectableAbility {
 
     private void giftDigestion(Level level, LivingEntity entity){
         if(!(entity instanceof ServerPlayer player)) {
-            if(entity instanceof Player player && entity.level().isClientSide) {
+            if(entity instanceof Player player && entity.level().isClientSide()) {
                 player.playSound(SoundEvents.BELL_RESONATE, 1, 1);
             }
             return;
@@ -202,7 +202,7 @@ public class GiftAbility extends SelectableAbility {
 
     private void giftHealth(Level level, LivingEntity entity){
         if(!(entity instanceof ServerPlayer player)) {
-            if(entity instanceof Player player && entity.level().isClientSide) {
+            if(entity instanceof Player player && entity.level().isClientSide()) {
                 player.playSound(SoundEvents.BELL_RESONATE, 1, 1);
             }
             return;
@@ -231,7 +231,7 @@ public class GiftAbility extends SelectableAbility {
 
     private void giftDistance(Level level, LivingEntity entity){
         if(!(entity instanceof ServerPlayer player)) {
-            if(entity instanceof Player player && entity.level().isClientSide) {
+            if(entity instanceof Player player && entity.level().isClientSide()) {
                 player.playSound(SoundEvents.BELL_RESONATE, 1, 1);
             }
             return;
@@ -289,7 +289,7 @@ public class GiftAbility extends SelectableAbility {
 
     private void giftItem(Level level, LivingEntity entity){
         if(!(entity instanceof ServerPlayer player)) {
-            if(entity instanceof Player player && entity.level().isClientSide) {
+            if(entity instanceof Player player && entity.level().isClientSide()) {
                 player.playSound(SoundEvents.BELL_RESONATE, 1, 1);
             }
             return;

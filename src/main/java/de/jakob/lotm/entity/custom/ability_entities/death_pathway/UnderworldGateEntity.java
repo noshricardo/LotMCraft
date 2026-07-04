@@ -32,7 +32,7 @@ public class UnderworldGateEntity extends Entity {
 
     @Override
     public void tick() {
-        if(level().isClientSide) {
+        if(level().isClientSide()) {
             if (this.tickCount == 1) {
                 openAnimationState.start(0);
             }

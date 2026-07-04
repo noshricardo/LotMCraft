@@ -44,7 +44,7 @@ public class FlamingJumpAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         BlockPos block = getSelectedFire(level, entity, true);
@@ -67,7 +67,7 @@ public class FlamingJumpAbility extends Ability {
 
     @Override
     public void onHold(Level level, LivingEntity entity) {
-        if(!level.isClientSide)
+        if(!level.isClientSide())
             return;
 
         BlockPos selectedFire = getSelectedFire(level, entity, false);

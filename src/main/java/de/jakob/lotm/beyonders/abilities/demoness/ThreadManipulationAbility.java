@@ -62,7 +62,7 @@ public class ThreadManipulationAbility extends SelectableAbility {
 
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int abilityIndex) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         switch (abilityIndex) {

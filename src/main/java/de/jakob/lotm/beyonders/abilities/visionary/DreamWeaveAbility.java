@@ -97,7 +97,7 @@ public class DreamWeaveAbility extends SelectableAbility {
     // Spawns 1 mob, 1 sequence below the caster
 
     private void strong(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, (int) (20 *multiplier(entity)), 2);
@@ -127,7 +127,7 @@ public class DreamWeaveAbility extends SelectableAbility {
 
     // Spawns 3 mobs, 3 sequences below the caster
     private void weak(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, 20, 2);
@@ -190,7 +190,7 @@ public class DreamWeaveAbility extends SelectableAbility {
     
     @SubscribeEvent
     public static void onEffectRemoved(MobEffectEvent.Remove event) {
-        if (event.getEntity().level().isClientSide) return;
+        if (event.getEntity().level().isClientSide()) return;
         if (!event.getEffect().is(ModEffects.LOOSING_CONTROL)) return;
 
         UUID victimUUID = event.getEntity().getUUID();

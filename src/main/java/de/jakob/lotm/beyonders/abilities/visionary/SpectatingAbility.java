@@ -47,7 +47,7 @@ public class SpectatingAbility extends ToggleAbility {
             return;
         }
 
-        if(!level.isClientSide) {
+        if(!level.isClientSide()) {
             if(entity instanceof ServerPlayer player) {
                 PacketHandler.sendToPlayer(player, new SyncSpectatingAbilityPacket(true, -1));
             }
@@ -59,7 +59,7 @@ public class SpectatingAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(!(entity instanceof ServerPlayer player) || level.isClientSide)
+        if(!(entity instanceof ServerPlayer player) || level.isClientSide())
             return;
 
         LivingEntity lookedAt = AbilityUtil.getTargetEntity(entity, 40, 1.2f, true, true);
@@ -92,7 +92,7 @@ public class SpectatingAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if(!level.isClientSide) {
+        if(!level.isClientSide()) {
             if(entity instanceof ServerPlayer player) {
                 PacketHandler.sendToPlayer(player, new SyncSpectatingAbilityPacket(false, -1));
             }

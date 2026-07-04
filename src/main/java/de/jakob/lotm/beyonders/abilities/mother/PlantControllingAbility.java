@@ -56,7 +56,7 @@ public class PlantControllingAbility extends SelectableAbility {
     }
 
     private void entrap(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         LivingEntity targetEntity = AbilityUtil.getTargetEntity(entity, 16, 2);
@@ -153,7 +153,7 @@ public class PlantControllingAbility extends SelectableAbility {
     }
 
     private void attack(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 targetLoc = AbilityUtil.getTargetLocation(entity, 16, 1.4f);

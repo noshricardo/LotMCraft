@@ -44,7 +44,7 @@ public class FogOfWarAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
         BeyonderData.reduceSpirituality(entity, 15);
 

@@ -50,7 +50,7 @@ public class DamageTrackerEntity extends PathfinderMob {
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return false;
         }
 
@@ -79,7 +79,7 @@ public class DamageTrackerEntity extends PathfinderMob {
     public void tick() {
         super.tick();
 
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return;
         }
 
@@ -106,7 +106,7 @@ public class DamageTrackerEntity extends PathfinderMob {
 
     @Override
     protected @NotNull InteractionResult mobInteract(Player player, InteractionHand hand) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.discard();
         }
         return InteractionResult.SUCCESS;

@@ -52,7 +52,7 @@ public class SpatialCageAbility extends SelectableAbility {
 
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int selectedAbility) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         Vec3 targetLoc = AbilityUtil.getTargetLocation(entity, 35, 2);
         Direction frontDirection = entity.getDirection().getOpposite();

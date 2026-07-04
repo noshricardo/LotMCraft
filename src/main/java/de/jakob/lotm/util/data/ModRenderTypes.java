@@ -2,16 +2,11 @@ package de.jakob.lotm.util.data;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypes;
-import net.minecraft.client.renderer.ShaderStateShard;
-import net.minecraft.client.renderer.TextureStateShard;
-import net.minecraft.client.renderer.TransparencyStateShard;
-import net.minecraft.client.renderer.CullStateShard;
-import net.minecraft.client.renderer.LightmapStateShard;
-import net.minecraft.client.renderer.OverlayStateShard;
-import net.minecraft.client.renderer.WriteMaskStateShard;
-import net.minecraft.client.renderer.DepthTestStateShard;
+import net.minecraft.client.renderer.RenderSetup;
+import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.resources.Identifier;
 
@@ -26,65 +21,55 @@ public class ModRenderTypes extends RenderType {
     
     // Custom render type for electric bolts with enhanced glow
     public static final RenderType ELECTRIC_BOLT = create("electric_bolt",
-        DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true,
-        RenderType.CompositeState.builder()
-            .setShaderState(new ShaderStateShard(RenderTypes::LIGHTNING_SHADER))
-            .setWriteMaskState(WriteMaskStateShard.COLOR_WRITE)
-            .setTransparencyState(TransparencyStateShard.LIGHTNING_TRANSPARENCY)
-            .setCullState(CullStateShard.NO_CULL)
-            .setLightmapState(LightmapStateShard.NO_LIGHTMAP)
-            .setOverlayState(OverlayStateShard.NO_OVERLAY)
-            .createCompositeState(false));
+        RenderSetup.builder(RenderPipelines.LIGHTNING)
+            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+            .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
+            .setCullState(RenderStateShard.NO_CULL)
+            .useLightmap(false)
+            .useOverlay(false)
+            .createRenderSetup());
 
     // Alternative electric render type with additive blending for stronger glow
     public static final RenderType ELECTRIC_GLOW = create("electric_glow",
-        DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true,
-        RenderType.CompositeState.builder()
-            .setShaderState(new ShaderStateShard(RenderTypes::LIGHTNING_SHADER))
-            .setWriteMaskState(WriteMaskStateShard.COLOR_WRITE)
-            .setTransparencyState(TransparencyStateShard.ADDITIVE_TRANSPARENCY)
-            .setCullState(CullStateShard.NO_CULL)
-            .setLightmapState(LightmapStateShard.NO_LIGHTMAP)
-            .setOverlayState(OverlayStateShard.NO_OVERLAY)
-            .createCompositeState(false));
+        RenderSetup.builder(RenderPipelines.LIGHTNING)
+            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+            .setTransparencyState(RenderStateShard.ADDITIVE_TRANSPARENCY)
+            .setCullState(RenderStateShard.NO_CULL)
+            .useLightmap(false)
+            .useOverlay(false)
+            .createRenderSetup());
 
     // Textured electric effect (if you want to use a lightning texture)
     public static RenderType electricTextured(Identifier texture) {
         return create("electric_textured",
-            DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, true,
-            RenderType.CompositeState.builder()
-                .setShaderState(new ShaderStateShard(RenderTypes::ENTITY_CUTOUT_SHADER))
-                .setTextureState(new TextureStateShard(texture, false, false))
-                .setTransparencyState(TransparencyStateShard.TRANSLUCENT_TRANSPARENCY)
-                .setCullState(CullStateShard.NO_CULL)
-                .setLightmapState(LightmapStateShard.LIGHTMAP)
-                .setOverlayState(OverlayStateShard.OVERLAY)
-                .createCompositeState(true));
+            RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT)
+                .withTexture("sampler", texture)
+                .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                .setCullState(RenderStateShard.NO_CULL)
+                .useLightmap(true)
+                .useOverlay(true)
+                .createRenderSetup());
     }
 
     // Beam render type for continuous beams (like laser beams)
     public static final RenderType ENERGY_BEAM = create("energy_beam",
-        DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true,
-        RenderType.CompositeState.builder()
-            .setShaderState(new ShaderStateShard(RenderTypes::LIGHTNING_SHADER))
-            .setWriteMaskState(WriteMaskStateShard.COLOR_WRITE)
-            .setTransparencyState(TransparencyStateShard.TRANSLUCENT_TRANSPARENCY)
-            .setCullState(CullStateShard.NO_CULL)
-            .setLightmapState(LightmapStateShard.NO_LIGHTMAP)
-            .setOverlayState(OverlayStateShard.NO_OVERLAY)
-            .setDepthTestState(DepthTestStateShard.LEQUAL_DEPTH_TEST)
-            .createCompositeState(false));
+        RenderSetup.builder(RenderPipelines.LIGHTNING)
+            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+            .setCullState(RenderStateShard.NO_CULL)
+            .useLightmap(false)
+            .useOverlay(false)
+            .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
+            .createRenderSetup());
 
     // Magical effect render type with special blending
     public static final RenderType MAGICAL_EFFECT = create("magical_effect",
-        DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true,
-        RenderType.CompositeState.builder()
-            .setShaderState(new ShaderStateShard(RenderTypes::LIGHTNING_SHADER))
-            .setWriteMaskState(WriteMaskStateShard.COLOR_WRITE)
-            .setTransparencyState(TransparencyStateShard.LIGHTNING_TRANSPARENCY)
-            .setCullState(CullStateShard.NO_CULL)
-            .setLightmapState(LightmapStateShard.NO_LIGHTMAP)
-            .setOverlayState(OverlayStateShard.NO_OVERLAY)
-            .setDepthTestState(DepthTestStateShard.NO_DEPTH_TEST) // Render through blocks for magical effects
-            .createCompositeState(false));
+        RenderSetup.builder(RenderPipelines.LIGHTNING)
+            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+            .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
+            .setCullState(RenderStateShard.NO_CULL)
+            .useLightmap(false)
+            .useOverlay(false)
+            .setDepthTestState(RenderStateShard.NO_DEPTH_TEST) // Render through blocks for magical effects
+            .createRenderSetup());
 }

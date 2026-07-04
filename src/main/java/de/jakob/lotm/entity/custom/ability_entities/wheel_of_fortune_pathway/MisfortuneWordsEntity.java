@@ -88,7 +88,7 @@ public class MisfortuneWordsEntity extends Entity {
     }
 
     public LivingEntity getCasterEntity() {
-        if(level().isClientSide) {
+        if(level().isClientSide()) {
             return null;
         }
         UUID casterUUID = this.getCasterUUID();

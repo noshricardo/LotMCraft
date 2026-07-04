@@ -50,7 +50,7 @@ public class MiracleOfResurrectionAbility extends PassiveAbilityItem {
         Entity entity = event.getEntity();
         Level level = entity.level();
 
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         if (entity instanceof ServerPlayer serverPlayer) {

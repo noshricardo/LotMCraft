@@ -34,14 +34,14 @@ public class RecognitionAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         level.playSound(null, entity.blockPosition(), SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 0.5f, 1.6f);
         AbilityUtil.sendActionBar(entity, Component.literal("§6⚖ §eRecognition §6⚖"));
     }
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (entity.tickCount % 10 != 0) return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, (int) (40 * multiplier(entity)), 1.5f, true);
@@ -82,7 +82,7 @@ public class RecognitionAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         clearArtifactScaling(entity);
         level.playSound(null, entity.blockPosition(), SoundEvents.BEACON_DEACTIVATE, SoundSource.PLAYERS, 0.5f, 1.6f);
         AbilityUtil.sendActionBar(entity, Component.literal(""));

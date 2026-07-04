@@ -16,7 +16,7 @@ public class AnimationUtil {
 
 
     public static void playOpenArmAnimation(Player player) {
-        if (player.level().isClientSide && player instanceof AbstractClientPlayer clientPlayer) {
+        if (player.level() .isClientSide() && player instanceof AbstractClientPlayer clientPlayer) {
             playAnimation(clientPlayer, openArmsAnimationID);
         }
         else {

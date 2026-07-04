@@ -46,7 +46,7 @@ public class TelepathyAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(entity instanceof ServerPlayer player)) return;
         if (entity.tickCount % 10 != 0) return;
 

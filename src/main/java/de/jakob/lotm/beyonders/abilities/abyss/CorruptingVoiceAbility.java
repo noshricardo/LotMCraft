@@ -59,7 +59,7 @@ CorruptingVoiceAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.corrupting_voice.activated").withColor(0x3d005c));
 
@@ -77,7 +77,7 @@ CorruptingVoiceAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         ServerLevel serverLevel = (ServerLevel) level;
         Vec3 pos = entity.getEyePosition();
@@ -98,7 +98,7 @@ CorruptingVoiceAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.corrupting_voice.deactivated").withColor(0x9932cc));
     }
 

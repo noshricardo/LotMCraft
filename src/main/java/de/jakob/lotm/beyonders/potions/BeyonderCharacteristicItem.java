@@ -42,7 +42,7 @@ public class BeyonderCharacteristicItem extends Item {
     public @NotNull InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return InteractionResultHolder.success(stack);
         }
 

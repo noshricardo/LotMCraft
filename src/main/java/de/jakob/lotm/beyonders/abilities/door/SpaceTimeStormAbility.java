@@ -51,7 +51,7 @@ public class SpaceTimeStormAbility extends SelectableAbility {
 
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int selectedAbility) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
         if(selectedAbility == 0) castAOEStorm((ServerLevel) level, entity);
         else                     castTargetedStorm((ServerLevel) level, entity);
     }

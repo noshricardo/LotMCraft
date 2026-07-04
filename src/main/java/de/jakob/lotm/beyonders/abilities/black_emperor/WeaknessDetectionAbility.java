@@ -54,7 +54,7 @@ public class WeaknessDetectionAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         entity.getPersistentData().putBoolean("lotm_weakness_detection_active", true);
         entity.sendSystemMessage(Component.literal("§6Weakness Detection: ON"));
@@ -75,7 +75,7 @@ public class WeaknessDetectionAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (!(entity instanceof ServerPlayer player)) return;
 
@@ -137,7 +137,7 @@ public class WeaknessDetectionAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         entity.getPersistentData().remove("lotm_weakness_detection_active");
 

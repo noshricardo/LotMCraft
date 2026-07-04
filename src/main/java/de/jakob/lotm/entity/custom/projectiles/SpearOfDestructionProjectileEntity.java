@@ -65,7 +65,7 @@ public class SpearOfDestructionProjectileEntity extends AbstractArrow {
         }
 
         super.tick();
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         ticks++;

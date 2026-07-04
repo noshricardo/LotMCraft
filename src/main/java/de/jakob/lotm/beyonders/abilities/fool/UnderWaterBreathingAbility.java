@@ -41,7 +41,7 @@ public class UnderWaterBreathingAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
         if(level.getBlockState(BlockPos.containing(entity.position().x, entity.position().y, entity.position().z)).getBlock() != Blocks.WATER) {
             cancel((ServerLevel) level, entity);

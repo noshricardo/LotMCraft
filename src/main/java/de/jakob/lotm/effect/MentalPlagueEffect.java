@@ -33,7 +33,7 @@ public class MentalPlagueEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
-        if(livingEntity.level().isClientSide) return true;
+        if(livingEntity.level().isClientSide()) return true;
 
         SanityComponent sanityComponent = livingEntity.getData(ModAttachments.SANITY_COMPONENT);
         sanityComponent.increaseSanityAndSync(-Math.max(0.001f, 0.001f * amplifier), livingEntity);

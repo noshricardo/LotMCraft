@@ -82,7 +82,7 @@ public class BloomingAreaEntity extends Entity {
     public void tick() {
         super.tick();
 
-        if(!level().isClientSide) {
+        if(!level().isClientSide()) {
             ServerLevel serverLevel = (ServerLevel) level();
 
             // Scan chunks progressively

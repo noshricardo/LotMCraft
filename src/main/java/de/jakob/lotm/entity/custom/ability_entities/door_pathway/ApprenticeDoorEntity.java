@@ -93,7 +93,7 @@ public class ApprenticeDoorEntity extends Entity {
     public void tick() {
         super.tick();
 
-        if(this.level().isClientSide)
+        if(this.level().isClientSide())
             return;
 
         // Handle duration and removal

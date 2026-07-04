@@ -241,7 +241,7 @@ public class TornadoEntity extends Entity {
     }
     
     private void spawnParticles() {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             for (int i = 0; i < 5; i++) {
                 double angle = this.random.nextDouble() * Math.PI * 2;
                 double radius = 2.0 + this.random.nextDouble() * 3.0;

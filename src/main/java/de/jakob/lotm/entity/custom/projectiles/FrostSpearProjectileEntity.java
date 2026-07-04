@@ -63,7 +63,7 @@ public class FrostSpearProjectileEntity extends AbstractArrow {
         }
 
         super.tick();
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         ticks++;
@@ -87,7 +87,7 @@ public class FrostSpearProjectileEntity extends AbstractArrow {
 
         if(owner != null) target.hurt(ModDamageTypes.source(level, ModDamageTypes.DEMONESS_GENERIC, owner), (float) damage);
         else              target.hurt(ModDamageTypes.source(level, ModDamageTypes.DEMONESS_GENERIC), (float) damage);
-        if(!level.isClientSide && owner != null)
+        if(!level .isClientSide() && owner != null)
             NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level, position(), owner, null, new String[]{"freezing"}, 2, 10));
     }
 
@@ -97,7 +97,7 @@ public class FrostSpearProjectileEntity extends AbstractArrow {
 
         if(griefing)
             this.level.setBlockAndUpdate(result.getBlockPos(), Blocks.PACKED_ICE.defaultBlockState());
-        if(!level.isClientSide && owner != null)
+        if(!level .isClientSide() && owner != null)
             NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level, result.getLocation(), owner, null, new String[]{"freezing"}, 2, 10));
     }
 

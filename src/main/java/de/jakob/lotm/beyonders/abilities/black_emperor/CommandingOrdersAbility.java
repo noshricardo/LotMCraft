@@ -65,7 +65,7 @@ public class CommandingOrdersAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         entity.sendSystemMessage(Component.literal("§5Commanding Orders: ON"));
         active.add(entity.getUUID());
     }
@@ -77,13 +77,13 @@ public class CommandingOrdersAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         entity.sendSystemMessage(Component.literal("§cCommanding Orders: OFF"));
         active.remove(entity.getUUID());
     }
 
     public static boolean handleAuthorityChat(LivingEntity caster, String rawMessage) {
-        if (caster == null || caster.level().isClientSide) return false;
+        if (caster == null || caster.level().isClientSide()) return false;
         if (!(caster.level() instanceof ServerLevel serverLevel)) return false;
 
         if(!active.contains(caster.getUUID())) return false;
@@ -184,7 +184,7 @@ public class CommandingOrdersAbility extends ToggleAbility {
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        if (player.level().isClientSide) return;
+        if (player.level().isClientSide()) return;
         if (!(player.level() instanceof ServerLevel serverLevel)) return;
 
         ActiveOrder order = ACTIVE_ORDERS.get(player.getUUID());

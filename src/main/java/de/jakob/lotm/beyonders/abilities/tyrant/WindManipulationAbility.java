@@ -117,7 +117,7 @@ public class WindManipulationAbility extends SelectableAbility {
 
 
     private void flight(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         if(!(entity instanceof Player player))
@@ -159,7 +159,7 @@ public class WindManipulationAbility extends SelectableAbility {
             player.resetFallDistance();
             player.hurtMarked = true;
 
-            if(!player.level().isClientSide) {
+            if(!player.level().isClientSide()) {
                 supplier.setPosition(player.position());
                 supplier.setLevel(player.level());
             }
@@ -168,7 +168,7 @@ public class WindManipulationAbility extends SelectableAbility {
     }
 
     private void binding(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 targetPos = AbilityUtil.getTargetLocation(entity, 25, 1.5f, true);
@@ -194,7 +194,7 @@ public class WindManipulationAbility extends SelectableAbility {
     }
 
     private void boost(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         if(AbilityUtil.distanceToGround(level, entity) > 3.5) {
@@ -215,7 +215,7 @@ public class WindManipulationAbility extends SelectableAbility {
     }
 
     private void windBlade(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 startPos = VectorUtil.getRelativePosition(entity.getEyePosition().add(entity.getLookAngle().normalize()), entity.getLookAngle().normalize(), 0, random.nextDouble(1, 2.85f), random.nextDouble(-.1, .6));

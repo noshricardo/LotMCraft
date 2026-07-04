@@ -73,7 +73,7 @@ public class BlinkAbility extends SelectableAbility {
     }
 
     private void blinkBarrage(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         if(performingBlinkBarrage.contains(entity.getUUID())) return;
 
@@ -120,7 +120,7 @@ public class BlinkAbility extends SelectableAbility {
     }
 
     private void performBlink(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 targetLocBuff = AbilityUtil.getTargetBlock(entity, 8*multiplier(entity), true).getCenter().add(0, 1, 0);

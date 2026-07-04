@@ -39,7 +39,7 @@ public class DoorOpeningAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         BlockPos targetLoc = AbilityUtil.getTargetBlock(entity, 15, false);

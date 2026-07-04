@@ -50,14 +50,14 @@ public class CorrosionAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         entity.getPersistentData().putBoolean("lotm_corrosion_active", true);
         entity.sendSystemMessage(Component.literal("§5Corrosion: ON"));
     }
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         int selfSeq = BeyonderData.getSequence(entity);
@@ -109,7 +109,7 @@ public class CorrosionAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         entity.getPersistentData().remove("lotm_corrosion_active");
 
         // Reset FOV for any players that were in the aura

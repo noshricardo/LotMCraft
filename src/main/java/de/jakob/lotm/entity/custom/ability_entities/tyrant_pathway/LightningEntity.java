@@ -85,7 +85,7 @@ public class LightningEntity extends Entity {
         setPos(start.x, start.y, start.z);
 
         // Set synced data
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             entityData.set(START_X, (float) start.add(0, height, 0).x);
             entityData.set(START_Y, (float) start.add(0, height, 0).y);
             entityData.set(START_Z, (float) start.add(0, height, 0).z);
@@ -118,7 +118,7 @@ public class LightningEntity extends Entity {
         setPos(start.x, start.y, start.z);
 
         // Set synced data
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             entityData.set(START_X, (float) start.x);
             entityData.set(START_Y, (float) start.y);
             entityData.set(START_Z, (float) start.z);
@@ -145,7 +145,7 @@ public class LightningEntity extends Entity {
         super.tick();
 
         // Initialize from synced data on client side
-        if (level().isClientSide && (startPos == null || direction == null)) {
+        if (level() .isClientSide() && (startPos == null || direction == null)) {
             startPos = new Vec3(entityData.get(START_X), entityData.get(START_Y), entityData.get(START_Z));
             direction = new Vec3(entityData.get(DIR_X), entityData.get(DIR_Y), entityData.get(DIR_Z));
             maxDistance = entityData.get(MAX_DISTANCE);
@@ -159,7 +159,7 @@ public class LightningEntity extends Entity {
             return; // Wait for NBT data to be synced
         }
 
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             updateLightningPath();
         }
 
@@ -183,7 +183,7 @@ public class LightningEntity extends Entity {
             return;
         }
 
-        if(!level().isClientSide) {
+        if(!level().isClientSide()) {
             for(float d : distancesAtWhichToSpawnNewBranches) {
                 if(d == currentDistance) {
                     LightningEntity entity = new LightningEntity(
@@ -205,7 +205,7 @@ public class LightningEntity extends Entity {
         if(currentDistance < maxDistance)
             currentDistance += step; // Beam travel speed (blocks per tick)
 
-        if (currentDistance >= maxDistance && !level().isClientSide) {
+        if (currentDistance >= maxDistance && !level().isClientSide()) {
             ServerScheduler.scheduleDelayed(10, this::discard);
         }
 
@@ -266,7 +266,7 @@ public class LightningEntity extends Entity {
             return;
         hasHit = true;
         // Handle entity hit - damage, effects, etc.
-        if (!level().isClientSide && source != null) {
+        if (!level() .isClientSide() && source != null) {
             explode(pos);
 
             NeoForge.EVENT_BUS.post(new AbilityUsedEvent((ServerLevel) level(), pos, source, null, new String[]{"lightning", "explosion"}, explosionPower, 10));
@@ -299,7 +299,7 @@ public class LightningEntity extends Entity {
             return;
         hasHit = true;
         // Handle block hit - particles, sound, etc.
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             Vec3 pos = hit.getLocation();
             if(source != null) {
                 explode(pos);
@@ -340,7 +340,7 @@ public class LightningEntity extends Entity {
     }
 
     private void dealWaterConductionDamage(Vec3 pos) {
-        if(source == null || level().isClientSide) return;
+        if(source == null || level().isClientSide()) return;
 
         ServerLevel serverLevel = (ServerLevel) level();
         // Deal extra damage to entities in/near water within a large radius
@@ -353,7 +353,7 @@ public class LightningEntity extends Entity {
     }
 
     private void dealWaterWallDamage(Vec3 pos) {
-        if(source == null || level().isClientSide) return;
+        if(source == null || level().isClientSide()) return;
 
         ServerLevel serverLevel = (ServerLevel) level();
         for(WaterMasteryAbility.ActiveWaterWall wall : WaterMasteryAbility.getActiveWaterWalls()) {

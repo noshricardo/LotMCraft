@@ -54,7 +54,7 @@ public class TsunamiEntity extends Entity {
     public void onAddedToLevel() {
         super.onAddedToLevel();
         // Ensure direction is set when added to world (for summoned entities)
-        if (!this.level().isClientSide && !directionManuallySet) {
+        if (!this.level() .isClientSide() && !directionManuallySet) {
             Vec3 currentDirection = getDirectionFacing();
             if (currentDirection.lengthSqr() == 0) {
                 // Default to facing north
@@ -136,7 +136,7 @@ public class TsunamiEntity extends Entity {
 
         super.tick();
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if(InteractionHandler.isInteractionPossible(new Location(this.position(), level()), "freezing")) {
                 getTags().add("frozen");
                 PacketHandler.sendToAllPlayersInSameLevel(new AddEntityTagPacket("frozen", this.getId()), (ServerLevel) level());
@@ -187,7 +187,7 @@ public class TsunamiEntity extends Entity {
     }
 
     private void spawnParticles() {
-        if(level().isClientSide)
+        if(level().isClientSide())
             return;
 
         Vec3 direction = getDirectionFacing().normalize();
@@ -202,7 +202,7 @@ public class TsunamiEntity extends Entity {
     }
 
     private void breakSurroundingBlocks() {
-        if(level().isClientSide)
+        if(level().isClientSide())
             return;
         Vec3 direction = getDirectionFacing().normalize();
         for(int forward = -2; forward < 0; forward++) {
@@ -240,7 +240,7 @@ public class TsunamiEntity extends Entity {
     }
 
     private void damageEntitiesInPath() {
-        if(level().isClientSide)
+        if(level().isClientSide())
             return;
 
         Vec3 direction = getDirectionFacing().normalize();

@@ -48,7 +48,7 @@ public class DoorAuthorityAbility extends SelectableAbility {
 
     @Override
     protected void castSelectedAbility(Level level, LivingEntity entity, int selectedAbility) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             ClientHandler.applyCameraShakeToPlayersInRadius(3, 40, (ClientLevel) level, entity.position(), 20);
             return;
         }

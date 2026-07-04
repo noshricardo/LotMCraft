@@ -8,7 +8,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.entity.client.spirits.blue_wizard.SpiritBlueWizardAnimations;
 import de.jakob.lotm.entity.custom.spirits.SpiritBaneEntity;
-import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.animation.KeyframeAnimation;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -16,10 +18,9 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-public class SpiritBaneModel<T extends SpiritBaneEntity> extends HierarchicalModel<T> {
+public class SpiritBaneModel<T extends SpiritBaneRenderState> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "spirit_bane"), "main");
-	private final ModelPart root;
 	private final ModelPart body;
 	private final ModelPart right_arm;
 	private final ModelPart bone2;
@@ -27,9 +28,11 @@ public class SpiritBaneModel<T extends SpiritBaneEntity> extends HierarchicalMod
 	private final ModelPart bone;
 	private final ModelPart left_leg;
 	private final ModelPart right_leg;
+	private final KeyframeAnimation walkAnimation;
+	private final KeyframeAnimation idleAnimation;
 
 	public SpiritBaneModel(ModelPart root) {
-		this.root = root;
+		super(root);
 		this.body = root.getChild("body");
 		this.right_arm = root.getChild("right_arm");
 		this.bone2 = this.right_arm.getChild("bone2");
@@ -37,6 +40,8 @@ public class SpiritBaneModel<T extends SpiritBaneEntity> extends HierarchicalMod
 		this.bone = this.left_arm.getChild("bone");
 		this.left_leg = root.getChild("left_leg");
 		this.right_leg = root.getChild("right_leg");
+		this.walkAnimation = SpiritBaneAnimations.WALK.bake(root);
+		this.idleAnimation = SpiritBaneAnimations.IDLE.bake(root);
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -67,39 +72,14 @@ public class SpiritBaneModel<T extends SpiritBaneEntity> extends HierarchicalMod
 	}
 
 	@Override
-	public void setupAnim(SpiritBaneEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.root().getAllParts().forEach(ModelPart::resetPose);
+	public void setupAnim(T state) {
+		super.setupAnim(state);
 
-		boolean isWalking = limbSwingAmount > 0.01F;
-
-		if (isWalking) {
-			// Stop idle animation and start/continue walk animation
-			entity.IDLE_ANIMATION.stop();
-			if (!entity.WALK_ANIMATION.isStarted()) {
-				entity.WALK_ANIMATION.start((int) ageInTicks);
-			}
-			this.animate(entity.WALK_ANIMATION, SpiritBaneAnimations.WALK, ageInTicks, 1.0F);
+		if (state.isWalking) {
+			this.walkAnimation.apply(state.walkAnimationState, state.ageInTicks, 1.0F);
 		} else {
-			// Stop walk animation and start/continue idle animation
-			entity.WALK_ANIMATION.stop();
-			if (!entity.IDLE_ANIMATION.isStarted()) {
-				entity.IDLE_ANIMATION.start((int) ageInTicks);
-			}
-			this.animate(entity.IDLE_ANIMATION, SpiritBaneAnimations.IDLE, ageInTicks, 1.0F);
+			this.idleAnimation.apply(state.idleAnimationState, state.ageInTicks, 1.0F);
 		}
 	}
 
-	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-		body.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-	}
-
-	@Override
-	public ModelPart root() {
-		return this.root;
-	}
 }

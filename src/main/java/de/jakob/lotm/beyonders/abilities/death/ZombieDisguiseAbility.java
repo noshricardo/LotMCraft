@@ -53,7 +53,7 @@ public class ZombieDisguiseAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             entity.playSound(SoundEvents.ZOMBIE_AMBIENT, 1.0f, 0.8f);
             return;
         }
@@ -82,7 +82,7 @@ public class ZombieDisguiseAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if (InteractionHandler.isInteractionPossibleStrictlyHigher(new Location(entity.position(), (net.minecraft.server.level.ServerLevel) level), "purification", BeyonderData.getSequence(entity), -1)) {
             stop(level, entity);
@@ -95,7 +95,7 @@ public class ZombieDisguiseAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             entity.playSound(SoundEvents.ZOMBIE_DEATH, 1.0f, 1.0f);
             return;
         }

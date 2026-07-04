@@ -94,7 +94,7 @@ public class BeyonderDataTickHandler {
             disabledFlightComponent.setCooldownTicks(disabledFlightComponent.getCooldownTicks() - 1);
         }
 
-        if (!livingEntity.level().isClientSide) {
+        if (!livingEntity.level().isClientSide()) {
             FoolingComponent foolingComponent = livingEntity.getData(ModAttachments.FOOLING_COMPONENT);
             if (foolingComponent.isFooled()) {
                 if (foolingComponent.getTicksRemaining() % FoolingEffect.STUN_INTERVAL_TICKS == 0) {
@@ -164,7 +164,7 @@ public class BeyonderDataTickHandler {
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
 
-        if (player.level().isClientSide || !(player instanceof ServerPlayer serverPlayer)) {
+        if (player.level() .isClientSide() || !(player instanceof ServerPlayer serverPlayer)) {
             return;
         }
 
@@ -202,7 +202,7 @@ public class BeyonderDataTickHandler {
     }
 
     private static void tickAbilities(LivingEntity entity) {
-        if(entity.level().isClientSide) return;
+        if(entity.level().isClientSide()) return;
 
         getApplicableAbilities(entity).forEach(abilityItem -> {
             abilityItem.tick(entity.level(), entity);

@@ -35,7 +35,7 @@ public class GodSaysItsNotEffectiveAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         List<LivingEntity> nearbyEntities = AbilityUtil.getNearbyEntities(entity, (ServerLevel) level, entity.position(), 15).stream().filter(BeyonderData::isBeyonder).toList();

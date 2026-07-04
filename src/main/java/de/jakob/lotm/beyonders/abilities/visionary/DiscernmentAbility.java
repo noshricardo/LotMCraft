@@ -48,7 +48,7 @@ public class DiscernmentAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(level.isClientSide){
+        if(level.isClientSide()){
             return;
         }
 
@@ -126,7 +126,7 @@ public class DiscernmentAbility extends ToggleAbility {
 
     @Override
     public void stop(Level level, LivingEntity entity) {
-        if(level.isClientSide){
+        if(level.isClientSide()){
             return;
         }
         if(!(entity instanceof ServerPlayer player)) return;

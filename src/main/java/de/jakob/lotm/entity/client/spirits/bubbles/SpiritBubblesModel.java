@@ -13,6 +13,8 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.animation.KeyframeAnimation;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -23,6 +25,7 @@ public class SpiritBubblesModel extends EntityModel<SpiritBubblesRenderState> {
 	private final ModelPart bone;
 	private final ModelPart bone2;
 	private final ModelPart bone3;
+	private final KeyframeAnimation idleAnimation;
 
 	public SpiritBubblesModel(ModelPart root) {
 		super(root);
@@ -30,6 +33,7 @@ public class SpiritBubblesModel extends EntityModel<SpiritBubblesRenderState> {
 		this.bone = this.bubbles.getChild("bone");
 		this.bone2 = this.bubbles.getChild("bone2");
 		this.bone3 = this.bubbles.getChild("bone3");
+		this.idleAnimation = SpiritBubblesAnimations.IDLE.bake(root);
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -54,29 +58,21 @@ public class SpiritBubblesModel extends EntityModel<SpiritBubblesRenderState> {
 	@Override
 	public void setupAnim(SpiritBubblesRenderState state) {
 		super.setupAnim(state);
-		this.root.getAllParts().forEach(ModelPart::resetPose);
-		this.applyHeadRotation(state.headYaw, state.headPitch);
+		this.applyHeadRotation(state.yRot, state.xRot);
 
-		this.animate(state.idleAnimationState, SpiritBubblesAnimations.IDLE, state.ageInTicks, 1f);
+		this.idleAnimation.apply(state.idleAnimationState, state.ageInTicks, 1f);
 	}
 
-	private void applyHeadRotation(float headYaw, float headPitch) {
-		headYaw = Mth.clamp(headYaw, -30f, 30f);
-		headPitch = Mth.clamp(headPitch, -25f, 45);
+	private void applyHeadRotation(float yRot, float xRot) {
+		yRot = Mth.clamp(yRot, -30f, 30f);
+		xRot = Mth.clamp(xRot, -25f, 45);
 
-		this.bubbles.yRot = headYaw * ((float)Math.PI / 180f);
-		this.bubbles.xRot = headPitch *  ((float)Math.PI / 180f);
+		this.bubbles.yRot = yRot * ((float)Math.PI / 180f);
+		this.bubbles.xRot = xRot *  ((float)Math.PI / 180f);
 	}
 
-	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-		bubbles.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-	}
-
-
-
-	@Override
-	public ModelPart root() {
-		return this.root;
-	}
+	// renderToBuffer and root() are now final in Model/EntityModel and should not be overridden.
+	// The root model part is already handled by the super constructor.
+	// Individual parts should be rendered in a custom way if needed, 
+	// but normally EntityRenderer handles the call to model.render() which is now final and calls root.render()
 }

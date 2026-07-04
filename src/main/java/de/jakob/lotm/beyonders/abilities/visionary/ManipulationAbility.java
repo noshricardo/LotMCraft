@@ -85,7 +85,7 @@ public class ManipulationAbility extends SelectableAbility {
     );
 
     public void groupIncite(Level level, LivingEntity entity) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             LivingEntity target = AbilityUtil.getTargetEntity(entity, (int) (20*multiplier(entity)), 2);
             if(target == null) return;
             ParticleUtil.spawnSphereParticles((ClientLevel) level, ParticleTypes.SMOKE, target.getEyePosition(), 1, 30);
@@ -163,7 +163,7 @@ public class ManipulationAbility extends SelectableAbility {
     // control indivudlal
 
     private void control(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (!(entity instanceof Player player)) return;
 

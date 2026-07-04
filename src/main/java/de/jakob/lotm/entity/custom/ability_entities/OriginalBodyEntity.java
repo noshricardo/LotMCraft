@@ -80,7 +80,7 @@ public class OriginalBodyEntity extends LivingEntity {
     @Override
     public void tick() {
         super.tick();
-        if (!this.level().isClientSide && this.level() instanceof ServerLevel serverLevel) {
+        if (!this.level() .isClientSide() && this.level() instanceof ServerLevel serverLevel) {
 
             if (parasiteControlled) {
                 this.setInvisible(true);

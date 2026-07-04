@@ -59,10 +59,10 @@ public class HolySongAbility extends SelectableAbility {
     }
 
     private void recoverySong(Level level, LivingEntity entity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             int duration = 20 * 20;
             ServerScheduler.scheduleForDuration(0, 5, duration, () -> {
-                if(entity.level().isClientSide)
+                if(entity.level().isClientSide())
                     return;
                 for(int i = 0; i < 6; i++) {
                     ((ServerLevel) entity.level()).sendParticles(
@@ -96,7 +96,7 @@ public class HolySongAbility extends SelectableAbility {
     }
 
     private void courageSong(Level level, LivingEntity entity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if(entity.hasEffect(ModEffects.LOOSING_CONTROL)) {
                 entity.removeEffect(ModEffects.LOOSING_CONTROL);
             }
@@ -111,7 +111,7 @@ public class HolySongAbility extends SelectableAbility {
             entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, duration, 0, false, false, false));
 
             ServerScheduler.scheduleForDuration(0, 5, duration, () -> {
-                if(entity.level().isClientSide)
+                if(entity.level().isClientSide())
                     return;
                 for(int i = 0; i < 6; i++) {
                     ((ServerLevel) entity.level()).sendParticles(

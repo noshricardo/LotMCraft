@@ -72,7 +72,7 @@ public class SpaceCollapseEntity extends Entity {
 
         this.setRadius(radius);
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if(age % 4 == 0)
                 damageNearbyEntities(radius);
             if(isGriefing())

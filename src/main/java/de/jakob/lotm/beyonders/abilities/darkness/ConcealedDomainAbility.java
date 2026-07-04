@@ -29,7 +29,7 @@ public class ConcealedDomainAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         // If an active domain exists within max range, discard it instead of spawning a new one

@@ -29,7 +29,7 @@ public class SanityEventHandler {
             return;
         }
 
-        if(entity.level().isClientSide || entity.tickCount % 20 != 0) {
+        if(entity.level() .isClientSide() || entity.tickCount % 20 != 0) {
             return;
         }
 
@@ -67,7 +67,7 @@ public class SanityEventHandler {
 
             BeyonderData.addModifier(entity, "sanity_loss", sanityMultiplier);
 
-            if (!entity.level().isClientSide) {
+            if (!entity.level().isClientSide()) {
 
                 int disableChance;
                 int disableDuration = 20;

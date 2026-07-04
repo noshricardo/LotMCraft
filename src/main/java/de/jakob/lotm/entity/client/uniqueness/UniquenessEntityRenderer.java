@@ -20,53 +20,34 @@ import net.neoforged.api.distmarker.OnlyIn;
  * using the corresponding pathway uniqueness item texture.
  */
 @OnlyIn(Dist.CLIENT)
-public class UniquenessEntityRenderer extends EntityRenderer<UniquenessEntity> {
+public class UniquenessEntityRenderer extends EntityRenderer<UniquenessEntity, UniquenessEntityRenderState> {
 
     public UniquenessEntityRenderer(EntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    public void render(UniquenessEntity entity, float entityYaw, float partialTick,
-                       PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+    public UniquenessEntityRenderState createRenderState() {
+        return new UniquenessEntityRenderState();
+    }
 
+    @Override
+    public void extractRenderState(UniquenessEntity entity, UniquenessEntityRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
         String pathway = entity.getPathway();
-        if (pathway.isEmpty()) return;
-
-        ItemStack stack = getUniquenessItemStack(pathway);
-        if (stack.isEmpty()) return;
-
-        poseStack.pushPose();
-
-        float tick = entity.getTicksExisted() + partialTick;
-
-        poseStack.scale(1, 1, 1);
-        poseStack.translate(0, .75, 0);
-
-        poseStack.mulPose(Axis.YP.rotationDegrees(tick * .5f));
-
-        // Render the item using the game's item renderer
-        Minecraft mc = Minecraft.getInstance();
-        mc.getItemRenderer().renderStatic(
-                stack,
-                net.minecraft.world.item.ItemDisplayContext.GROUND,
-                packedLight,
-                net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY,
-                poseStack,
-                bufferSource,
-                mc.level,
-                entity.getId()
-        );
-
-        poseStack.popPose();
+        if (!pathway.isEmpty()) {
+            state.itemStack = getUniquenessItemStack(pathway);
+        } else {
+            state.itemStack = ItemStack.EMPTY;
+        }
+        state.tick = entity.tickCount + partialTick;
     }
 
     private ItemStack getUniquenessItemStack(String pathway) {
         try {
             net.minecraft.world.item.Item item = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
                     Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, pathway + "_uniqueness")
-            );
+            ).map(net.minecraft.core.Holder.Reference::value).orElse(Items.AIR);
             if (item == Items.AIR) return ItemStack.EMPTY;
             return new ItemStack(item);
         } catch (Exception e) {
@@ -74,8 +55,7 @@ public class UniquenessEntityRenderer extends EntityRenderer<UniquenessEntity> {
         }
     }
 
-    @Override
-    public Identifier getTextureLocation(UniquenessEntity entity) {
+    public Identifier getTextureLocation(UniquenessEntityRenderState state) {
         return TextureAtlas.LOCATION_BLOCKS;
     }
 }

@@ -40,11 +40,11 @@ public class PlagueAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide || !(level instanceof ServerLevel serverLevel))
+        if(level .isClientSide() || !(level instanceof ServerLevel serverLevel))
             return;
 
         ServerScheduler.scheduleForDuration(0, 20, (int) (20 * 40*multiplier(entity)), () -> {
-            if (entity.level().isClientSide)
+            if (entity.level().isClientSide())
                 return;
 
             // Disease is suppressed by purification, cleansing, life aura, or blooming interactions

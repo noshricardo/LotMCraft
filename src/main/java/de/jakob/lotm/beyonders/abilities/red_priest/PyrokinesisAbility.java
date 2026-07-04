@@ -62,7 +62,7 @@ public class PyrokinesisAbility extends SelectableAbility {
     }
 
     private void flamingSpear(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 startPos = VectorUtil.getRelativePosition(entity.getEyePosition().add(entity.getLookAngle().normalize()), entity.getLookAngle().normalize(), 0, random.nextDouble(1, 2.85f), random.nextDouble(-.1, .6));
@@ -78,7 +78,7 @@ public class PyrokinesisAbility extends SelectableAbility {
     }
 
     private void fireRavens(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         for(int i = 0; i < 8; i++) {
@@ -102,7 +102,7 @@ public class PyrokinesisAbility extends SelectableAbility {
     }
 
     private void wallOfFire(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 targetPos = AbilityUtil.getTargetLocation(entity, 10, 1.4f);
@@ -136,7 +136,7 @@ public class PyrokinesisAbility extends SelectableAbility {
 
     //TODO: PLace flame blocks on griefing
     private void flameWave(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 startPos = entity.getEyePosition().add(0, .5, 0);
@@ -159,7 +159,7 @@ public class PyrokinesisAbility extends SelectableAbility {
     }
 
     private void fireball(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         Vec3 startPos = VectorUtil.getRelativePosition(entity.getEyePosition().add(entity.getLookAngle().normalize()), entity.getLookAngle().normalize(), 0, random.nextDouble(1, 2.85f), random.nextDouble(-.1, .6));

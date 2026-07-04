@@ -46,7 +46,7 @@ public class MarionetteControllerItem extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+        if (!level .isClientSide() && player instanceof ServerPlayer serverPlayer) {
             CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
             if (customData == null) return InteractionResult.PASS;
 
@@ -181,7 +181,7 @@ public class MarionetteControllerItem extends Item {
             }
         }
 
-        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
 
 
@@ -253,7 +253,7 @@ public class MarionetteControllerItem extends Item {
 
     public static void onHold(Player player, ItemStack itemStack) {
         Level level = player.level();
-        if (!(player instanceof ServerPlayer) || level.isClientSide) return;
+        if (!(player instanceof ServerPlayer) || level.isClientSide()) return;
 
         CustomData customData = itemStack.get(DataComponents.CUSTOM_DATA);
         if (customData == null) return;

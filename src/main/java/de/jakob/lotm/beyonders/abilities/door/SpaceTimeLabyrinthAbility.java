@@ -31,7 +31,7 @@ public class SpaceTimeLabyrinthAbility extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         LivingEntity target = AbilityUtil.getTargetEntity(entity, 30, 2);
         if(target == null) {

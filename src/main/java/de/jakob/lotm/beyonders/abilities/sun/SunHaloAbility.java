@@ -49,7 +49,7 @@ public class SunHaloAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return;
 
         ParticleUtil.spawnCircleParticles((ServerLevel) level, dustOptions2, entity.getEyePosition().add(0, .4, 0), .75,  20);

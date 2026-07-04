@@ -65,7 +65,7 @@ public class NightmareSpectatorAbility extends Ability {
             return;
         }
 
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             ParticleUtil.spawnSphereParticles((ClientLevel) level, dust, target.getEyePosition(), 2, 50);
             return;
         }

@@ -46,7 +46,7 @@ public class PaleEyeAbility extends ToggleAbility {
 
     @Override
     public void tick(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         ParticleUtil.spawnSphereParticles((ServerLevel) level, paleDust, entity.getEyePosition(), .35, 20);
 
@@ -80,7 +80,7 @@ public class PaleEyeAbility extends ToggleAbility {
 
     @Override
     public void start(Level level, LivingEntity entity) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
 
         level.playSound(null, entity.blockPosition(), SoundEvents.WITHER_AMBIENT, SoundSource.PLAYERS, 1.0f, 1.0f);
     }

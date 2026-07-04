@@ -31,7 +31,7 @@ public class Eloquence extends Ability {
 
     @Override
     public void onAbilityUse(Level level, LivingEntity entity) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         for (LivingEntity target : level.getEntitiesOfClass(
                 LivingEntity.class,

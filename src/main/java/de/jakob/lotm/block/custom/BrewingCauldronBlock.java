@@ -77,7 +77,7 @@ public class BrewingCauldronBlock extends BaseEntityBlock {
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        if(level.isClientSide)
+        if(level.isClientSide())
             return null;
 
         return createTickerHelper(blockEntityType, ModBlockEntities.BREWING_BLOCK_BE.get(), (l, blockPos, blockState, blockEntity) -> blockEntity.tick(l, blockPos, blockState));

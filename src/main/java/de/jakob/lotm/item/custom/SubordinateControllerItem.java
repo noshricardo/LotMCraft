@@ -42,7 +42,7 @@ public class SubordinateControllerItem extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         
-        if (!level.isClientSide && player instanceof ServerPlayer) {
+        if (!level .isClientSide() && player instanceof ServerPlayer) {
             CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
             if (customData == null) {
                 return InteractionResult.PASS;
@@ -141,7 +141,7 @@ public class SubordinateControllerItem extends Item {
             }
         }
         
-        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
 
     private static Entity searchInOtherLevels(Player player, String entityUUID) {
@@ -156,7 +156,7 @@ public class SubordinateControllerItem extends Item {
 
     public static void onHold(Player player, ItemStack itemStack) {
         Level level = player.level();
-        if(!(player instanceof ServerPlayer) || level.isClientSide)
+        if(!(player instanceof ServerPlayer) || level.isClientSide())
             return;
 
         CustomData customData = itemStack.get(DataComponents.CUSTOM_DATA);
