@@ -187,7 +187,7 @@ public class MindWorldAuthorityAbility extends SelectableAbility {
     }
 
     public void grantSeq(ServerLevel serverLevel, LivingEntity entity, LivingEntity target){
-        int seq1Amount = serverLevel.getGameRules().getInt(ModGameRules.SEQ_1_AMOUNT);
+        int seq1Amount = serverLevel.getGameRules().getIntOr(ModGameRules.SEQ_1_AMOUNT, 0);
         var component = entity.getData(ModAttachments.ENVISION_SPLIT.get());
 
         var targetComponent = target.getData(ModAttachments.ENVISION_SPLIT.get());
@@ -217,7 +217,7 @@ public class MindWorldAuthorityAbility extends SelectableAbility {
             }
 
             if(target instanceof ServerPlayer targetPlayer) {
-                String targetName = targetPlayer.getName().getString();
+                String targetName = targetPlayer.name().getString();
                 component.add(targetName);
             }
             else{
@@ -230,7 +230,7 @@ public class MindWorldAuthorityAbility extends SelectableAbility {
         }
         else{
             if(target instanceof ServerPlayer targetPlayer) {
-                String targetName = targetPlayer.getName().getString();
+                String targetName = targetPlayer.name().getString();
                 component.remove(targetName);
             }
             else{

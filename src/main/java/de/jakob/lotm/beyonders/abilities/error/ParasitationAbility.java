@@ -285,7 +285,7 @@ public class ParasitationAbility extends SelectableAbility {
 
         UUID currentHostUUID = concealedMap.get(serverTarget.getUUID());
 
-        Entity host = serverTarget.serverLevel().getEntity(currentHostUUID);
+        Entity host = serverTarget.level().getEntity(currentHostUUID);
 
         if (isConcealed(serverTarget.getUUID())) {
             if (host != null) {

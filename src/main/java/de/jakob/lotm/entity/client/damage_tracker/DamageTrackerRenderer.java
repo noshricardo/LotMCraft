@@ -9,10 +9,10 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class DamageTrackerRenderer extends MobRenderer<DamageTrackerEntity, PlayerModel<DamageTrackerEntity>> {
+public class DamageTrackerRenderer extends MobRenderer<DamageTrackerEntity, PlayerModel> {
 
     public DamageTrackerRenderer(EntityRendererProvider.Context context) {
-        super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
+        super(context, new PlayerModel(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
     }
 
     @Override

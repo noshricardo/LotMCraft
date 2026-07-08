@@ -99,7 +99,7 @@ public record HonorificName(LinkedList<String> lines) {
         LinkedList<String> list = new LinkedList<>();
 
         if (tag.contains(NBT_LINES, Tag.TAG_LIST)) {
-            ListTag listTag = tag.getList(NBT_LINES, Tag.TAG_STRING);
+            ListTag listTag = tag.getListOrEmpty(NBT_LINES, Tag.TAG_STRING);
 
             for (var obj : listTag) {
                 list.add(obj.getAsString());

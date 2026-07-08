@@ -29,7 +29,7 @@ public class DeliverQuest extends Quest {
 
     @Override
     public void startQuest(ServerPlayer player) {
-        BlockPos chestPos = createDeliveryChest(player.serverLevel(), player.blockPosition());
+        BlockPos chestPos = createDeliveryChest(player.level(), player.blockPosition());
         if (chestPos == null) {
             QuestManager.discardQuest(player, id);
             player.sendSystemMessage(Component.literal("Could not find delivery location for chest."));
@@ -61,7 +61,7 @@ public class DeliverQuest extends Quest {
         }
 
         BlockPos chestPos = BlockPos.containing(component.getQuestLocation().get(id));
-        if (!(player.serverLevel().getBlockEntity(chestPos) instanceof ChestBlockEntity chest)) {
+        if (!(player.level().getBlockEntity(chestPos) instanceof ChestBlockEntity chest)) {
             return;
         }
 

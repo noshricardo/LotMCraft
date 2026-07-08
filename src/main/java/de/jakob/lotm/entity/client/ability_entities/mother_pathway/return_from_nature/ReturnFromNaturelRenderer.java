@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 
-public class ReturnFromNaturelRenderer extends EntityRenderer<ReturnPortalEntity> {
+public class ReturnFromNaturelRenderer extends EntityRenderer<ReturnPortalEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     public ReturnFromNaturelRenderer(EntityRendererProvider.Context context) {
         super(context);

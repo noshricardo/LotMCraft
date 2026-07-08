@@ -74,7 +74,7 @@ public class WorldJudgmentAbility extends Ability {
         if (entity instanceof ServerPlayer sp) {
             sp.sendSystemMessage(Component.translatable("ability.lotmcraft.world_judgment.designated_prefix")
                     .withStyle(ChatFormatting.GOLD)
-                    .append(Component.literal(target.getName().getString()).withStyle(ChatFormatting.WHITE))
+                    .append(Component.literal(target.name().getString()).withStyle(ChatFormatting.WHITE))
                     .append(Component.translatable("ability.lotmcraft.world_judgment.designated_suffix").withStyle(ChatFormatting.GOLD)));
         }
         if (target instanceof ServerPlayer tsp) {

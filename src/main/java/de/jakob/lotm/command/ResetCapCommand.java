@@ -36,7 +36,7 @@ public class ResetCapCommand {
         target.getPersistentData().putFloat(ActingCapHelper.CAP_REDUCTION_KEY, 0f);
         target.getPersistentData().remove(ActingCapHelper.MISSED_ACTING_KEY);
         ActingCapHelper.syncToClient(target);
-        source.sendSuccess(() -> Component.literal("Reset acting cap for " + target.getGameProfile().getName()), true);
+        source.sendSuccess(() -> Component.literal("Reset acting cap for " + target.getGameProfile().name()), true);
         return 1;
     }
 }

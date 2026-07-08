@@ -20,7 +20,7 @@ public class AllyRequestCommands {
                 .then(Commands.argument("uuid", StringArgumentType.string())
                         .executes(context -> {
                             try {
-                                String uuidStr = StringArgumentType.getString(context, "uuid");
+                                String uuidStr = StringArgumentType.getStringOr(context, "uuid", "");
                                 UUID requesterUUID = UUID.fromString(uuidStr);
                                 AllyRequestManager.acceptRequest(requesterUUID);
                                 return 1;
@@ -36,7 +36,7 @@ public class AllyRequestCommands {
                 .then(Commands.argument("uuid", StringArgumentType.string())
                         .executes(context -> {
                             try {
-                                String uuidStr = StringArgumentType.getString(context, "uuid");
+                                String uuidStr = StringArgumentType.getStringOr(context, "uuid", "");
                                 UUID requesterUUID = UUID.fromString(uuidStr);
                                 AllyRequestManager.denyRequest(requesterUUID);
                                 return 1;

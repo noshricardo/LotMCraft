@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import de.jakob.lotm.entity.custom.ability_entities.sun_pathway.SunKingdomEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -14,7 +14,7 @@ import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class SunKingdomEntityRenderer extends EntityRenderer<SunKingdomEntity> {
+public class SunKingdomEntityRenderer extends EntityRenderer<SunKingdomEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     public SunKingdomEntityRenderer(EntityRendererProvider.Context context) {
         super(context);

@@ -364,8 +364,8 @@ public class DesolateAreaEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        this.corruptionProgress = tag.getInt("CorruptionProgress");
-        this.tickCounter = tag.getInt("TickCounter");
+        this.corruptionProgress = tag.getIntOr("CorruptionProgress", 0);
+        this.tickCounter = tag.getIntOr("TickCounter", 0);
     }
 
     @Override

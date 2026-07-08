@@ -30,9 +30,9 @@ public record ReturnToMainBodyPacket() implements CustomPacketPayload {
                 ControllingDataComponent data = serverPlayer.getData(ModAttachments.CONTROLLING_DATA);
                 if (data.isControlling()) {
                     if (ParasitationAbility.isControlling(serverPlayer.getUUID())) {
-                        ParasitationAbility.exitControl(serverPlayer.serverLevel(), serverPlayer);
+                        ParasitationAbility.exitControl(serverPlayer.level(), serverPlayer);
                     } else {
-                        ControllingUtil.reset(serverPlayer, serverPlayer.serverLevel(), true);
+                        ControllingUtil.reset(serverPlayer, serverPlayer.level(), true);
                     }
                 }
             }

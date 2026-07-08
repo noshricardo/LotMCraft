@@ -24,7 +24,7 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.*;
-import net.minecraft.world.entity.monster.hoglin.Hoglin;
+import net.minecraft.world.entity.monster.Hoglin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -174,7 +174,7 @@ public class InternalUnderworldAbility extends SelectableAbility {
         target.discard();
 
         player.sendSystemMessage(Component.translatable("ability.lotmcraft.internal_underworld.captured",
-                target.getName().getString()).withStyle(ChatFormatting.DARK_AQUA));
+                target.name().getString()).withStyle(ChatFormatting.DARK_AQUA));
     }
 
     private static void activateCaptureMode(ServerPlayer player) {
@@ -188,13 +188,13 @@ public class InternalUnderworldAbility extends SelectableAbility {
     }
 
     private static boolean isInCaptureMode(ServerPlayer player) {
-        return player.getPersistentData().getBoolean(CAPTURE_MODE_TAG);
+        return player.getPersistentData().getBooleanOr(CAPTURE_MODE_TAG, false);
     }
 
     private static CompoundTag buildSoulData(LivingEntity entity) {
         CompoundTag soulData = new CompoundTag();
         soulData.putString("EntityType", EntityType.getKey(entity.getType()).toString());
-        soulData.putString("DisplayName", entity.hasCustomName() ? entity.getCustomName().getString() : entity.getName().getString());
+        soulData.putString("DisplayName", entity.hasCustomName() ? entity.getCustomName().getString() : entity.name().getString());
 
         CompoundTag entityNBT = new CompoundTag();
         entity.save(entityNBT);
@@ -273,7 +273,7 @@ public class InternalUnderworldAbility extends SelectableAbility {
                         }
 
                         if (!tag.contains("SoulData")) return;
-                        CompoundTag soulData = tag.getCompound("SoulData");
+                        CompoundTag soulData = tag.getCompoundOrEmpty("SoulData");
 
                         if (discardMode) {
                             removeStoredSoul(player, soulData);
@@ -315,7 +315,7 @@ public class InternalUnderworldAbility extends SelectableAbility {
 
     private void releaseSoul(ServerLevel level, ServerPlayer player, CompoundTag soulData) {
         try {
-            Optional<EntityType<?>> optionalType = EntityType.byString(soulData.getString("EntityType"));
+            Optional<EntityType<?>> optionalType = EntityType.byString(soulData.getStringOr("EntityType", ""));
             if (optionalType.isEmpty()) {
                 player.sendSystemMessage(Component.translatable("ability.lotmcraft.internal_underworld.failed").withStyle(ChatFormatting.RED));
                 return;
@@ -328,7 +328,7 @@ public class InternalUnderworldAbility extends SelectableAbility {
             }
 
             if (soulData.contains("EntityNBT")) {
-                CompoundTag nbt = soulData.getCompound("EntityNBT").copy();
+                CompoundTag nbt = soulData.getCompoundOrEmpty("EntityNBT").copy();
                 nbt.remove("UUID");
                 entity.load(nbt);
             }
@@ -356,7 +356,7 @@ public class InternalUnderworldAbility extends SelectableAbility {
                 level.playSound(null, livingEntity.blockPosition(), SoundEvents.WITHER_SPAWN, SoundSource.PLAYERS, 0.4f, 1.6f);
 
                 player.sendSystemMessage(Component.translatable("ability.lotmcraft.internal_underworld.summoned",
-                        entity.getName().getString()).withStyle(ChatFormatting.DARK_AQUA));
+                        entity.name().getString()).withStyle(ChatFormatting.DARK_AQUA));
             } else {
                 player.sendSystemMessage(Component.translatable("ability.lotmcraft.internal_underworld.failed").withStyle(ChatFormatting.RED));
             }
@@ -451,10 +451,10 @@ public class InternalUnderworldAbility extends SelectableAbility {
 
     private ItemStack createSoulDisplayItem(CompoundTag soulData) {
         ItemStack item = new ItemStack(Items.PLAYER_HEAD);
-        item.set(DataComponents.CUSTOM_NAME, Component.literal(soulData.getString("DisplayName")).withStyle(ChatFormatting.LIGHT_PURPLE));
+        item.set(DataComponents.CUSTOM_NAME, Component.literal(soulData.getStringOr("DisplayName", "")).withStyle(ChatFormatting.LIGHT_PURPLE));
         item.set(DataComponents.LORE, new ItemLore(List.of(
                 Component.literal("-------------------").withStyle(style -> style.withColor(0xFF7ECFCF).withItalic(false)),
-                Component.literal(soulData.getString("EntityType")).withStyle(style -> style.withColor(0x7ECFCF).withItalic(false))
+                Component.literal(soulData.getStringOr("EntityType", "")).withStyle(style -> style.withColor(0x7ECFCF).withItalic(false))
         )));
 
         CompoundTag tag = new CompoundTag();
@@ -468,8 +468,8 @@ public class InternalUnderworldAbility extends SelectableAbility {
         CompoundTag data = player.getPersistentData();
         List<CompoundTag> souls = new ArrayList<>();
         if (data.contains(STORED_SOULS_TAG)) {
-            ListTag list = data.getList(STORED_SOULS_TAG, Tag.TAG_COMPOUND);
-            for (int i = 0; i < list.size(); i++) souls.add(list.getCompound(i));
+            ListTag list = data.getListOrEmpty(STORED_SOULS_TAG, Tag.TAG_COMPOUND);
+            for (int i = 0; i < list.size(); i++) souls.add(list.getCompoundOrEmpty(i));
         }
         return souls;
     }
@@ -477,7 +477,7 @@ public class InternalUnderworldAbility extends SelectableAbility {
     private static void addStoredSoul(ServerPlayer player, CompoundTag soulData) {
         CompoundTag data = player.getPersistentData();
         ListTag list = data.contains(STORED_SOULS_TAG)
-                ? data.getList(STORED_SOULS_TAG, Tag.TAG_COMPOUND)
+                ? data.getListOrEmpty(STORED_SOULS_TAG, Tag.TAG_COMPOUND)
                 : new ListTag();
 
         list.add(soulData);
@@ -491,7 +491,7 @@ public class InternalUnderworldAbility extends SelectableAbility {
     private static void removeStoredSoul(ServerPlayer player, CompoundTag soulData) {
         CompoundTag data = player.getPersistentData();
         if (!data.contains(STORED_SOULS_TAG)) return;
-        ListTag list = data.getList(STORED_SOULS_TAG, Tag.TAG_COMPOUND);
+        ListTag list = data.getListOrEmpty(STORED_SOULS_TAG, Tag.TAG_COMPOUND);
         list.remove(soulData);
         data.put(STORED_SOULS_TAG, list);
     }

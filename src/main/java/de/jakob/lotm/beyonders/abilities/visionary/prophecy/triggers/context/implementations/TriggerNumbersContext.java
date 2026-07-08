@@ -86,12 +86,12 @@ public class TriggerNumbersContext extends TriggerContextBase {
         var context = new TriggerNumbersContext(id);
 
         context.doubleValue = tag.getDouble(NBT_DOUBLE);
-        context.isDouble = tag.getBoolean(NBT_DOUBLE_BOOL);
+        context.isDouble = tag.getBooleanOr(NBT_DOUBLE_BOOL, false);
 
-        context.intValue = tag.getInt(NBT_INT);
-        context.isInt = tag.getBoolean(NBT_INT_BOOL);
+        context.intValue = tag.getIntOr(NBT_INT, 0);
+        context.isInt = tag.getBooleanOr(NBT_INT_BOOL, false);
 
-        context.operation = tag.getInt(NBT_OPERATION);
+        context.operation = tag.getIntOr(NBT_OPERATION, 0);
 
         return context;
     }

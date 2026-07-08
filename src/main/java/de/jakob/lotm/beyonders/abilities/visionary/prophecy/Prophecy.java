@@ -22,18 +22,18 @@ public record Prophecy(UUID targetID, TriggerBase trigger, TriggerEnum triggerTy
     public CompoundTag toNBT(HolderLookup.Provider provider){
         CompoundTag tag = new CompoundTag();
 
-        tag.putUUID(TARGET_ID, targetID);
+        tag.store(TARGET_ID, net.minecraft.core.UUIDUtil.CODEC,  targetID);
         tag.put(TRIGGER, trigger.toNBT(provider));
         trigger.getType().toNBT(tag, TRIGGER_TYPE);
-        tag.putUUID(CASTER_ID, casterId);
+        tag.store(CASTER_ID, net.minecraft.core.UUIDUtil.CODEC,  casterId);
 
         return tag;
     }
 
     public static Prophecy fromNBT(CompoundTag tag, HolderLookup.Provider provider){
-        UUID id = tag.getUUID(TARGET_ID);
+        UUID id = tag.read(TARGET_ID, net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         var trigger = TriggerBase.load(TriggerEnum.fromNBT(tag, TRIGGER_TYPE), tag, provider);
-        UUID casterId = tag.getUUID(CASTER_ID);
+        UUID casterId = tag.read(CASTER_ID, net.minecraft.core.UUIDUtil.CODEC).orElse(null);
 
         return new Prophecy(id, trigger, trigger.getType(), casterId);
     }

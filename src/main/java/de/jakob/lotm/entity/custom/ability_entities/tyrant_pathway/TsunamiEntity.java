@@ -299,12 +299,12 @@ public class TsunamiEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        this.setDamage(compound.getFloat("Damage"));
-        this.entityData.set(DATA_DIRECTION_X, compound.getFloat("DirectionX"));
-        this.entityData.set(DATA_DIRECTION_Z, compound.getFloat("DirectionZ"));
-        this.entityData.set(DATA_GRIEFING, compound.getBoolean("Griefing"));
-        this.ticksExisted = compound.getInt("TicksExisted");
-        this.hasAdjustedPosition = compound.getBoolean("HasAdjustedPosition");
+        this.setDamage(compound.getFloatOr("Damage", 0.0f));
+        this.entityData.set(DATA_DIRECTION_X, compound.getFloatOr("DirectionX", 0.0f));
+        this.entityData.set(DATA_DIRECTION_Z, compound.getFloatOr("DirectionZ", 0.0f));
+        this.entityData.set(DATA_GRIEFING, compound.getBooleanOr("Griefing", false));
+        this.ticksExisted = compound.getIntOr("TicksExisted", 0);
+        this.hasAdjustedPosition = compound.getBooleanOr("HasAdjustedPosition", false);
     }
 
     @Override

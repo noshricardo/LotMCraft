@@ -219,7 +219,7 @@ public class SpellsAbility extends SelectableAbility {
         if(
                 !(event.getSource().getEntity() instanceof LivingEntity living) ||
                 !living.getPersistentData().contains("lotm_trickmaster_burning") ||
-                !living.getPersistentData().getBoolean("lotm_trickmaster_burning")
+                !living.getPersistentData().getBooleanOr("lotm_trickmaster_burning", false)
         ) return;
 
         living.getPersistentData().remove("lotm_trickmaster_burning");
@@ -228,7 +228,7 @@ public class SpellsAbility extends SelectableAbility {
 
     @SubscribeEvent
     public static void onPlayerHitBlock(PlayerInteractEvent.LeftClickBlock event) {
-        if (!event.getEntity().getPersistentData().contains("lotm_trickmaster_burning") || !event.getEntity().getPersistentData().getBoolean("lotm_trickmaster_burning"))
+        if (!event.getEntity().getPersistentData().contains("lotm_trickmaster_burning") || !event.getEntity().getPersistentData().getBooleanOr("lotm_trickmaster_burning", false))
             return;
 
         Level level = event.getEntity().level();
@@ -250,7 +250,7 @@ public class SpellsAbility extends SelectableAbility {
 
     @SubscribeEvent
     public static void onPlayerHitAir(PlayerInteractEvent.RightClickBlock event) {
-        if (!event.getEntity().getPersistentData().contains("lotm_trickmaster_burning") || !event.getEntity().getPersistentData().getBoolean("lotm_trickmaster_burning"))
+        if (!event.getEntity().getPersistentData().contains("lotm_trickmaster_burning") || !event.getEntity().getPersistentData().getBooleanOr("lotm_trickmaster_burning", false))
             return;
 
         Level level = event.getEntity().level();

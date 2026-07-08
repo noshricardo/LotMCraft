@@ -174,7 +174,7 @@ public class BeyonderNPCEntity extends PathfinderMob {
                                    RandomSource random) {
 
         ServerLevel serverLevel = level.getServer().overworld();
-        if (!serverLevel.getGameRules().getBoolean(ModGameRules.ALLOW_BEYONDER_SPAWNING)) {
+        if (!serverLevel.getGameRules().getBooleanOr(ModGameRules.ALLOW_BEYONDER_SPAWNING, false)) {
             return false;
         }
 
@@ -195,7 +195,7 @@ public class BeyonderNPCEntity extends PathfinderMob {
 
         if (!this.level().isClientSide()) {
             // Initialize quest data on first spawn
-            if (!this.getPersistentData().getBoolean("Initialized")) {
+            if (!this.getPersistentData().getBooleanOr("Initialized", false)) {
                 this.getPersistentData().putBoolean("Initialized", true);
 
                 if ((random.nextFloat() < QUEST_SPAWN_CHANCE || this._hasQuest == Boolean.TRUE) && this._hasQuest != Boolean.FALSE) {
@@ -382,17 +382,17 @@ public class BeyonderNPCEntity extends PathfinderMob {
     }
 
     private TradeEntry readTrade(CompoundTag tag, HolderLookup.Provider registries) {
-        ItemStack costA = ItemStack.parse(registries, tag.getCompound("CostA")).orElse(ItemStack.EMPTY);
+        ItemStack costA = ItemStack.parse(registries, tag.getCompoundOrEmpty("CostA")).orElse(ItemStack.EMPTY);
         ItemStack costB = tag.contains("CostB")
-                ? ItemStack.parse(registries, tag.getCompound("CostB")).orElse(ItemStack.EMPTY)
+                ? ItemStack.parse(registries, tag.getCompoundOrEmpty("CostB")).orElse(ItemStack.EMPTY)
                 : ItemStack.EMPTY;
-        ItemStack result = ItemStack.parse(registries, tag.getCompound("Result")).orElse(ItemStack.EMPTY);
+        ItemStack result = ItemStack.parse(registries, tag.getCompoundOrEmpty("Result")).orElse(ItemStack.EMPTY);
         return new TradeEntry(costA, costB, result);
     }
 
     public List<TradeEntry> getCurrentTrades() {
         HolderLookup.Provider registries = this.registryAccess();
-        ListTag list = getTrades().getList("trades", Tag.TAG_COMPOUND);
+        ListTag list = getTrades().getListOrEmpty("trades", Tag.TAG_COMPOUND);
         List<TradeEntry> result = new ArrayList<>();
         for (Tag t : list) {
             result.add(readTrade((CompoundTag) t, registries));
@@ -463,7 +463,7 @@ public class BeyonderNPCEntity extends PathfinderMob {
 
     public void removeTrade(int index) {
         CompoundTag root = getTrades().copy();
-        ListTag trades = root.getList("trades", Tag.TAG_COMPOUND);
+        ListTag trades = root.getListOrEmpty("trades", Tag.TAG_COMPOUND);
         if (index >= 0 && index < trades.size()) {
             ListTag newTrades = new ListTag();
             for (int i = 0; i < trades.size(); i++) {
@@ -477,7 +477,7 @@ public class BeyonderNPCEntity extends PathfinderMob {
     }
 
     public boolean hasTrades() {
-        return !getTrades().getList("trades", Tag.TAG_COMPOUND).isEmpty();
+        return !getTrades().getListOrEmpty("trades", Tag.TAG_COMPOUND).isEmpty();
     }
 
     public record TradeEntry(ItemStack costA, ItemStack costB, ItemStack result) {}
@@ -522,7 +522,7 @@ public class BeyonderNPCEntity extends PathfinderMob {
         compound.putBoolean("IsPuppetWarrior", isPuppetWarrior());
         compound.putInt("MaxLifetimeIfPuppet", getMaxLifetimeIfPuppet());
         if (getTargetPlayerUUID().isPresent()) {
-            compound.putUUID("TargetPlayerUUID", getTargetPlayerUUID().get());
+            compound.store("TargetPlayerUUID", net.minecraft.core.UUIDUtil.CODEC,  getTargetPlayerUUID().get());
         }
 
         compound.putString("Pathway", _pathway);
@@ -533,18 +533,18 @@ public class BeyonderNPCEntity extends PathfinderMob {
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
 
-        this.defaultHostile = compound.getBoolean("DefaultHostile");
-        setPuppetWarrior(compound.getBoolean("IsPuppetWarrior"));
-        setMaxLifetimeIfPuppet(compound.getInt("MaxLifetimeIfPuppet"));
-        setTrades(compound.getCompound("Trades"));
+        this.defaultHostile = compound.getBooleanOr("DefaultHostile", false);
+        setPuppetWarrior(compound.getBooleanOr("IsPuppetWarrior", false));
+        setMaxLifetimeIfPuppet(compound.getIntOr("MaxLifetimeIfPuppet", 0));
+        setTrades(compound.getCompoundOrEmpty("Trades"));
 
-        if (compound.contains("QuestId"))  setQuestId(compound.getString("QuestId"));
-        if (compound.contains("IsHostile")) setHostile(compound.getBoolean("IsHostile"));
-        if (compound.contains("SkinName"))  setSkinName(compound.getString("SkinName"));
-        if (compound.contains("TargetPlayerUUID")) setTargetPlayerUUID(compound.getUUID("TargetPlayerUUID"));
+        if (compound.contains("QuestId"))  setQuestId(compound.getStringOr("QuestId", ""));
+        if (compound.contains("IsHostile")) setHostile(compound.getBooleanOr("IsHostile", false));
+        if (compound.contains("SkinName"))  setSkinName(compound.getStringOr("SkinName", ""));
+        if (compound.contains("TargetPlayerUUID")) setTargetPlayerUUID(compound.read("TargetPlayerUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
 
-        if (compound.contains("Pathway")) _pathway = compound.getString("Pathway");
-        if (compound.contains("Sequence")) _sequence = compound.getInt("Sequence");
+        if (compound.contains("Pathway")) _pathway = compound.getStringOr("Pathway", "");
+        if (compound.contains("Sequence")) _sequence = compound.getIntOr("Sequence", 0);
     }
 
     // ========================= Getters and Setters =========================

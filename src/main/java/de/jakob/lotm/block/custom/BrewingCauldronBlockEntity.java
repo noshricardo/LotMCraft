@@ -113,13 +113,13 @@ public class BrewingCauldronBlockEntity extends BlockEntity implements MenuProvi
     protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
 
-        CompoundTag inv = pTag.getCompound("inventory");
-        if (inv.contains("Size") && inv.getInt("Size") == itemHandler.getSlots()) {
+        CompoundTag inv = pTag.getCompoundOrEmpty("inventory");
+        if (inv.contains("Size") && inv.getIntOr("Size", 0) == itemHandler.getSlots()) {
             itemHandler.deserializeNBT(pRegistries, inv);
         }
 
-        progress = pTag.getInt("brewing_cauldron.progress");
-        maxProgress = pTag.getInt("brewing_cauldron.max_progress");
+        progress = pTag.getIntOr("brewing_cauldron.progress", 0);
+        maxProgress = pTag.getIntOr("brewing_cauldron.max_progress", 0);
     }
 
     @Override

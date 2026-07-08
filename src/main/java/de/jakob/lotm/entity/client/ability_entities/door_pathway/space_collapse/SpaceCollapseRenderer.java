@@ -5,14 +5,14 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.entity.custom.ability_entities.door_pathway.SpaceCollapseEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.Identifier;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class SpaceCollapseRenderer extends EntityRenderer<SpaceCollapseEntity> {
+public class SpaceCollapseRenderer extends EntityRenderer<SpaceCollapseEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/space_collapse/space_collapse.png");
     
     public SpaceCollapseRenderer(EntityRendererProvider.Context context) {

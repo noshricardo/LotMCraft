@@ -12,7 +12,7 @@ public enum TriggerContextEnum {
     ;
 
     public static TriggerContextEnum fromNBT(CompoundTag tag, String key) {
-        String name = tag.getString(key);
+        String name = tag.getStringOr(key, "");
 
         try {
             return TriggerContextEnum.valueOf(name);

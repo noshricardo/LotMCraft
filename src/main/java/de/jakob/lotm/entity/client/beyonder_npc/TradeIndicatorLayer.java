@@ -8,18 +8,18 @@ import de.jakob.lotm.entity.custom.BeyonderNPCEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 
-public class TradeIndicatorLayer extends RenderLayer<BeyonderNPCEntity, PlayerModel<BeyonderNPCEntity>> {
+public class TradeIndicatorLayer extends RenderLayer<BeyonderNPCEntity, PlayerModel> {
     private static TradeIndicatorModel<Entity> model;
     private static final Identifier texture = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/npc/trade_indicator.png");
 
-    public TradeIndicatorLayer(RenderLayerParent<BeyonderNPCEntity, PlayerModel<BeyonderNPCEntity>> parent) {
+    public TradeIndicatorLayer(RenderLayerParent<BeyonderNPCEntity, PlayerModel> parent) {
         super(parent);
     }
 

@@ -139,7 +139,7 @@ public abstract class Ability {
         var pdata = newUser.getPersistentData();
         if (pdata.contains(EntropySubAbility.SENSORY_DECAY_COOLDOWN_MULT_KEY)) {
             if (pdata.getLong(EntropySubAbility.SENSORY_DECAY_COOLDOWN_UNTIL_KEY) > serverLevel.getGameTime()) {
-                inflatedCooldown = (int)(cooldown * pdata.getFloat(EntropySubAbility.SENSORY_DECAY_COOLDOWN_MULT_KEY));
+                inflatedCooldown = (int)(cooldown * pdata.getFloatOr(EntropySubAbility.SENSORY_DECAY_COOLDOWN_MULT_KEY, 0.0f));
             } else {
                 pdata.remove(EntropySubAbility.SENSORY_DECAY_COOLDOWN_MULT_KEY);
                 pdata.remove(EntropySubAbility.SENSORY_DECAY_COOLDOWN_UNTIL_KEY);
@@ -191,7 +191,7 @@ public abstract class Ability {
         var pdata = entity.getPersistentData();
         if (pdata.contains(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_MULT_KEY)) {
             if (pdata.getLong(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_UNTIL_KEY) > level.getGameTime()) {
-                return base * pdata.getFloat(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_MULT_KEY);
+                return base * pdata.getFloatOr(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_MULT_KEY, 0.0f);
             } else {
                 pdata.remove(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_MULT_KEY);
                 pdata.remove(EntropySubAbility.ENTROPY_DRAIN_SPIRIT_UNTIL_KEY);

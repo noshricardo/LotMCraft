@@ -57,9 +57,9 @@ public class SkillScalingComponent {
                 @Override
                 public SkillScalingComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     SkillScalingComponent component = new SkillScalingComponent();
-                    component.scaleToSkill = tag.getBoolean("scaleToSkill");
-                    component.path = tag.getString("path");
-                    component.seq = tag.getInt("seq");
+                    component.scaleToSkill = tag.getBooleanOr("scaleToSkill", false);
+                    component.path = tag.getStringOr("path", "");
+                    component.seq = tag.getIntOr("seq", 0);
                     return component;
                 }
 

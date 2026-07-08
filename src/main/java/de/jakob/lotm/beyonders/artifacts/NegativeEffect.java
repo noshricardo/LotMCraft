@@ -256,12 +256,12 @@ public class NegativeEffect {
             case STRUCK_BY_LIGHTNING:
                 if (player.tickCount % getIntervalForSequenceAndMultiplier(sequence, 3) == 0) {
                     if (player instanceof ServerPlayer serverPlayer) {
-                        LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(serverPlayer.serverLevel());
+                        LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(serverPlayer.level());
 
                         if (lightning != null) {
                             lightning.moveTo(player.position());
                             player.hurt(player.damageSources().lightningBolt(), Math.max(2, getEffectLevelForSequence(sequence)));
-                            serverPlayer.serverLevel().addFreshEntity(lightning);
+                            serverPlayer.level().addFreshEntity(lightning);
                         }
                     }
                 }
@@ -293,7 +293,7 @@ public class NegativeEffect {
                         double vexHealth = 14 + (getEffectLevelForSequence(sequence) * 2);
                         double vexDamage = 4.0 + getEffectLevelForSequence(sequence) * 0.5;
                         for (int i = 0; i < 5; i++) {
-                            Vex vex = EntityType.VEX.create(serverPlayer.serverLevel());
+                            Vex vex = EntityType.VEX.create(serverPlayer.level());
                             if (vex != null) {
                                 vex.moveTo(
                                         player.getX() + (player.getRandom().nextDouble() - 0.5) * 4,
@@ -305,7 +305,7 @@ public class NegativeEffect {
                                 vex.setHealth((float) vexHealth);
                                 AttributeInstance attackDamage = vex.getAttribute(Attributes.ATTACK_DAMAGE);
                                 if (attackDamage != null) attackDamage.setBaseValue(vexDamage);
-                                serverPlayer.serverLevel().addFreshEntity(vex);
+                                serverPlayer.level().addFreshEntity(vex);
                             }
                         }
                     }

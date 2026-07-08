@@ -110,7 +110,7 @@ public class DreamTraversalAbility extends SelectableAbility {
                 .filter(p -> (p != player) &&
                         !VisionaryHandler.shouldStayInvisible(seq, p) &&
                         (p.distanceTo(entity) <= range))
-                .map(p -> new PlayerInfo(p.getUUID(), p.getGameProfile().getName()))
+                .map(p -> new PlayerInfo(p.getUUID(), p.getGameProfile().name()))
                 .toList();
 
         PacketDistributor.sendToPlayer(

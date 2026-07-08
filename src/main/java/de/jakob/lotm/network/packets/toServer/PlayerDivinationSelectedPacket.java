@@ -66,7 +66,7 @@ public record PlayerDivinationSelectedPacket(UUID selectedPlayerUuid, PlayerSele
     }
 
     private static void performDreamTraversal(PlayerDivinationSelectedPacket packet, ServerPlayer player){
-        ServerPlayer targetPlayer = player.serverLevel().getServer().getPlayerList()
+        ServerPlayer targetPlayer = player.level().getServer().getPlayerList()
                 .getPlayer(packet.selectedPlayerUuid);
 
         if (targetPlayer == null || !(player.level().dimension() == targetPlayer.level().dimension())) {
@@ -99,7 +99,7 @@ public record PlayerDivinationSelectedPacket(UUID selectedPlayerUuid, PlayerSele
     }
 
     private static void performDivination(PlayerDivinationSelectedPacket packet, ServerPlayer player){
-        ServerPlayer targetPlayer = player.serverLevel().getServer().getPlayerList()
+        ServerPlayer targetPlayer = player.level().getServer().getPlayerList()
                 .getPlayer(packet.selectedPlayerUuid);
 
         MetaAwarenessAbility.onDivined(player, targetPlayer);
@@ -152,14 +152,14 @@ public record PlayerDivinationSelectedPacket(UUID selectedPlayerUuid, PlayerSele
             }
             player.sendSystemMessage(Component.literal(String.format(
                     "§5You sense §d%s§5 to the §d%s§5",
-                    targetPlayer.getGameProfile().getName(),
+                    targetPlayer.getGameProfile().name(),
                     getDirection(dx, dz)
             )));
 
         } else if(divinationDifference < 10) {
             player.sendSystemMessage(Component.literal(String.format(
                     "§5You sense §d%s§5 to the §d%s§5, about §d%d blocks §5away...",
-                    targetPlayer.getGameProfile().getName(),
+                    targetPlayer.getGameProfile().name(),
                     getDirection(dx, dz),
                     distance
             )));
@@ -167,7 +167,7 @@ public record PlayerDivinationSelectedPacket(UUID selectedPlayerUuid, PlayerSele
         else if (divinationDifference >= 10) {
             player.sendSystemMessage(Component.literal(String.format(
                     "§5You sense §d%s§5 to the §d%s§5 at cords §d%d, %d, %d§5, about §d%d blocks §5away...",
-                    targetPlayer.getGameProfile().getName(),
+                    targetPlayer.getGameProfile().name(),
                     getDirection(dx, dz),
                     targetPlayer.blockPosition().getX(),
                     targetPlayer.blockPosition().getY(),

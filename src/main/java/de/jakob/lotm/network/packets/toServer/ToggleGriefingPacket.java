@@ -29,7 +29,7 @@ public record ToggleGriefingPacket() implements CustomPacketPayload {
             ServerPlayer player = (ServerPlayer) context.player();
             boolean isGriefingEnabled = BeyonderData.isGriefingEnabled(player);
 
-            if(!player.level().getGameRules().getBoolean(ModGameRules.ALLOW_GRIEFING)) {
+            if(!player.level().getGameRules().getBooleanOr(ModGameRules.ALLOW_GRIEFING, false)) {
                 if(!isGriefingEnabled) {
                     Component message = Component.literal("Griefing is disabled globally").withStyle(ChatFormatting.RED);
 

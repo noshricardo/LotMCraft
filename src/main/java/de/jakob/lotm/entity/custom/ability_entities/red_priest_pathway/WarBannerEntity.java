@@ -183,10 +183,10 @@ public class WarBannerEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
-        setDuration(compoundTag.getInt("duration"));
-        setRadius(compoundTag.getInt("radius"));
-        if (compoundTag.hasUUID("owner")) {
-            setCasterUUID(compoundTag.getUUID("owner"));
+        setDuration(compoundTag.getIntOr("duration", 0));
+        setRadius(compoundTag.getIntOr("radius", 0));
+        if (compoundTag.contains("owner")) {
+            setCasterUUID(compoundTag.read("owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         } else {
             setCasterUUID(null);
         }
@@ -197,7 +197,7 @@ public class WarBannerEntity extends Entity {
         compoundTag.putInt("duration", getDuration());
         compoundTag.putInt("radius", getRadius());
         if (getCasterUUID() != null) {
-            compoundTag.putUUID("owner", getCasterUUID());
+            compoundTag.store("owner", net.minecraft.core.UUIDUtil.CODEC,  getCasterUUID());
         }
     }
 }

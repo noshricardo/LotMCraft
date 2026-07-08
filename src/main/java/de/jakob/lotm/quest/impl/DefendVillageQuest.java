@@ -17,7 +17,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.*;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -50,10 +50,10 @@ public class DefendVillageQuest extends Quest {
     @Override
     public void startQuest(ServerPlayer player) {
         for(int i = 0; i < 40; i++) {
-            Entity entity = createRandomMonster(player.serverLevel());
+            Entity entity = createRandomMonster(player.level());
             entity.setPos(player.getX() + (new Random().nextDouble() - 0.5) * 50, player.getY() + 1, player.getZ() + (new Random().nextDouble() - 0.5) * 50);
-            entity.getPersistentData().putUUID("lotm_quest_defend_village", player.getUUID());
-            player.serverLevel().addFreshEntity(entity);
+            entity.getPersistentData().store("lotm_quest_defend_village", net.minecraft.core.UUIDUtil.CODEC,  player.getUUID());
+            player.level().addFreshEntity(entity);
 
             if(entity instanceof Mob mob) {
                 mob.goalSelector.addGoal(0, new KillOutsideRadiusGoal(mob, player.position(), 40));
@@ -67,11 +67,11 @@ public class DefendVillageQuest extends Quest {
         if(!(entity.level() instanceof ServerLevel serverLevel)) {
             return;
         }
-        if(!entity.getPersistentData().hasUUID("lotm_quest_defend_village")) {
+        if(!entity.getPersistentData().contains("lotm_quest_defend_village")) {
             return;
         }
 
-        Entity uuidEntity = serverLevel.getEntity(entity.getPersistentData().getUUID("lotm_quest_defend_village"));
+        Entity uuidEntity = serverLevel.getEntity(entity.getPersistentData().read("lotm_quest_defend_village", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         if(!(uuidEntity instanceof ServerPlayer player)) {
             return;
         }

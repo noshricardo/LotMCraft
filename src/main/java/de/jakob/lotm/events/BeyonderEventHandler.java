@@ -84,7 +84,7 @@ public class BeyonderEventHandler {
             parasitationComponent.setParasiteUUID(null);
 
             VirtualPersonaComponent personaComponent = serverPlayer.getData(ModAttachments.VIRTUAL_PERSONAS);
-            personaComponent.onJoin((ServerLevel) serverPlayer.level(), serverPlayer.getName().getString());
+            personaComponent.onJoin((ServerLevel) serverPlayer.level(), serverPlayer.name().getString());
 
             var splitComponent = serverPlayer.getData(ModAttachments.ENVISION_SPLIT.get());
             splitComponent.onJoin((ServerLevel) serverPlayer.level());
@@ -101,10 +101,10 @@ public class BeyonderEventHandler {
     private static void convertLegacyNBT(ServerPlayer serverPlayer) {
         if (!serverPlayer.getPersistentData().contains("beyonder_pathway") || !serverPlayer.getPersistentData().contains("beyonder_sequence"))
             return;
-        String oldPathway = serverPlayer.getPersistentData().getString("beyonder_pathway");
-        int oldSequence = serverPlayer.getPersistentData().getInt("beyonder_sequence");
-        float digestionsProgress = serverPlayer.getPersistentData().contains("beyonder_digestion_progress") ? serverPlayer.getPersistentData().getFloat("beyonder_digestion_progress") : 0f;
-        boolean griefingEnabled = serverPlayer.getPersistentData().contains("beyonder_griefing_enabled") || !serverPlayer.getPersistentData().getBoolean("beyonder_griefing_enabled");
+        String oldPathway = serverPlayer.getPersistentData().getStringOr("beyonder_pathway", "");
+        int oldSequence = serverPlayer.getPersistentData().getIntOr("beyonder_sequence", 0);
+        float digestionsProgress = serverPlayer.getPersistentData().contains("beyonder_digestion_progress") ? serverPlayer.getPersistentData().getFloatOr("beyonder_digestion_progress", 0.0f) : 0f;
+        boolean griefingEnabled = serverPlayer.getPersistentData().contains("beyonder_griefing_enabled") || !serverPlayer.getPersistentData().getBooleanOr("beyonder_griefing_enabled", false);
 
         BeyonderData.setBeyonder(serverPlayer, oldPathway, oldSequence, true, true, true, true);
         BeyonderData.setDigestionProgress(serverPlayer, digestionsProgress);
@@ -167,7 +167,7 @@ public class BeyonderEventHandler {
     @SubscribeEvent
     public static void onDamage(LivingDamageEvent.Post event) {
         if (event.getSource().getEntity() instanceof LivingEntity source) {
-            if (BeyonderData.isBeyonder(source) && event.getEntity().level().getGameRules().getBoolean(ModGameRules.DISABLE_FLIGHT_IN_COMBAT)) {
+            if (BeyonderData.isBeyonder(source) && event.getEntity().level().getGameRules().getBooleanOr(ModGameRules.DISABLE_FLIGHT_IN_COMBAT, false)) {
                 DisabledFlightComponent flightData = event.getEntity().getData(ModAttachments.FLIGHT_DISABLE_COMPONENT);
                 flightData.setCooldownTicks(20 * 20);
             }
@@ -182,7 +182,7 @@ public class BeyonderEventHandler {
             BeyonderData.recalculateCharStackModifiers(serverPlayer);
             serverPlayer.getData(ModAttachments.LUCK_COMPONENT.get()).setLuck(0);
             // Clear sacrifice bar if it was active when the player died
-            if (serverPlayer.getPersistentData().getBoolean("sacrifice_bar_clear")) {
+            if (serverPlayer.getPersistentData().getBooleanOr("sacrifice_bar_clear", false)) {
                 serverPlayer.getPersistentData().remove("sacrifice_bar_clear");
                 PacketHandler.sendToPlayer(serverPlayer, new de.jakob.lotm.network.packets.toClient.SyncSacrificeDurationPacket(0));
             }
@@ -240,13 +240,13 @@ public class BeyonderEventHandler {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
         if (!BeyonderData.isBeyonder(player)) return;
-        if (!player.serverLevel().getGameRules().getBoolean(ModGameRules.REGRESS_SEQUENCE_ON_DEATH)) return;
+        if (!player.level().getGameRules().getBooleanOr(ModGameRules.REGRESS_SEQUENCE_ON_DEATH, false)) return;
 
         // onDeath (LivingDeathEvent) already handled regression and cleared the revert component.
         // Here we only need to drop the correct characteristic item.
         // The sequence to drop is the one onDeath regressed FROM, stored temporarily in NBT.
         int dropSequence = player.getPersistentData().contains("sacrifice_drop_sequence")
-                ? player.getPersistentData().getInt("sacrifice_drop_sequence")
+                ? player.getPersistentData().getIntOr("sacrifice_drop_sequence", 0)
                 : BeyonderData.getSequence(player);
         player.getPersistentData().remove("sacrifice_drop_sequence");
 
@@ -288,18 +288,18 @@ public class BeyonderEventHandler {
         if (event.getEntity() instanceof ServerPlayer player) {
 
             VirtualPersonaComponent personaComponent = player.getData(ModAttachments.VIRTUAL_PERSONAS);
-            personaComponent.onDeath((ServerLevel) player.level(), player.getName().getString());
+            personaComponent.onDeath((ServerLevel) player.level(), player.name().getString());
 
             var source = event.getSource().getEntity();
             if (source != null) {
-                LOTMCraft.LOGGER.info("{} was killed by {} with {}", player.getGameProfile().getName(), event.getSource().getEntity().getName(), event.getSource());
+                LOTMCraft.LOGGER.info("{} was killed by {} with {}", player.getGameProfile().name(), event.getSource().getEntity().name(), event.getSource());
             } else {
-                LOTMCraft.LOGGER.info("{} was killed with {}", player.getGameProfile().getName(), event.getSource());
+                LOTMCraft.LOGGER.info("{} was killed with {}", player.getGameProfile().name(), event.getSource());
             }
 
             if (!BeyonderData.isBeyonder(player)) return;
             if (playerMap.get(player).isEmpty()) return;
-            if (!player.level().getGameRules().getBoolean(ModGameRules.REGRESS_SEQUENCE_ON_DEATH)
+            if (!player.level().getGameRules().getBooleanOr(ModGameRules.REGRESS_SEQUENCE_ON_DEATH, false)
             && !player.getData(ModAttachments.ENVISION_SPLIT.get()).isEnvisioned()) {
                 BeyonderData.recalculateCharStackModifiers(player);
                 return;
@@ -395,7 +395,7 @@ public class BeyonderEventHandler {
                     boolean valid = true, allowed = true, noNegativesAllowed = true;
                     if (data != null) {
                         valid = playerMap.check(data.pathway(), data.sequence());
-                        allowed = player.level().getGameRules().getBoolean(ModGameRules.ALLOW_ARTIFACTS);
+                        allowed = player.level().getGameRules().getBooleanOr(ModGameRules.ALLOW_ARTIFACTS, false);
 
                         noNegativesAllowed = !player.level().getGameRules().getBoolean(ModGameRules.
                                 ALLOW_ARTIFACTS_WITH_NO_NEGATIVES) && data.negativeEffect().isEmpty();
@@ -497,7 +497,7 @@ public class BeyonderEventHandler {
             }
 
             // Always give the attacker the corresponding characteristic item (not for void-summoned puppets or players possessing one)
-            if (!victim.getPersistentData().getBoolean("VoidSummoned")) {
+            if (!victim.getPersistentData().getBooleanOr("VoidSummoned", false)) {
                 BeyonderCharacteristicItem charItem = BeyonderCharacteristicItemHandler
                         .selectCharacteristicOfPathwayAndSequence(pathwayBeforeRegress, victimSeq);
                 if (charItem != null && attacker instanceof Player attackerPlayer) {
@@ -597,7 +597,7 @@ public class BeyonderEventHandler {
 
         Level level = entity.level();
         if(level.isClientSide()) return;
-        if(!level.getGameRules().getBoolean(ModGameRules.SEQUENCE_DIMENSION_LOCK)) return;
+        if(!level.getGameRules().getBooleanOr(ModGameRules.SEQUENCE_DIMENSION_LOCK, false)) return;
 
         ResourceKey<Level> target = event.getDimension();
 

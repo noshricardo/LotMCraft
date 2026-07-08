@@ -9,7 +9,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -18,73 +18,35 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ErrorAvatarRenderer extends MobRenderer<AvatarEntity, PlayerModel<AvatarEntity>> {
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+
+public class ErrorAvatarRenderer extends MobRenderer<AvatarEntity, AvatarRenderState, PlayerModel> {
     // Cache for player skins to avoid repeated lookups
     private static final Map<UUID, Identifier> SKIN_CACHE = new ConcurrentHashMap<>();
 
     public ErrorAvatarRenderer(EntityRendererProvider.Context context) {
-        super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
+        super(context, new PlayerModel(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
     }
 
     @Override
-    public @NotNull Identifier getTextureLocation(AvatarEntity entity) {
-        UUID ownerUUID = entity.getOriginalOwner();
-
-        // If no owner, use fallback
-        if (ownerUUID == null) {
-            return entity.getSkinTexture();
-        }
-
-        // Check cache first
-        if (SKIN_CACHE.containsKey(ownerUUID)) {
-            return SKIN_CACHE.get(ownerUUID);
-        }
-
-        // Try to get the player's skin
-        Identifier playerSkin = getPlayerSkin(ownerUUID);
-
-        // Cache and return the result (either player skin or fallback)
-        SKIN_CACHE.put(ownerUUID, playerSkin);
-        return playerSkin;
+    public AvatarRenderState createRenderState() {
+        return new AvatarRenderState();
     }
 
-    /**
-     * Attempts to retrieve the player's skin texture
-     * @param playerUUID The UUID of the player
-     * @return The Identifier of the player's skin, or fallback texture
-     */
-    private Identifier getPlayerSkin(UUID playerUUID) {
-        Minecraft mc = Minecraft.getInstance();
-
-        // Method 1: Try to get the player from the current level
-        if (mc.level != null) {
-            Player player = mc.level.getPlayerByUUID(playerUUID);
-            if (player != null) {
-                PlayerSkin skin = mc.getSkinManager().getInsecureSkin(player.getGameProfile());
-                return skin.texture();
-            }
+    @Override
+    public void extractRenderState(AvatarEntity entity, AvatarRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        UUID ownerUUID = entity.getOriginalOwner();
+        if (ownerUUID == null) {
+            state.skin = DefaultPlayerSkin.get(java.util.UUID.randomUUID());
+        } else {
+            state.skin = Minecraft.getInstance().getSkinManager().createLookup(new GameProfile(ownerUUID, null), true).get();
         }
+    }
 
-        // Method 2: Try to get from player info (for online players in multiplayer)
-        if (mc.getConnection() != null) {
-            PlayerInfo playerInfo = mc.getConnection().getPlayerInfo(playerUUID);
-            if (playerInfo != null) {
-                return playerInfo.getSkin().texture();
-            }
-        }
-
-        // Method 3: Try to load skin asynchronously from profile
-        try {
-            GameProfile profile = new GameProfile(playerUUID, null);
-            PlayerSkin skin = mc.getSkinManager().getInsecureSkin(profile);
-            return skin.texture();
-        } catch (Exception e) {
-            // If anything goes wrong, fall through to default
-        }
-
-        // Method 4: Use default Steve/Alex skin based on UUID
-        PlayerSkin defaultSkin = DefaultPlayerSkin.get(playerUUID);
-        return defaultSkin.texture();
+    @Override
+    public Identifier getTextureLocation(AvatarRenderState state) {
+        return state.skin.body().texturePath();
     }
 
     /**

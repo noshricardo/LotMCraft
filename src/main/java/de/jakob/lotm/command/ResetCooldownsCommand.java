@@ -27,7 +27,7 @@ public class ResetCooldownsCommand {
                         }
 
                         player.getData(ModAttachments.COOLDOWN_COMPONENT).removeAllCooldowns();
-                        source.sendSuccess(() -> Component.literal("Reset cooldowns for " + player.getName().getString()), true);
+                        source.sendSuccess(() -> Component.literal("Reset cooldowns for " + player.name().getString()), true);
                         return 1;
                     })
                 )

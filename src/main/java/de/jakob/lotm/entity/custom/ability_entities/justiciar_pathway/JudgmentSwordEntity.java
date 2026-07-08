@@ -66,16 +66,16 @@ public class JudgmentSwordEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        setDamage(tag.getFloat("Damage"));
-        if (tag.contains("OwnerUUID")) setOwnerUUID(Optional.of(tag.getUUID("OwnerUUID")));
-        if (tag.contains("TargetUUID")) setTargetUUID(Optional.of(tag.getUUID("TargetUUID")));
+        setDamage(tag.getFloatOr("Damage", 0.0f));
+        if (tag.contains("OwnerUUID")) setOwnerUUID(Optional.of(tag.read("OwnerUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null)));
+        if (tag.contains("TargetUUID")) setTargetUUID(Optional.of(tag.read("TargetUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null)));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
         tag.putFloat("Damage", getDamage());
-        if (getOwnerUUID() != null) tag.putUUID("OwnerUUID", getOwnerUUID());
-        if (getTargetUUID() != null) tag.putUUID("TargetUUID", getTargetUUID());
+        if (getOwnerUUID() != null) tag.store("OwnerUUID", net.minecraft.core.UUIDUtil.CODEC,  getOwnerUUID());
+        if (getTargetUUID() != null) tag.store("TargetUUID", net.minecraft.core.UUIDUtil.CODEC,  getTargetUUID());
     }
 
     public void setDamage(float v) { entityData.set(DAMAGE, v); }

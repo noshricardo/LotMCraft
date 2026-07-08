@@ -135,7 +135,7 @@ public class TeamUtils {
         for (String uuid : memberUUIDs) {
             ServerPlayer member = server.getPlayerList().getPlayer(
                     java.util.UUID.fromString(uuid));
-            memberNames.add(member != null ? member.getName().getString() : uuid);
+            memberNames.add(member != null ? member.name().getString() : uuid);
 
             SharedAbilitiesComponent shared = member != null
                     ? member.getData(ModAttachments.SHARED_ABILITIES_COMPONENT.get())

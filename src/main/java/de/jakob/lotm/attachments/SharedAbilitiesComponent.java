@@ -66,13 +66,13 @@ public class SharedAbilitiesComponent {
                 @Override
                 public SharedAbilitiesComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     SharedAbilitiesComponent component = new SharedAbilitiesComponent();
-                    CompoundTag entriesTag = tag.getCompound("contributions");
+                    CompoundTag entriesTag = tag.getCompoundOrEmpty("contributions");
                     Map<String, List<String>> map = new HashMap<>();
-                    for (String key : entriesTag.getAllKeys()) {
-                        ListTag listTag = entriesTag.getList(key, Tag.TAG_STRING);
+                    for (String key : entriesTag.keySet()) {
+                        ListTag listTag = entriesTag.getListOrEmpty(key, Tag.TAG_STRING);
                         List<String> ids = new ArrayList<>();
                         for (int i = 0; i < listTag.size(); i++) {
-                            ids.add(listTag.getString(i));
+                            ids.add(listTag.getStringOr(i, ""));
                         }
                         map.put(key, ids);
                     }

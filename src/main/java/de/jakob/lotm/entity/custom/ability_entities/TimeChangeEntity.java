@@ -314,10 +314,10 @@ public class TimeChangeEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        setDuration(tag.getInt("duration"));
-        setRadius(tag.getInt("radius"));
-        setTimeMultiplier(tag.getFloat("time_multiplier"));
-        if (tag.hasUUID("owner")) setCasterUUID(tag.getUUID("owner"));
+        setDuration(tag.getIntOr("duration", 0));
+        setRadius(tag.getIntOr("radius", 0));
+        setTimeMultiplier(tag.getFloatOr("time_multiplier", 0.0f));
+        if (tag.contains("owner")) setCasterUUID(tag.read("owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         else                      setCasterUUID(null);
     }
 
@@ -326,6 +326,6 @@ public class TimeChangeEntity extends Entity {
         tag.putInt("duration", getDuration());
         tag.putInt("radius", getRadius());
         tag.putFloat("time_multiplier", getTimeMultiplier());
-        if (getCasterUUID() != null) tag.putUUID("owner", getCasterUUID());
+        if (getCasterUUID() != null) tag.store("owner", net.minecraft.core.UUIDUtil.CODEC,  getCasterUUID());
     }
 }

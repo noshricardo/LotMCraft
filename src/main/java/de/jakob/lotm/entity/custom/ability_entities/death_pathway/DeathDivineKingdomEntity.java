@@ -314,15 +314,15 @@ public class DeathDivineKingdomEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        if (tag.hasUUID("owner")) setOwnerUUID(tag.getUUID("owner"));
-        casterSeq = tag.getInt("caster_seq");
-        lifetime = tag.getInt("lifetime");
+        if (tag.contains("owner")) setOwnerUUID(tag.read("owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
+        casterSeq = tag.getIntOr("caster_seq", 0);
+        lifetime = tag.getIntOr("lifetime", 0);
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
         UUID uuid = getOwnerUUID();
-        if (uuid != null) tag.putUUID("owner", uuid);
+        if (uuid != null) tag.store("owner", net.minecraft.core.UUIDUtil.CODEC,  uuid);
         tag.putInt("caster_seq", casterSeq);
         tag.putInt("lifetime", lifetime);
     }

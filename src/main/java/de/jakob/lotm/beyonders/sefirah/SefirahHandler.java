@@ -86,7 +86,7 @@ public class SefirahHandler {
             }
 
             if(returnLocation.getLevel().dimension().equals(player.level().dimension())) {
-                ServerLevel level = player.serverLevel();
+                ServerLevel level = player.level();
                 Vec3 newPos = level.getServer().overworld().getSharedSpawnPos().getCenter();
                 ServerLevel returnLevel = level.getServer().overworld();
                 player.teleportTo(returnLevel, newPos.x, newPos.y, newPos.z, 0, 0);
@@ -122,7 +122,7 @@ public class SefirahHandler {
             case "sefirah_castle" -> {
                 ResourceKey<Level> sefirotDimension = ResourceKey.create(Registries.DIMENSION,
                         Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "sefirah_castle"));
-                ServerLevel sefirotLevel = player.serverLevel().getServer().getLevel(sefirotDimension);
+                ServerLevel sefirotLevel = player.level().getServer().getLevel(sefirotDimension);
                 if (sefirotLevel == null) {
                     return;
                 }

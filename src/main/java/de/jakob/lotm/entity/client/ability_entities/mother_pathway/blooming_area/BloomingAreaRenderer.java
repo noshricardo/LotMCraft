@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class BloomingAreaRenderer extends EntityRenderer<BloomingAreaEntity> {
+public class BloomingAreaRenderer extends EntityRenderer<BloomingAreaEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
     private final BloomingAreaModel<BloomingAreaEntity> model;
     private static final float ROTATION_SPEED = 3.5F;
 

@@ -128,7 +128,7 @@ public class WeaknessDetectionAbility extends ToggleAbility {
             int targetSeq = BeyonderData.getSequence(target);
             if (BeyonderData.isBeyonder(target) && targetSeq < selfSeq) continue;
 
-            int tier = target.getPersistentData().getInt(VIOLATION_TIER_KEY);
+            int tier = target.getPersistentData().getIntOr(VIOLATION_TIER_KEY, 0);
             if (tier <= 0) continue;
 
             applyTierDebuffs(serverLevel, entity, target, tier);
@@ -237,6 +237,6 @@ public class WeaknessDetectionAbility extends ToggleAbility {
     }
 
     public static boolean isActive(LivingEntity entity) {
-        return entity.getPersistentData().getBoolean("lotm_weakness_detection_active");
+        return entity.getPersistentData().getBooleanOr("lotm_weakness_detection_active", false);
     }
 }

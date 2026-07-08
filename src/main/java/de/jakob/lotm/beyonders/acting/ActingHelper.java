@@ -17,7 +17,7 @@ public class ActingHelper {
     public static final String NBT_UNLOCKED_KEY = "lotm_unlocked_acting_triggers";
 
     public static boolean isOnCooldown(Player player, String taskId) {
-        CompoundTag cooldowns = player.getPersistentData().getCompound(NBT_COOLDOWN_KEY);
+        CompoundTag cooldowns = player.getPersistentData().getCompoundOrEmpty(NBT_COOLDOWN_KEY);
         if (!cooldowns.contains(taskId)) return false;
         long expiry = cooldowns.getLong(taskId);
         long now = player.level().getGameTime();
@@ -33,7 +33,7 @@ public class ActingHelper {
 
     public static void setCooldown(Player player, String taskId, long cooldownTicks) {
         if (cooldownTicks <= 0) return;
-        CompoundTag cooldowns = player.getPersistentData().getCompound(NBT_COOLDOWN_KEY);
+        CompoundTag cooldowns = player.getPersistentData().getCompoundOrEmpty(NBT_COOLDOWN_KEY);
         cooldowns.putLong(taskId, player.level().getGameTime() + cooldownTicks);
         player.getPersistentData().put(NBT_COOLDOWN_KEY, cooldowns);
     }
@@ -42,7 +42,7 @@ public class ActingHelper {
         if(!(player instanceof ServerPlayer serverPlayer))
             return;
 
-        CompoundTag unlocked = player.getPersistentData().getCompound(NBT_UNLOCKED_KEY);
+        CompoundTag unlocked = player.getPersistentData().getCompoundOrEmpty(NBT_UNLOCKED_KEY);
         String key = pathway + "_" + sequence + "_" + triggerId;
         unlocked.putBoolean(key, true);
         player.getPersistentData().put(NBT_UNLOCKED_KEY, unlocked);
@@ -51,16 +51,16 @@ public class ActingHelper {
     }
 
     public static boolean isTriggerUnlocked(String pathway, int sequence, Player player, String triggerId) {
-            CompoundTag unlocked = player.getPersistentData().getCompound(NBT_UNLOCKED_KEY);
+            CompoundTag unlocked = player.getPersistentData().getCompoundOrEmpty(NBT_UNLOCKED_KEY);
             String key = pathway + "_" + sequence + "_" + triggerId;
-            return unlocked.getBoolean(key);
+            return unlocked.getBooleanOr(key, false);
     }
 
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
         if (player instanceof ServerPlayer serverPlayer) {
-            CompoundTag unlocked = player.getPersistentData().getCompound(NBT_UNLOCKED_KEY);
+            CompoundTag unlocked = player.getPersistentData().getCompoundOrEmpty(NBT_UNLOCKED_KEY);
             PacketHandler.sendToPlayer(serverPlayer, new SyncPlayerActingDataPayload(unlocked));
             ActingCapHelper.syncToClient(serverPlayer);
         }
@@ -74,7 +74,7 @@ public class ActingHelper {
                 // This clears missed acting from sequences the player no longer holds after death.
                 ActingCapHelper.reinstateCapForCurrentSequence(serverPlayer);
             }
-            CompoundTag unlocked = serverPlayer.getPersistentData().getCompound(NBT_UNLOCKED_KEY);
+            CompoundTag unlocked = serverPlayer.getPersistentData().getCompoundOrEmpty(NBT_UNLOCKED_KEY);
             PacketHandler.sendToPlayer(serverPlayer, new SyncPlayerActingDataPayload(unlocked));
             ActingCapHelper.syncToClient(serverPlayer);
         }
@@ -84,7 +84,7 @@ public class ActingHelper {
     public static void onChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
         Player player = event.getEntity();
         if (player instanceof ServerPlayer serverPlayer) {
-            CompoundTag unlocked = player.getPersistentData().getCompound(NBT_UNLOCKED_KEY);
+            CompoundTag unlocked = player.getPersistentData().getCompoundOrEmpty(NBT_UNLOCKED_KEY);
             PacketHandler.sendToPlayer(serverPlayer, new SyncPlayerActingDataPayload(unlocked));
             ActingCapHelper.syncToClient(serverPlayer);
         }

@@ -5,7 +5,7 @@ import com.mojang.math.Axis;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.entity.custom.ability_entities.VolcanoEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -14,7 +14,7 @@ import net.minecraft.resources.Identifier;
 
 import java.util.Random;
 
-public class VolcanoRenderer extends EntityRenderer<VolcanoEntity> {
+public class VolcanoRenderer extends EntityRenderer<VolcanoEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/volcano/volcano.png");
     private final VolcanoModel<VolcanoEntity> model;
 

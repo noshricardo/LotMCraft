@@ -161,7 +161,7 @@ Available commands:
                 .then(Commands.argument("json", StringArgumentType.greedyString())
                         .executes(context -> {
                             CommandSourceStack source = context.getSource();
-                            String rawJson = StringArgumentType.getString(context, "json");
+                            String rawJson = StringArgumentType.getStringOr(context, "json", "");
 
                             try {
                                 JsonObject obj = JsonParser.parseString(rawJson).getAsJsonObject();

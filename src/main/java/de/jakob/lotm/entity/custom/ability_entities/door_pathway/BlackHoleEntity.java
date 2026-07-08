@@ -224,18 +224,18 @@ public class BlackHoleEntity extends Entity {
     
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        if (compound.hasUUID("Owner")) {
-            this.ownerUUID = compound.getUUID("Owner");
+        if (compound.contains("Owner")) {
+            this.ownerUUID = compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
-        this.setRadius(compound.getFloat("Radius"));
-        this.setDamage(compound.getFloat("Damage"));
-        this.setSuckBlocks(compound.getBoolean("SuckBlocks"));
+        this.setRadius(compound.getFloatOr("Radius", 0.0f));
+        this.setDamage(compound.getFloatOr("Damage", 0.0f));
+        this.setSuckBlocks(compound.getBooleanOr("SuckBlocks", false));
     }
     
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
         if (this.ownerUUID != null) {
-            compound.putUUID("Owner", this.ownerUUID);
+            compound.store("Owner", net.minecraft.core.UUIDUtil.CODEC,  this.ownerUUID);
         }
         compound.putFloat("Radius", this.getRadius());
         compound.putFloat("Damage", this.getDamage());

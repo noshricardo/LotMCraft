@@ -170,46 +170,46 @@ public record StoredData(String pathway, Integer sequence, HonorificName honorif
     }
 
     public static StoredData fromNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        String path     = tag.getString(NBT_PATHWAY);
-        int    seq      = tag.getInt(NBT_SEQUENCE);
-        HonorificName name = HonorificName.fromNBT(tag.getCompound(NBT_HONORIFIC_NAME));
-        String trueName = tag.getString(NBT_TRUE_NAME);
+        String path     = tag.getStringOr(NBT_PATHWAY, "");
+        int    seq      = tag.getIntOr(NBT_SEQUENCE, 0);
+        HonorificName name = HonorificName.fromNBT(tag.getCompoundOrEmpty(NBT_HONORIFIC_NAME));
+        String trueName = tag.getStringOr(NBT_TRUE_NAME, "");
 
-        boolean modified = tag.getBoolean(NBT_MODIFIED);
-        String uniqueness = tag.contains(NBT_UNIQUENESS) ? tag.getString(NBT_UNIQUENESS) : "none";
+        boolean modified = tag.getBooleanOr(NBT_MODIFIED, false);
+        String uniqueness = tag.contains(NBT_UNIQUENESS) ? tag.getStringOr(NBT_UNIQUENESS, "") : "none";
 
         Vec3 lastPos = new Vec3(
-                tag.getDouble(NBT_LAST_POSITION_X),
-                tag.getDouble(NBT_LAST_POSITION_Y),
-                tag.getDouble(NBT_LAST_POSITION_Z));
+                tag.getDoubleOr(NBT_LAST_POSITION_X, 0.0),
+                tag.getDoubleOr(NBT_LAST_POSITION_Y, 0.0),
+                tag.getDoubleOr(NBT_LAST_POSITION_Z, 0.0));
 
         int[] charStack = new int[10];
-        if (tag.contains(NBT_CHAR_STACK, Tag.TAG_LIST)) {
-            ListTag charStackList = tag.getList(NBT_CHAR_STACK, Tag.TAG_INT);
+        if (tag.contains(NBT_CHAR_STACK)) {
+            ListTag charStackList = tag.getListOrEmpty(NBT_CHAR_STACK);
             for (int i = 0; i < Math.min(charStackList.size(), 10); i++) {
-                charStack[i] = charStackList.getInt(i);
+                charStack[i] = charStackList.getIntOr(i, 0);
             }
         }
 
         String[] history = new String[10];
-        if (tag.contains(NBT_PATHWAY_HISTORY, Tag.TAG_LIST)) {
-            ListTag histList = tag.getList(NBT_PATHWAY_HISTORY, Tag.TAG_STRING);
+        if (tag.contains(NBT_PATHWAY_HISTORY)) {
+            ListTag histList = tag.getListOrEmpty(NBT_PATHWAY_HISTORY);
             for (int i = 0; i < Math.min(histList.size(), 10); i++) {
-                String val = histList.getString(i);
+                String val = histList.getStringOr(i, "");
                 history[i] = val.isEmpty() ? null : val;
             }
         }
 
         LinkedList<Prophecy> prophecies = new LinkedList<>();
-        if (tag.contains(NBT_PROPHECIES, Tag.TAG_LIST)) {
-            ListTag propList = tag.getList(NBT_PROPHECIES, Tag.TAG_COMPOUND);
+        if (tag.contains(NBT_PROPHECIES)) {
+            ListTag propList = tag.getListOrEmpty(NBT_PROPHECIES);
             for (var obj : propList) {
                 if (obj instanceof CompoundTag compound)
                     prophecies.add(Prophecy.fromNBT(compound, provider));
             }
         }
 
-        String sefirot = tag.getString(NBT_SEFIROT);
+        String sefirot = tag.getStringOr(NBT_SEFIROT, "");
 
         return new StoredData(path, seq, name, trueName, modified, lastPos,
                 charStack, history, uniqueness, prophecies, sefirot);

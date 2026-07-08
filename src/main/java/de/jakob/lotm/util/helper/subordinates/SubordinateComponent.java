@@ -1,7 +1,7 @@
 package de.jakob.lotm.util.helper.subordinates;
 
-import net.neoforged.neoforge.common.util.ValueInput;
-import net.neoforged.neoforge.common.util.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 

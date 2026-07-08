@@ -24,11 +24,11 @@ public class ActingCapHelper {
     public static boolean skipNextCapApplication = false;
 
     public static boolean isCapSuppressed(ServerLevel level) {
-        return level.getGameRules().getBoolean(ModGameRules.APPLY_NOT_ACTING_PENALTY);
+        return level.getGameRules().getBooleanOr(ModGameRules.APPLY_NOT_ACTING_PENALTY, false);
     }
 
     public static float getCapReduction(Player player) {
-        return player.getPersistentData().getFloat(CAP_REDUCTION_KEY);
+        return player.getPersistentData().getFloatOr(CAP_REDUCTION_KEY, 0.0f);
     }
 
     static void setCapReduction(Player player, float amount) {
@@ -46,7 +46,7 @@ public class ActingCapHelper {
     }
 
     public static CompoundTag getMissedActing(Player player) {
-        return player.getPersistentData().getCompound(MISSED_ACTING_KEY);
+        return player.getPersistentData().getCompoundOrEmpty(MISSED_ACTING_KEY);
     }
 
     public static void clearCap(Player player) {
@@ -136,17 +136,17 @@ public class ActingCapHelper {
         boolean found = false;
         float totalRestore = 0f;
 
-        for (String groupKey : missed.getAllKeys()) {
+        for (String groupKey : missed.keySet()) {
             String[] parts = groupKey.split("/", 2);
             if (parts.length != 2 || !parts[0].equals(playerPathway)) continue;
 
-            CompoundTag group = missed.getCompound(groupKey);
-            CompoundTag tasks = group.getCompound("tasks");
+            CompoundTag group = missed.getCompoundOrEmpty(groupKey);
+            CompoundTag tasks = group.getCompoundOrEmpty("tasks");
 
             if (!tasks.contains(taskId)) continue;
 
-            int startIndex = group.getInt("startIndex");
-            int initialCount = group.getInt("initialCount");
+            int startIndex = group.getIntOr("startIndex", 0);
+            int initialCount = group.getIntOr("initialCount", 0);
             int retroCompleted = initialCount - tasks.size();
             int restorationIndex = startIndex + retroCompleted;
 

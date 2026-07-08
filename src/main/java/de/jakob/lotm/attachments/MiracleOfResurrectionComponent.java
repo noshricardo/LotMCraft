@@ -24,7 +24,7 @@ public class MiracleOfResurrectionComponent {
                 @Override
                 public MiracleOfResurrectionComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     MiracleOfResurrectionComponent component = new MiracleOfResurrectionComponent();
-                    component.resurrectionAttempts = tag.getInt("resurrectionAttempts");
+                    component.resurrectionAttempts = tag.getIntOr("resurrectionAttempts", 0);
                     return component;
                 }
 

@@ -100,7 +100,7 @@ public class VirtualPersonaAbility extends SelectableAbility {
         if(!(level instanceof ServerLevel serverLevel)) return;
 
         var component = entity.getData(ModAttachments.VIRTUAL_PERSONAS.get());
-        component.clean(serverLevel, entity.getName().getString());
+        component.clean(serverLevel, entity.name().getString());
     }
 
     private void createAvatar(Level level, LivingEntity entity){
@@ -253,8 +253,8 @@ public class VirtualPersonaAbility extends SelectableAbility {
         if(!(target instanceof ServerPlayer targetPlayer)) return;
 
         var personas = target.getData(ModAttachments.VIRTUAL_PERSONAS.get());
-        if(component.affects(target.getName().getString())){
-            component.removeAffects(targetPlayer.getName().getString(), entity.getName().getString(),(ServerLevel) level);
+        if(component.affects(target.name().getString())){
+            component.removeAffects(targetPlayer.name().getString(), entity.name().getString(),(ServerLevel) level);
         }
         else {
             personas.placeBy(player, targetPlayer);

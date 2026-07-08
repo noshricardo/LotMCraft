@@ -238,7 +238,7 @@ public class LawAbility extends SelectableAbility {
 
         String abilityName = abilityId;
         de.jakob.lotm.beyonders.abilities.core.Ability sealed = LOTMCraft.abilityHandler.getById(abilityId);
-        if (sealed != null) abilityName = sealed.getName().getString();
+        if (sealed != null) abilityName = sealed.name().getString();
 
         if (caster instanceof ServerPlayer player) {
             player.sendSystemMessage(Component.translatable("ability.lotmcraft.law.sealing_broadcast_prefix")

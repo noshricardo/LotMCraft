@@ -1,14 +1,14 @@
 package de.jakob.lotm.rendering.effectRendering.impl;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import de.jakob.lotm.rendering.effectRendering.ActiveEffect;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
@@ -20,61 +20,40 @@ public class FlameVortexEffect extends ActiveEffect {
         super(x, y, z, 20 * 6);
     }
 
-    // Custom additive render type for fire effect
-    private static final RenderType FIRE_ADDITIVE = RenderType.create(
-            "fire_vortex_additive",
-            DefaultVertexFormat.NEW_ENTITY,
-            VertexFormat.Mode.QUADS,
-            256,
-            true,
-            true,
-            RenderType.CompositeState.builder()
-                    .setShaderState(RenderType.RENDERTYPE_ENERGY_SWIRL_SHADER)
-                    .setTextureState(new RenderStateShard.TextureStateShard(FLAME_TEXTURE, false, false))
-                    .setTransparencyState(RenderStateShard.ADDITIVE_TRANSPARENCY)
-                    .setCullState(RenderStateShard.NO_CULL)
-                    .setLightmapState(RenderStateShard.LIGHTMAP)
-                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-                    .createCompositeState(true)
-    );
-
     @Override
     protected void render(PoseStack poseStack, float tick) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null) return;
+
         poseStack.pushPose();
         poseStack.translate(x, y, z);
 
-        Tesselator tesselator = Tesselator.getInstance();
+        MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
+        // Use lightning render type as a close-enough additive replacement
+        VertexConsumer buffer = bufferSource.getBuffer(RenderTypes.lightning());
 
         float rotation = tick * 12.0f;
         float ageInTicks = tick;
 
         // Render main fire spiral
-        renderFireSpiral(poseStack, tesselator, rotation, ageInTicks);
+        renderFireSpiral(poseStack, buffer, rotation, ageInTicks);
 
         // Render inner flames
-        renderInnerFlames(poseStack, tesselator, rotation, ageInTicks);
+        renderInnerFlames(poseStack, buffer, rotation, ageInTicks);
 
         // Render fire ribbons
-        renderFireRibbons(poseStack, tesselator, rotation, ageInTicks);
+        renderFireRibbons(poseStack, buffer, rotation, ageInTicks);
 
         // Render ember particles
-        renderEmberSwirls(poseStack, tesselator, rotation, ageInTicks);
+        renderEmberSwirls(poseStack, buffer, rotation, ageInTicks);
 
         // Render core heat glow
-        renderCoreGlow(poseStack, tesselator, ageInTicks);
+        renderCoreGlow(poseStack, buffer, ageInTicks);
 
         poseStack.popPose();
     }
 
-    private void renderFireSpiral(PoseStack poseStack, Tesselator tesselator, float rotation, float ageInTicks) {
-        RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-        RenderSystem.setShaderTexture(0, FLAME_TEXTURE);
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-        RenderSystem.depthMask(false);
-
-        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
-
+    private void renderFireSpiral(PoseStack poseStack, VertexConsumer buffer, float rotation, float ageInTicks) {
         int segments = 24;
         int heightSegments = 20;
         float maxRadius = 6.0f;
@@ -94,8 +73,6 @@ public class FlameVortexEffect extends ActiveEffect {
                 float radius1 = maxRadius * (heightRatio * 0.6f + 0.4f);
                 float radius2 = maxRadius * (nextHeightRatio * 0.6f + 0.4f);
 
-
-                // Spiral twist
                 float twist1 = heightRatio * 720.0f + (ageInTicks * 5.0f);
                 float twist2 = nextHeightRatio * 720.0f + (ageInTicks * 5.0f);
 
@@ -114,16 +91,13 @@ public class FlameVortexEffect extends ActiveEffect {
                     float x4 = Mth.cos(angle4 * Mth.DEG_TO_RAD) * radius2;
                     float z4 = Mth.sin(angle4 * Mth.DEG_TO_RAD) * radius2;
 
-                    // Orange at bottom, purple at top
                     int r, g, b;
                     if (heightRatio < 0.4f) {
-                        // Orange-red at bottom
                         float t = heightRatio / 0.4f;
                         r = 255;
                         g = (int)(100 + t * 50);
                         b = (int)(20 * (1.0f - t));
                     } else {
-                        // Purple at top
                         float t = (heightRatio - 0.4f) / 0.6f;
                         r = (int)(255 - t * 100);
                         g = (int)(150 - t * 100);
@@ -141,31 +115,16 @@ public class FlameVortexEffect extends ActiveEffect {
                     buffer.addVertex(pose, x3, y2, z3).setColor(r, g, b, a).setUv(0, 1).setLight(LightTexture.FULL_BRIGHT);
                 }
             }
-
             poseStack.popPose();
         }
-
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
-        RenderSystem.depthMask(true);
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableBlend();
     }
 
-    private void renderInnerFlames(PoseStack poseStack, Tesselator tesselator, float rotation, float ageInTicks) {
-        RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-        RenderSystem.setShaderTexture(0, FLAME_TEXTURE);
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-        RenderSystem.depthMask(false);
-
-        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
-
+    private void renderInnerFlames(PoseStack poseStack, VertexConsumer buffer, float rotation, float ageInTicks) {
         int numFlames = 12;
         float maxHeight = 6.0f;
 
         for (int flame = 0; flame < numFlames; flame++) {
             poseStack.pushPose();
-
             float flameAngle = (flame / (float) numFlames) * 360.0f + rotation * 3.0f;
             poseStack.mulPose(Axis.YP.rotationDegrees(flameAngle));
 
@@ -177,26 +136,21 @@ public class FlameVortexEffect extends ActiveEffect {
             for (int i = 1; i <= segments; i++) {
                 float t = i / (float) segments;
                 float radius = 2.5f * (1.0f - t * 0.7f);
-
                 float x = radius + Mth.sin(ageInTicks * 0.4f + flame + t * Mth.PI * 3) * 0.5f;
                 float y = t * maxHeight;
                 float z = Mth.sin(t * Mth.PI * 4 + ageInTicks * 0.3f) * 0.4f;
 
-                // Bright orange-yellow at bottom, dark purple at top
                 int r, g, b;
                 if (t < 0.3f) {
-                    // Bright orange-yellow
                     r = 255;
                     g = (int)(180 + Mth.sin(ageInTicks * 0.5f + flame) * 50);
                     b = 30;
                 } else if (t < 0.6f) {
-                    // Orange to magenta
                     float blend = (t - 0.3f) / 0.3f;
                     r = 255;
                     g = (int)(180 * (1.0f - blend) + 80 * blend);
                     b = (int)(30 + blend * 170);
                 } else {
-                    // Deep purple
                     r = (int)(200 - (t - 0.6f) * 50);
                     g = 50;
                     b = (int)(200 + (t - 0.6f) * 55);
@@ -217,55 +171,34 @@ public class FlameVortexEffect extends ActiveEffect {
                 prevY = y;
                 prevZ = z;
             }
-
             poseStack.popPose();
         }
-
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
-        RenderSystem.depthMask(true);
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableBlend();
     }
 
-    private void renderFireRibbons(PoseStack poseStack, Tesselator tesselator, float rotation, float ageInTicks) {
-        RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-        RenderSystem.setShaderTexture(0, FLAME_TEXTURE);
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-        RenderSystem.depthMask(false);
-
-        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
-
+    private void renderFireRibbons(PoseStack poseStack, VertexConsumer buffer, float rotation, float ageInTicks) {
         int numRibbons = 6;
         float maxHeight = 6.0f;
         int heightSegments = 30;
 
         for (int ribbon = 0; ribbon < numRibbons; ribbon++) {
             poseStack.pushPose();
-
             float ribbonAngle = (ribbon / (float) numRibbons) * 360.0f + rotation * 1.5f;
             poseStack.mulPose(Axis.YP.rotationDegrees(ribbonAngle));
-
             Matrix4f pose = poseStack.last().pose();
             float ribbonWidth = 0.5f;
 
             for (int h = 0; h < heightSegments; h++) {
                 float heightRatio = h / (float) heightSegments;
                 float nextHeightRatio = (h + 1) / (float) heightSegments;
-
                 float y1 = heightRatio * maxHeight;
                 float y2 = nextHeightRatio * maxHeight;
-
                 float baseRadius = 6.0f * (heightRatio * 0.6f + 0.4f);
                 float nextBaseRadius = 6.0f * (nextHeightRatio * 0.6f + 0.4f);
-
                 float offset = 0.6f + Mth.sin(ageInTicks * 0.15f + ribbon + heightRatio * Mth.PI * 3) * 0.4f;
                 float radius1 = baseRadius + offset;
                 float radius2 = nextBaseRadius + offset;
-
                 float spiralTwist1 = heightRatio * 540.0f + (ageInTicks * 7.0f);
                 float spiralTwist2 = nextHeightRatio * 540.0f + (ageInTicks * 7.0f);
-
                 float angle1 = spiralTwist1 * Mth.DEG_TO_RAD;
                 float angle2 = spiralTwist2 * Mth.DEG_TO_RAD;
 
@@ -273,21 +206,17 @@ public class FlameVortexEffect extends ActiveEffect {
                 float z1_inner = Mth.sin(angle1) * radius1;
                 float x2_inner = Mth.cos(angle2) * radius2;
                 float z2_inner = Mth.sin(angle2) * radius2;
-
                 float x1_outer = Mth.cos(angle1) * (radius1 + ribbonWidth);
                 float z1_outer = Mth.sin(angle1) * (radius1 + ribbonWidth);
                 float x2_outer = Mth.cos(angle2) * (radius2 + ribbonWidth);
                 float z2_outer = Mth.sin(angle2) * (radius2 + ribbonWidth);
 
-                // Alternating orange and purple ribbons
                 int r, g, b;
                 if (ribbon % 2 == 0) {
-                    // Bright orange with yellow tint
                     r = 255;
                     g = (int)(140 + Mth.sin(ageInTicks * 0.2f + heightRatio * 2) * 40);
                     b = 20;
                 } else {
-                    // Vibrant purple
                     r = (int)(200 + Mth.sin(ageInTicks * 0.2f + heightRatio * 2) * 30);
                     g = 60;
                     b = 255;
@@ -301,25 +230,11 @@ public class FlameVortexEffect extends ActiveEffect {
                 buffer.addVertex(pose, x2_outer, y2, z2_outer).setColor(r, g, b, a).setUv(1, 1).setLight(LightTexture.FULL_BRIGHT);
                 buffer.addVertex(pose, x2_inner, y2, z2_inner).setColor(r, g, b, a).setUv(0, 1).setLight(LightTexture.FULL_BRIGHT);
             }
-
             poseStack.popPose();
         }
-
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
-        RenderSystem.depthMask(true);
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableBlend();
     }
 
-    private void renderEmberSwirls(PoseStack poseStack, Tesselator tesselator, float rotation, float ageInTicks) {
-        RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-        RenderSystem.setShaderTexture(0, FLAME_TEXTURE);
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-        RenderSystem.depthMask(false);
-
-        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
-
+    private void renderEmberSwirls(PoseStack poseStack, VertexConsumer buffer, float rotation, float ageInTicks) {
         int numEmbers = 30;
         float maxHeight = 6.0f;
 
@@ -334,7 +249,6 @@ public class FlameVortexEffect extends ActiveEffect {
 
             float size = 0.15f * (1.0f - t * 0.5f);
 
-            // Glowing orange-yellow embers
             int r = 255;
             int g = (int)(200 - t * 100);
             int b = (int)(50 * (1.0f - t));
@@ -347,22 +261,9 @@ public class FlameVortexEffect extends ActiveEffect {
             buffer.addVertex(pose, x + size, y, z + size).setColor(r, g, b, a).setUv(1, 1).setLight(LightTexture.FULL_BRIGHT);
             buffer.addVertex(pose, x - size, y, z + size).setColor(r, g, b, a).setUv(0, 1).setLight(LightTexture.FULL_BRIGHT);
         }
-
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
-        RenderSystem.depthMask(true);
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableBlend();
     }
 
-    private void renderCoreGlow(PoseStack poseStack, Tesselator tesselator, float ageInTicks) {
-        RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-        RenderSystem.setShaderTexture(0, FLAME_TEXTURE);
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-        RenderSystem.depthMask(false);
-
-        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
-
+    private void renderCoreGlow(PoseStack poseStack, VertexConsumer buffer, float ageInTicks) {
         float maxHeight = 6.0f;
         int segments = 16;
         int heightSegments = 18;
@@ -373,13 +274,10 @@ public class FlameVortexEffect extends ActiveEffect {
         for (int h = 0; h < heightSegments; h++) {
             float heightRatio = h / (float) heightSegments;
             float nextHeightRatio = (h + 1) / (float) heightSegments;
-
             float y1 = heightRatio * maxHeight;
             float y2 = nextHeightRatio * maxHeight;
-
             float radius1 = 0.8f * (heightRatio * 0.6f + 0.4f);
             float radius2 = 0.8f * (nextHeightRatio * 0.6f + 0.4f);
-
             float pulse = 1.0f + Mth.sin(ageInTicks * 0.3f + heightRatio * Mth.PI) * 0.2f;
             radius1 *= pulse;
             radius2 *= pulse;
@@ -387,7 +285,6 @@ public class FlameVortexEffect extends ActiveEffect {
             for (int i = 0; i < segments; i++) {
                 float angle1 = (i / (float) segments) * 360.0f;
                 float angle2 = ((i + 1) / (float) segments) * 360.0f;
-
                 float x1 = Mth.cos(angle1 * Mth.DEG_TO_RAD) * radius1;
                 float z1 = Mth.sin(angle1 * Mth.DEG_TO_RAD) * radius1;
                 float x2 = Mth.cos(angle2 * Mth.DEG_TO_RAD) * radius1;
@@ -397,7 +294,6 @@ public class FlameVortexEffect extends ActiveEffect {
                 float x4 = Mth.cos(angle2 * Mth.DEG_TO_RAD) * radius2;
                 float z4 = Mth.sin(angle2 * Mth.DEG_TO_RAD) * radius2;
 
-                // Bright white-yellow core
                 int r = 255;
                 int g = (int)(250 - heightRatio * 50);
                 int b = (int)(200 - heightRatio * 180);
@@ -411,12 +307,6 @@ public class FlameVortexEffect extends ActiveEffect {
                 buffer.addVertex(pose, x3, y2, z3).setColor(r, g, b, a).setUv(0, 1).setLight(LightTexture.FULL_BRIGHT);
             }
         }
-
         poseStack.popPose();
-
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
-        RenderSystem.depthMask(true);
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableBlend();
     }
 }

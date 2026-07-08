@@ -54,10 +54,10 @@ public class AllyCommand {
                 UUID allyUUID = UUID.fromString(uuidStr);
                 ServerPlayer online = source.getServer().getPlayerList().getPlayer(allyUUID);
                 if (online != null) {
-                    playerEntries.add(online.getName().copy().withColor(0x4CAF50));
+                    playerEntries.add(online.name().copy().withColor(0x4CAF50));
                 } else {
                     source.getServer().getProfileCache().get(allyUUID).ifPresent(profile ->
-                            playerEntries.add(Component.literal(profile.getName()).withColor(0x9E9E9E)));
+                            playerEntries.add(Component.literal(profile.name()).withColor(0x9E9E9E)));
                 }
             } catch (IllegalArgumentException ignored) {}
         }
@@ -83,7 +83,7 @@ public class AllyCommand {
 
         if (!AllyUtil.isAlly(sender, targetProfile.getId())) {
             source.sendFailure(Component.translatable("lotm.ally.not_allies",
-                    Component.literal(targetProfile.getName())));
+                    Component.literal(targetProfile.name())));
             return 0;
         }
 
@@ -96,7 +96,7 @@ public class AllyCommand {
             // The stale entry on the offline player's list is pruned when they next log in.
             AllyUtil.removeAllyOneWay(sender, targetProfile.getId());
             sender.sendSystemMessage(Component.translatable("lotm.ally.removed",
-                    Component.literal(targetProfile.getName())).withColor(0xFF9800));
+                    Component.literal(targetProfile.name())).withColor(0xFF9800));
         }
 
         return 1;

@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class CoffinRenderer extends EntityRenderer<CoffinEntity> {
+public class CoffinRenderer extends EntityRenderer<CoffinEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
     private CoffinModel model;
     private static final float ROTATION_SPEED = 1.0F; // Adjust this value to change rotation speed (degrees per tick)
 

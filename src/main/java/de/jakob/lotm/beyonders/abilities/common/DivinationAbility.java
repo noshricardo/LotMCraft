@@ -188,7 +188,7 @@ public class DivinationAbility extends SelectableAbility {
                 .stream()
                 .filter(p -> p != player)
                 .filter(p -> !DIVINATION_IMMUNE.contains(p.getUUID()))
-                .map(p -> new PlayerInfo(p.getUUID(), p.getGameProfile().getName()))
+                .map(p -> new PlayerInfo(p.getUUID(), p.getGameProfile().name()))
                 .toList();
 
         PacketDistributor.sendToPlayer(
@@ -200,7 +200,7 @@ public class DivinationAbility extends SelectableAbility {
     private void structureDivination(Level level, Entity entity) {
         if (!(entity instanceof ServerPlayer player)) return;
 
-        Registry<Structure> registry = player.serverLevel().registryAccess()
+        Registry<Structure> registry = player.level().registryAccess()
                 .registry(Registries.STRUCTURE).orElseThrow();
 
         List<String> structureIds = registry.holders()
@@ -231,7 +231,7 @@ public class DivinationAbility extends SelectableAbility {
     private void biomeDivination(Level level, Entity entity) {
         if (!(entity instanceof ServerPlayer player)) return;
 
-        Registry<Biome> registry = player.serverLevel().registryAccess()
+        Registry<Biome> registry = player.level().registryAccess()
                 .registry(Registries.BIOME).orElseThrow();
 
         List<String> biomeIds = registry.holders()

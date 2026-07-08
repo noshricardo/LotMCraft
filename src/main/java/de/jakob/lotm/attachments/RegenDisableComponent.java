@@ -55,9 +55,9 @@ public class RegenDisableComponent {
                 public RegenDisableComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     var component = new RegenDisableComponent();
 
-                    component.isDisabled = tag.getBoolean(NBT_IS_DISABLED);
-                    component.disabledFor = tag.getInt(NBT_DISABLED_FOR);
-                    component.count = tag.getInt(NBT_COUNT);
+                    component.isDisabled = tag.getBooleanOr(NBT_IS_DISABLED, false);
+                    component.disabledFor = tag.getIntOr(NBT_DISABLED_FOR, 0);
+                    component.count = tag.getIntOr(NBT_COUNT, 0);
 
                     return component;
                 }

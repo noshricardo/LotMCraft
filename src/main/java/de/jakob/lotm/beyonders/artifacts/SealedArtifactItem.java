@@ -43,13 +43,13 @@ public class SealedArtifactItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
 
         if(level.isClientSide()) {
-            return InteractionResultHolder.success(stack);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
         }
 
-        if(!level.getGameRules().getBoolean(ModGameRules.ALLOW_ARTIFACTS)){
+        if(!level.getGameRules().getBooleanOr(ModGameRules.ALLOW_ARTIFACTS, false)){
             player.setItemInHand(hand, ItemStack.EMPTY);
 
-            return InteractionResultHolder.success(ItemStack.EMPTY);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(ItemStack.EMPTY);
         }
 
         DoorAuthorityData doorData = DoorAuthorityData.get((ServerLevel) level);
@@ -80,7 +80,7 @@ public class SealedArtifactItem extends Item {
             }
         }
 
-        return InteractionResultHolder.success(stack);
+        return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
     }
 
     @Override

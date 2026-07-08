@@ -37,7 +37,7 @@ public class BeyonderCommand {
                             return 0;
                         }
                         
-                        String pathway = StringArgumentType.getString(context, "pathway");
+                        String pathway = StringArgumentType.getStringOr(context, "pathway", "");
                         int sequence = IntegerArgumentType.getInteger(context, "sequence");
                         
                         return executeBeyonderCommand(source, livingEntity, pathway, sequence);
@@ -53,7 +53,7 @@ public class BeyonderCommand {
                                 return 0;
                             }
                             
-                            String pathway = StringArgumentType.getString(context, "pathway");
+                            String pathway = StringArgumentType.getStringOr(context, "pathway", "");
                             int sequence = IntegerArgumentType.getInteger(context, "sequence");
                             
                             return executeBeyonderCommand(source, livingEntity, pathway, sequence);
@@ -96,13 +96,13 @@ public class BeyonderCommand {
             }
 
             // Send success message
-            String targetName = target instanceof Player player ? player.getGameProfile().getName() : target.getDisplayName().getString();
+            String targetName = target instanceof Player player ? player.getGameProfile().name() : target.getDisplayName().getString();
             source.sendSuccess(() -> Component.literal("Set " + targetName + " to " + pathway + " sequence " + sequence), true);
 
             // Audit log
             String executorName = source.getTextName();
             String fullCommand = "beyonder " + pathway + " " + sequence
-                    + (target instanceof Player p && !p.getGameProfile().getName().equals(executorName)
+                    + (target instanceof Player p && !p.getGameProfile().name().equals(executorName)
                        ? " " + targetName : "");
             ServerLevel level = source.getLevel();
             SetBeyonderAuditLog.get(level).addEntry(executorName, targetName, pathway, sequence, fullCommand);

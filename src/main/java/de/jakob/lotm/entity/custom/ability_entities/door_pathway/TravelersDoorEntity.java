@@ -231,7 +231,7 @@ public class TravelersDoorEntity extends Entity {
             this.destZ = compoundTag.getDouble("DestZ");
         }
         if(compoundTag.contains("Use")) {
-            this.use = compoundTag.getInt("Use");
+            this.use = compoundTag.getIntOr("Use", 0);
         }
     }
 

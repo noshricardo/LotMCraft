@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -28,9 +29,30 @@ public class PlayerMap extends SavedData {
 
     private ServerLevel server;
 
-    public static final SavedData.Factory<PlayerMap> FACTORY = new SavedData.Factory<>(
+    public static final SavedDataType<PlayerMap> TYPE = new SavedDataType<>(
+            NBT_BEYONDER_MAP_CLASS,
             PlayerMap::new,
-            PlayerMap::new,
+            net.minecraft.nbt.CompoundTag.CODEC.xmap(
+                    tag -> {
+                        PlayerMap map = new PlayerMap();
+                        if (tag.contains(NBT_BEYONDER_MAP)) {
+                            CompoundTag mapTag = tag.getCompoundOrEmpty(NBT_BEYONDER_MAP);
+                            for (String key : mapTag.keySet()) {
+                                map.map.put(UUID.fromString(key), StoredData.fromNBT(mapTag.getCompoundOrEmpty(key), null));
+                            }
+                        }
+                        return map;
+                    },
+                    map -> {
+                        CompoundTag tag = new CompoundTag();
+                        CompoundTag mapTag = new CompoundTag();
+                        for (var obj : map.map.entrySet()) {
+                            mapTag.put(obj.getKey().toString(), obj.getValue().toNBT(null));
+                        }
+                        tag.put(NBT_BEYONDER_MAP, mapTag);
+                        return tag;
+                    }
+            ),
             null
     );
 
@@ -43,11 +65,11 @@ public class PlayerMap extends SavedData {
     public PlayerMap(CompoundTag nbt, HolderLookup.Provider provider) {
         this();
 
-        if (nbt.contains(NBT_BEYONDER_MAP, Tag.TAG_COMPOUND)) {
-            CompoundTag mapTag = nbt.getCompound(NBT_BEYONDER_MAP);
+        if (nbt.contains(NBT_BEYONDER_MAP)) {
+            CompoundTag mapTag = nbt.getCompoundOrEmpty(NBT_BEYONDER_MAP);
 
-            for (String key : mapTag.getAllKeys()) {
-                map.put(UUID.fromString(key), StoredData.fromNBT(mapTag.getCompound(key), provider));
+            for (String key : mapTag.keySet()) {
+                map.put(UUID.fromString(key), StoredData.fromNBT(mapTag.getCompoundOrEmpty(key), provider));
             }
         }
     }
@@ -141,7 +163,7 @@ public class PlayerMap extends SavedData {
     }
 
     public void onPlayerUUIDChange(ServerPlayer player){
-        String name = player.getGameProfile().getName();
+        String name = player.getGameProfile().name();
 
         UUID inMapId = getKeyByName(name);
         if(inMapId == null) return;
@@ -173,7 +195,7 @@ public class PlayerMap extends SavedData {
         boolean isNull = data == null;
 
         LOTMCraft.LOGGER.info("Put BeyonderMap: name {}, seq {}, path {}\n\tPrevious: name {}, seq {}, path {}",
-                ((ServerPlayer) entity).getGameProfile().getName(), sequence, pathway,
+                ((ServerPlayer) entity).getGameProfile().name(), sequence, pathway,
                 isNull ? "none" : data.trueName(), isNull ? LOTMCraft.NON_BEYONDER_SEQ : data.sequence(), isNull ? "none" : data.pathway());
 
         int[] componentCharStack = entity.getData(ModAttachments.BEYONDER_COMPONENT)
@@ -185,7 +207,7 @@ public class PlayerMap extends SavedData {
                 .copyFrom(data)
                 .pathway(pathway)
                 .sequence(sequence)
-                .trueName(((ServerPlayer) entity).getGameProfile().getName())
+                .trueName(((ServerPlayer) entity).getGameProfile().name())
                 .charStackArray(componentCharStack)
                 .pathwayHistory(pathwayHistory)
                 .uniqueness(uniqueness)
@@ -317,32 +339,32 @@ public class PlayerMap extends SavedData {
 
         switch (seq) {
             case 0:
-                if (seq_0 >= server.getGameRules().getInt(ModGameRules.SEQ_0_AMOUNT)) return false;
+                if (seq_0 >= server.getGameRules().get(ModGameRules.SEQ_0_AMOUNT)) return false;
                 break;
             case 1:
-                if (seq_0 >= server.getGameRules().getInt(ModGameRules.SEQ_0_AMOUNT)
-                        || seq_1 >= server.getGameRules().getInt(ModGameRules.SEQ_1_AMOUNT)) return false;
+                if (seq_0 >= server.getGameRules().get(ModGameRules.SEQ_0_AMOUNT)
+                        || seq_1 >= server.getGameRules().get(ModGameRules.SEQ_1_AMOUNT)) return false;
                 break;
             case 2:
-                if (seq_2 + seq_1 >= server.getGameRules().getInt(ModGameRules.SEQ_2_AMOUNT)) return false;
+                if (seq_2 + seq_1 >= server.getGameRules().get(ModGameRules.SEQ_2_AMOUNT)) return false;
                 break;
             case 3:
-                if (seq_3 + seq_2 >= server.getGameRules().getInt(ModGameRules.SEQ_3_AMOUNT)) return false;
+                if (seq_3 + seq_2 >= server.getGameRules().get(ModGameRules.SEQ_3_AMOUNT)) return false;
                 break;
             case 4:
-                if (seq_4 + seq_3 >= server.getGameRules().getInt(ModGameRules.SEQ_4_AMOUNT)) return false;
+                if (seq_4 + seq_3 >= server.getGameRules().get(ModGameRules.SEQ_4_AMOUNT)) return false;
                 break;
             case 5:
-                if (seq_5 + seq_4 >= server.getGameRules().getInt(ModGameRules.SEQ_5_AMOUNT)) return false;
+                if (seq_5 + seq_4 >= server.getGameRules().get(ModGameRules.SEQ_5_AMOUNT)) return false;
                 break;
             case 6:
-                if (seq_6 + seq_5 >= server.getGameRules().getInt(ModGameRules.SEQ_6_AMOUNT)) return false;
+                if (seq_6 + seq_5 >= server.getGameRules().get(ModGameRules.SEQ_6_AMOUNT)) return false;
                 break;
             case 7:
-                if (seq_7 + seq_6 >= server.getGameRules().getInt(ModGameRules.SEQ_7_AMOUNT)) return false;
+                if (seq_7 + seq_6 >= server.getGameRules().get(ModGameRules.SEQ_7_AMOUNT)) return false;
                 break;
             case 8:
-                if (seq_8 + seq_7 >= server.getGameRules().getInt(ModGameRules.SEQ_8_AMOUNT)) return false;
+                if (seq_8 + seq_7 >= server.getGameRules().get(ModGameRules.SEQ_8_AMOUNT)) return false;
                 break;
         }
 
@@ -357,23 +379,10 @@ public class PlayerMap extends SavedData {
         return map.containsKey(id);
     }
 
-    @Override
-    public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        LOTMCraft.LOGGER.info("Saving BeyonderMap");
-
-        CompoundTag tag = new CompoundTag();
-        for(var obj : map.entrySet()){
-            tag.put(obj.getKey().toString(), obj.getValue().toNBT(provider));
-        }
-
-        compoundTag.put(NBT_BEYONDER_MAP, tag);
-
-        return compoundTag;
-    }
 
     public static PlayerMap get(ServerLevel level) {
         LOTMCraft.LOGGER.info("Loading beyonderMap");
-        return level.getServer().overworld().getDataStorage().computeIfAbsent(FACTORY, NBT_BEYONDER_MAP_CLASS);
+        return level.getServer().overworld().getDataStorage().computeIfAbsent(TYPE);
     }
 
     public void setLevel(ServerLevel level){

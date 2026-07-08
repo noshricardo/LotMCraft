@@ -42,7 +42,7 @@ public class FindStructureQuest extends Quest {
 
     @Override
     public void tick(ServerPlayer player) {
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
         String targetStructure = ensureTargetStructure(player);
 
         if (isPlayerInsideStructure(level, player.blockPosition(), targetStructure)) {

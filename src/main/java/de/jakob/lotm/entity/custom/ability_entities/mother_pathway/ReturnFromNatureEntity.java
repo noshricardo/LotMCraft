@@ -99,7 +99,7 @@ public class ReturnFromNatureEntity extends Entity {
         if (tag.contains("ReturnDimension")) {
             this.returnDimension = ResourceKey.create(
                 Registries.DIMENSION,
-                Identifier.parse(tag.getString("ReturnDimension"))
+                Identifier.parse(tag.getStringOr("ReturnDimension", ""))
             );
         }
     }

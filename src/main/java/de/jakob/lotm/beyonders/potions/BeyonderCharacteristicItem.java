@@ -43,7 +43,7 @@ public class BeyonderCharacteristicItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
 
         if(level.isClientSide()) {
-            return InteractionResultHolder.success(stack);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
         }
 
         var item = stack.getItem();
@@ -61,7 +61,7 @@ public class BeyonderCharacteristicItem extends Item {
                     BeyonderData.setCharStack(player, (stacks[seq] + 1), seq, true);
                     BeyonderData.setDigestionProgress(player, 0);
                     player.setItemInHand(hand, ItemStack.EMPTY);
-                    return InteractionResultHolder.success(ItemStack.EMPTY);
+                    return InteractionResult.SUCCESS.heldItemTransformedTo(ItemStack.EMPTY);
                 }
             }
         }

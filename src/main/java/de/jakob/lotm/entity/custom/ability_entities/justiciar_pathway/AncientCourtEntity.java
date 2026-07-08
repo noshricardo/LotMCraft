@@ -244,16 +244,16 @@ public class AncientCourtEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        setDuration(tag.getInt("duration"));
-        setGriefing(tag.getBoolean("griefing"));
-        if (tag.hasUUID("owner")) setCasterUUID(tag.getUUID("owner"));
+        setDuration(tag.getIntOr("duration", 0));
+        setGriefing(tag.getBooleanOr("griefing", false));
+        if (tag.contains("owner")) setCasterUUID(tag.read("owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
         tag.putInt("duration", getDuration());
         tag.putBoolean("griefing", getGriefing());
-        if (getCasterUUID() != null) tag.putUUID("owner", getCasterUUID());
+        if (getCasterUUID() != null) tag.store("owner", net.minecraft.core.UUIDUtil.CODEC,  getCasterUUID());
     }
 
     // ── Prohibition type enum ─────────────────────────────────────────────────

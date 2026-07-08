@@ -6,7 +6,7 @@ import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.entity.custom.ability_entities.door_pathway.PlanetEntity;
 import de.jakob.lotm.entity.custom.projectiles.SpiritBallEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -19,7 +19,7 @@ import org.joml.Vector3f;
 
 import java.awt.*;
 
-public class PlanetRenderer extends EntityRenderer<PlanetEntity> {
+public class PlanetRenderer extends EntityRenderer<PlanetEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     public PlanetRenderer(EntityRendererProvider.Context context) {
         super(context);

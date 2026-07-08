@@ -189,21 +189,21 @@ public class ExileDoorsEntity extends Entity {
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
         // Store synced fields to disk
-        this.entityData.get(OWNER).ifPresent(uuid -> tag.putUUID("Owner", uuid));
+        this.entityData.get(OWNER).ifPresent(uuid -> tag.store("Owner", net.minecraft.core.UUIDUtil.CODEC,  uuid));
         tag.putInt("Duration", this.getDuration());
         tag.putInt("Lifetime", this.lifetime);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        if (tag.hasUUID("Owner")) {
-            this.setCasterUUID(tag.getUUID("Owner"));
+        if (tag.contains("Owner")) {
+            this.setCasterUUID(tag.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
         if (tag.contains("Duration")) {
-            this.setDuration(tag.getInt("Duration"));
+            this.setDuration(tag.getIntOr("Duration", 0));
         }
         if (tag.contains("Lifetime")) {
-            this.lifetime = tag.getInt("Lifetime");
+            this.lifetime = tag.getIntOr("Lifetime", 0);
         }
     }
 

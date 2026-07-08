@@ -38,7 +38,7 @@ public class SpawnBeyonderCommand {
                             return 0;
                         }
                         
-                        String pathway = StringArgumentType.getString(context, "pathway");
+                        String pathway = StringArgumentType.getStringOr(context, "pathway", "");
                         int sequence = IntegerArgumentType.getInteger(context, "sequence");
                         boolean hasQuest = false;
                         boolean hasTrades = false;
@@ -55,7 +55,7 @@ public class SpawnBeyonderCommand {
                                 return 0;
                             }
                             
-                            String pathway = StringArgumentType.getString(context, "pathway");
+                            String pathway = StringArgumentType.getStringOr(context, "pathway", "");
                             int sequence = IntegerArgumentType.getInteger(context, "sequence");
                             boolean hasQuest = BoolArgumentType.getBool(context, "hasQuest");
                             boolean hasTrades = false;
@@ -72,7 +72,7 @@ public class SpawnBeyonderCommand {
                                     return 0;
                                 }
 
-                                String pathway = StringArgumentType.getString(context, "pathway");
+                                String pathway = StringArgumentType.getStringOr(context, "pathway", "");
                                 int sequence = IntegerArgumentType.getInteger(context, "sequence");
                                 boolean hasQuest = BoolArgumentType.getBool(context, "hasQuest");
                                 boolean hasTrades = BoolArgumentType.getBool(context, "hasTrades");

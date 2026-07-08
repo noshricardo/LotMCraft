@@ -146,11 +146,11 @@ public class DistortionFieldEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
-        setDuration(compoundTag.getInt("duration"));
-        setRadius(compoundTag.getInt("radius"));
-        setGriefing(compoundTag.getBoolean("griefing"));
-        if (compoundTag.hasUUID("owner")) {
-            setCasterUUID(compoundTag.getUUID("owner"));
+        setDuration(compoundTag.getIntOr("duration", 0));
+        setRadius(compoundTag.getIntOr("radius", 0));
+        setGriefing(compoundTag.getBooleanOr("griefing", false));
+        if (compoundTag.contains("owner")) {
+            setCasterUUID(compoundTag.read("owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         } else {
             setCasterUUID(null);
         }
@@ -162,7 +162,7 @@ public class DistortionFieldEntity extends Entity {
         compoundTag.putInt("radius", getRadius());
         compoundTag.putBoolean("griefing", getGriefing());
         if (getCasterUUID() != null) {
-            compoundTag.putUUID("owner", getCasterUUID());
+            compoundTag.store("owner", net.minecraft.core.UUIDUtil.CODEC,  getCasterUUID());
         }
     }
 }

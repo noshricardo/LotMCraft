@@ -33,7 +33,7 @@ public class PotionRecipeItem extends Item {
         if (level .isClientSide() && recipe != null) {
             PacketHandler.sendToServer(new OpenRecipeMenuPacket(recipe.potion().getSequence(), recipe.potion().getPathway()));
         }
-        return InteractionResultHolder.success(player.getItemInHand(usedHand));
+        return InteractionResult.SUCCESS.heldItemTransformedTo(player.getItemInHand(usedHand));
     }
 
     @Override

@@ -238,20 +238,20 @@ public class MeteorEntity extends Entity {
     
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        this.setSpeed(tag.getFloat("Speed"));
-        this.setDamage(tag.getFloat("Damage"));
-        this.setGriefing(tag.getBoolean("Griefing"));
-        this.setSize(tag.getFloat("Size"));
-        this.lifeTicks = tag.getInt("LifeTicks");
-        this.maxLifeTicks = tag.getInt("MaxLifeTicks");
-        this.setExplosionSize(tag.getFloat("ExplosionSize"));
-        this.setRadius(tag.getFloat("Radius"));
-        this.setCustomColor(tag.getBoolean("CustomColor"));
-        this.setColor(tag.getFloat("ColorR"), tag.getFloat("ColorG"), tag.getFloat("ColorB"));
-        this.setAbyssImpact(tag.getBoolean("AbyssImpact"));
+        this.setSpeed(tag.getFloatOr("Speed", 0.0f));
+        this.setDamage(tag.getFloatOr("Damage", 0.0f));
+        this.setGriefing(tag.getBooleanOr("Griefing", false));
+        this.setSize(tag.getFloatOr("Size", 0.0f));
+        this.lifeTicks = tag.getIntOr("LifeTicks", 0);
+        this.maxLifeTicks = tag.getIntOr("MaxLifeTicks", 0);
+        this.setExplosionSize(tag.getFloatOr("ExplosionSize", 0.0f));
+        this.setRadius(tag.getFloatOr("Radius", 0.0f));
+        this.setCustomColor(tag.getBooleanOr("CustomColor", false));
+        this.setColor(tag.getFloatOr("ColorR", 0.0f), tag.getFloatOr("ColorG", 0.0f), tag.getFloatOr("ColorB", 0.0f));
+        this.setAbyssImpact(tag.getBooleanOr("AbyssImpact", false));
 
-        if (tag.hasUUID("CasterUUID")) {
-            this.setCasterUUID(tag.getUUID("CasterUUID"));
+        if (tag.contains("CasterUUID")) {
+            this.setCasterUUID(tag.read("CasterUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
     }
 
@@ -273,7 +273,7 @@ public class MeteorEntity extends Entity {
 
         UUID casterUUID = getCasterUUID();
         if (casterUUID != null) {
-            tag.putUUID("CasterUUID", casterUUID);
+            tag.store("CasterUUID", net.minecraft.core.UUIDUtil.CODEC,  casterUUID);
         }
     }
     

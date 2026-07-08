@@ -2,7 +2,7 @@ package de.jakob.lotm.util.helper;
 
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.effect.ModEffects;
-import net.minecraft.client.player.Input;
+import net.minecraft.client.player.ClientInput;
 import net.minecraft.client.player.LocalPlayer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;

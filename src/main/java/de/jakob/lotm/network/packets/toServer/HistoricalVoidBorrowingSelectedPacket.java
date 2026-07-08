@@ -32,16 +32,16 @@ public record HistoricalVoidBorrowingSelectedPacket (String SelectedOption) impl
             if (!(context.player() instanceof ServerPlayer player)) return;
 
             if (packet.SelectedOption.equals("Borrow Health")) {
-                HistoricalVoidSummoningAbility.historicalVoidBorrowHealth(player, player.serverLevel());
+                HistoricalVoidSummoningAbility.historicalVoidBorrowHealth(player, player.level());
             }
             else if (packet.SelectedOption.equals("Borrow Spirituality")) {
-                HistoricalVoidSummoningAbility.historicalVoidBorrowSpirituality(player, player.serverLevel());
+                HistoricalVoidSummoningAbility.historicalVoidBorrowSpirituality(player, player.level());
             }
             else if (packet.SelectedOption.equals("Borrow Cleansed State")) {
-                HistoricalVoidSummoningAbility.historicalVoidBorrowCleansedState(player, player.serverLevel());
+                HistoricalVoidSummoningAbility.historicalVoidBorrowCleansedState(player, player.level());
             }
             else if (packet.SelectedOption.equals("Borrow Sequence")) {
-                HistoricalVoidSummoningAbility.historicalVoidBorrowSequence(player, player.serverLevel());
+                HistoricalVoidSummoningAbility.historicalVoidBorrowSequence(player, player.level());
             }
         });
     }

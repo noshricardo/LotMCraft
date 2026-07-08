@@ -52,19 +52,19 @@ public class EnvisionSplitComponent {
                 public EnvisionSplitComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     var component = new EnvisionSplitComponent();
 
-                    ListTag namesTag = tag.getList(NBT_NAMES, Tag.TAG_STRING);
+                    ListTag namesTag = tag.getListOrEmpty(NBT_NAMES, Tag.TAG_STRING);
 
                     for (int i = 0; i < namesTag.size(); i++) {
-                        component.names.add(namesTag.getString(i));
+                        component.names.add(namesTag.getStringOr(i, ""));
                     }
 
-                    component.isEnvisioned = tag.getBoolean(NBT_IS_ENVISIONED);
+                    component.isEnvisioned = tag.getBooleanOr(NBT_IS_ENVISIONED, false);
 
-                    var listTag = tag.getList("avatars", Tag.TAG_STRING);
+                    var listTag = tag.getListOrEmpty("avatars", Tag.TAG_STRING);
                     List<UUID> uuids = new ArrayList<>();
 
                     for (int i = 0; i < listTag.size(); i++) {
-                        uuids.add(UUID.fromString(listTag.getString(i)));
+                        uuids.add(UUID.fromString(listTag.getStringOr(i, "")));
                     }
 
                     component.avatars = uuids;
@@ -105,7 +105,7 @@ public class EnvisionSplitComponent {
     }
 
     public boolean contains(LivingEntity entity){
-        return names.contains(entity.getName().getString()) || avatars.contains(entity.getUUID());
+        return names.contains(entity.name().getString()) || avatars.contains(entity.getUUID());
     }
 
     public boolean willBeOutOfSlots(int seq1Amount){

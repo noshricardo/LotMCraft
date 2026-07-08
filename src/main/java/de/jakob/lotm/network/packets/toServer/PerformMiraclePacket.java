@@ -30,7 +30,7 @@ public record PerformMiraclePacket(String miracle) implements CustomPacketPayloa
             if(!(context.player() instanceof ServerPlayer serverPlayer)) {
                 return;
             }
-            MiracleHandler.performMiracle(packet.miracle(), serverPlayer.serverLevel(), context.player());
+            MiracleHandler.performMiracle(packet.miracle(), serverPlayer.level(), context.player());
         });
     }
 }

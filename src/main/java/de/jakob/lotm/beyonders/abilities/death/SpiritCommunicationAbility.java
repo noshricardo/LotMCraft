@@ -115,7 +115,7 @@ public class SpiritCommunicationAbility extends SelectableAbility {
 
         List<PlayerInfo> players = server.getPlayerList().getPlayers().stream()
                 .filter(p -> p != player)
-                .map(p -> new PlayerInfo(p.getUUID(), p.getGameProfile().getName()))
+                .map(p -> new PlayerInfo(p.getUUID(), p.getGameProfile().name()))
                 .toList();
 
         PacketDistributor.sendToPlayer(player, new OpenPlayerDivinationScreenPacket(players, PlayerSelectionWorkType.DIVINATION));
@@ -124,7 +124,7 @@ public class SpiritCommunicationAbility extends SelectableAbility {
     private void structureDivination(Level level, Entity entity) {
         if (!(entity instanceof ServerPlayer player)) return;
 
-        Registry<Structure> registry = player.serverLevel().registryAccess()
+        Registry<Structure> registry = player.level().registryAccess()
                 .registry(Registries.STRUCTURE).orElseThrow();
 
         List<String> structureIds = registry.holders()

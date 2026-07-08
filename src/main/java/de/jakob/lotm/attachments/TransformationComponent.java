@@ -84,9 +84,9 @@ public class TransformationComponent {
                 @Override
                 public TransformationComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     TransformationComponent component = new TransformationComponent();
-                    component.isTransformed = tag.getBoolean("active");
-                    component.transformationIndex = tag.getInt("index");
-                    component.additionalData = tag.getString("additionalData");
+                    component.isTransformed = tag.getBooleanOr("active", false);
+                    component.transformationIndex = tag.getIntOr("index", 0);
+                    component.additionalData = tag.getStringOr("additionalData", "");
                     return component;
                 }
 

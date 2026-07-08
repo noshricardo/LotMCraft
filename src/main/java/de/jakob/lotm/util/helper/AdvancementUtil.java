@@ -282,7 +282,7 @@ public class AdvancementUtil {
         }, () -> {
             PacketHandler.sendToPlayer(serverPlayer, new ChangePlayerPerspectivePacket(
                     entity.getId(), ChangePlayerPerspectivePacket.PERSPECTIVE.FIRST.getValue()));
-        }, serverPlayer.serverLevel());
+        }, serverPlayer.level());
     }
 
     private static void scheduleFloating(LivingEntity entity, int duration) {

@@ -84,11 +84,11 @@ public class ActionItemsContext extends ActionContextBase {
     public static ActionItemsContext load(CompoundTag tag, UUID id, HolderLookup.Provider provider) {
         NonNullList<ItemStack> items = NonNullList.withSize(40, ItemStack.EMPTY);
 
-        ListTag listTag = tag.getList(NBT_STACK_LIST, Tag.TAG_COMPOUND);
+        ListTag listTag = tag.getListOrEmpty(NBT_STACK_LIST, Tag.TAG_COMPOUND);
 
         for (int i = 0; i < listTag.size(); i++) {
-            CompoundTag itemTag = listTag.getCompound(i);
-            int slot = itemTag.getInt("Slot");
+            CompoundTag itemTag = listTag.getCompoundOrEmpty(i);
+            int slot = itemTag.getIntOr("Slot", 0);
 
             ItemStack obj = ItemStack.parse(provider, itemTag).orElse(ItemStack.EMPTY);
 
@@ -97,7 +97,7 @@ public class ActionItemsContext extends ActionContextBase {
             }
         }
 
-        boolean all = tag.getBoolean(NBT_ALL_ITEMS);
+        boolean all = tag.getBooleanOr(NBT_ALL_ITEMS, false);
 
         ActionItemsContext context = new ActionItemsContext(id, all);
         context.stacksList = new LinkedList<>(items);

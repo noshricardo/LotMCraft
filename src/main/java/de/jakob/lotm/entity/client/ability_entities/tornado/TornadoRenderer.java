@@ -7,7 +7,7 @@ import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.entity.custom.ability_entities.TornadoEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-public class TornadoRenderer extends EntityRenderer<TornadoEntity> {
+public class TornadoRenderer extends EntityRenderer<TornadoEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/tornado/tornado.png");
     private final TornadoModel<TornadoEntity> model;
 

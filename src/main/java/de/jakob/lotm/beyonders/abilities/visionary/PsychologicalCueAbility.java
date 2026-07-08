@@ -135,7 +135,7 @@ public class PsychologicalCueAbility extends ToggleAbility {
             return;
         }
 
-        if(!virtualPersonaCaster.affects(target.getName().getString())) {
+        if(!virtualPersonaCaster.affects(target.name().getString())) {
             if (distance > getDistancePerSeq(map.get(player.getUUID()))) {
                 AbilityUtil.sendActionBar(player, Component.translatable("ability.lotmcraft.story_writing.failed"));
                 return;

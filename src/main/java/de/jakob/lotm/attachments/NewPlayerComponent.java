@@ -26,7 +26,7 @@ public class NewPlayerComponent {
                 @Override
                 public NewPlayerComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     NewPlayerComponent component = new NewPlayerComponent();
-                    component.hasReceivedNewPlayerPerks = tag.getBoolean("hasReceivedNewPlayerPerks");
+                    component.hasReceivedNewPlayerPerks = tag.getBooleanOr("hasReceivedNewPlayerPerks", false);
                     return component;
                 }
 

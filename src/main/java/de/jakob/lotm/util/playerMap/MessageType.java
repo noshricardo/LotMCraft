@@ -54,11 +54,11 @@ public record MessageType(@Nullable String from, Long when, String title, String
     }
 
     public static MessageType fromNBT(CompoundTag tag){
-        String from = tag.getString(NBT_FROM);
+        String from = tag.getStringOr(NBT_FROM, "");
         Long when = tag.getLong(NBT_WHEN);
-        String title = tag.getString(NBT_TITLE);
-        String desc = tag.getString(NBT_DESC);
-        Boolean read = tag.getBoolean(NBT_READ);
+        String title = tag.getStringOr(NBT_TITLE, "");
+        String desc = tag.getStringOr(NBT_DESC, "");
+        Boolean read = tag.getBooleanOr(NBT_READ, false);
 
         return new MessageType(from.isEmpty() ? null : from, when, title, desc, read);
     }

@@ -752,7 +752,7 @@ public class IntrospectScreen extends AbstractContainerScreen<IntrospectMenu> {
         net.minecraft.nbt.CompoundTag missed = new net.minecraft.nbt.CompoundTag();
         if (minecraft.player != null) {
             missed = minecraft.player.getPersistentData()
-                    .getCompound(de.jakob.lotm.beyonders.acting.ActingCapHelper.MISSED_ACTING_KEY);
+                    .getCompoundOrEmpty(de.jakob.lotm.beyonders.acting.ActingCapHelper.MISSED_ACTING_KEY);
         }
 
         int listY = panelY + 17;
@@ -768,7 +768,7 @@ public class IntrospectScreen extends AbstractContainerScreen<IntrospectMenu> {
             return;
         }
 
-        List<String> groupKeys = new ArrayList<>(missed.getAllKeys());
+        List<String> groupKeys = new ArrayList<>(missed.keySet());
         groupKeys.sort((a, b) -> {
             int sa = safeParseInt(a.contains("/") ? a.split("/", 2)[1] : "0");
             int sb = safeParseInt(b.contains("/") ? b.split("/", 2)[1] : "0");
@@ -778,13 +778,13 @@ public class IntrospectScreen extends AbstractContainerScreen<IntrospectMenu> {
         int currentY = listY;
         for (String groupKey : groupKeys) {
             if (currentY + lineHeight > maxY) break;
-            net.minecraft.nbt.CompoundTag group = missed.getCompound(groupKey);
-            net.minecraft.nbt.CompoundTag tasks = group.getCompound("tasks");
+            net.minecraft.nbt.CompoundTag group = missed.getCompoundOrEmpty(groupKey);
+            net.minecraft.nbt.CompoundTag tasks = group.getCompoundOrEmpty("tasks");
             if (tasks.isEmpty()) continue;
 
             String seqStr = groupKey.contains("/") ? groupKey.split("/", 2)[1] : groupKey;
 
-            for (String taskId : tasks.getAllKeys()) {
+            for (String taskId : tasks.keySet()) {
                 if (currentY + lineHeight > maxY) break;
 
                 MutableComponent taskName = getActingTaskName(taskId).withStyle(ChatFormatting.OBFUSCATED);
@@ -1087,7 +1087,7 @@ public class IntrospectScreen extends AbstractContainerScreen<IntrospectMenu> {
                 tooltipLines.add(hoveredAbility.getNameFormatted(ClientHandler.getPlayer()));
             } else {
                 int color = BeyonderData.pathwayInfos.get(menu.getPathway()).color();
-                tooltipLines.add(hoveredAbility.getName().withStyle(ChatFormatting.BOLD).withColor(color));
+                tooltipLines.add(hoveredAbility.name().withStyle(ChatFormatting.BOLD).withColor(color));
             }
 
             Component description = hoveredAbility.getDescription();
@@ -2222,7 +2222,7 @@ public class IntrospectScreen extends AbstractContainerScreen<IntrospectMenu> {
 
         if (minecraft.player != null) {
             float capReduction = minecraft.player.getPersistentData()
-                    .getFloat(de.jakob.lotm.beyonders.acting.ActingCapHelper.CAP_REDUCTION_KEY);
+                    .getFloatOr(de.jakob.lotm.beyonders.acting.ActingCapHelper.CAP_REDUCTION_KEY, 0.0f);
             if (capReduction > 0.001f) {
                 int capPct = Math.round((1f - capReduction) * 100);
                 Component capText = Component.literal(" (Cap: " + capPct + "%)").withStyle(ChatFormatting.GOLD);

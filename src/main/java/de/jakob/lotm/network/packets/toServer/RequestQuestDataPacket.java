@@ -61,7 +61,7 @@ public record RequestQuestDataPacket() implements CustomPacketPayload {
                     
                     Quest quest = QuestRegistry.getQuest(activeQuestId);
                     if (quest != null) {
-                        activeQuestName = quest.getName().getString();
+                        activeQuestName = quest.name().getString();
                         activeQuestDescription = quest.getDescription(serverPlayer).getString();
                         activeQuestRewards = component.getLockedQuestRewards().getOrDefault(activeQuestId, quest.getRewards(serverPlayer))
                                 .stream()

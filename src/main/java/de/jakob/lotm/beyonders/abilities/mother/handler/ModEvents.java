@@ -24,7 +24,7 @@ public class ModEvents {
             CompoundTag persistentData = living.getPersistentData();
             
             if(persistentData.contains("HybridMobData")) {
-                HybridMobData hybridData = HybridMobData.load(persistentData.getCompound("HybridMobData"));
+                HybridMobData hybridData = HybridMobData.load(persistentData.getCompoundOrEmpty("HybridMobData"));
                 EntityDimensions customDimensions = hybridData.getDimensions();
                 
                 // Override the entity's dimensions with the hybrid dimensions

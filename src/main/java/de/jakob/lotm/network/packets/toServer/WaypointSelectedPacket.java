@@ -52,7 +52,7 @@ public record WaypointSelectedPacket(WaypointComponent.ClientWaypoint waypoint, 
     public static void handle(WaypointSelectedPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             ServerPlayer player = (ServerPlayer) context.player();
-            ServerLevel serverLevel = player.serverLevel();
+            ServerLevel serverLevel = player.level();
             MinecraftServer server = player.getServer();
 
             if (server == null) return;

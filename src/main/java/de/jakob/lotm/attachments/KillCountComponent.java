@@ -28,7 +28,7 @@ public class KillCountComponent {
                 @Override
                 public KillCountComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     KillCountComponent component = new KillCountComponent();
-                    component.killCount = tag.getInt("killCount");
+                    component.killCount = tag.getIntOr("killCount", 0);
                     return component;
                 }
 

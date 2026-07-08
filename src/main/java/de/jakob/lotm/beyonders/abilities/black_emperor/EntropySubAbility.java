@@ -160,7 +160,7 @@ public final class EntropySubAbility {
                         if (mark.remainingPulses > 0 && gameTime >= mark.nextPulseTick) {
                             clearEntropyAppliedEffects(target);
 
-                            int stack = target.getPersistentData().getInt(ENTROPY_STACK_KEY) + 1;
+                            int stack = target.getPersistentData().getIntOr(ENTROPY_STACK_KEY, 0) + 1;
                             applyEntropyPulse(level, caster, target, seq, scale, stack);
 
                             mark.remainingPulses--;

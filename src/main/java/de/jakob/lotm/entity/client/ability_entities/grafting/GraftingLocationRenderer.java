@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 
-public class GraftingLocationRenderer extends EntityRenderer<LocationGraftingEntity> {
+public class GraftingLocationRenderer extends EntityRenderer<LocationGraftingEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     public GraftingLocationRenderer(EntityRendererProvider.Context context) {
         super(context);

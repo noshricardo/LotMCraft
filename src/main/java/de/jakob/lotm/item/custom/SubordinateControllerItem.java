@@ -49,7 +49,7 @@ public class SubordinateControllerItem extends Item {
             }
 
             CompoundTag tag = customData.copyTag();
-            String entityUUID = tag.getString("SubordinateUUID");
+            String entityUUID = tag.getStringOr("SubordinateUUID", "");
             if (entityUUID.isEmpty()) {
                 return InteractionResult.PASS;
             }
@@ -141,7 +141,7 @@ public class SubordinateControllerItem extends Item {
             }
         }
         
-        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+        return InteractionResult.sidedSuccess(stack, level.isClientSide());
     }
 
     private static Entity searchInOtherLevels(Player player, String entityUUID) {
@@ -165,7 +165,7 @@ public class SubordinateControllerItem extends Item {
         }
 
         CompoundTag tag = customData.copyTag();
-        String entityUUID = tag.getString("SubordinateUUID");
+        String entityUUID = tag.getStringOr("SubordinateUUID", "");
         if (entityUUID.isEmpty()) {
             return;
         }
@@ -222,7 +222,7 @@ public class SubordinateControllerItem extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
         if (customData != null) {
-            String entityName = customData.copyTag().getString("SubordinateType");
+            String entityName = customData.copyTag().getStringOr("SubordinateType", "");
             tooltip.add(Component.literal("--------------------------").withColor(0xFFa742f5));
             tooltip.add(Component.literal("Controls: " + entityName).withStyle(ChatFormatting.GRAY));
             tooltip.add(Component.literal("Right-click on Block: Set Position").withStyle(ChatFormatting.GRAY));

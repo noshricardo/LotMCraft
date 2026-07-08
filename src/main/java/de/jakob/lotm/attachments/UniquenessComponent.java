@@ -55,9 +55,9 @@ public class UniquenessComponent {
                 @Override
                 public UniquenessComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     UniquenessComponent component = new UniquenessComponent();
-                    component.hasUniqueness = tag.getBoolean("hasUniqueness");
-                    component.uniquenessPathway = tag.getString("uniquenessPathway");
-                    component.killCount = tag.getInt("killCount");
+                    component.hasUniqueness = tag.getBooleanOr("hasUniqueness", false);
+                    component.uniquenessPathway = tag.getStringOr("uniquenessPathway", "");
+                    component.killCount = tag.getIntOr("killCount", 0);
                     return component;
                 }
 

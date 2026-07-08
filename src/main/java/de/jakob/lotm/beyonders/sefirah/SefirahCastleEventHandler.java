@@ -42,7 +42,7 @@ public class SefirahCastleEventHandler {
         String rawMessage = event.getRawText();
 
         // Check chants
-        if(!checkIfChantIsCompleted(rawMessage, playerUUID, event.getPlayer().position(), event.getPlayer().serverLevel())) {
+        if(!checkIfChantIsCompleted(rawMessage, playerUUID, event.getPlayer().position(), event.getPlayer().level())) {
             return;
         }
 

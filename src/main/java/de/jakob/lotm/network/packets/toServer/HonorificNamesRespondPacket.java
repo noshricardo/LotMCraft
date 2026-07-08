@@ -62,7 +62,7 @@ public record HonorificNamesRespondPacket(UUID senderUUID, boolean teleport) imp
             if (pkt.teleport()) {
                 // Teleport target (prayer receiver) to sender's (the one who prayed) location
                 target.teleportTo(
-                        sender.serverLevel(),
+                        sender.level(),
                         sender.getX(), sender.getY(), sender.getZ(),
                         sender.getYRot(), sender.getXRot()
                 );
@@ -70,7 +70,7 @@ public record HonorificNamesRespondPacket(UUID senderUUID, boolean teleport) imp
                 // Queue message transfer: target's next chat message goes to sender
                 HonorificNamesEventHandler.isInTransferring.put(targetUUID, senderUUID);
                 target.sendSystemMessage(
-                        net.minecraft.network.chat.Component.literal("Your next message will be sent to " + sender.getName().getString() + ".")
+                        net.minecraft.network.chat.Component.literal("Your next message will be sent to " + sender.name().getString() + ".")
                                 .withStyle(net.minecraft.ChatFormatting.GREEN)
                 );
             }

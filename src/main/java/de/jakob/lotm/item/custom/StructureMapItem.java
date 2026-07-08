@@ -40,7 +40,7 @@ public class StructureMapItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
 
         if (level.isClientSide()) {
-            return InteractionResultHolder.success(stack);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
         }
 
         ServerLevel serverLevel = (ServerLevel) level;
@@ -68,7 +68,7 @@ public class StructureMapItem extends Item {
 
         // Consume the item optimistically — the async callback will replace it with the map,
         // or leave the slot empty on failure (shrink by 1 below if you prefer that behaviour)
-        return InteractionResultHolder.success(stack);
+        return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
     }
 
     private ItemStack createStructureMap(ServerLevel level, BlockPos structurePos) {

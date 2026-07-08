@@ -35,7 +35,7 @@ public class LuckCheckCommand {
     private static int executeCommand(CommandSourceStack source, LivingEntity target) {
         try {
             LuckComponent component = target.getData(ModAttachments.LUCK_COMPONENT);
-            source.sendSuccess(() -> Component.literal("Luck of " + target.getName().getString() + " is " + component.getLuck()), true);
+            source.sendSuccess(() -> Component.literal("Luck of " + target.name().getString() + " is " + component.getLuck()), true);
             return 1;
 
         } catch (Exception e) {

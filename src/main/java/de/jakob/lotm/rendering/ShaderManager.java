@@ -98,7 +98,7 @@ public class ShaderManager {
     
     private static void applyShader(Minecraft mc, String shaderName) {
         if (mc.gameRenderer.currentEffect() == null ||
-            !mc.gameRenderer.currentEffect().getName().equals(shaderName)) {
+            !mc.gameRenderer.currentEffect().name().equals(shaderName)) {
             try {
                 mc.gameRenderer.loadEffect(
                     Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "shaders/post/" + shaderName + ".json")

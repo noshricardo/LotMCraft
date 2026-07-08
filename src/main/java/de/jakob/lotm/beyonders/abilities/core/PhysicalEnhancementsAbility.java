@@ -657,7 +657,7 @@ public abstract class PhysicalEnhancementsAbility extends PassiveAbilityItem {
         @SubscribeEvent
         public static void onLivingDamagePost(LivingDamageEvent.Post event) {
             if (!(event.getEntity().level() instanceof ServerLevel serverLevel)) return;
-            if (!serverLevel.getGameRules().getBoolean(ModGameRules.REDUCE_REGEN_IN_BEYONDER_FIGHT)) return;
+            if (!serverLevel.getGameRules().getBooleanOr(ModGameRules.REDUCE_REGEN_IN_BEYONDER_FIGHT, false)) return;
             if (!(event.getSource().getEntity() instanceof LivingEntity source)) return;
 
             LivingEntity target = event.getEntity();

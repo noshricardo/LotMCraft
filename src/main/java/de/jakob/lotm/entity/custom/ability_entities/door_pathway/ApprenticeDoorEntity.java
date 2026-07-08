@@ -150,12 +150,12 @@ public class ApprenticeDoorEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        this.setFacing(Direction.from3DDataValue(compound.getInt("Facing")));
-        if (compound.hasUUID("Owner")) {
-            this.setOwnerUUID(compound.getUUID("Owner"));
+        this.setFacing(Direction.from3DDataValue(compound.getIntOr("Facing", 0)));
+        if (compound.contains("Owner")) {
+            this.setOwnerUUID(compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
-        this.duration = compound.getInt("Duration");
-        this.setMaxRadius(compound.getInt("MaxRadius"));
+        this.duration = compound.getIntOr("Duration", 0);
+        this.setMaxRadius(compound.getIntOr("MaxRadius", 0));
     }
 
     @Override
@@ -163,7 +163,7 @@ public class ApprenticeDoorEntity extends Entity {
         compound.putInt("Facing", this.getFacing().get3DDataValue());
         UUID owner = this.getOwnerUUID();
         if (owner != null) {
-            compound.putUUID("Owner", owner);
+            compound.store("Owner", net.minecraft.core.UUIDUtil.CODEC,  owner);
         }
         compound.putInt("Duration", this.duration);
         compound.putInt("MaxRadius", this.getMaxRadius());

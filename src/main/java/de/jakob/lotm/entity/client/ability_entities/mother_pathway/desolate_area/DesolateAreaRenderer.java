@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class DesolateAreaRenderer extends EntityRenderer<DesolateAreaEntity> {
+public class DesolateAreaRenderer extends EntityRenderer<DesolateAreaEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
     private final DesolateAreaModel<DesolateAreaEntity> model;
     private static final float ROTATION_SPEED = 3.5F;
 

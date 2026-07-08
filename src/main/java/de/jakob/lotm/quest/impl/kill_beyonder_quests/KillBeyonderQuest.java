@@ -55,12 +55,12 @@ public abstract class KillBeyonderQuest extends Quest {
 
         Vec3 location = component.getQuestLocation().get(getId());
         BlockState state = player.level().getBlockState(BlockPos.containing(location));
-        if(!state.is(ModBlocks.MYSTICAL_RING.get()) && AbilityUtil.getNearbyEntities(player, player.serverLevel(), player.position(), 120)
+        if(!state.is(ModBlocks.MYSTICAL_RING.get()) && AbilityUtil.getNearbyEntities(player, player.level(), player.position(), 120)
                 .stream()
                 .noneMatch(e -> {
                     return e instanceof BeyonderNPCEntity &&
-                            e.getPersistentData().hasUUID("lotm_beyonder_summoner") &&
-                            e.getPersistentData().getUUID("lotm_beyonder_summoner").equals(player.getUUID());
+                            e.getPersistentData().contains("lotm_beyonder_summoner") &&
+                            e.getPersistentData().read("lotm_beyonder_summoner", net.minecraft.core.UUIDUtil.CODEC).orElse(null).equals(player.getUUID());
                 })) {
             tickCooldownTillDiscard.putIfAbsent(player.getUUID(), 0);
             tickCooldownTillDiscard.put(player.getUUID(), tickCooldownTillDiscard.get(player.getUUID()) + 1);
@@ -79,11 +79,11 @@ public abstract class KillBeyonderQuest extends Quest {
             return;
         }
 
-        if(!entity.getPersistentData().hasUUID("lotm_beyonder_summoner")) {
+        if(!entity.getPersistentData().contains("lotm_beyonder_summoner")) {
            return;
         }
 
-        ServerPlayer player = level.getServer().getPlayerList().getPlayer(entity.getPersistentData().getUUID("lotm_beyonder_summoner"));
+        ServerPlayer player = level.getServer().getPlayerList().getPlayer(entity.getPersistentData().read("lotm_beyonder_summoner", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         if(player == null) {
             return;
         }
@@ -98,7 +98,7 @@ public abstract class KillBeyonderQuest extends Quest {
 
     @Override
     public void startQuest(ServerPlayer player) {
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
         BlockPos playerPos = player.blockPosition();
         Random random = new Random();
         BlockPos structurePos = null;

@@ -113,7 +113,7 @@ public class DreamMazeData extends SavedData {
         ListTag originsList = new ListTag();
         for (Map.Entry<UUID, BlockPos> entry : mazeOrigins.entrySet()) {
             CompoundTag t = new CompoundTag();
-            t.putUUID("UUID", entry.getKey());
+            t.store("UUID", net.minecraft.core.UUIDUtil.CODEC,  entry.getKey());
             t.putInt("X", entry.getValue().getX());
             t.putInt("Y", entry.getValue().getY());
             t.putInt("Z", entry.getValue().getZ());
@@ -124,7 +124,7 @@ public class DreamMazeData extends SavedData {
         ListTag genList = new ListTag();
         for (UUID uuid : generatedMazes) {
             CompoundTag t = new CompoundTag();
-            t.putUUID("UUID", uuid);
+            t.store("UUID", net.minecraft.core.UUIDUtil.CODEC,  uuid);
             genList.add(t);
         }
         tag.put("GeneratedMazes", genList);
@@ -134,7 +134,7 @@ public class DreamMazeData extends SavedData {
         ListTag returnList = new ListTag();
         for (Map.Entry<UUID, double[]> entry : returnPositions.entrySet()) {
             CompoundTag t = new CompoundTag();
-            t.putUUID("UUID", entry.getKey());
+            t.store("UUID", net.minecraft.core.UUIDUtil.CODEC,  entry.getKey());
             t.putDouble("X", entry.getValue()[0]);
             t.putDouble("Y", entry.getValue()[1]);
             t.putDouble("Z", entry.getValue()[2]);
@@ -146,8 +146,8 @@ public class DreamMazeData extends SavedData {
         ListTag occList = new ListTag();
         for (Map.Entry<UUID, UUID> entry : occupantToCaster.entrySet()) {
             CompoundTag t = new CompoundTag();
-            t.putUUID("Occupant", entry.getKey());
-            t.putUUID("Caster", entry.getValue());
+            t.store("Occupant", net.minecraft.core.UUIDUtil.CODEC,  entry.getKey());
+            t.store("Caster", net.minecraft.core.UUIDUtil.CODEC,  entry.getValue());
             occList.add(t);
         }
         tag.put("OccupantToCaster", occList);
@@ -158,33 +158,33 @@ public class DreamMazeData extends SavedData {
     public static DreamMazeData load(CompoundTag tag, HolderLookup.Provider provider) {
         DreamMazeData data = new DreamMazeData();
 
-        ListTag originsList = tag.getList("MazeOrigins", Tag.TAG_COMPOUND);
+        ListTag originsList = tag.getListOrEmpty("MazeOrigins", Tag.TAG_COMPOUND);
         for (int i = 0; i < originsList.size(); i++) {
-            CompoundTag t = originsList.getCompound(i);
-            data.mazeOrigins.put(t.getUUID("UUID"),
-                    new BlockPos(t.getInt("X"), t.getInt("Y"), t.getInt("Z")));
+            CompoundTag t = originsList.getCompoundOrEmpty(i);
+            data.mazeOrigins.put(t.read("UUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null),
+                    new BlockPos(t.getIntOr("X", 0), t.getIntOr("Y", 0), t.getIntOr("Z", 0)));
         }
 
-        ListTag genList = tag.getList("GeneratedMazes", Tag.TAG_COMPOUND);
+        ListTag genList = tag.getListOrEmpty("GeneratedMazes", Tag.TAG_COMPOUND);
         for (int i = 0; i < genList.size(); i++) {
-            data.generatedMazes.add(genList.getCompound(i).getUUID("UUID"));
+            data.generatedMazes.add(genList.getCompoundOrEmpty(i).read("UUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
 
-        data.nextMazeIndex = tag.getInt("NextIndex");
+        data.nextMazeIndex = tag.getIntOr("NextIndex", 0);
 
-        ListTag returnList = tag.getList("ReturnPositions", Tag.TAG_COMPOUND);
+        ListTag returnList = tag.getListOrEmpty("ReturnPositions", Tag.TAG_COMPOUND);
         for (int i = 0; i < returnList.size(); i++) {
-            CompoundTag t = returnList.getCompound(i);
-            UUID uuid = t.getUUID("UUID");
+            CompoundTag t = returnList.getCompoundOrEmpty(i);
+            UUID uuid = t.read("UUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             data.returnPositions.put(uuid, new double[]{t.getDouble("X"), t.getDouble("Y"), t.getDouble("Z")});
-            data.returnDimensions.put(uuid, t.getString("Dim"));
+            data.returnDimensions.put(uuid, t.getStringOr("Dim", ""));
         }
 
-        ListTag occList = tag.getList("OccupantToCaster", Tag.TAG_COMPOUND);
+        ListTag occList = tag.getListOrEmpty("OccupantToCaster", Tag.TAG_COMPOUND);
         for (int i = 0; i < occList.size(); i++) {
-            CompoundTag t = occList.getCompound(i);
-            UUID occupant = t.getUUID("Occupant");
-            UUID caster = t.getUUID("Caster");
+            CompoundTag t = occList.getCompoundOrEmpty(i);
+            UUID occupant = t.read("Occupant", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+            UUID caster = t.read("Caster", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             data.occupantToCaster.put(occupant, caster);
             data.occupants.computeIfAbsent(caster, k -> new HashSet<>()).add(occupant);
         }

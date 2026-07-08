@@ -224,7 +224,7 @@ public class CycleOfFateEntity extends Entity {
         List<Player> players = serverLevel.getEntitiesOfClass(Player.class, boundingBox);
         for(Player player : players) {
             if(player instanceof ServerPlayer serverPlayer) {
-                ControllingUtil.reset(serverPlayer, serverPlayer.serverLevel(), true);
+                ControllingUtil.reset(serverPlayer, serverPlayer.level(), true);
             }
         }
 
@@ -460,7 +460,7 @@ public class CycleOfFateEntity extends Entity {
                 if (inventoryData != null) {
                     if (entity instanceof Player player) {
                         if (inventoryData.contains("Inventory")) {
-                            ListTag inventoryList = inventoryData.getList("Inventory", 10);
+                            ListTag inventoryList = inventoryData.getListOrEmpty("Inventory", 10);
                             player.getInventory().load(inventoryList);
                         }
                         if (foodLevel != null) {
@@ -471,11 +471,11 @@ public class CycleOfFateEntity extends Entity {
                         }
                     } else if (livingEntity instanceof Mob mob) {
                         if (inventoryData.contains("ArmorItems")) {
-                            ListTag armorItems = inventoryData.getList("ArmorItems", 10);
+                            ListTag armorItems = inventoryData.getListOrEmpty("ArmorItems", 10);
                             // Restore armor items
                         }
                         if (inventoryData.contains("HandItems")) {
-                            ListTag handItems = inventoryData.getList("HandItems", 10);
+                            ListTag handItems = inventoryData.getListOrEmpty("HandItems", 10);
                             // Restore hand items
                         }
                     }

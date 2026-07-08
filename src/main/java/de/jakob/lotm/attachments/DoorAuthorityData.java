@@ -11,8 +11,8 @@ public class DoorAuthorityData extends SavedData {
     private String effectId = "";
     private int ticksRemaining = 0;
 
-    public static final SavedData.Factory<DoorAuthorityData> FACTORY =
-        new SavedData.Factory<>(
+    public static final SavedDataType.Factory<DoorAuthorityData> FACTORY =
+        new SavedDataType.Factory<>(
             DoorAuthorityData::new,
             DoorAuthorityData::load,
             null
@@ -27,8 +27,8 @@ public class DoorAuthorityData extends SavedData {
 
     public static DoorAuthorityData load(CompoundTag tag, HolderLookup.Provider registries) {
         DoorAuthorityData data = new DoorAuthorityData();
-        data.ticksRemaining = tag.getInt("ticksRemaining");
-        data.effectId = tag.getString("id");
+        data.ticksRemaining = tag.getIntOr("ticksRemaining", 0);
+        data.effectId = tag.getStringOr("id", "");
         return data;
     }
 

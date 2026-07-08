@@ -539,7 +539,7 @@ public class CommandingPresenceAbility extends ToggleAbility {
         target.setDeltaMovement(target.getDeltaMovement().multiply(0.88D, 1.0D, 0.88D));
 
         if (target instanceof ServerPlayer player) {
-            player.teleportTo(player.serverLevel(), player.getX(), player.getY(), player.getZ(), player.getYRot(), forcedPitch);
+            player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), player.getYRot(), forcedPitch);
             player.hurtMarked = true;
         }
     }
@@ -570,7 +570,7 @@ public class CommandingPresenceAbility extends ToggleAbility {
     private static void restoreStepHeight(LivingEntity entity) {
         if (!entity.getPersistentData().contains(COMMANDING_STEP_BACKUP_KEY)) return;
 
-        setStepHeight(entity, entity.getPersistentData().getFloat(COMMANDING_STEP_BACKUP_KEY));
+        setStepHeight(entity, entity.getPersistentData().getFloatOr(COMMANDING_STEP_BACKUP_KEY, 0.0f));
         entity.getPersistentData().remove(COMMANDING_STEP_BACKUP_KEY);
     }
 
@@ -578,7 +578,7 @@ public class CommandingPresenceAbility extends ToggleAbility {
         try {
             Field field = net.minecraft.world.entity.Entity.class.getDeclaredField("maxUpStep");
             field.setAccessible(true);
-            return field.getFloat(entity);
+            return field.getFloatOr(entity, 0.0f);
         } catch (ReflectiveOperationException ignored) {
         }
 

@@ -86,7 +86,7 @@ public class LocationGraftingEntity extends Entity {
         if (tag.contains("TeleportDimension")) {
             this.teleportDimension = ResourceKey.create(
                 Registries.DIMENSION,
-                Identifier.parse(tag.getString("TeleportDimension"))
+                Identifier.parse(tag.getStringOr("TeleportDimension", ""))
             );
         }
     }

@@ -119,13 +119,13 @@ public class MentalPlagueComponent {
                 public MentalPlagueComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     var component = new MentalPlagueComponent();
 
-                    component.hasMentalPlague = tag.getBoolean(NBT_HAS_PLAGUE);
-                    component.shouldBeActivated = tag.getBoolean(NBT_SHOULD);
-                    component.ownerName = tag.getString(NBT_OWNER);
-                    component.sequence = tag.getInt(NBT_SEQ);
-                    component.weakened = tag.getBoolean(NBT_WEAKENED);
-                    component.stage = tag.getInt(NBT_STAGE);
-                    component.infected = tag.getInt(NBT_INFECTED);
+                    component.hasMentalPlague = tag.getBooleanOr(NBT_HAS_PLAGUE, false);
+                    component.shouldBeActivated = tag.getBooleanOr(NBT_SHOULD, false);
+                    component.ownerName = tag.getStringOr(NBT_OWNER, "");
+                    component.sequence = tag.getIntOr(NBT_SEQ, 0);
+                    component.weakened = tag.getBooleanOr(NBT_WEAKENED, false);
+                    component.stage = tag.getIntOr(NBT_STAGE, 0);
+                    component.infected = tag.getIntOr(NBT_INFECTED, 0);
 
                     return component;
                 }

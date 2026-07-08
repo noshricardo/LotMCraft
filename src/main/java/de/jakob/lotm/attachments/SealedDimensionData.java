@@ -29,8 +29,8 @@ public class SealedDimensionData extends SavedData {
 
     public static SealedDimensionData load(CompoundTag tag, HolderLookup.Provider registries) {
         SealedDimensionData data = new SealedDimensionData();
-        data.ticksRemaining = tag.getInt("ticksRemaining");
-        data.dimensionLocation = tag.getString("dimension");
+        data.ticksRemaining = tag.getIntOr("ticksRemaining", 0);
+        data.dimensionLocation = tag.getStringOr("dimension", "");
         return data;
     }
 

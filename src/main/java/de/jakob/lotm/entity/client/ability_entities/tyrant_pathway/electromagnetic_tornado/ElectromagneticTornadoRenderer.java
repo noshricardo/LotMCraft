@@ -8,8 +8,8 @@ import com.mojang.math.Axis;
 import de.jakob.lotm.entity.custom.ability_entities.tyrant_pathway.ElectromagneticTornadoEntity;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -18,7 +18,7 @@ import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class ElectromagneticTornadoRenderer extends EntityRenderer<ElectromagneticTornadoEntity> {
+public class ElectromagneticTornadoRenderer extends EntityRenderer<ElectromagneticTornadoEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
     private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/block/glass.png");
 
     public ElectromagneticTornadoRenderer(EntityRendererProvider.Context context) {

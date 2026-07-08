@@ -27,7 +27,7 @@ public class SanityCommand {
                                 return 0;
                             }
 
-                            float amount = FloatArgumentType.getFloat(context, "amount");
+                            float amount = FloatArgumentType.getFloatOr(context, "amount", 0.0f);
 
                             return executeSanityCommand(source, livingEntity, amount);
                         })
@@ -40,7 +40,7 @@ public class SanityCommand {
         try {
             SanityComponent component = target.getData(ModAttachments.SANITY_COMPONENT);
             component.setSanity(amount);
-            source.sendSuccess(() -> Component.literal("Set sanity of " + target.getName().getString() + " to " + amount), true);
+            source.sendSuccess(() -> Component.literal("Set sanity of " + target.name().getString() + " to " + amount), true);
             return 1;
 
         } catch (Exception e) {

@@ -479,7 +479,7 @@ public class ClientHandler {
             return;
         }
 
-        Component questName = quest.getName();
+        Component questName = quest.name();
         Component questDescription = quest.getDescription();
 
         Minecraft.getInstance().setScreen(new QuestAcceptanceScreen(

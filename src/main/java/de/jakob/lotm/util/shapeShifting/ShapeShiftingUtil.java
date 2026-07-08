@@ -125,7 +125,7 @@ public class ShapeShiftingUtil {
 
     public static String getEntityTypeString(Entity entity) {
         if (entity instanceof ServerPlayer player) {
-            return String.format("player:%s:%s", player.getGameProfile().getName(), player.getUUID());
+            return String.format("player:%s:%s", player.getGameProfile().name(), player.getUUID());
         }
         if (entity instanceof BeyonderNPCEntity npc) {
             return "lotmcraft:beyonder_npc:" + npc.getSkinName();

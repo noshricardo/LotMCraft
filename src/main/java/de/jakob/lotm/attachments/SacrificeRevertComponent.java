@@ -43,9 +43,9 @@ public class SacrificeRevertComponent {
                 public SacrificeRevertComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     SacrificeRevertComponent c = new SacrificeRevertComponent();
                     c.revertAtGameTime = tag.getLong("revertAtGameTime");
-                    c.revertToSequence = tag.getInt("revertToSequence");
-                    c.pathway = tag.getString("pathway");
-                    c.savedDigestion = tag.getFloat("savedDigestion");
+                    c.revertToSequence = tag.getIntOr("revertToSequence", 0);
+                    c.pathway = tag.getStringOr("pathway", "");
+                    c.savedDigestion = tag.getFloatOr("savedDigestion", 0.0f);
                     return c;
                 }
 

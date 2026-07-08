@@ -47,7 +47,7 @@ public class ActionStringContext extends ActionContextBase {
 
     public static ActionStringContext load(CompoundTag tag, UUID id, HolderLookup.Provider provider) {
         ActionStringContext context = new ActionStringContext(id);
-        context.string = tag.getString(NBT_STRING);
+        context.string = tag.getStringOr(NBT_STRING, "");
 
         return context;
     }

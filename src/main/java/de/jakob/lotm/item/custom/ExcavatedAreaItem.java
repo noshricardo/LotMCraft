@@ -165,7 +165,7 @@ public class ExcavatedAreaItem extends Item {
 
     private BlockState parseProperty(BlockState state, String propertyName, String value) {
         for (net.minecraft.world.level.block.state.properties.Property<?> property : state.getProperties()) {
-            if (property.getName().equals(propertyName)) {
+            if (property.name().equals(propertyName)) {
                 return setPropertyValue(state, property, value);
             }
         }

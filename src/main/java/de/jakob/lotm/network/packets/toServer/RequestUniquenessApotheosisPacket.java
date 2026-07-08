@@ -68,7 +68,7 @@ public record RequestUniquenessApotheosisPacket() implements CustomPacketPayload
         }
 
         int charStack = BeyonderData.getCurrentCharStack(player);
-        int requiredStack = player.serverLevel().getGameRules().getInt(ModGameRules.CHARSTACK_REQUIRED_FOR_APOTHEOSIS);
+        int requiredStack = player.level().getGameRules().getIntOr(ModGameRules.CHARSTACK_REQUIRED_FOR_APOTHEOSIS, 0);
         int killCount = comp.getKillCount();
 
         if (charStack < requiredStack || killCount < KILLS_REQUIRED_FOR_APOTHEOSIS) {
@@ -79,7 +79,7 @@ public record RequestUniquenessApotheosisPacket() implements CustomPacketPayload
             return;
         }
 
-        if (!player.serverLevel().dimension().equals(net.minecraft.world.level.Level.OVERWORLD)) {
+        if (!player.level().dimension().equals(net.minecraft.world.level.Level.OVERWORLD)) {
             player.displayClientMessage(
                     Component.translatable("lotm.uniqueness.overworld"),
                     true
@@ -94,7 +94,7 @@ public record RequestUniquenessApotheosisPacket() implements CustomPacketPayload
         int color = BeyonderData.pathwayInfos.get(pathway).color();
         player.level().players().forEach(p ->
                 p.displayClientMessage(
-                        Component.literal(player.getName().getString())
+                        Component.literal(player.name().getString())
                                 .append(Component.translatable("lotm.uniqueness.start"))
                                 .withColor(color),
                         false

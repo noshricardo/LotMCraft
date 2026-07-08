@@ -181,7 +181,7 @@ public class MarionetteOverlayRenderer {
 
         if(ClientBeyonderCache.isBeyonder(entity.getUUID())) {
             String pathway = ClientBeyonderCache.getPathway(entity.getUUID());
-            String pathwayName = BeyonderData.pathwayInfos.get(pathway).getName();
+            String pathwayName = BeyonderData.pathwayInfos.get(pathway).name();
             int sequence = ClientBeyonderCache.getSequence(entity.getUUID());
             float spirituality = ClientBeyonderCache.getSpirituality(entity.getUUID());
 

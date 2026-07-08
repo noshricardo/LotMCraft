@@ -118,9 +118,9 @@ public class PlayerTeleportationAbility extends SelectableAbility {
         onlinePlayers.clear();
         for(ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
             onlinePlayers.add(player.getUUID());
-            levelsForPlayer.put(player.getUUID(), player.serverLevel());
-            namesForPlayer.put(player.getUUID(), player.getName().getString());
-            PacketHandler.sendToAllPlayers(new SyncPlayerTeleportationPlayerNamesPacket(player.getUUID().toString(), player.getName().getString()));
+            levelsForPlayer.put(player.getUUID(), player.level());
+            namesForPlayer.put(player.getUUID(), player.name().getString());
+            PacketHandler.sendToAllPlayers(new SyncPlayerTeleportationPlayerNamesPacket(player.getUUID().toString(), player.name().getString()));
         }
 
         if(onlinePlayers == null || onlinePlayers.isEmpty() || onlinePlayers.contains(null)) {

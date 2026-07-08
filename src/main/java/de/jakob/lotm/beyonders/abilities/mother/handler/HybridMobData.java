@@ -31,10 +31,10 @@ public class HybridMobData {
     }
 
     public static HybridMobData load(CompoundTag tag) {
-        Identifier modelType = Identifier.parse(tag.getString("ModelEntityType"));
-        float width = tag.getFloat("Width");
-        float height = tag.getFloat("Height");
-        boolean fixed = tag.getBoolean("Fixed");
+        Identifier modelType = Identifier.parse(tag.getStringOr("ModelEntityType", ""));
+        float width = tag.getFloatOr("Width", 0.0f);
+        float height = tag.getFloatOr("Height", 0.0f);
+        boolean fixed = tag.getBooleanOr("Fixed", false);
         
         EntityDimensions dimensions = fixed ? 
             EntityDimensions.fixed(width, height) : 

@@ -216,8 +216,8 @@ public class ElectricShockEntity extends Entity {
         if (tag.contains("startX")) {
             startPos = new Vec3(tag.getDouble("startX"), tag.getDouble("startY"), tag.getDouble("startZ"));
             direction = new Vec3(tag.getDouble("dirX"), tag.getDouble("dirY"), tag.getDouble("dirZ"));
-            maxDistance = tag.getFloat("maxDistance");
-            currentDistance = tag.getFloat("currentDistance");
+            maxDistance = tag.getFloatOr("maxDistance", 0.0f);
+            currentDistance = tag.getFloatOr("currentDistance", 0.0f);
         }
     }
 

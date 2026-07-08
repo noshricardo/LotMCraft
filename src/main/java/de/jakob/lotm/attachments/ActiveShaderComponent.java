@@ -63,7 +63,7 @@ public class ActiveShaderComponent {
                 public ActiveShaderComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     ActiveShaderComponent component = new ActiveShaderComponent();
                     component.shaderStopTime = tag.getLong("shaderStopTime");
-                    component.shaderIndex = tag.getInt("index");
+                    component.shaderIndex = tag.getIntOr("index", 0);
                     return component;
                 }
 

@@ -51,8 +51,8 @@ public class MarionetteControllerItem extends Item {
             if (customData == null) return InteractionResult.PASS;
 
             CompoundTag tag = customData.copyTag();
-            String entityUUID = tag.getString("MarionetteUUID");
-            boolean movementOnly = tag.getBoolean("MovementOnly");
+            String entityUUID = tag.getStringOr("MarionetteUUID", "");
+            boolean movementOnly = tag.getBooleanOr("MovementOnly", false);
 
             if (entityUUID.isEmpty()) return InteractionResult.PASS;
 
@@ -181,7 +181,7 @@ public class MarionetteControllerItem extends Item {
             }
         }
 
-        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+        return InteractionResult.sidedSuccess(stack, level.isClientSide());
     }
 
 
@@ -259,7 +259,7 @@ public class MarionetteControllerItem extends Item {
         if (customData == null) return;
 
         CompoundTag tag = customData.copyTag();
-        String entityUUID = tag.getString("MarionetteUUID");
+        String entityUUID = tag.getStringOr("MarionetteUUID", "");
         if (entityUUID.isEmpty()) return;
 
         Entity entity = ((ServerLevel) level).getEntity(UUID.fromString(entityUUID));
@@ -300,8 +300,8 @@ public class MarionetteControllerItem extends Item {
         CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
         if (customData != null) {
             CompoundTag tag = customData.copyTag();
-            String entityName = tag.getString("MarionetteType");
-            boolean movementOnly = tag.getBoolean("MovementOnly");
+            String entityName = tag.getStringOr("MarionetteType", "");
+            boolean movementOnly = tag.getBooleanOr("MovementOnly", false);
 
             tooltip.add(Component.literal("--------------------------").withColor(0xFFa742f5));
             tooltip.add(Component.literal("Controls: " + entityName).withStyle(ChatFormatting.GRAY));

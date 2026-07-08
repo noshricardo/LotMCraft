@@ -486,8 +486,8 @@ public class BeyonderData {
     public static float getMaxSpirituality(String path, int seq, Player player){
         ControllingDataComponent data = player.getData(ModAttachments.CONTROLLING_DATA);
         if (data.isControlling()) {
-            CompoundTag bodyData = data.getBodyEntity().getCompound("neoforge:attachments").getCompound("lotmcraft:beyonder_component");
-            return getMaxSpirituality(bodyData.getString("pathway"), bodyData.getInt("sequence"));
+            CompoundTag bodyData = data.getBodyEntity().getCompoundOrEmpty("neoforge:attachments").getCompoundOrEmpty("lotmcraft:beyonder_component");
+            return getMaxSpirituality(bodyData.getStringOr("pathway", ""), bodyData.getIntOr("sequence", 0));
         }
         return getMaxSpirituality(path, seq) * ActingCapHelper.getEffectiveCap(player);
     }
@@ -584,7 +584,7 @@ public class BeyonderData {
             return ClientBeyonderCache.isGriefingEnabled(player.getUUID());
         }
 
-        if(!player.level().getGameRules().getBoolean(ModGameRules.ALLOW_GRIEFING)) {
+        if(!player.level().getGameRules().getBooleanOr(ModGameRules.ALLOW_GRIEFING, false)) {
             return false;
         }
 
@@ -700,7 +700,7 @@ public class BeyonderData {
         if (hasSwitchedPathway(player)) amount /= 2f;
         float current = getDigestionProgress(player);
         if(accountForDigestionRate) {
-            amount *= (player.level().getGameRules().getInt(ModGameRules.DIGESTION_RATE) / 10f);
+            amount *= (player.level().getGameRules().getIntOr(ModGameRules.DIGESTION_RATE, 0) / 10f);
         }
         float newAmount = Math.min(1.0f, current + amount);
 

@@ -203,7 +203,7 @@ public class ManipulationAbility extends SelectableAbility {
 
         CompoundTag tag = new CompoundTag();
         tag.putString("MarionetteUUID", target.getUUID().toString());
-        tag.putString("MarionetteType", target.getName().getString());
+        tag.putString("MarionetteType", target.name().getString());
         tag.putBoolean("MovementOnly", true); // flag to strip non-movement functionality
         controllerStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
 
@@ -225,7 +225,7 @@ public class ManipulationAbility extends SelectableAbility {
                 if (!stack.isEmpty() && stack.getItem() instanceof MarionetteControllerItem) {
                     CustomData data = stack.get(DataComponents.CUSTOM_DATA);
                     if (data != null) {
-                        String uuid = data.copyTag().getString("MarionetteUUID");
+                        String uuid = data.copyTag().getStringOr("MarionetteUUID", "");
                         if (uuid.equals(target.getUUID().toString())) {
                             player.getInventory().removeItem(i, 1);
                             break;

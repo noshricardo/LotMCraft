@@ -247,7 +247,7 @@ public class StoryWritingAbility extends ToggleAbility {
 //                    Component.literal("Target cannot be guided.").withColor(0xFFff124d));
 //            return;
 //        }
-//        assignTarget(author, target, author.serverLevel());
+//        assignTarget(author, target, author.level());
 //    }
 //
 //    private static void assignTarget(ServerPlayer author, LivingEntity target, ServerLevel level) {
@@ -265,7 +265,7 @@ public class StoryWritingAbility extends ToggleAbility {
 //        TARGET_TO_AUTHOR.put(target.getUUID(), author.getUUID());
 //
 //        // Create book — use player name if player, otherwise entity name
-//        String targetName = target.getName().getString();
+//        String targetName = target.name().getString();
 //
 //        // Build book item manually since target may not be a ServerPlayer
 //        ItemStack book;
@@ -274,8 +274,8 @@ public class StoryWritingAbility extends ToggleAbility {
 //        } else {
 //            // Create book with mob as target — reuse create() logic manually
 //            net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
-//            tag.putUUID(StoryBookItem.KEY_AUTHOR, author.getUUID());
-//            tag.putUUID(StoryBookItem.KEY_TARGET, target.getUUID());
+//            tag.store(StoryBookItem.KEY_AUTHOR, net.minecraft.core.UUIDUtil.CODEC,  author.getUUID());
+//            tag.store(StoryBookItem.KEY_TARGET, net.minecraft.core.UUIDUtil.CODEC,  target.getUUID());
 //            tag.putString(StoryBookItem.KEY_TARGET_NAME, targetName);
 //            tag.putInt(StoryBookItem.KEY_USES, 3);
 //            book = new ItemStack(ModItems.STORY_BOOK.get());

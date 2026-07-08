@@ -25,7 +25,7 @@ public class EnablePlayerAbilitiesCommand {
                         }
 
                         player.getData(ModAttachments.DISABLED_ABILITIES_COMPONENT).enableAllAbilities();
-                        source.sendSuccess(() -> Component.literal("Reenabled all abilities for " + player.getName().getString()), true);
+                        source.sendSuccess(() -> Component.literal("Reenabled all abilities for " + player.name().getString()), true);
                         return 1;
                     })
                 )

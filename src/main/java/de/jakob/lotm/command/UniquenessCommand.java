@@ -28,7 +28,7 @@ public class UniquenessCommand {
                         .then(Commands.argument("pathway", StringArgumentType.string())
                                 .suggests(PATHWAY_SUGGESTIONS)
                                 .executes(context -> {
-                                    String pathway = StringArgumentType.getString(context, "pathway");
+                                    String pathway = StringArgumentType.getStringOr(context, "pathway", "");
                                     return checkHolder(context.getSource(), pathway);
                                 })
                         )
@@ -37,7 +37,7 @@ public class UniquenessCommand {
                         .then(Commands.argument("pathway", StringArgumentType.string())
                                 .suggests(PATHWAY_SUGGESTIONS)
                                 .executes(context -> {
-                                    String pathway = StringArgumentType.getString(context, "pathway");
+                                    String pathway = StringArgumentType.getStringOr(context, "pathway", "");
                                     return removeUniqueness(context.getSource(), pathway);
                                 })
                         )
@@ -46,7 +46,7 @@ public class UniquenessCommand {
                         .then(Commands.argument("pathway", StringArgumentType.string())
                                 .suggests(PATHWAY_SUGGESTIONS)
                                 .executes(context -> {
-                                    String pathway = StringArgumentType.getString(context, "pathway");
+                                    String pathway = StringArgumentType.getStringOr(context, "pathway", "");
 
                                     if (UniquenessEntity.existsInWorld(context.getSource().getLevel(), pathway)) return 0;
 
@@ -101,7 +101,7 @@ public class UniquenessCommand {
             for (ServerPlayer holder : holders) {
                 int killCount = holder.getData(ModAttachments.UNIQUENESS_COMPONENT).getKillCount();
                 source.sendSuccess(() -> Component.literal(
-                        holder.getName().getString() + " holds the " + pathway + " uniqueness. Kill count: " + killCount
+                        holder.name().getString() + " holds the " + pathway + " uniqueness. Kill count: " + killCount
                 ), false);
             }
         }
@@ -133,7 +133,7 @@ public class UniquenessCommand {
             comp.setUniquenessPathway("");
             BeyonderData.playerMap.setUniqueness(holder, "none");
             PacketHandler.syncUniquenessToPlayer(holder);
-            source.sendSuccess(() -> Component.literal("Removed uniqueness from " + holder.getName().getString()), false);
+            source.sendSuccess(() -> Component.literal("Removed uniqueness from " + holder.name().getString()), false);
         }
 
         return 1;

@@ -244,7 +244,7 @@ public class PlacateAbility extends SelectableAbility {
         if(entity instanceof ServerPlayer targetPlayer){
             var personas = targetPlayer.getData(ModAttachments.VIRTUAL_PERSONAS.get());
             personas.damageAffectedBy(VirtualPersonaComponent.getMaxHealthPerSeq(entitySeq),
-                    (ServerLevel) targetPlayer.level(), targetPlayer.getName().getString(), entitySeq);
+                    (ServerLevel) targetPlayer.level(), targetPlayer.name().getString(), entitySeq);
         }
 
         if(caster instanceof ServerPlayer player)

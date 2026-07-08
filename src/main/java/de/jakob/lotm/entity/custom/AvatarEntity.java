@@ -169,7 +169,7 @@ public class AvatarEntity extends PathfinderMob {
         compound.putString("Pathway", getPathway());
         compound.putInt("Sequence", getSequence());
         UUID owner = getOriginalOwner();
-        compound.putUUID("OriginalOwner", owner != null ? owner : NULL_UUID);
+        compound.store("OriginalOwner", net.minecraft.core.UUIDUtil.CODEC,  owner != null ? owner : NULL_UUID);
     }
 
     @Override
@@ -177,9 +177,9 @@ public class AvatarEntity extends PathfinderMob {
         super.readAdditionalSaveData(compound);
 
         if (compound.contains("Pathway") && compound.contains("Sequence")) {
-            this.pathway = compound.getString("Pathway");
-            this.sequence = compound.getInt("Sequence");
-            UUID originalOwner = compound.getUUID("OriginalOwner");
+            this.pathway = compound.getStringOr("Pathway", "");
+            this.sequence = compound.getIntOr("Sequence", 0);
+            UUID originalOwner = compound.read("OriginalOwner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
 
             if (!this.level().isClientSide()) {
                 BeyonderData.setBeyonder(this, this.pathway, this.sequence);

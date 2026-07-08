@@ -69,7 +69,7 @@ public class MetaAwarenessAbility extends PassiveAbilityItem {
             // Check if this player has the MetaAwareness passive
             if (!hasMetaAwareness(candidate)) continue;
 
-            String username = candidate.getName().getString();
+            String username = candidate.name().getString();
 
             boolean match = false;
 
@@ -122,7 +122,7 @@ public class MetaAwarenessAbility extends PassiveAbilityItem {
         // Store pending prayer so target can respond via Honorific Names menu
         PendingPrayer prayer = new PendingPrayer(
                 sender.getUUID(),
-                sender.getName().getString(),
+                sender.name().getString(),
                 BeyonderData.getPathway(sender),
                 BeyonderData.getSequence(sender),
                 sender.getX(), sender.getY(), sender.getZ()

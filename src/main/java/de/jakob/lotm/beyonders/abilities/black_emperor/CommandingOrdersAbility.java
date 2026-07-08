@@ -316,7 +316,7 @@ public class CommandingOrdersAbility extends ToggleAbility {
         target.setDeltaMovement(target.getDeltaMovement().multiply(0.88D, 1.0D, 0.88D));
 
         if (target instanceof ServerPlayer player) {
-            player.teleportTo(player.serverLevel(), player.getX(), player.getY(), player.getZ(), player.getYRot(), forcedPitch);
+            player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), player.getYRot(), forcedPitch);
             player.hurtMarked = true;
         }
     }

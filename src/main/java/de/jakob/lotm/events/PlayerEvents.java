@@ -56,7 +56,7 @@ public class PlayerEvents {
             AbilityCooldownComponent abilityCooldownComponent = player.getData(ModAttachments.COOLDOWN_COMPONENT);
             abilityCooldownComponent.removeAllCooldowns();
 
-            ToggleAbility.cleanUp(player.serverLevel(), player);
+            ToggleAbility.cleanUp(player.level(), player);
             DivinationAbility.cleanupOnLogout(player);
 
             // Clean up concealed domain entities
@@ -108,10 +108,10 @@ public class PlayerEvents {
                 } catch (IllegalArgumentException ignored) {}
             }
 
-            PacketHandler.sendToPlayer(player, new SyncGriefingGamerulePacket(player.level().getGameRules().getBoolean(ModGameRules.ALLOW_GRIEFING)));
+            PacketHandler.sendToPlayer(player, new SyncGriefingGamerulePacket(player.level().getGameRules().getBooleanOr(ModGameRules.ALLOW_GRIEFING, false)));
 
             NewPlayerComponent component = player.getData(ModAttachments.BOOK_COMPONENT);
-            if(!component.isHasReceivedNewPlayerPerks() && player.serverLevel().getGameRules().getBoolean(ModGameRules.SPAWN_WITH_STARTING_CHARACTERISTIC)) {
+            if(!component.isHasReceivedNewPlayerPerks() && player.level().getGameRules().getBooleanOr(ModGameRules.SPAWN_WITH_STARTING_CHARACTERISTIC, false)) {
                 player.addItem(new ItemStack(ModItems.GUIDING_BOOK.get()));
 
                 String pathway = BeyonderData.implementedPathways.get(random.nextInt(BeyonderData.implementedPathways.size()));

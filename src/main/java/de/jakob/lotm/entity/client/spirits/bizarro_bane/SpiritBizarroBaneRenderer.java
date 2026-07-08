@@ -10,23 +10,26 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
 
-public class SpiritBizarroBaneRenderer extends MobRenderer<SpiritBizarroBaneEntity, SpiritBizarroBaneModel<SpiritBizarroBaneEntity>> {
+public class SpiritBizarroBaneRenderer extends MobRenderer<SpiritBizarroBaneEntity, SpiritBizarroBaneRenderState, SpiritBizarroBaneModel<SpiritBizarroBaneRenderState>> {
     public SpiritBizarroBaneRenderer(EntityRendererProvider.Context context) {
         super(context, new SpiritBizarroBaneModel<>(context.bakeLayer(SpiritBizarroBaneModel.LAYER_LOCATION)), .3f);
     }
+
     @Override
-    public void render(SpiritBizarroBaneEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        poseStack.pushPose();
-
-        poseStack.scale(2, 2, 2);
-        poseStack.translate(0.0D, -.2D, 0.0D);
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-        poseStack.popPose();
+    public SpiritBizarroBaneRenderState createRenderState() {
+        return new SpiritBizarroBaneRenderState();
     }
 
     @Override
-    public Identifier getTextureLocation(SpiritBizarroBaneEntity spiritBlueWizardEntity) {
+    public void extractRenderState(SpiritBizarroBaneEntity entity, SpiritBizarroBaneRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        state.isWalking = entity.walkAnimation.isMoving();
+        state.walkAnimationState.copyFrom(entity.WALK_ANIMATION);
+        state.idleAnimationState.copyFrom(entity.IDLE_ANIMATION);
+    }
+
+    @Override
+    public Identifier getTextureLocation(SpiritBizarroBaneRenderState state) {
         return Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/spirits/spirit_bizarro_bane/spirit_bizarro_bane.png");
     }
 }

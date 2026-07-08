@@ -67,7 +67,7 @@ public class UnderworldGateEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
-        setHasTentacles(compoundTag.getBoolean("HasTentacles"));
+        setHasTentacles(compoundTag.getBooleanOr("HasTentacles", false));
     }
 
     @Override

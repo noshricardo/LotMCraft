@@ -47,7 +47,7 @@ public class TriggerStringContext extends TriggerContextBase {
 
     public static TriggerStringContext load(CompoundTag tag, UUID id, HolderLookup.Provider provider) {
         TriggerStringContext  context = new TriggerStringContext (id);
-        context.string = tag.getString(NBT_STRING);
+        context.string = tag.getStringOr(NBT_STRING, "");
 
         return context;
     }

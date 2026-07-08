@@ -35,7 +35,7 @@ public record BiomeDivinationSelectedPacket(String biomeId) implements CustomPac
     public static void handle(BiomeDivinationSelectedPacket packet, IPayloadContext context) {
         if (!(context.player() instanceof ServerPlayer player)) return;
 
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
         Identifier biomeKey = Identifier.tryParse(packet.biomeId());
 
         if (biomeKey == null) {

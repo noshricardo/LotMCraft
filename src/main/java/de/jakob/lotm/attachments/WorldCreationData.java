@@ -61,7 +61,7 @@ public class WorldCreationData extends SavedData {
         ListTag locationsList = new ListTag();
         for (Map.Entry<UUID, BlockPos> entry : playerPocketLocations.entrySet()) {
             CompoundTag entryTag = new CompoundTag();
-            entryTag.putUUID("UUID", entry.getKey());
+            entryTag.store("UUID", net.minecraft.core.UUIDUtil.CODEC,  entry.getKey());
             entryTag.putInt("X", entry.getValue().getX());
             entryTag.putInt("Y", entry.getValue().getY());
             entryTag.putInt("Z", entry.getValue().getZ());
@@ -72,7 +72,7 @@ public class WorldCreationData extends SavedData {
         ListTag visitedList = new ListTag();
         for (UUID uuid : visitedPlayers) {
             CompoundTag uuidTag = new CompoundTag();
-            uuidTag.putUUID("UUID", uuid);
+            uuidTag.store("UUID", net.minecraft.core.UUIDUtil.CODEC,  uuid);
             visitedList.add(uuidTag);
         }
         tag.put("Visited", visitedList);
@@ -85,25 +85,25 @@ public class WorldCreationData extends SavedData {
     public static WorldCreationData load(CompoundTag tag, HolderLookup.Provider provider) {
         WorldCreationData data = new WorldCreationData();
         
-        ListTag locationsList = tag.getList("Locations", Tag.TAG_COMPOUND);
+        ListTag locationsList = tag.getListOrEmpty("Locations", Tag.TAG_COMPOUND);
         for (int i = 0; i < locationsList.size(); i++) {
-            CompoundTag entryTag = locationsList.getCompound(i);
-            UUID uuid = entryTag.getUUID("UUID");
+            CompoundTag entryTag = locationsList.getCompoundOrEmpty(i);
+            UUID uuid = entryTag.read("UUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             BlockPos pos = new BlockPos(
-                entryTag.getInt("X"),
-                entryTag.getInt("Y"),
-                entryTag.getInt("Z")
+                entryTag.getIntOr("X", 0),
+                entryTag.getIntOr("Y", 0),
+                entryTag.getIntOr("Z", 0)
             );
             data.playerPocketLocations.put(uuid, pos);
         }
         
-        ListTag visitedList = tag.getList("Visited", Tag.TAG_COMPOUND);
+        ListTag visitedList = tag.getListOrEmpty("Visited", Tag.TAG_COMPOUND);
         for (int i = 0; i < visitedList.size(); i++) {
-            CompoundTag uuidTag = visitedList.getCompound(i);
-            data.visitedPlayers.add(uuidTag.getUUID("UUID"));
+            CompoundTag uuidTag = visitedList.getCompoundOrEmpty(i);
+            data.visitedPlayers.add(uuidTag.read("UUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
         
-        data.nextPocketIndex = tag.getInt("NextIndex");
+        data.nextPocketIndex = tag.getIntOr("NextIndex", 0);
         
         return data;
     }

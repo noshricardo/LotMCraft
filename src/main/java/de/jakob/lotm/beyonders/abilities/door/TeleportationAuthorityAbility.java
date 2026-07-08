@@ -117,24 +117,24 @@ public class TeleportationAuthorityAbility extends SelectableAbility {
     }
 
     public static void teleportSelf(ServerPlayer player, Vec3 coordinates) {
-        teleportEntities(player.serverLevel(), coordinates, List.of(player), player.getSoundSource());
+        teleportEntities(player.level(), coordinates, List.of(player), player.getSoundSource());
     }
 
     public static void teleportSelfAndOthers(ServerPlayer player, Vec3 coordinates) {
-        List<LivingEntity> teleportEntities = AbilityUtil.getNearbyEntities(null, player.serverLevel(), player.position(), 20);
+        List<LivingEntity> teleportEntities = AbilityUtil.getNearbyEntities(null, player.level(), player.position(), 20);
 
-        ParticleUtil.spawnParticles(player.serverLevel(), ModParticles.STAR.get(), player.position(), 900, 8, .2, 8, .075);
+        ParticleUtil.spawnParticles(player.level(), ModParticles.STAR.get(), player.position(), 900, 8, .2, 8, .075);
 
-        teleportEntities(player.serverLevel(), coordinates, teleportEntities, player.getSoundSource());
+        teleportEntities(player.level(), coordinates, teleportEntities, player.getSoundSource());
     }
 
     public static void teleportTargets(ServerPlayer player, Vec3 coordinates) {
         Vec3 targetLoc = AbilityUtil.getTargetLocation(player, 30, 2, true, true);
-        List<LivingEntity> targets = AbilityUtil.getNearbyEntities(player, player.serverLevel(), targetLoc, 9);
+        List<LivingEntity> targets = AbilityUtil.getNearbyEntities(player, player.level(), targetLoc, 9);
 
-        ParticleUtil.spawnParticles(player.serverLevel(), ModParticles.STAR.get(), targetLoc, 900, 8, .2, 8, .075);
+        ParticleUtil.spawnParticles(player.level(), ModParticles.STAR.get(), targetLoc, 900, 8, .2, 8, .075);
 
-        teleportEntities(player.serverLevel(), coordinates, targets, player.getSoundSource());
+        teleportEntities(player.level(), coordinates, targets, player.getSoundSource());
     }
 
     public static void teleportEntities(ServerLevel level, Vec3 coordinates, List<LivingEntity> targets, SoundSource soundSource) {

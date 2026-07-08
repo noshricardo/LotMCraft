@@ -37,7 +37,7 @@ public class QuestCommand {
                                         .executes(context -> {
                                             CommandSourceStack source = context.getSource();
                                             ServerPlayer target = EntityArgument.getPlayer(context, "target");
-                                            String questId = StringArgumentType.getString(context, "quest_id");
+                                            String questId = StringArgumentType.getStringOr(context, "quest_id", "");
 
                                             if (QuestRegistry.getQuest(questId) == null) {
                                                 source.sendFailure(Component.literal("Unknown quest id: " + questId));
@@ -50,7 +50,7 @@ public class QuestCommand {
                                                 return 0;
                                             }
 
-                                            source.sendSuccess(() -> Component.literal("Assigned quest '" + questId + "' to " + target.getName().getString()), true);
+                                            source.sendSuccess(() -> Component.literal("Assigned quest '" + questId + "' to " + target.name().getString()), true);
                                             return 1;
                                         })))));
 
@@ -60,24 +60,24 @@ public class QuestCommand {
 private static int discardFor(CommandSourceStack source, ServerPlayer target) {
     String activeQuestId = getActiveQuestId(target);
     if (activeQuestId == null) {
-        source.sendFailure(Component.literal(target.getName().getString() + " has no active quest."));
+        source.sendFailure(Component.literal(target.name().getString() + " has no active quest."));
         return 0;
     }
 
     QuestManager.discardQuest(target, activeQuestId);
-    source.sendSuccess(() -> Component.literal("Discarded active quest for " + target.getName().getString()), true);
+    source.sendSuccess(() -> Component.literal("Discarded active quest for " + target.name().getString()), true);
     return 1;
 }
 
 private static int finishFor(CommandSourceStack source, ServerPlayer target) {
     String activeQuestId = getActiveQuestId(target);
     if (activeQuestId == null) {
-        source.sendFailure(Component.literal(target.getName().getString() + " has no active quest."));
+        source.sendFailure(Component.literal(target.name().getString() + " has no active quest."));
         return 0;
     }
 
     QuestManager.completeQuest(target, activeQuestId);
-    source.sendSuccess(() -> Component.literal("Finished active quest for " + target.getName().getString()), true);
+    source.sendSuccess(() -> Component.literal("Finished active quest for " + target.name().getString()), true);
     return 1;
 }
 

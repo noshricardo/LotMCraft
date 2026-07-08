@@ -52,7 +52,7 @@ public class DecryptionOverlayRenderer {
 
     private static void applyShader(Minecraft mc, String shaderName) {
         if (mc.gameRenderer.currentEffect() == null ||
-                !mc.gameRenderer.currentEffect().getName().equals(shaderName)) {
+                !mc.gameRenderer.currentEffect().name().equals(shaderName)) {
             try {
                 mc.gameRenderer.loadEffect(
                         Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "shaders/post/" + shaderName + ".json")
@@ -89,7 +89,7 @@ public class DecryptionOverlayRenderer {
                 renderOutLine(guiGraphics, x, y, width, height);
 
                 //Entity name
-                String name = entity.getName().getString();
+                String name = entity.name().getString();
                 int nameX = x + (width / 2);
                 int nameY = y + 5;
                 guiGraphics.drawCenteredString(mc.font, name, nameX, nameY, 0xFFFFFFFF);

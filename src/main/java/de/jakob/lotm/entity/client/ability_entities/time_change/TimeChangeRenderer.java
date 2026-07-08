@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 
-public class TimeChangeRenderer extends EntityRenderer<TimeChangeEntity> {
+public class TimeChangeRenderer extends EntityRenderer<TimeChangeEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
 
     public TimeChangeRenderer(EntityRendererProvider.Context context) {

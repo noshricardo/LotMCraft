@@ -11,12 +11,15 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 
-public class FireballModel<T extends Entity> extends EntityModel<T> {
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
+public class FireballModel extends EntityModel<FireballRenderState> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "fireball"), "main");
 	private final ModelPart bb_main;
 
 	public FireballModel(ModelPart root) {
+		super(root);
 		this.bb_main = root.getChild("bone");
 	}
 
@@ -35,12 +38,8 @@ public class FireballModel<T extends Entity> extends EntityModel<T> {
 	}
 
 	@Override
-	public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void setupAnim(FireballRenderState state) {
 
 	}
 
-	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-	}
 }

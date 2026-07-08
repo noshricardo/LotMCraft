@@ -70,12 +70,12 @@ public class TriggerPlayerContext extends TriggerContextBase {
 
         List<String> list = new LinkedList<>();
 
-        ListTag listTag = tag.getList(NBT_NAMES, Tag.TAG_STRING);
+        ListTag listTag = tag.getListOrEmpty(NBT_NAMES, Tag.TAG_STRING);
         for (int i = 0; i < listTag.size(); i++) {
-            list.add(listTag.getString(i));
+            list.add(listTag.getStringOr(i, ""));
         }
 
-        int range = tag.getInt(NBT_RANGE);
+        int range = tag.getIntOr(NBT_RANGE, 0);
 
         context.names = list;
         context.range = range;

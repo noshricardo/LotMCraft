@@ -202,12 +202,12 @@ public class SpaceCollapseEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        this.setAge(tag.getInt("Age"));
-        this.setRadius(tag.getFloat("Radius"));
-        this.setDamage(tag.getFloat("Damage"));
-        this.setGriefing(tag.getBoolean("Griefing"));
+        this.setAge(tag.getIntOr("Age", 0));
+        this.setRadius(tag.getFloatOr("Radius", 0.0f));
+        this.setDamage(tag.getFloatOr("Damage", 0.0f));
+        this.setGriefing(tag.getBooleanOr("Griefing", false));
         if (tag.contains("OwnerUUID")) {
-            this.setOwnerUUID(Optional.of(tag.getUUID("OwnerUUID")));
+            this.setOwnerUUID(Optional.of(tag.read("OwnerUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null)));
         } else {
             this.setOwnerUUID(Optional.empty());
         }
@@ -219,6 +219,6 @@ public class SpaceCollapseEntity extends Entity {
         tag.putFloat("Radius", this.getRadius());
         tag.putFloat("Damage", this.getDamage());
         tag.putBoolean("Griefing", this.isGriefing());
-        this.getOwnerUUID().ifPresent(uuid -> tag.putUUID("OwnerUUID", uuid));
+        this.getOwnerUUID().ifPresent(uuid -> tag.store("OwnerUUID", net.minecraft.core.UUIDUtil.CODEC,  uuid));
     }
 }

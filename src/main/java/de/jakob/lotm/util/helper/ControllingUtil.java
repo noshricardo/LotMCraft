@@ -104,9 +104,9 @@ public class ControllingUtil {
             // add the original body
             level.addFreshEntity(originalBody);
             originalBody.getData(ModAttachments.CONTROLLING_DATA).setOwnerUUID(player.getUUID());
-            originalBody.getData(ModAttachments.CONTROLLING_DATA).setOwnerName(player.getName().getString());
+            originalBody.getData(ModAttachments.CONTROLLING_DATA).setOwnerName(player.name().getString());
             PacketDistributor.sendToPlayersTrackingEntity(originalBody,
-                    new SyncOriginalBodyOwnerPacket(originalBody.getId(), player.getUUID(), player.getName().getString())
+                    new SyncOriginalBodyOwnerPacket(originalBody.getId(), player.getUUID(), player.name().getString())
             );
         }
 
@@ -148,7 +148,7 @@ public class ControllingUtil {
 
                 // also patch NeoForgeData persistent data inside the tag
                 if (targetTag.contains("neoforge:attachments")) {
-                    CompoundTag nfd = targetTag.getCompound("neoforge:attachments").getCompound("lotmcraft:beyonder_component");
+                    CompoundTag nfd = targetTag.getCompoundOrEmpty("neoforge:attachments").getCompoundOrEmpty("lotmcraft:beyonder_component");
                     nfd.putString("pathway", currentPathway);
                     nfd.putInt("sequence", currentSequence);
                     nfd.putFloat("digestionProgress", BeyonderData.getDigestionProgress(player));
@@ -226,7 +226,7 @@ public class ControllingUtil {
             CompoundTag bodyTag = data.getBodyEntity();
             if (bodyTag != null) {
                 Entity bodyEntity = EntityType.loadEntityRecursive(bodyTag, level, (entity) -> {
-                    ListTag posList = bodyTag.getList("Pos", 6);
+                    ListTag posList = bodyTag.getListOrEmpty("Pos", 6);
                     if (posList.size() >= 3) {
                         entity.setPos(posList.getDouble(0),posList.getDouble(1),posList.getDouble(2));
                     } else {
@@ -241,7 +241,7 @@ public class ControllingUtil {
 
                         PhysicalEnhancementsAbility.resetEnhancements(player.getUUID(), player, true);
 
-                        float health = bodyTag.getFloat("Health");
+                        float health = bodyTag.getFloatOr("Health", 0.0f);
                         ServerScheduler.scheduleDelayed(5, () -> {
                             player.setHealth(health);
                         }, level);
@@ -257,7 +257,7 @@ public class ControllingUtil {
                 if (stack.isEmpty()) continue;
                 CustomData customData = stack.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
                 if (customData == null) continue;
-                if (targetUUIDStr.equals(customData.copyTag().getString("MarionetteUUID"))) {
+                if (targetUUIDStr.equals(customData.copyTag().getStringOr("MarionetteUUID", ""))) {
                     player.getInventory().setItem(i, MarionetteUtils.createMarionetteController(restoredTarget));
                     break;
                 }
@@ -582,7 +582,7 @@ public class ControllingUtil {
     @SubscribeEvent
     public static void onPlayerChangedDimension (EntityTravelToDimensionEvent event){
         if (event.getEntity().level() instanceof ServerLevel serverLevel && event.getEntity() instanceof ServerPlayer serverPlayer) {
-            if (!serverPlayer.serverLevel().dimension().equals(event.getDimension())) {
+            if (!serverPlayer.level().dimension().equals(event.getDimension())) {
                 ControllingDataComponent data = serverPlayer.getData(ModAttachments.CONTROLLING_DATA);
                 if (data.isControlling() || data.getBodyUUID() != null) {
                     event.setCanceled(true);
@@ -641,10 +641,10 @@ public class ControllingUtil {
                 // dont reset if main body doesn't exist
                 if (mainBodyEntity == null) return;
 
-                CompoundTag bodyData = data.getBodyEntity().getCompound("neoforge:attachments").getCompound("lotmcraft:beyonder_component");
+                CompoundTag bodyData = data.getBodyEntity().getCompoundOrEmpty("neoforge:attachments").getCompoundOrEmpty("lotmcraft:beyonder_component");
 
                 // get the seq of main body and not the current player
-                int sequence = bodyData.getInt("sequence");
+                int sequence = bodyData.getIntOr("sequence", 0);
                 if (sequence == 0) return;
 
                 int controllingDistance;

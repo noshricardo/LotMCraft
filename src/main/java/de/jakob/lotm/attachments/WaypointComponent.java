@@ -63,7 +63,7 @@ public class WaypointComponent {
         }
 
         if (tag.contains("Waypoints")) {
-            ListTag waypointList = tag.getList("Waypoints", Tag.TAG_COMPOUND);
+            ListTag waypointList = tag.getListOrEmpty("Waypoints", Tag.TAG_COMPOUND);
             for (Tag waypointTag : waypointList) {
                 Waypoint waypoint = Waypoint.loadFromNBT((CompoundTag) waypointTag, server);
                 if (waypoint != null) {
@@ -93,7 +93,7 @@ public class WaypointComponent {
             if (waypoint.x() == clientWaypoint.x() &&
                 waypoint.y() == clientWaypoint.y() &&
                 waypoint.z() == clientWaypoint.z() &&
-                waypoint.serverLevel().dimension().equals(level.dimension())) {
+                waypoint.level().dimension().equals(level.dimension())) {
                 return waypoint;
             }
         }
@@ -120,7 +120,7 @@ public class WaypointComponent {
             double y = compoundTag.getDouble("yCoordinate");
             double z = compoundTag.getDouble("zCoordinate");
 
-            String levelString = compoundTag.getString("levelKey");
+            String levelString = compoundTag.getStringOr("levelKey", "");
             Identifier levelLocation = Identifier.parse(levelString);
             ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, levelLocation);
 
@@ -146,11 +146,11 @@ public class WaypointComponent {
 
         public static ClientWaypoint fromWaypoint(Waypoint waypoint) {
             return new ClientWaypoint(
-                    waypoint.serverLevel().dimension().location().toString(),
+                    waypoint.level().dimension().location().toString(),
                     waypoint.x(),
                     waypoint.y(),
                     waypoint.z(),
-                    waypoint.serverLevel().dimension().location().toString()
+                    waypoint.level().dimension().location().toString()
             );
         }
     }

@@ -118,7 +118,7 @@ public class SefirotData extends SavedData {
         ListTag claimedSefirahList = new ListTag();
         for (Map.Entry<UUID, String> entry : claimedSefirah.entrySet()) {
             CompoundTag entryTag = new CompoundTag();
-            entryTag.putUUID("UUID", entry.getKey());
+            entryTag.store("UUID", net.minecraft.core.UUIDUtil.CODEC,  entry.getKey());
             entryTag.putString("Sefirot", entry.getValue());
             claimedSefirahList.add(entryTag);
         }
@@ -127,7 +127,7 @@ public class SefirotData extends SavedData {
         ListTag returnLocationsList = new ListTag();
         for (Map.Entry<UUID, LocationWithLevelKey> entry : returnLocations.entrySet()) {
             CompoundTag entryTag = new CompoundTag();
-            entryTag.putUUID("UUID", entry.getKey());
+            entryTag.store("UUID", net.minecraft.core.UUIDUtil.CODEC,  entry.getKey());
             entryTag.putString("Server", entry.getValue().getLevelKey());
             entryTag.putDouble("X", entry.getValue().getPosition().x);
             entryTag.putDouble("Y", entry.getValue().getPosition().y);
@@ -139,7 +139,7 @@ public class SefirotData extends SavedData {
         ListTag playersInSefirotList = new ListTag();
         for (UUID uuid : isInSefirot) {
             CompoundTag entryTag = new CompoundTag();
-            entryTag.putUUID("UUID", uuid);
+            entryTag.store("UUID", net.minecraft.core.UUIDUtil.CODEC,  uuid);
             playersInSefirotList.add(entryTag);
         }
         tag.put("playersInSefirot", playersInSefirotList);
@@ -150,29 +150,29 @@ public class SefirotData extends SavedData {
     public static SefirotData load(CompoundTag tag, HolderLookup.Provider provider) {
         SefirotData data = new SefirotData();
 
-        ListTag claimedSefirahList = tag.getList("claimedSefirah", Tag.TAG_COMPOUND);
+        ListTag claimedSefirahList = tag.getListOrEmpty("claimedSefirah", Tag.TAG_COMPOUND);
         for (int i = 0; i < claimedSefirahList.size(); i++) {
-            CompoundTag entryTag = claimedSefirahList.getCompound(i);
-            UUID uuid = entryTag.getUUID("UUID");
-            String sefirot = entryTag.getString("Sefirot");
+            CompoundTag entryTag = claimedSefirahList.getCompoundOrEmpty(i);
+            UUID uuid = entryTag.read("UUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+            String sefirot = entryTag.getStringOr("Sefirot", "");
             data.claimedSefirah.put(uuid, sefirot);
         }
 
-        ListTag returnLocationsList = tag.getList("returnLocations", Tag.TAG_COMPOUND);
+        ListTag returnLocationsList = tag.getListOrEmpty("returnLocations", Tag.TAG_COMPOUND);
         for (int i = 0; i < returnLocationsList.size(); i++) {
-            CompoundTag entryTag = returnLocationsList.getCompound(i);
-            UUID uuid = entryTag.getUUID("UUID");
-            String levelKey = entryTag.getString("Server");
+            CompoundTag entryTag = returnLocationsList.getCompoundOrEmpty(i);
+            UUID uuid = entryTag.read("UUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+            String levelKey = entryTag.getStringOr("Server", "");
             double x = entryTag.getShort("X");
             double y = entryTag.getShort("Y");
             double z = entryTag.getShort("Z");
             data.returnLocations.put(uuid, new LocationWithLevelKey(new Vec3(x, y, z), levelKey));
         }
 
-        ListTag playersInSefirotList = tag.getList("playersInSefirot", Tag.TAG_COMPOUND);
+        ListTag playersInSefirotList = tag.getListOrEmpty("playersInSefirot", Tag.TAG_COMPOUND);
         for (int i = 0; i < playersInSefirotList.size(); i++) {
-            CompoundTag entryTag = playersInSefirotList.getCompound(i);
-            UUID uuid = entryTag.getUUID("UUID");
+            CompoundTag entryTag = playersInSefirotList.getCompoundOrEmpty(i);
+            UUID uuid = entryTag.read("UUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             data.isInSefirot.add(uuid);
         }
 

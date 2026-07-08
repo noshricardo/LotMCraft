@@ -226,7 +226,7 @@ public class SanityEventHandler {
         }
 
         if (BeyonderData.getSpirituality(entity) <= maxSpirit * 0.1f) {
-            int seconds = entity.getPersistentData().getInt(LOW_SPIRIT_SECONDS_KEY) + 1;
+            int seconds = entity.getPersistentData().getIntOr(LOW_SPIRIT_SECONDS_KEY, 0) + 1;
             entity.getPersistentData().putInt(LOW_SPIRIT_SECONDS_KEY, seconds);
 
             float drain = getSpiritualityExhaustionDrain(seconds);

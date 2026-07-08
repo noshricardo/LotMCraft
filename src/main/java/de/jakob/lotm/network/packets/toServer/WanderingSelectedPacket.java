@@ -61,7 +61,7 @@ public record WanderingSelectedPacket(String dimensionId) implements CustomPacke
             ServerLevel targetLevel = server.getLevel(targetKey);
             if (targetLevel == null) return;
 
-            ServerLevel currentLevel = player.serverLevel();
+            ServerLevel currentLevel = player.level();
 
             double yValue = player.position().y;
             int minY = targetLevel.getMinBuildHeight();

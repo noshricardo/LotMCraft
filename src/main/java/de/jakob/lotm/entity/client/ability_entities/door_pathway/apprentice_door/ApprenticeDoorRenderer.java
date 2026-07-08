@@ -7,7 +7,7 @@ import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.entity.custom.ability_entities.door_pathway.ApprenticeDoorEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -19,7 +19,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
-public class ApprenticeDoorRenderer extends EntityRenderer<ApprenticeDoorEntity> {
+public class ApprenticeDoorRenderer extends EntityRenderer<ApprenticeDoorEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     private final ApprenticeDoorModel<ApprenticeDoorEntity> model;
 

@@ -116,14 +116,14 @@ public class ControllingDataComponent {
                 @Override
                 public ControllingDataComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     ControllingDataComponent component = new ControllingDataComponent();
-                    if (tag.getBoolean("isControlling")) component.isControlling = tag.getBoolean("isControlling");
-                    if (tag.getBoolean("isControlled")) component.isControlled = tag.getBoolean("isControlled");
-                    if (tag.hasUUID("ownerUUID")) component.ownerUUID = tag.getUUID("ownerUUID");
-                    if (tag.contains("ownerName")) component.ownerName = tag.getString("ownerName");
-                    if (tag.hasUUID("bodyUUID")) component.bodyUUID = tag.getUUID("bodyUUID");
-                    if (tag.hasUUID("targetUUID")) component.targetUUID = tag.getUUID("targetUUID");
-                    if (tag.contains("targetEntity")) component.targetEntity = tag.getCompound("targetEntity");
-                    if (tag.contains("bodyEntity")) component.bodyEntity = tag.getCompound("bodyEntity");
+                    if (tag.getBooleanOr("isControlling", false)) component.isControlling = tag.getBooleanOr("isControlling", false);
+                    if (tag.getBooleanOr("isControlled", false)) component.isControlled = tag.getBooleanOr("isControlled", false);
+                    if (tag.contains("ownerUUID")) component.ownerUUID = tag.read("ownerUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+                    if (tag.contains("ownerName")) component.ownerName = tag.getStringOr("ownerName", "");
+                    if (tag.contains("bodyUUID")) component.bodyUUID = tag.read("bodyUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+                    if (tag.contains("targetUUID")) component.targetUUID = tag.read("targetUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+                    if (tag.contains("targetEntity")) component.targetEntity = tag.getCompoundOrEmpty("targetEntity");
+                    if (tag.contains("bodyEntity")) component.bodyEntity = tag.getCompoundOrEmpty("bodyEntity");
                     return component;
                 }
 
@@ -132,10 +132,10 @@ public class ControllingDataComponent {
                     CompoundTag tag = new CompoundTag();
                     tag.putBoolean("isControlling", component.isControlling);
                     tag.putBoolean("isControlled", component.isControlled);
-                    if (component.getOwnerUUID() != null) tag.putUUID("ownerUUID", component.getOwnerUUID()); else tag.remove("ownerUUID");
+                    if (component.getOwnerUUID() != null) tag.store("ownerUUID", net.minecraft.core.UUIDUtil.CODEC,  component.getOwnerUUID()); else tag.remove("ownerUUID");
                     if (component.getOwnerName() != null) tag.putString("ownerName", component.getOwnerName()); else tag.remove("ownerName");
-                    if (component.getBodyUUID() != null) tag.putUUID("bodyUUID", component.getBodyUUID()); else tag.remove("bodyUUID");
-                    if (component.getTargetUUID() != null) tag.putUUID("targetUUID", component.getTargetUUID()); else tag.remove("targetUUID");
+                    if (component.getBodyUUID() != null) tag.store("bodyUUID", net.minecraft.core.UUIDUtil.CODEC,  component.getBodyUUID()); else tag.remove("bodyUUID");
+                    if (component.getTargetUUID() != null) tag.store("targetUUID", net.minecraft.core.UUIDUtil.CODEC,  component.getTargetUUID()); else tag.remove("targetUUID");
                     if (component.getTargetEntity() != null) tag.put("targetEntity", component.getTargetEntity()); else tag.remove("targetEntity");
                     if (component.getBodyEntity() != null) tag.put("bodyEntity", component.getBodyEntity()); else tag.remove("bodyEntity");
                     return tag;

@@ -26,7 +26,7 @@ public class SefirotCommand {
                         .suggests(SUGGESTIONS)
                         .executes(context -> {
                             CommandSourceStack source = context.getSource();
-                            var target = StringArgumentType.getString(context, "target");
+                            var target = StringArgumentType.getStringOr(context, "target", "");
 
                             var id = BeyonderData.playerMap.findBySefirot(target);
                             if (id == null) {
@@ -49,7 +49,7 @@ public class SefirotCommand {
                         .suggests(SUGGESTIONS)
                         .executes(context -> {
                             CommandSourceStack source = context.getSource();
-                            var sefirot = StringArgumentType.getString(context, "sefirot");
+                            var sefirot = StringArgumentType.getStringOr(context, "sefirot", "");
                             var targets = GameProfileArgument.getGameProfiles(context, "targets");
 
                             for (var obj : targets) {
@@ -82,7 +82,7 @@ public class SefirotCommand {
                                 .suggests(SUGGESTIONS)
                                 .executes(context -> {
                                     CommandSourceStack source = context.getSource();
-                                    var sefirot = StringArgumentType.getString(context, "sefirot");
+                                    var sefirot = StringArgumentType.getStringOr(context, "sefirot", "");
 
                                     SefirahHandler.clearAll(sefirot, source.getServer());
 

@@ -52,8 +52,8 @@ public class MirrorWorldTraversalComponent {
                 @Override
                 public MirrorWorldTraversalComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     MirrorWorldTraversalComponent component = new MirrorWorldTraversalComponent();
-                    component.inMirrorWorld = tag.getBoolean("isInMirrorWorld");
-                    component.previousGameMode = tag.getInt("previousGameMode");
+                    component.inMirrorWorld = tag.getBooleanOr("isInMirrorWorld", false);
+                    component.previousGameMode = tag.getIntOr("previousGameMode", 0);
                     component.cooldownMillis = tag.getLong("cooldownMillis");
                     return component;
                 }

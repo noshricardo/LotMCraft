@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Renders the SpiritBlockProjectileEntity as a block, similar to how FallingBlockEntity is rendered.
  */
-public class SpiritBlockProjectileRenderer extends EntityRenderer<SpiritBlockProjectileEntity> {
+public class SpiritBlockProjectileRenderer extends EntityRenderer<SpiritBlockProjectileEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     private final BlockRenderDispatcher blockRenderer;
 

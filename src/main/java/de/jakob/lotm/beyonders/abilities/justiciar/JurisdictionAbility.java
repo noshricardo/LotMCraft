@@ -170,7 +170,7 @@ public class JurisdictionAbility extends Ability {
                         if (inside && !zone.inside.contains(id)) {
                             zone.inside.add(id);
                             owner.sendSystemMessage(Component.literal(
-                                    "§6⚖ §e" + e.getName().getString() + " §fhas entered your §eJurisdiction §6⚖"
+                                    "§6⚖ §e" + e.name().getString() + " §fhas entered your §eJurisdiction §6⚖"
                             ));
                             zone.level.playSound(null, owner.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.4f, 1.5f);
 
@@ -181,7 +181,7 @@ public class JurisdictionAbility extends Ability {
                         if (!inside && zone.inside.contains(id)) {
                             zone.inside.remove(id);
                             owner.sendSystemMessage(Component.literal(
-                                    "§6⚖ §e" + e.getName().getString() + " §fhas left your §eJurisdiction §6⚖"
+                                    "§6⚖ §e" + e.name().getString() + " §fhas left your §eJurisdiction §6⚖"
                             ));
                             zone.level.playSound(null, owner.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.4f, 0.8f);
 

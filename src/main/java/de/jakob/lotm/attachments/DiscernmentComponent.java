@@ -149,22 +149,22 @@ public class DiscernmentComponent {
                 public DiscernmentComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     DiscernmentComponent component = new DiscernmentComponent();
 
-                    if(tag.getBoolean(NBT_IS_DISCERNING)) component.isDiscerning = tag.getBoolean(NBT_IS_DISCERNING);
+                    if(tag.getBooleanOr(NBT_IS_DISCERNING, false)) component.isDiscerning = tag.getBooleanOr(NBT_IS_DISCERNING, false);
 
-                    if(tag.contains(NBT_PATH)) component.pathway = tag.getString(NBT_PATH);
-                    if(tag.contains(NBT_SEQ)) component.seq = tag.getInt(NBT_SEQ);
-                    if(tag.contains(NBT_PREVIOS_SEQ)) component.previosSeq = tag.getInt(NBT_PREVIOS_SEQ);
+                    if(tag.contains(NBT_PATH)) component.pathway = tag.getStringOr(NBT_PATH, "");
+                    if(tag.contains(NBT_SEQ)) component.seq = tag.getIntOr(NBT_SEQ, 0);
+                    if(tag.contains(NBT_PREVIOS_SEQ)) component.previosSeq = tag.getIntOr(NBT_PREVIOS_SEQ, 0);
 
-                    ListTag entries = tag.getList(NBT_SAVED, Tag.TAG_COMPOUND);
+                    ListTag entries = tag.getListOrEmpty(NBT_SAVED, Tag.TAG_COMPOUND);
 
                     for (int i = 0; i < entries.size(); i++) {
-                        CompoundTag entryTag = entries.getCompound(i);
+                        CompoundTag entryTag = entries.getCompoundOrEmpty(i);
 
-                        String path = entryTag.getString("path");
-                        int seq = entryTag.getInt("seq");
+                        String path = entryTag.getStringOr("path", "");
+                        int seq = entryTag.getIntOr("seq", 0);
 
-                        CompoundTag wheelTag = entryTag.getCompound("wheel");
-                        CompoundTag barTag = entryTag.getCompound("bar");
+                        CompoundTag wheelTag = entryTag.getCompoundOrEmpty("wheel");
+                        CompoundTag barTag = entryTag.getCompoundOrEmpty("bar");
 
                         AbilityWheelComponent wheel = new AbilityWheelComponent();
                         wheel.deserializeNBT(lookup, wheelTag);

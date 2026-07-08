@@ -145,26 +145,26 @@ public class SpiritBlockProjectileEntity extends Entity {
         tag.putDouble("HitRadius", this.hitRadius);
         tag.putInt("MaxLifetime", this.maxLifetime);
         if (this.ownerUUID != null) {
-            tag.putUUID("Owner", this.ownerUUID);
+            tag.store("Owner", net.minecraft.core.UUIDUtil.CODEC,  this.ownerUUID);
         }
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         if (tag.contains("BlockState")) {
-            this.blockState = NbtUtils.readBlockState(this.level().holderLookup(net.minecraft.core.registries.Registries.BLOCK), tag.getCompound("BlockState"));
+            this.blockState = NbtUtils.readBlockState(this.level().holderLookup(net.minecraft.core.registries.Registries.BLOCK), tag.getCompoundOrEmpty("BlockState"));
         }
         if (tag.contains("Damage")) {
-            this.damage = tag.getFloat("Damage");
+            this.damage = tag.getFloatOr("Damage", 0.0f);
         }
         if (tag.contains("HitRadius")) {
             this.hitRadius = tag.getDouble("HitRadius");
         }
         if (tag.contains("MaxLifetime")) {
-            this.maxLifetime = tag.getInt("MaxLifetime");
+            this.maxLifetime = tag.getIntOr("MaxLifetime", 0);
         }
-        if (tag.hasUUID("Owner")) {
-            this.ownerUUID = tag.getUUID("Owner");
+        if (tag.contains("Owner")) {
+            this.ownerUUID = tag.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
     }
 

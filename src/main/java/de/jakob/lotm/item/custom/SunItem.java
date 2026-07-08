@@ -19,7 +19,7 @@ public class SunItem extends Item {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         if(!(level instanceof ServerLevel serverLevel)) {
-            return InteractionResultHolder.fail(player.getItemInHand(usedHand));
+            return InteractionResult.FAIL;
         }
 
         player.getCooldowns().addCooldown(this, 20 * 35);
@@ -34,7 +34,7 @@ public class SunItem extends Item {
             itemStack.shrink(1);
         }
 
-        return InteractionResultHolder.success(player.getItemInHand(usedHand));
+        return InteractionResult.SUCCESS.heldItemTransformedTo(player.getItemInHand(usedHand));
     }
 
     private void setTimeToNoon(ServerLevel serverLevel) {

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.jakob.lotm.entity.custom.ability_entities.tyrant_pathway.GiantLightningEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.Identifier;
@@ -13,7 +13,7 @@ import org.joml.Matrix4f;
 
 import java.util.List;
 
-public class GiantLightningRenderer extends EntityRenderer<GiantLightningEntity> {
+public class GiantLightningRenderer extends EntityRenderer<GiantLightningEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     public GiantLightningRenderer(EntityRendererProvider.Context context) {
         super(context);

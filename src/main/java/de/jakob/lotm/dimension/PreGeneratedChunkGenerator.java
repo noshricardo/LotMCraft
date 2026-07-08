@@ -198,27 +198,27 @@ public class PreGeneratedChunkGenerator extends ChunkGenerator {
 
     private void loadChunkSections(ChunkAccess chunk, CompoundTag chunkData) {
         // Get the Level tag which contains the actual chunk data
-        CompoundTag level = chunkData.contains("Level") ? chunkData.getCompound("Level") : chunkData;
+        CompoundTag level = chunkData.contains("Level") ? chunkData.getCompoundOrEmpty("Level") : chunkData;
 
-        ListTag sections = level.getList("sections", 10); // 10 = CompoundTag type
+        ListTag sections = level.getListOrEmpty("sections", 10); // 10 = CompoundTag type
 
         for (int i = 0; i < sections.size(); i++) {
-            CompoundTag section = sections.getCompound(i);
+            CompoundTag section = sections.getCompoundOrEmpty(i);
             byte sectionY = section.getByte("Y");
 
             if (!section.contains("block_states")) {
                 continue;
             }
 
-            CompoundTag blockStates = section.getCompound("block_states");
+            CompoundTag blockStates = section.getCompoundOrEmpty("block_states");
 
             // Load palette
-            ListTag palette = blockStates.getList("palette", 10);
+            ListTag palette = blockStates.getListOrEmpty("palette", 10);
             BlockState[] paletteArray = new BlockState[palette.size()];
 
             for (int j = 0; j < palette.size(); j++) {
-                CompoundTag blockTag = palette.getCompound(j);
-                String blockName = blockTag.getString("Name");
+                CompoundTag blockTag = palette.getCompoundOrEmpty(j);
+                String blockName = blockTag.getStringOr("Name", "");
 
                 // Parse block state from name
                 BlockState state = parseBlockState(blockName, blockTag);
@@ -280,14 +280,14 @@ public class PreGeneratedChunkGenerator extends ChunkGenerator {
 
                 // Parse properties if they exist
                 if (blockTag.contains("Properties")) {
-                    CompoundTag properties = blockTag.getCompound("Properties");
+                    CompoundTag properties = blockTag.getCompoundOrEmpty("Properties");
 
-                    for (String propertyName : properties.getAllKeys()) {
-                        String propertyValue = properties.getString(propertyName);
+                    for (String propertyName : properties.keySet()) {
+                        String propertyValue = properties.getStringOr(propertyName, "");
 
                         // Apply property to state
                         for (net.minecraft.world.level.block.state.properties.Property<?> property : state.getProperties()) {
-                            if (property.getName().equals(propertyName)) {
+                            if (property.name().equals(propertyName)) {
                                 state = setPropertyValue(state, property, propertyValue);
                                 break;
                             }

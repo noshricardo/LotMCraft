@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 
-public class ReturnPortalRenderer extends EntityRenderer<ReturnPortalEntity> {
+public class ReturnPortalRenderer extends EntityRenderer<ReturnPortalEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/doors/mystical_door_3.png");
     private final HighSequenceDoorsModel<ReturnPortalEntity> model;
 

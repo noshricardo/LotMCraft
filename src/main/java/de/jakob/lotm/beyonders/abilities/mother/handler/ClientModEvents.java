@@ -24,7 +24,7 @@ public class ClientModEvents {
             CompoundTag persistentData = living.getPersistentData();
             
             if(persistentData.contains("HybridMobData")) {
-                HybridMobData hybridData = HybridMobData.load(persistentData.getCompound("HybridMobData"));
+                HybridMobData hybridData = HybridMobData.load(persistentData.getCompoundOrEmpty("HybridMobData"));
                 Identifier modelEntityType = hybridData.getModelEntityType();
                 
                 EntityType<?> originalType = EntityType.byString(modelEntityType.toString()).orElse(null);

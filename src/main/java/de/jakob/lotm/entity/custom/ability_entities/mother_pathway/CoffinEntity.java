@@ -71,7 +71,7 @@ public class CoffinEntity extends Entity {
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
         if (compoundTag.contains("AnimationPlayed")) {
-            this.setAnimationPlayed(compoundTag.getBoolean("AnimationPlayed"));
+            this.setAnimationPlayed(compoundTag.getBooleanOr("AnimationPlayed", false));
         }
     }
 

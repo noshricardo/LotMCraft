@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 
-public class WarBannerRenderer extends EntityRenderer<WarBannerEntity> {
+public class WarBannerRenderer extends EntityRenderer<WarBannerEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/war_banner/war_banner.png");
     private final WarBannerModel<WarBannerEntity> model;

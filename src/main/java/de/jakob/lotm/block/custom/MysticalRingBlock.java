@@ -12,7 +12,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -79,13 +79,13 @@ public class MysticalRingBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                               Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!level.isClientSide()) {
             spawnBeyonder(player, (ServerLevel) level, pos);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.CONSUME;
+        return InteractionResult.CONSUME;
     }
 
     private void spawnBeyonder(Player player, ServerLevel level, BlockPos pos) {
@@ -146,7 +146,7 @@ public class MysticalRingBlock extends Block implements EntityBlock {
         String finalPathway = pathway;
         ServerScheduler.scheduleDelayed(20 * 8, () -> {
             BeyonderNPCEntity beyonder = new BeyonderNPCEntity(ModEntities.BEYONDER_NPC.get(), level, true, finalPathway, finalSequence);
-            beyonder.getPersistentData().putUUID("lotm_beyonder_summoner", player.getUUID());
+            beyonder.getPersistentData().store("lotm_beyonder_summoner", net.minecraft.core.UUIDUtil.CODEC,  player.getUUID());
             beyonder.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
             level.addFreshEntity(beyonder);
         });

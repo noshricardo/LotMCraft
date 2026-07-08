@@ -35,12 +35,12 @@ public class StoryBookItem extends Item {
         ItemStack stack = new ItemStack(de.jakob.lotm.item.ModItems.STORY_BOOK.get());
         CompoundTag tag = new CompoundTag();
         tag.putInt(KEY_USES, 3);
-        tag.putUUID(KEY_AUTHOR, author.getUUID());
-        tag.putUUID(KEY_TARGET, target.getUUID());
-        tag.putString(KEY_TARGET_NAME, target.getName().getString());
+        tag.store(KEY_AUTHOR, net.minecraft.core.UUIDUtil.CODEC,  author.getUUID());
+        tag.store(KEY_TARGET, net.minecraft.core.UUIDUtil.CODEC,  target.getUUID());
+        tag.putString(KEY_TARGET_NAME, target.name().getString());
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
         stack.set(DataComponents.CUSTOM_NAME,
-                Component.literal("Story of " + target.getName().getString())
+                Component.literal("Story of " + target.name().getString())
                         .withStyle(ChatFormatting.LIGHT_PURPLE));
         return stack;
     }
@@ -49,28 +49,28 @@ public class StoryBookItem extends Item {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
         if (data == null) return null;
         CompoundTag tag = data.copyTag();
-        return tag.hasUUID(KEY_AUTHOR) ? tag.getUUID(KEY_AUTHOR) : null;
+        return tag.contains(KEY_AUTHOR) ? tag.read(KEY_AUTHOR, net.minecraft.core.UUIDUtil.CODEC).orElse(null) : null;
     }
 
     public static UUID getTargetUUID(ItemStack stack) {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
         if (data == null) return null;
         CompoundTag tag = data.copyTag();
-        return tag.hasUUID(KEY_TARGET) ? tag.getUUID(KEY_TARGET) : null;
+        return tag.contains(KEY_TARGET) ? tag.read(KEY_TARGET, net.minecraft.core.UUIDUtil.CODEC).orElse(null) : null;
     }
 
     public static int getUsesRemaining(ItemStack stack) {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
         if (data == null) return 0;
         CompoundTag tag = data.copyTag();
-        return tag.contains(KEY_USES) ? tag.getInt(KEY_USES) : 0;
+        return tag.contains(KEY_USES) ? tag.getIntOr(KEY_USES, 0) : 0;
     }
 
     public static void decrementUses(ItemStack stack) {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
         if (data == null) return;
         CompoundTag tag = data.copyTag();
-        tag.putInt(KEY_USES, Math.max(0, tag.getInt(KEY_USES) - 1));
+        tag.putInt(KEY_USES, Math.max(0, tag.getIntOr(KEY_USES, 0) - 1));
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
 

@@ -91,7 +91,7 @@ public class AreaMiniaturizationAbility extends Ability {
                 for (var property : state.getProperties()) {
                     if (!first) stateStr.append(",");
                     first = false;
-                    stateStr.append(property.getName()).append("=").append(state.getValue(property));
+                    stateStr.append(property.name()).append("=").append(state.getValue(property));
                 }
                 stateStr.append("]");
             }

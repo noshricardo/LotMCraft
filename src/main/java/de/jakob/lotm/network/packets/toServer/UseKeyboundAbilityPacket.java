@@ -40,7 +40,7 @@ public record UseKeyboundAbilityPacket(int selectedAbility) implements CustomPac
                 int sequence   = BeyonderData.getSequence(player);
                 Ability randomAbility = LOTMCraft.abilityHandler.getRandomAbility(pathway, sequence, new java.util.Random(), false, java.util.Collections.emptyList());
                 if (randomAbility != null) {
-                    randomAbility.useAbility(player.serverLevel(), player);
+                    randomAbility.useAbility(player.level(), player);
                 }
                 return;
             }
@@ -55,7 +55,7 @@ public record UseKeyboundAbilityPacket(int selectedAbility) implements CustomPac
                 ((SelectableAbility) ability).addSubAbilityOverride(player, getIndex(abilityBarComponent.getAbilities().get(packet.selectedAbility())));
             }
 
-            ability.useAbility(player.serverLevel(), player);
+            ability.useAbility(player.level(), player);
         });
     }
 

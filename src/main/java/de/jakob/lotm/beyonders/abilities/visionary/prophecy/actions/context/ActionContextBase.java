@@ -27,12 +27,12 @@ public abstract class ActionContextBase {
 
     public CompoundTag toNBT(HolderLookup.Provider provider){
         CompoundTag tag = new CompoundTag();
-        tag.putUUID(TARGET_ID, targetId);
+        tag.store(TARGET_ID, net.minecraft.core.UUIDUtil.CODEC,  targetId);
         return tag;
     }
 
     public static ActionContextBase load(ActionContextEnum type, CompoundTag tag, HolderLookup.Provider provider) {
-        UUID id = tag.getUUID(TARGET_ID);
+        UUID id = tag.read(TARGET_ID, net.minecraft.core.UUIDUtil.CODEC).orElse(null);
 
         return switch (type) {
             case POSITION -> ActionPositionContext.load(tag, id, provider);

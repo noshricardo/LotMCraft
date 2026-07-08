@@ -13,11 +13,11 @@ import net.minecraft.resources.Identifier;
 
 import java.util.UUID;
 
-public class OriginalBodyRenderer extends LivingEntityRenderer<OriginalBodyEntity, PlayerModel<OriginalBodyEntity>> {
+public class OriginalBodyRenderer extends LivingEntityRenderer<OriginalBodyEntity, PlayerModel> {
 
     public OriginalBodyRenderer(EntityRendererProvider.Context context) {
 
-        super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5f);
+        super(context, new PlayerModel(context.bakeLayer(ModelLayers.PLAYER), false), 0.5f);
     }
 
     @Override

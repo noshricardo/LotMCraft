@@ -5,7 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.jakob.lotm.rendering.effectRendering.ActiveEffect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
@@ -98,7 +99,9 @@ public class NightDomainEffect extends ActiveEffect {
 
     private void renderGroundCircle(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, float progress) {
         // Use translucent for proper dark rendering with alpha
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.solid());
+        VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.solidMovingBlock());
+
+
         Matrix4f matrix = poseStack.last().pose();
 
         float radius = FIELD_RADIUS * fieldIntensity;
@@ -167,7 +170,7 @@ public class NightDomainEffect extends ActiveEffect {
 
     private void renderDome(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, float progress) {
         // CRITICAL FIX: Use translucent instead of lightning for dark, solid appearance
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.solid());
+        VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.solidMovingBlock());
         Matrix4f matrix = poseStack.last().pose();
 
         float radius = FIELD_RADIUS * fieldIntensity;
@@ -228,7 +231,7 @@ public class NightDomainEffect extends ActiveEffect {
     }
 
     private void renderDomeEdge(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, float progress) {
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.solid());
+        VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.solidMovingBlock());
         Matrix4f matrix = poseStack.last().pose();
 
         float radius = FIELD_RADIUS * fieldIntensity;
@@ -261,7 +264,7 @@ public class NightDomainEffect extends ActiveEffect {
     }
 
     private void renderDarknessPulses(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, float progress) {
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.solid());
+        VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.solidMovingBlock());
         Matrix4f matrix = poseStack.last().pose();
 
         // Expanding darkness waves along the ground
@@ -296,7 +299,7 @@ public class NightDomainEffect extends ActiveEffect {
     }
 
     private void renderDomeShimmer(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, float progress) {
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.solid());
+        VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.solidMovingBlock());
         Matrix4f matrix = poseStack.last().pose();
 
         // Dark blue energy bands that move up the dome
@@ -330,7 +333,7 @@ public class NightDomainEffect extends ActiveEffect {
     }
 
     private void renderStarParticles(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, float progress) {
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.solid());
+        VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.solidMovingBlock());
         Matrix4f matrix = poseStack.last().pose();
 
         for (StarParticle particle : starParticles) {
@@ -344,7 +347,7 @@ public class NightDomainEffect extends ActiveEffect {
     }
 
     private void renderShadowWisps(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, float progress) {
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.solid());
+        VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.solidMovingBlock());
         Matrix4f matrix = poseStack.last().pose();
 
         for (ShadowWisp wisp : shadowWisps) {
@@ -365,7 +368,7 @@ public class NightDomainEffect extends ActiveEffect {
     }
 
     private void renderDarkSymbols(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, float progress) {
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.solid());
+        VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.solidMovingBlock());
         Matrix4f matrix = poseStack.last().pose();
 
         for (DarkSymbol symbol : darkSymbols) {
@@ -391,7 +394,8 @@ public class NightDomainEffect extends ActiveEffect {
                                      float x, float y, float z, float size,
                                      float r, float g, float b, float a) {
         Minecraft mc = Minecraft.getInstance();
-        Vec3 cameraPos = mc.gameRenderer.getMainCamera().getPosition();
+        Vec3 cameraPos = mc.gameRenderer.getMainCamera().position();
+
 
         Vec3 toCamera = new Vec3(
                 cameraPos.x - (this.x + x),

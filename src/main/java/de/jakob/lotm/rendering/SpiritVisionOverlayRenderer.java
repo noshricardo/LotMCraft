@@ -60,7 +60,7 @@ public class SpiritVisionOverlayRenderer {
 
         renderPanel(guiGraphics, x, y, width, height);
 
-        String name = entity.getName().getString();
+        String name = entity.name().getString();
         guiGraphics.drawString(mc.font, name, x + width / 2 - mc.font.width(name) / 2 + 1, y + 7 + 1, 0x55000000);
         guiGraphics.drawCenteredString(mc.font, name, x + width / 2, y + 7, ACCENT_LIGHT);
 

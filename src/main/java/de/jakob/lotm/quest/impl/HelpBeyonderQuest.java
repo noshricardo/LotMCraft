@@ -21,13 +21,13 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.monster.husk.Husk;
-import net.minecraft.world.entity.monster.pillager.Pillager;
-import net.minecraft.world.entity.monster.ravager.Ravager;
+import net.minecraft.world.entity.monster.zombie.Husk;
+import net.minecraft.world.entity.monster.illager.Pillager;
+import net.minecraft.world.entity.monster.Ravager;
 import net.minecraft.world.entity.monster.skeleton.Skeleton;
 import net.minecraft.world.entity.monster.spider.Spider;
-import net.minecraft.world.entity.monster.vindicator.Vindicator;
-import net.minecraft.world.entity.monster.witch.Witch;
+import net.minecraft.world.entity.monster.illager.Vindicator;
+import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -74,12 +74,12 @@ public class HelpBeyonderQuest extends Quest {
             return;
         }
 
-        if (!entity.getPersistentData().hasUUID(QUEST_OWNER_TAG)
-                || !id.equals(entity.getPersistentData().getString(QUEST_ID_TAG))) {
+        if (!entity.getPersistentData().contains(QUEST_OWNER_TAG)
+                || !id.equals(entity.getPersistentData().getStringOr(QUEST_ID_TAG, ""))) {
             return;
         }
 
-        ServerPlayer player = level.getServer().getPlayerList().getPlayer(entity.getPersistentData().getUUID(QUEST_OWNER_TAG));
+        ServerPlayer player = level.getServer().getPlayerList().getPlayer(entity.getPersistentData().read(QUEST_OWNER_TAG, net.minecraft.core.UUIDUtil.CODEC).orElse(java.util.UUID.randomUUID()));
         if (player == null) {
             return;
         }
@@ -89,9 +89,7 @@ public class HelpBeyonderQuest extends Quest {
             return;
         }
 
-        float progressPerKill = entity.getPersistentData().contains("lotm_quest_help_beyonder_progress_per_kill")
-                ? entity.getPersistentData().getFloat("lotm_quest_help_beyonder_progress_per_kill")
-                : 0f;
+        float progressPerKill = entity.getPersistentData().getFloatOr("lotm_quest_help_beyonder_progress_per_kill", 0f);
         if (progressPerKill <= 0f) {
             return;
         }
@@ -137,16 +135,16 @@ public class HelpBeyonderQuest extends Quest {
         List<Integer> topTierPattern = tier == Tier.TOP ? buildTopTierPattern(spawnCount) : List.of();
 
         for (int i = 0; i < spawnCount; i++) {
-            Entity entity = createScaledMonster(player.serverLevel(), player, tier, topTierPattern, i);
+            Entity entity = createScaledMonster((ServerLevel) player.level(), player, tier, topTierPattern, i);
             entity.setPos(
                     player.getX() + (random.nextDouble() - 0.5) * 30,
                     player.getY() + 1,
                     player.getZ() + (random.nextDouble() - 0.5) * 30
             );
-            entity.getPersistentData().putUUID(QUEST_OWNER_TAG, player.getUUID());
+            entity.getPersistentData().store(QUEST_OWNER_TAG, net.minecraft.core.UUIDUtil.CODEC, player.getUUID());
             entity.getPersistentData().putString(QUEST_ID_TAG, id);
             entity.getPersistentData().putFloat("lotm_quest_help_beyonder_progress_per_kill", 1f / spawnCount);
-            player.serverLevel().addFreshEntity(entity);
+            ((ServerLevel)player.level()).addFreshEntity(entity);
 
             if (entity instanceof Mob mob) {
                 mob.setPersistenceRequired();
@@ -211,7 +209,7 @@ public class HelpBeyonderQuest extends Quest {
     private void boostWardenAnger(Warden warden, ServerPlayer player) {
         try {
             for (var method : warden.getClass().getMethods()) {
-                if (!method.getName().equals("increaseAngerAt")) {
+                if (!method.name().equals("increaseAngerAt")) {
                     continue;
                 }
                 Class<?>[] params = method.getParameterTypes();

@@ -7,7 +7,7 @@ import de.jakob.lotm.beyonders.potions.*;
 import de.jakob.lotm.util.BeyonderData;
 import de.jakob.lotm.villager.ModVillagers;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

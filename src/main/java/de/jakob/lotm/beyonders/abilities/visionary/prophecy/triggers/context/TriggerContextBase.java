@@ -31,12 +31,12 @@ public abstract class TriggerContextBase {
 
     public CompoundTag toNBT(HolderLookup.Provider provider){
         CompoundTag tag = new CompoundTag();
-        tag.putUUID(TARGET_ID, targetId);
+        tag.store(TARGET_ID, net.minecraft.core.UUIDUtil.CODEC,  targetId);
         return tag;
     }
 
     public static TriggerContextBase load(TriggerContextEnum type, CompoundTag tag, HolderLookup.Provider provider) {
-        UUID id = tag.getUUID(TARGET_ID);
+        UUID id = tag.read(TARGET_ID, net.minecraft.core.UUIDUtil.CODEC).orElse(null);
 
         return switch (type) {
             case POSITION -> TriggerPositionContext.load(tag, id, provider);

@@ -69,14 +69,14 @@ public class AllyAbility extends Ability {
         if (AllyUtil.areAllies(entity, target)) {
             // Remove ally relationship
             AllyUtil.removeAllies(entity, target);
-            AbilityUtil.sendActionBar(entity, Component.translatable("lotm.ally.removed", target.getName()).withColor(0xFF9800));
+            AbilityUtil.sendActionBar(entity, Component.translatable("lotm.ally.removed", target.name()).withColor(0xFF9800));
             return;
         }
 
         // Check if target can be allied without permission
         if (AllyUtil.canBeAllied(target)) {
             AllyUtil.makeAllies(entity, target);
-            AbilityUtil.sendActionBar(entity, Component.translatable("lotm.ally.added", target.getName()).withColor(0x4CAF50));
+            AbilityUtil.sendActionBar(entity, Component.translatable("lotm.ally.added", target.name()).withColor(0x4CAF50));
             return;
         }
 
@@ -97,7 +97,7 @@ public class AllyAbility extends Ability {
 
         // Check ally limit (player-to-player only)
         if (requester.level() instanceof ServerLevel sl) {
-            int maxAllies = sl.getGameRules().getInt(ModGameRules.MAX_ALLY_COUNT);
+            int maxAllies = sl.getGameRules().getIntOr(ModGameRules.MAX_ALLY_COUNT, 0);
             if (maxAllies >= 0 && AllyUtil.getPlayerAllyCount(requester) >= maxAllies) {
                 AbilityUtil.sendActionBar(requester, Component.translatable("lotm.ally.limit_reached", maxAllies).withColor(0xF44336));
                 return;
@@ -118,16 +118,16 @@ public class AllyAbility extends Ability {
         addPendingRequest(requesterUUID, targetUUID);
 
         // Notify requester
-        AbilityUtil.sendActionBar(requester, Component.translatable("lotm.ally.request_sent", target.getName()).withColor(0x2196F3));
+        AbilityUtil.sendActionBar(requester, Component.translatable("lotm.ally.request_sent", target.name()).withColor(0x2196F3));
 
         // Send packet to target client to display clickable message
         if (target instanceof ServerPlayer serverTarget) {
-            PendingAllyRequestPacket packet = new PendingAllyRequestPacket(requesterUUID, requester.getName().getString());
+            PendingAllyRequestPacket packet = new PendingAllyRequestPacket(requesterUUID, requester.name().getString());
             PacketHandler.sendToPlayer(serverTarget, packet);
         }
 
         AbilityUtil.sendActionBar(target,
-                Component.translatable("lotm.ally.request_received_short", requester.getName())
+                Component.translatable("lotm.ally.request_received_short", requester.name())
                         .withColor(0x2196F3));
     }
 
@@ -149,7 +149,7 @@ public class AllyAbility extends Ability {
 
         // Check ally limits for both players
         if (accepter.level() instanceof ServerLevel serverLevel) {
-            int maxAllies = serverLevel.getGameRules().getInt(ModGameRules.MAX_ALLY_COUNT);
+            int maxAllies = serverLevel.getGameRules().getIntOr(ModGameRules.MAX_ALLY_COUNT, 0);
             if (maxAllies >= 0) {
                 if (AllyUtil.getPlayerAllyCount(accepter) >= maxAllies) {
                     AbilityUtil.sendActionBar(accepter, Component.translatable("lotm.ally.limit_reached", maxAllies).withColor(0xF44336));
@@ -157,7 +157,7 @@ public class AllyAbility extends Ability {
                     return;
                 }
                 if (AllyUtil.getPlayerAllyCount(requester) >= maxAllies) {
-                    AbilityUtil.sendActionBar(accepter, Component.translatable("lotm.ally.requester_limit_reached", requester.getName()).withColor(0xF44336));
+                    AbilityUtil.sendActionBar(accepter, Component.translatable("lotm.ally.requester_limit_reached", requester.name()).withColor(0xF44336));
                     AbilityUtil.sendActionBar(requester, Component.translatable("lotm.ally.limit_reached", maxAllies).withColor(0xF44336));
                     removePendingRequest(requesterUUID, accepter.getUUID());
                     return;
@@ -184,7 +184,7 @@ public class AllyAbility extends Ability {
 
         Player requester = denier.getServer().getPlayerList().getPlayer(requesterUUID);
         if (requester != null) {
-            AbilityUtil.sendActionBar(requester, Component.translatable("lotm.ally.request_denied", denier.getName()).withColor(0xF44336));
+            AbilityUtil.sendActionBar(requester, Component.translatable("lotm.ally.request_denied", denier.name()).withColor(0xF44336));
         }
 
         AbilityUtil.sendActionBar(denier, Component.translatable("lotm.ally.request_denied_self").withColor(0xFF9800));

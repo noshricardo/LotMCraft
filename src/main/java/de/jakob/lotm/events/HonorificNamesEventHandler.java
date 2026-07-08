@@ -48,7 +48,7 @@ public class HonorificNamesEventHandler {
     public static void onChatMessageSent(ServerChatEvent event) {
         UUID playerUUID = event.getPlayer().getUUID();
 
-        String DEBUG_nickname = event.getPlayer().getName().getString();
+        String DEBUG_nickname = event.getPlayer().name().getString();
 
         if(timeout.containsKey(playerUUID)
                 && timeout.get(playerUUID) <= System.currentTimeMillis() - 60000) {
@@ -144,7 +144,7 @@ public class HonorificNamesEventHandler {
 
         PendingPrayer prayer = new PendingPrayer(
                 sender.getUUID(),
-                sender.getName().getString(),
+                sender.name().getString(),
                 BeyonderData.getPathway(sender),
                 BeyonderData.getSequence(sender),
                 sender.getX(), sender.getY(), sender.getZ()
@@ -159,7 +159,7 @@ public class HonorificNamesEventHandler {
     public static Component formNotification(LivingEntity sender) {
         return Component.empty()
                 .append(Component.translatable("lotmcraft.honorific_praying",
-                        sender.getName().getString(),
+                        sender.name().getString(),
                         BeyonderData.getPathway(sender),
                         BeyonderData.getSequence(sender),
                                 (int) sender.getX(), (int) sender.getY(), (int) sender.getZ())

@@ -13,7 +13,7 @@ import net.minecraft.resources.Identifier;
 
 import java.util.Random;
 
-public class JudgmentSwordRenderer extends EntityRenderer<JudgmentSwordEntity> {
+public class JudgmentSwordRenderer extends EntityRenderer<JudgmentSwordEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
             LOTMCraft.MOD_ID, "textures/entity/judgment_sword/judgment_sword.png");

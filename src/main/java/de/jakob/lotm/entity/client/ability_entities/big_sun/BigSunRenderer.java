@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.entity.custom.ability_entities.BigSunEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-public class BigSunRenderer extends EntityRenderer<BigSunEntity> {
+public class BigSunRenderer extends EntityRenderer<BigSunEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     private static final Identifier GOLD_TEXTURE =
             Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID,"textures/entity/sun/gold.png");

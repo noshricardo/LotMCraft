@@ -89,7 +89,7 @@ public class DiscernmentAbility extends ToggleAbility {
             String pos = "x=" + (int) tracker.position().x + " y=" + (int) tracker.position().y + " z=" + (int) tracker.position().z;
 
             entity.sendSystemMessage(Component.literal("You sense the usage of "
-                    + usedSkill.getId() + " at " + pos + " by " + tracker.entity().getName().getString())
+                    + usedSkill.getId() + " at " + pos + " by " + tracker.entity().name().getString())
                     .withColor(0xf5c56c));
 
             cooldown.put(entity.getUUID(), 0);

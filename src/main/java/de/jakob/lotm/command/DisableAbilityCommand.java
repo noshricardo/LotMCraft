@@ -23,7 +23,7 @@ public class DisableAbilityCommand {
                 .suggests((context, builder) -> SharedSuggestionProvider.suggest(LOTMCraft.abilityHandler.getAbilities().stream().map(Ability::getId), builder))
                     .executes(context -> {
                         CommandSourceStack source = context.getSource();
-                        String abilityId = StringArgumentType.getString(context, "ability");
+                        String abilityId = StringArgumentType.getStringOr(context, "ability", "");
 
                         AbilityHandler abilityHandler = LOTMCraft.abilityHandler;
                         Ability ability = abilityHandler.getById(abilityId);
@@ -74,7 +74,7 @@ public class DisableAbilityCommand {
             }
 
             // Send success message
-            String targetName = target instanceof Player player ? player.getGameProfile().getName() : target.getDisplayName().getString();
+            String targetName = target instanceof Player player ? player.getGameProfile().name() : target.getDisplayName().getString();
             source.sendSuccess(() -> Component.literal("Set " + targetName + " to " + pathway + " sequence " + sequence), true);
             
             return 1; // Success

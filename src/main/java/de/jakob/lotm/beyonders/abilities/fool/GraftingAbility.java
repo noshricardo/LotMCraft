@@ -102,7 +102,7 @@ public class GraftingAbility extends SelectableAbility {
 
             ParticleUtil.createParticleSpirals(serverLevel, ParticleTypes.WITCH, targetEntity.position(), 1.2, 1.2, 1.5, 1, 4, 30, 10, 1);
 
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.grafting.selected", targetEntity.getName().getString()).withColor(color));
+            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.grafting.selected", targetEntity.name().getString()).withColor(color));
 
             graftingTargetsEntities.put(entity.getUUID(), targetEntity);
             return;
@@ -112,14 +112,14 @@ public class GraftingAbility extends SelectableAbility {
         LivingEntity graftingStartEntity = graftingTargetsEntities.get(entity.getUUID());
 
         if(graftingStartEntity == null) {
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.grafting.failed", targetEntity.getName().getString()).withColor(color));
+            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.grafting.failed", targetEntity.name().getString()).withColor(color));
             graftingTargetsEntities.remove(entity.getUUID());
             return;
         }
 
         if(targetEntity == graftingStartEntity) {
             graftingAbilitiesEntities.remove(entity.getUUID());
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.grafting.same_entity", targetEntity.getName().getString()).withColor(color));
+            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.grafting.same_entity", targetEntity.name().getString()).withColor(color));
             return;
         }
 
@@ -152,7 +152,7 @@ public class GraftingAbility extends SelectableAbility {
 
         ParticleUtil.createParticleSpirals(serverLevel, ParticleTypes.WITCH, targetEntity.position(), 1.2, 1.2, 1.5, 1, 4, 30, 10, 1);
 
-        AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.grafting.selected", targetEntity.getName().getString()).withColor(color));
+        AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.grafting.selected", targetEntity.name().getString()).withColor(color));
 
         if(!graftingAbilitiesEntities.containsKey(entity.getUUID())) {
             graftingAbilitiesEntities.put(entity.getUUID(), targetEntity);
@@ -163,7 +163,7 @@ public class GraftingAbility extends SelectableAbility {
 
         if(targetUUID == graftingStartEntity.getUUID()) {
             graftingAbilitiesEntities.remove(entity.getUUID());
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.grafting.same_entity", targetEntity.getName().getString()).withColor(color));
+            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.grafting.same_entity", targetEntity.name().getString()).withColor(color));
             return;
         }
 
@@ -208,7 +208,7 @@ public class GraftingAbility extends SelectableAbility {
 
         ParticleUtil.createParticleSpirals(serverLevel, ParticleTypes.WITCH, targetEntity.position(), 1.2, 1.2, 1.5, 1, 4, 30, 10, 1);
 
-        AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.grafting.selected", targetEntity.getName().getString()).withColor(color));
+        AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.grafting.selected", targetEntity.name().getString()).withColor(color));
 
         if(!graftingDamageEntities.containsKey(entity.getUUID())) {
             graftingDamageEntities.put(entity.getUUID(), targetEntity);
@@ -219,7 +219,7 @@ public class GraftingAbility extends SelectableAbility {
 
         if(targetUUID == graftingStartEntity.getUUID()) {
             graftingDamageEntities.remove(entity.getUUID());
-            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.grafting.same_entity", targetEntity.getName().getString()).withColor(color));
+            AbilityUtil.sendActionBar(entity, Component.translatable("ability.lotmcraft.grafting.same_entity", targetEntity.name().getString()).withColor(color));
             return;
         }
 

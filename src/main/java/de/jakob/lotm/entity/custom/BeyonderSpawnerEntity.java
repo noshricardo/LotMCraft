@@ -167,7 +167,7 @@ public class BeyonderSpawnerEntity extends Entity {
                 hasQuest,
                 hasTrades
         );
-        beyonder.getPersistentData().putUUID("lotm_beyonder_summoner", summoner);
+        beyonder.getPersistentData().store("lotm_beyonder_summoner", net.minecraft.core.UUIDUtil.CODEC,  summoner);
         beyonder.setPos(x, y, z);
         level.addFreshEntity(beyonder);
     }
@@ -175,14 +175,14 @@ public class BeyonderSpawnerEntity extends Entity {
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         triggerRadius   = tag.getDouble("TriggerRadius");
-        minSequence     = tag.getInt("MinSequence");
-        pathway         = tag.getString("Pathway");
-        sequenceMin     = tag.getInt("SequenceMin");
-        sequenceMax     = tag.contains("SequenceMax") ? tag.getInt("SequenceMax") : -1;
-        hasQuest        = tag.getBoolean("HasQuest");
-        hasTrades       = tag.getBoolean("HasTrades");
-        spawnAnimation  = tag.getBoolean("SpawnAnimation");
-        triggered       = tag.getBoolean("Triggered");
+        minSequence     = tag.getIntOr("MinSequence", 0);
+        pathway         = tag.getStringOr("Pathway", "");
+        sequenceMin     = tag.getIntOr("SequenceMin", 0);
+        sequenceMax     = tag.contains("SequenceMax") ? tag.getIntOr("SequenceMax", 0) : -1;
+        hasQuest        = tag.getBooleanOr("HasQuest", false);
+        hasTrades       = tag.getBooleanOr("HasTrades", false);
+        spawnAnimation  = tag.getBooleanOr("SpawnAnimation", false);
+        triggered       = tag.getBooleanOr("Triggered", false);
     }
 
     @Override

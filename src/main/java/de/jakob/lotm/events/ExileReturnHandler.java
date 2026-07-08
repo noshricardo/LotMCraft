@@ -41,12 +41,12 @@ public class ExileReturnHandler {
         if(endLevel == null)
             return;
 
-        for (Entity entity : endLevel.getEntities(EntityTypeTest.forClass(LivingEntity.class), e -> e.getPersistentData().getBoolean("Exiled"))) {
+        for (Entity entity : endLevel.getEntities(EntityTypeTest.forClass(LivingEntity.class), e -> e.getPersistentData().getBooleanOr("Exiled", false))) {
             CompoundTag tag = entity.getPersistentData();
             long returnTime = tag.getLong("ReturnTime");
             if (gameTime >= returnTime) {
                 // Now handle teleport back
-                String returnLevelStr = tag.getString("ReturnLevel");
+                String returnLevelStr = tag.getStringOr("ReturnLevel", "");
                 ResourceKey<Level> returnLevelKey =
                         ResourceKey.create(Registries.DIMENSION, Identifier.parse(returnLevelStr));
                 ServerLevel returnLevel = server.getLevel(returnLevelKey);

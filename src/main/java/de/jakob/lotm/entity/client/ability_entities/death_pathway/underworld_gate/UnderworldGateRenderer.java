@@ -8,7 +8,7 @@ import de.jakob.lotm.entity.client.ability_entities.door_pathway.travelers_door.
 import de.jakob.lotm.entity.custom.ability_entities.death_pathway.UnderworldGateEntity;
 import de.jakob.lotm.entity.custom.ability_entities.door_pathway.TravelersDoorEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -16,7 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class UnderworldGateRenderer extends EntityRenderer<UnderworldGateEntity> {
+public class UnderworldGateRenderer extends EntityRenderer<UnderworldGateEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     private final UnderworldGateModel<UnderworldGateEntity> model;
     private static final float SCALE_FACTOR = 3.5f;

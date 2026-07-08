@@ -5,14 +5,14 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import de.jakob.lotm.entity.custom.ability_entities.door_pathway.DistortionFieldEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 
-public class DistortionFieldRenderer extends EntityRenderer<DistortionFieldEntity> {
+public class DistortionFieldRenderer extends EntityRenderer<DistortionFieldEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/particle/soul_fire_flame.png");
 

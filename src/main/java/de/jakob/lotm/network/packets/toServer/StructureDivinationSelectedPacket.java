@@ -37,7 +37,7 @@ public record StructureDivinationSelectedPacket(String structureId) implements C
     public static void handle(StructureDivinationSelectedPacket packet, IPayloadContext context) {
         if (!(context.player() instanceof ServerPlayer player)) return;
 
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
         Identifier structureKey = Identifier.tryParse(packet.structureId());
 
         if (structureKey == null) {

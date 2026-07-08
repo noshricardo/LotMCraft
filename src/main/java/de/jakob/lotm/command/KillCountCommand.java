@@ -28,7 +28,7 @@ public class KillCountCommand {
                         PacketHandler.sendToPlayer(target, new SyncKillCountPacket(amount));
 
                         context.getSource().sendSuccess(() -> Component.literal(
-                                "Set kill count of " + target.getName().getString() + " to " + amount), true);
+                                "Set kill count of " + target.name().getString() + " to " + amount), true);
                         return 1;
                     })
                 )

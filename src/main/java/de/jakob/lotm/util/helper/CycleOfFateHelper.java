@@ -44,7 +44,7 @@ public class CycleOfFateHelper {
 
         AbilityUtil.getNearbyEntities(null, level, pos.getCenter(), 55, true, true).forEach(e -> {
             if(e instanceof ServerPlayer serverPlayer) {
-                ControllingUtil.reset(serverPlayer, serverPlayer.serverLevel(), true);
+                ControllingUtil.reset(serverPlayer, serverPlayer.level(), true);
             }
         });
 

@@ -79,7 +79,7 @@ public class ActionPositionContext extends ActionContextBase {
                 tag.getDouble("z")
         ));
 
-        context.dimension = tag.getString(NBT_DIMENSION);
+        context.dimension = tag.getStringOr(NBT_DIMENSION, "");
 
         return context;
     }

@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 
-public class MysticalDoorRenderer extends EntityRenderer<MysticalDoorEntity> {
+public class MysticalDoorRenderer extends EntityRenderer<MysticalDoorEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
     private final HighSequenceDoorsModel<MysticalDoorEntity> model;
 
     public MysticalDoorRenderer(EntityRendererProvider.Context context) {

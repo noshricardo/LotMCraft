@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.jakob.lotm.entity.custom.ability_entities.justiciar_pathway.AncientCourtEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -12,7 +12,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 
-public class AncientCourtEntityRenderer extends EntityRenderer<AncientCourtEntity> {
+public class AncientCourtEntityRenderer extends EntityRenderer<AncientCourtEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     // Visual court is 25 blocks — large enough to feel grand, small enough to see fully
     private static final float COURT_RADIUS = 25f;

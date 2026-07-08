@@ -19,7 +19,7 @@ public class TeamInviteResponseCommand {
                 .then(Commands.argument("uuid", StringArgumentType.string())
                         .executes(context -> {
                             try {
-                                UUID leaderUUID = UUID.fromString(StringArgumentType.getString(context, "uuid"));
+                                UUID leaderUUID = UUID.fromString(StringArgumentType.getStringOr(context, "uuid", ""));
                                 ServerPlayer player = context.getSource().getPlayerOrException();
                                 TeamCommand.acceptInvite(player, leaderUUID);
                                 return 1;
@@ -34,7 +34,7 @@ public class TeamInviteResponseCommand {
                 .then(Commands.argument("uuid", StringArgumentType.string())
                         .executes(context -> {
                             try {
-                                UUID leaderUUID = UUID.fromString(StringArgumentType.getString(context, "uuid"));
+                                UUID leaderUUID = UUID.fromString(StringArgumentType.getStringOr(context, "uuid", ""));
                                 ServerPlayer player = context.getSource().getPlayerOrException();
                                 TeamCommand.declineInvite(player, leaderUUID);
                                 return 1;

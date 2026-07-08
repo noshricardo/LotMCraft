@@ -88,11 +88,11 @@ public class FogComponent {
                 public FogComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     FogComponent component = new FogComponent();
                     component.stopTime = tag.getLong("stopTime");
-                    component.fogIndex = tag.getInt("fogIndex");
+                    component.fogIndex = tag.getIntOr("fogIndex", 0);
                     component.color = new Vec3f(
-                            tag.getFloat("colorX"),
-                            tag.getFloat("colorY"),
-                            tag.getFloat("colorZ")
+                            tag.getFloatOr("colorX", 0.0f),
+                            tag.getFloatOr("colorY", 0.0f),
+                            tag.getFloatOr("colorZ", 0.0f)
                     );
                     return component;
                 }

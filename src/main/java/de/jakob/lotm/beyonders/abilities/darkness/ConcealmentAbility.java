@@ -272,7 +272,7 @@ public class ConcealmentAbility extends SelectableAbility {
 
                 if(AbilityUtil.isTargetSignificantlyStronger(entitySeq, BeyonderData.getSequence(targetEntity))) return;
 
-                if(targetEntity.getPersistentData().contains("recently_concealed") && targetEntity.getPersistentData().getBoolean("recently_concealed")) return;
+                if(targetEntity.getPersistentData().contains("recently_concealed") && targetEntity.getPersistentData().getBooleanOr("recently_concealed", false)) return;
 
                 Vec3 originalPos = targetEntity.position();
 

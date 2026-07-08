@@ -259,17 +259,17 @@ public class ElectromagneticTornadoEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        this.setSpeed(tag.getFloat("Speed"));
-        this.setDamage(tag.getFloat("Damage"));
-        this.lifeTicks = tag.getInt("LifeTicks");
-        this.maxLifeTicks = tag.getInt("MaxLifeTicks");
-        this.setRotation(tag.getFloat("Rotation"));
+        this.setSpeed(tag.getFloatOr("Speed", 0.0f));
+        this.setDamage(tag.getFloatOr("Damage", 0.0f));
+        this.lifeTicks = tag.getIntOr("LifeTicks", 0);
+        this.maxLifeTicks = tag.getIntOr("MaxLifeTicks", 0);
+        this.setRotation(tag.getFloatOr("Rotation", 0.0f));
 
-        if (tag.hasUUID("CasterUUID")) {
-            this.setCasterUUID(tag.getUUID("CasterUUID"));
+        if (tag.contains("CasterUUID")) {
+            this.setCasterUUID(tag.read("CasterUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
-        if (tag.hasUUID("TargetUUID")) {
-            this.setTargetUUID(tag.getUUID("TargetUUID"));
+        if (tag.contains("TargetUUID")) {
+            this.setTargetUUID(tag.read("TargetUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
     }
 
@@ -283,11 +283,11 @@ public class ElectromagneticTornadoEntity extends Entity {
 
         UUID casterUUID = getCasterUUID();
         if (casterUUID != null) {
-            tag.putUUID("CasterUUID", casterUUID);
+            tag.store("CasterUUID", net.minecraft.core.UUIDUtil.CODEC,  casterUUID);
         }
         UUID targetUUID = getTargetUUID();
         if (targetUUID != null) {
-            tag.putUUID("TargetUUID", targetUUID);
+            tag.store("TargetUUID", net.minecraft.core.UUIDUtil.CODEC,  targetUUID);
         }
     }
 

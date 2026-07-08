@@ -38,7 +38,7 @@ public class AdvancementsEventHandler {
                 grantAdvancement(player, "become_" + sequenceName.toLowerCase());
             } else {
                 LOTMCraft.LOGGER.error("Advancement Error: Missing PathwayInfo for player '{}'. Pathway: '{}', Sequence: {}",
-                        player.getName().getString(),
+                        player.name().getString(),
                         BeyonderData.getPathway(player),
                         BeyonderData.getSequence(player)
                 );
@@ -68,7 +68,7 @@ public class AdvancementsEventHandler {
                 && killer instanceof ServerPlayer player) {
             grantAdvancement(player, "kill_rogue_beyonder");
 
-            int kills = player.getPersistentData().getInt("lotm_beyonder_kills") + 1;
+            int kills = player.getPersistentData().getIntOr("lotm_beyonder_kills", 0) + 1;
             player.getPersistentData().putInt("lotm_beyonder_kills", kills);
             if (kills >= 10) {
                 grantAdvancement(player, "kill_ten_beyonders");
@@ -89,7 +89,7 @@ public class AdvancementsEventHandler {
     }
 
     private static void checkStructureAdvancements(ServerPlayer player) {
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
         if (!isAdvancementDone(player, "enter_evernight_church")
                 && isInStructure(level, player, "evernight_church")) {
             grantAdvancement(player, "enter_evernight_church");
@@ -149,7 +149,7 @@ public class AdvancementsEventHandler {
     }
 
     private static void checkMysticalRingSummon(ServerPlayer player) {
-        if (player.getPersistentData().getBoolean("lotm_summoned_beyonder_with_ring")) {
+        if (player.getPersistentData().getBooleanOr("lotm_summoned_beyonder_with_ring", false)) {
             grantAdvancement(player, "summon_beyonder_with_ring");
         }
     }

@@ -12,14 +12,14 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class BeyonderNPCRenderer extends MobRenderer<BeyonderNPCEntity, BeyonderNPCRenderState, PlayerModel<BeyonderNPCRenderState>> {
-    private final PlayerModel<BeyonderNPCRenderState> wideModel;
-    private final PlayerModel<BeyonderNPCRenderState> slimModel;
+public class BeyonderNPCRenderer extends MobRenderer<BeyonderNPCEntity, BeyonderNPCRenderState, PlayerModel> {
+    private final PlayerModel wideModel;
+    private final PlayerModel slimModel;
 
     public BeyonderNPCRenderer(EntityRendererProvider.Context context) {
-        super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
+        super(context, new PlayerModel(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
         this.wideModel = this.model;
-        this.slimModel = new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true);
+        this.slimModel = new PlayerModel(context.bakeLayer(ModelLayers.PLAYER_SLIM), true);
         // layers registration...
     }
 
@@ -42,7 +42,7 @@ public class BeyonderNPCRenderer extends MobRenderer<BeyonderNPCEntity, Beyonder
                 return cached;
             }
             PlayerSkinData.fetchAndCacheSkin(entity.getTargetPlayerUUID().get());
-            return DefaultPlayerSkin.get(entity.getTargetPlayerUUID().get()).texture();
+            return DefaultPlayerSkin.get(entity.getTargetPlayerUUID().get()).body().texturePath();
         } else {
             return entity.getSkinTexture();
         }

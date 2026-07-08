@@ -106,7 +106,7 @@ public class MentalPlagueAbility extends SelectableAbility {
         boolean weakened = InteractionHandler.isInteractionPossible(targetLoc, "purification", seq);
 
         var component = target.getData(ModAttachments.MENTAL_PLAGUE.get());
-        component.place(entity.getName().getString(), seq);
+        component.place(entity.name().getString(), seq);
         component.setWeakened(weakened);
     }
 
@@ -160,7 +160,7 @@ public class MentalPlagueAbility extends SelectableAbility {
             var component = obj.getData(ModAttachments.MENTAL_PLAGUE.get());
 
             if(component.hasMentalPlague() && component.isOwner(player)){
-                player.sendSystemMessage(Component.literal(obj.getName().getString() +
+                player.sendSystemMessage(Component.literal(obj.name().getString() +
                         " has mental plague of stage " +
                         component.getStage()).withColor(0xFFff124d));
             }
@@ -238,7 +238,7 @@ public class MentalPlagueAbility extends SelectableAbility {
 
             var nearBy = AbilityUtil.getNearbyEntities(livingEntity, level, livingEntity.position(), 20);
             for(var e : nearBy){
-                if(e.getName().getString().equals(component.getOwnerName())) continue;
+                if(e.name().getString().equals(component.getOwnerName())) continue;
 
                 if(!VisionaryHandler.shouldFail(component.getSequence(), e))
                     e.getData(ModAttachments.MENTAL_PLAGUE.get()).place(component.getOwnerName(), component.getSequence());

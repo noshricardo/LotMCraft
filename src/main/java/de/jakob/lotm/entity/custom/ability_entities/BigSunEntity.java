@@ -94,11 +94,11 @@ public class BigSunEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
-        this.setMaxLifetime(compoundTag.getInt("MaxLifetime"));
-        this.setDamage(compoundTag.getFloat("Damage"));
-        this.setGriefing(compoundTag.getBoolean("Griefing"));
-        if (compoundTag.hasUUID("OwnerUUID")) {
-            this.setOwnerUUID(Optional.of(compoundTag.getUUID("OwnerUUID")));
+        this.setMaxLifetime(compoundTag.getIntOr("MaxLifetime", 0));
+        this.setDamage(compoundTag.getFloatOr("Damage", 0.0f));
+        this.setGriefing(compoundTag.getBooleanOr("Griefing", false));
+        if (compoundTag.contains("OwnerUUID")) {
+            this.setOwnerUUID(Optional.of(compoundTag.read("OwnerUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null)));
         } else {
             this.setOwnerUUID(Optional.empty());
         }
@@ -109,7 +109,7 @@ public class BigSunEntity extends Entity {
         compoundTag.putInt("MaxLifetime", this.getMaxLifetime());
         compoundTag.putFloat("Damage", this.getDamage());
         compoundTag.putBoolean("Griefing", this.isGriefing());
-        this.getOwnerUUID().ifPresent(uuid -> compoundTag.putUUID("OwnerUUID", uuid));
+        this.getOwnerUUID().ifPresent(uuid -> compoundTag.store("OwnerUUID", net.minecraft.core.UUIDUtil.CODEC,  uuid));
     }
 
     @Override

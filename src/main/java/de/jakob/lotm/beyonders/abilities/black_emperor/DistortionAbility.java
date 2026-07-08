@@ -342,11 +342,11 @@ public class DistortionAbility extends SelectableAbility {
             return;
         }
 
-        if (attacker.getPersistentData().getBoolean(DISTORT_ACTION_KEY)) {
+        if (attacker.getPersistentData().getBooleanOr(DISTORT_ACTION_KEY, false)) {
             attacker.getPersistentData().remove(DISTORT_ACTION_KEY);
             event.setNewDamage(0);
 
-            if (attacker.getPersistentData().getBoolean(DISTORT_ACTION_STRONG_KEY)) {
+            if (attacker.getPersistentData().getBooleanOr(DISTORT_ACTION_STRONG_KEY, false)) {
                 attacker.getPersistentData().remove(DISTORT_ACTION_STRONG_KEY);
                 attacker.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 60, 0, false, false, false));
                 attacker.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0, false, false, false));
@@ -363,9 +363,9 @@ public class DistortionAbility extends SelectableAbility {
         Projectile projectile = event.getProjectile();
         if (!(projectile.getOwner() instanceof LivingEntity owner)) return;
 
-        if (!owner.getPersistentData().getBoolean(DISTORT_TRAJ_KEY)) return;
+        if (!owner.getPersistentData().getBooleanOr(DISTORT_TRAJ_KEY, false)) return;
 
-        int charges = owner.getPersistentData().getInt(DISTORT_TRAJ_CHARGES_KEY);
+        int charges = owner.getPersistentData().getIntOr(DISTORT_TRAJ_CHARGES_KEY, 0);
         if (charges <= 0) charges = 1;
 
         charges--;

@@ -68,10 +68,10 @@ public class MysticalRingBlockEntity extends BlockEntity {
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         if (tag.contains("pathway")) {
-            pathway = tag.getString("pathway");
+            pathway = tag.getStringOr("pathway", "");
         }
         if (tag.contains("sequence")) {
-            sequence = tag.getInt("sequence");
+            sequence = tag.getIntOr("sequence", 0);
         }
         if (tag.contains("blocksToRemove")) {
             long[] blockPosArray = tag.getLongArray("blocksToRemove");

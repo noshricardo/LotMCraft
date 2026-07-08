@@ -9,7 +9,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -18,11 +18,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BlinkAfterimageRenderer extends MobRenderer<BlinkAfterimageEntity, PlayerModel<BlinkAfterimageEntity>> {
+public class BlinkAfterimageRenderer extends MobRenderer<BlinkAfterimageEntity, PlayerModel> {
     private static final Map<UUID, Identifier> SKIN_CACHE = new ConcurrentHashMap<>();
 
     public BlinkAfterimageRenderer(EntityRendererProvider.Context context) {
-        super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
+        super(context, new PlayerModel(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
     }
 
     @Override

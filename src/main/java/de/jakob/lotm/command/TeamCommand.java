@@ -96,8 +96,8 @@ public class TeamCommand {
         ControllingDataComponent controlling = player.getData(ModAttachments.CONTROLLING_DATA);
         if (controlling.isControlling()) {
             net.minecraft.nbt.CompoundTag bodyTag = controlling.getBodyEntity();
-            String pathway = bodyTag != null ? bodyTag.getCompound("NeoForgeData").getString("beyonder_pathway") : "";
-            int sequence = bodyTag != null ? bodyTag.getCompound("NeoForgeData").getInt("beyonder_sequence") : LOTMCraft.NON_BEYONDER_SEQ;
+            String pathway = bodyTag != null ? bodyTag.getCompoundOrEmpty("NeoForgeData").getStringOr("beyonder_pathway", "") : "";
+            int sequence = bodyTag != null ? bodyTag.getCompoundOrEmpty("NeoForgeData").getIntOr("beyonder_sequence", 0) : LOTMCraft.NON_BEYONDER_SEQ;
             if (!pathway.equals("red_priest") || sequence > 3) {
                 source.sendFailure(Component.literal("Only Red Priest Beyonders at sequence 3 or higher can use this command."));
                 return false;
@@ -133,7 +133,7 @@ public class TeamCommand {
                 leader.setData(ModAttachments.TEAM_COMPONENT.get(), leaderTeam.removeMember(target.getStringUUID()));
                 leaderTeam = leader.getData(ModAttachments.TEAM_COMPONENT.get());
             } else {
-                source.sendFailure(Component.literal(target.getName().getString() + " is already in your team."));
+                source.sendFailure(Component.literal(target.name().getString() + " is already in your team."));
                 return 0;
             }
         }
@@ -147,7 +147,7 @@ public class TeamCommand {
             if (stale) {
                 target.setData(ModAttachments.TEAM_COMPONENT.get(), targetTeam.clearLeader());
             } else {
-                source.sendFailure(Component.literal(target.getName().getString() + " is already in another team."));
+                source.sendFailure(Component.literal(target.name().getString() + " is already in another team."));
                 return 0;
             }
         }
@@ -156,14 +156,14 @@ public class TeamCommand {
         if (hasPendingInvite(target.getUUID(), leader.getUUID())) {
             removePendingInvite(target.getUUID(), leader.getUUID());
             TeamUtils.addMember(leader, target);
-            source.sendSuccess(() -> Component.literal("You and " + target.getName().getString() + " are now in the same team.").withStyle(s -> s.withColor(0x4CAF50)), false);
-            target.sendSystemMessage(Component.literal("You joined " + leader.getName().getString() + "'s team.").withStyle(s -> s.withColor(0x4CAF50)));
+            source.sendSuccess(() -> Component.literal("You and " + target.name().getString() + " are now in the same team.").withStyle(s -> s.withColor(0x4CAF50)), false);
+            target.sendSystemMessage(Component.literal("You joined " + leader.name().getString() + "'s team.").withStyle(s -> s.withColor(0x4CAF50)));
             return 1;
         }
 
         addPendingInvite(leader.getUUID(), target.getUUID());
-        PacketHandler.sendToPlayer(target, new PendingTeamInvitePacket(leader.getUUID(), leader.getName().getString()));
-        source.sendSuccess(() -> Component.literal("Team invite sent to " + target.getName().getString() + ".").withStyle(s -> s.withColor(0x2196F3)), false);
+        PacketHandler.sendToPlayer(target, new PendingTeamInvitePacket(leader.getUUID(), leader.name().getString()));
+        source.sendSuccess(() -> Component.literal("Team invite sent to " + target.name().getString() + ".").withStyle(s -> s.withColor(0x2196F3)), false);
         return 1;
     }
 
@@ -174,12 +174,12 @@ public class TeamCommand {
         // Allow the leader to remove a member
         if (senderTeam.hasMember(target.getStringUUID())) {
             TeamUtils.removeMember(sender, target);
-            source.sendSuccess(() -> Component.literal("Removed " + target.getName().getString() + " from your team.").withStyle(s -> s.withColor(0xFF9800)), false);
-            target.sendSystemMessage(Component.literal("You were removed from " + sender.getName().getString() + "'s team.").withStyle(s -> s.withColor(0xFF9800)));
+            source.sendSuccess(() -> Component.literal("Removed " + target.name().getString() + " from your team.").withStyle(s -> s.withColor(0xFF9800)), false);
+            target.sendSystemMessage(Component.literal("You were removed from " + sender.name().getString() + "'s team.").withStyle(s -> s.withColor(0xFF9800)));
             return 1;
         }
 
-        source.sendFailure(Component.literal(target.getName().getString() + " is not in your team."));
+        source.sendFailure(Component.literal(target.name().getString() + " is not in your team."));
         return 0;
     }
 
@@ -195,7 +195,7 @@ public class TeamCommand {
 
         if (leader != null) {
             TeamUtils.removeMember(leader, sender);
-            leader.sendSystemMessage(Component.literal(sender.getName().getString() + " left your team.").withStyle(s -> s.withColor(0xFF9800)));
+            leader.sendSystemMessage(Component.literal(sender.name().getString() + " left your team.").withStyle(s -> s.withColor(0xFF9800)));
         } else {
             // Leader is offline — clean up manually and clear client data
             sender.setData(ModAttachments.TEAM_COMPONENT.get(), senderTeam.clearLeader());
@@ -253,14 +253,14 @@ public class TeamCommand {
         PacketHandler.sendToPlayer(target, new de.jakob.lotm.network.packets.toClient.SyncSharedAbilitiesDataPacket(
                 "", new java.util.ArrayList<>(), new java.util.ArrayList<>(), new java.util.HashMap<>(), 0, 0));
 
-        source.sendSuccess(() -> Component.literal("Reset team data for " + target.getName().getString() + ".").withStyle(s -> s.withColor(0x4CAF50)), true);
+        source.sendSuccess(() -> Component.literal("Reset team data for " + target.name().getString() + ".").withStyle(s -> s.withColor(0x4CAF50)), true);
         target.sendSystemMessage(Component.literal("An admin has reset your team status.").withStyle(s -> s.withColor(0xFF9800)));
         return 1;
     }
 
     private static int executeAdminInfo(CommandSourceStack source, ServerPlayer target) {
         TeamComponent team = target.getData(ModAttachments.TEAM_COMPONENT.get());
-        String name = target.getName().getString();
+        String name = target.name().getString();
 
         if (!team.isInTeam() && team.memberCount() == 0) {
             source.sendSuccess(() -> Component.literal(name + " is not in any team."), false);
@@ -270,13 +270,13 @@ public class TeamCommand {
         if (team.isInTeam()) {
             String leaderUUID = team.leaderUUID();
             ServerPlayer leader = source.getServer().getPlayerList().getPlayer(UUID.fromString(leaderUUID));
-            String leaderName = leader != null ? leader.getName().getString() : "offline (" + leaderUUID + ")";
+            String leaderName = leader != null ? leader.name().getString() : "offline (" + leaderUUID + ")";
             source.sendSuccess(() -> Component.literal(name + " is a member of " + leaderName + "'s team."), false);
         } else {
             StringBuilder sb = new StringBuilder(name + " is a leader with " + team.memberCount() + " member(s): ");
             for (String uuid : team.memberUUIDs()) {
                 ServerPlayer member = source.getServer().getPlayerList().getPlayer(UUID.fromString(uuid));
-                sb.append(member != null ? member.getName().getString() : "offline(" + uuid + ")").append(", ");
+                sb.append(member != null ? member.name().getString() : "offline(" + uuid + ")").append(", ");
             }
             String msg = sb.toString().replaceAll(", $", "");
             source.sendSuccess(() -> Component.literal(msg), false);
@@ -305,8 +305,8 @@ public class TeamCommand {
             return;
         }
 
-        accepter.sendSystemMessage(Component.literal("You joined " + leader.getName().getString() + "'s team.").withStyle(s -> s.withColor(0x4CAF50)));
-        leader.sendSystemMessage(Component.literal(accepter.getName().getString() + " joined your team.").withStyle(s -> s.withColor(0x4CAF50)));
+        accepter.sendSystemMessage(Component.literal("You joined " + leader.name().getString() + "'s team.").withStyle(s -> s.withColor(0x4CAF50)));
+        leader.sendSystemMessage(Component.literal(accepter.name().getString() + " joined your team.").withStyle(s -> s.withColor(0x4CAF50)));
     }
 
     public static void declineInvite(ServerPlayer decliner, UUID leaderUUID) {
@@ -315,7 +315,7 @@ public class TeamCommand {
 
         ServerPlayer leader = decliner.getServer().getPlayerList().getPlayer(leaderUUID);
         if (leader != null) {
-            leader.sendSystemMessage(Component.literal(decliner.getName().getString() + " declined your team invite.").withStyle(s -> s.withColor(0xFF9800)));
+            leader.sendSystemMessage(Component.literal(decliner.name().getString() + " declined your team invite.").withStyle(s -> s.withColor(0xFF9800)));
         }
     }
 

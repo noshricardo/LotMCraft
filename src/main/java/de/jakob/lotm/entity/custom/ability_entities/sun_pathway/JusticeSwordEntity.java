@@ -59,9 +59,9 @@ public class JusticeSwordEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
-        setDamage(compoundTag.getFloat("Damage"));
+        setDamage(compoundTag.getFloatOr("Damage", 0.0f));
         if(compoundTag.contains("OwnerUUID")) {
-            setOwnerUUID(Optional.of(compoundTag.getUUID("OwnerUUID")));
+            setOwnerUUID(Optional.of(compoundTag.read("OwnerUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null)));
         }
     }
 
@@ -69,7 +69,7 @@ public class JusticeSwordEntity extends Entity {
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
         compoundTag.putFloat("Damage", getDamage());
         if(getOwnerUUID() != null) {
-            compoundTag.putUUID("OwnerUUID", getOwnerUUID());
+            compoundTag.store("OwnerUUID", net.minecraft.core.UUIDUtil.CODEC,  getOwnerUUID());
         }
     }
 

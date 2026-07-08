@@ -7,7 +7,7 @@ import com.mojang.math.Axis;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.entity.custom.projectiles.FlamingSpearProjectileEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -17,7 +17,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
-public class FlamingSpearProjectileRenderer extends EntityRenderer<FlamingSpearProjectileEntity> {
+public class FlamingSpearProjectileRenderer extends EntityRenderer<FlamingSpearProjectileEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     private FlamingSpearProjectileModel model;
 

@@ -69,16 +69,16 @@ public class VirtualPersonaComponent {
         if(component.ownPersonasOnSelf == 0) return;
 
         float health = getMaxHealthPerSeq(seq);
-        var persona = new VirtualPersona(player.getName().getString(), health, health, seq);
+        var persona = new VirtualPersona(player.name().getString(), health, health, seq);
 
         if(!affectedBy.stream().filter(obj
-                -> obj.owner.equals(player.getName().getString())).toList().isEmpty())
+                -> obj.owner.equals(player.name().getString())).toList().isEmpty())
             return;
 
         affectedBy.add(persona);
 
         component.ownPersonasOnSelf--;
-        component.affects.add(victim.getName().getString());
+        component.affects.add(victim.name().getString());
     }
 
     public void create(int seq){
@@ -138,7 +138,7 @@ public class VirtualPersonaComponent {
                 var component = target.getData(ModAttachments.VIRTUAL_PERSONAS.get());
 
                 if(component.isAffectedBy(name)){
-                    removeAffects(target.getName().getString(), name, level);
+                    removeAffects(target.name().getString(), name, level);
                 }
             }
         }
@@ -210,7 +210,7 @@ public class VirtualPersonaComponent {
             var target = level.getPlayerByUUID(BeyonderData.playerMap.getKeyByName(obj.owner));
             if(target != null){
                 var component = target.getData(ModAttachments.VIRTUAL_PERSONAS.get());
-                component.removeAffects(name, target.getName().getString(), level);
+                component.removeAffects(name, target.name().getString(), level);
             }
         }
 
@@ -218,7 +218,7 @@ public class VirtualPersonaComponent {
     }
 
     public void onDeath(ServerLevel level, String owner){
-        if(level.getGameRules().getBoolean(ModGameRules.REGRESS_SEQUENCE_ON_DEATH)){
+        if(level.getGameRules().getBooleanOr(ModGameRules.REGRESS_SEQUENCE_ON_DEATH, false)){
             for(var obj : affects){
                 var target = level.getPlayerByUUID(BeyonderData.playerMap.getKeyByName(obj));
                 if(target != null){
@@ -286,27 +286,27 @@ public class VirtualPersonaComponent {
                 public VirtualPersonaComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     var component = new VirtualPersonaComponent();
 
-                    ListTag affectedByList = tag.getList("affectedBy", Tag.TAG_COMPOUND);
+                    ListTag affectedByList = tag.getListOrEmpty("affectedBy", Tag.TAG_COMPOUND);
 
                     for (Tag tag1 : affectedByList) {
                         component.affectedBy.add(VirtualPersona.fromNbt((CompoundTag) tag1));
                     }
 
-                    ListTag affectsList = tag.getList("affects", Tag.TAG_STRING);
+                    ListTag affectsList = tag.getListOrEmpty("affects", Tag.TAG_STRING);
 
                     for (Tag tag1 : affectsList) {
                         component.affects.add(tag1.getAsString());
                     }
 
-                    component.ownPersonasOnSelf = tag.getInt("own");
-                    component.health = tag.getFloat("health");
-                    component.maxHealth = tag.getFloat("max_health");
+                    component.ownPersonasOnSelf = tag.getIntOr("own", 0);
+                    component.health = tag.getFloatOr("health", 0.0f);
+                    component.maxHealth = tag.getFloatOr("max_health", 0.0f);
 
-                    var listTag = tag.getList("avatars", Tag.TAG_STRING);
+                    var listTag = tag.getListOrEmpty("avatars", Tag.TAG_STRING);
                     List<UUID> uuids = new ArrayList<>();
 
                     for (int i = 0; i < listTag.size(); i++) {
-                        uuids.add(UUID.fromString(listTag.getString(i)));
+                        uuids.add(UUID.fromString(listTag.getStringOr(i, "")));
                     }
 
                     component.avatars = uuids;
@@ -372,10 +372,10 @@ class VirtualPersona{
 
     public static VirtualPersona fromNbt(CompoundTag tag){
         return new VirtualPersona(
-                tag.getString("owner"),
-                tag.getFloat("health"),
-                tag.getFloat("max_health"),
-                tag.getInt("seq")
+                tag.getStringOr("owner", ""),
+                tag.getFloatOr("health", 0.0f),
+                tag.getFloatOr("max_health", 0.0f),
+                tag.getIntOr("seq", 0)
         );
     }
 }

@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.entity.custom.projectiles.SpiritBallEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -18,7 +18,7 @@ import org.joml.Vector3f;
 
 import java.awt.*;
 
-public class SpiritBallRenderer extends EntityRenderer<SpiritBallEntity> {
+public class SpiritBallRenderer extends EntityRenderer<SpiritBallEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     public SpiritBallRenderer(EntityRendererProvider.Context context) {
         super(context);

@@ -20,7 +20,7 @@ public enum TriggerEnum {
     ;
 
     public static TriggerEnum  fromNBT(CompoundTag tag, String key) {
-        String name = tag.getString(key);
+        String name = tag.getStringOr(key, "");
         try {
             return TriggerEnum .valueOf(name);
         } catch (Exception e) {

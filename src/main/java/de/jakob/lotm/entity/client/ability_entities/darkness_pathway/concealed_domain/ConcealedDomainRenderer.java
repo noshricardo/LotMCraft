@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class ConcealedDomainRenderer extends EntityRenderer<ConcealedDomainEntity> {
+public class ConcealedDomainRenderer extends EntityRenderer<ConcealedDomainEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     public ConcealedDomainRenderer(EntityRendererProvider.Context context) {
         super(context);

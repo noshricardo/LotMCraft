@@ -13,7 +13,7 @@ import net.minecraft.resources.Identifier;
 
 import java.util.Random;
 
-public class JusticeSwordRenderer extends EntityRenderer<JusticeSwordEntity> {
+public class JusticeSwordRenderer extends EntityRenderer<JusticeSwordEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/justice_sword/justice_sword.png");
     private final JusticeSwordModel<JusticeSwordEntity> model;
 

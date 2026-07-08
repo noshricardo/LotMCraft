@@ -29,7 +29,7 @@ public enum ActionsEnum {
     ;
 
     public static ActionsEnum fromNBT(CompoundTag tag, String key) {
-        String name = tag.getString(key);
+        String name = tag.getStringOr(key, "");
         try {
             return ActionsEnum.valueOf(name);
         } catch (Exception e) {

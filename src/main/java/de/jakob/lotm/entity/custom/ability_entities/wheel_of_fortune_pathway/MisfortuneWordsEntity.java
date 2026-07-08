@@ -128,19 +128,19 @@ public class MisfortuneWordsEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
-        if (compoundTag.hasUUID("owner")) {
-            setCasterUUID(compoundTag.getUUID("owner"));
+        if (compoundTag.contains("owner")) {
+            setCasterUUID(compoundTag.read("owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         } else {
             setCasterUUID(null);
         }
 
-        setAffectedEntitiesCount(compoundTag.getInt("affectedEntitiesCount"));
+        setAffectedEntitiesCount(compoundTag.getIntOr("affectedEntitiesCount", 0));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
         if (getCasterUUID() != null) {
-            compoundTag.putUUID("owner", getCasterUUID());
+            compoundTag.store("owner", net.minecraft.core.UUIDUtil.CODEC,  getCasterUUID());
         }
         compoundTag.putInt("affectedEntitiesCount", getAffectedEntitiesCount());
     }

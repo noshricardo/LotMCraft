@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class MisfortuneWordsRenderer extends EntityRenderer<MisfortuneWordsEntity> {
+public class MisfortuneWordsRenderer extends EntityRenderer<MisfortuneWordsEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
     private final MisfortuneWordsModel<MisfortuneWordsEntity> model;
     private static final float ROTATION_SPEED = 2.0F;
 

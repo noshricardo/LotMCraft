@@ -168,7 +168,7 @@ public class UniquenessEntity extends Entity {
 
         serverLevel.players().forEach(p ->
                 p.displayClientMessage(
-                        Component.literal(player.getName().getString())
+                        Component.literal(player.name().getString())
                                 .append(Component.translatable("lotm.uniqueness.picked_up"))
                                 .withColor(color),
                         false
@@ -200,7 +200,7 @@ public class UniquenessEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        setPathway(tag.getString("Pathway"));
+        setPathway(tag.getStringOr("Pathway", ""));
         if (!level() .isClientSide() && !getPathway().isEmpty()) {
             ACTIVE_ENTITIES.put(getPathway(), this.getId());
         }

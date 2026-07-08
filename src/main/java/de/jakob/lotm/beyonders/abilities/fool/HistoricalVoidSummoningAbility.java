@@ -202,8 +202,8 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
         long summonTime = level.getGameTime() + getSummonDurationTicks(player);
         CompoundTag customTag = new CompoundTag();
         customTag.putLong("VoidSummonTime", summonTime);
-        customTag.putUUID("VoidSummonOwner", player.getUUID());
-        customTag.putUUID("UniqueSummonID", UUID.randomUUID());
+        customTag.store("VoidSummonOwner", net.minecraft.core.UUIDUtil.CODEC,  player.getUUID());
+        customTag.store("UniqueSummonID", net.minecraft.core.UUIDUtil.CODEC,  UUID.randomUUID());
 
         item.set(DataComponents.CUSTOM_DATA,
                 CustomData.of(customTag)
@@ -235,7 +235,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
                     CompoundTag tag = customData.copyTag();
                     if(tag.contains("VoidSummonTime") && tag.contains("VoidSummonOwner")) {
                         long itemSummonTime = tag.getLong("VoidSummonTime");
-                        UUID ownerId = tag.getUUID("VoidSummonOwner");
+                        UUID ownerId = tag.read("VoidSummonOwner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
                         if(ownerId.equals(player.getUUID()) && itemSummonTime == summonTime) {
                             player.getInventory().removeItem(i, stack.getCount());
                             foundAndRemoved = true;
@@ -314,17 +314,17 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
             ItemStack displayItem = createEntityDisplayItem(entityData);
 
             if (entityData.contains("EntityNBT")) {
-                CompoundTag entityNBT = entityData.getCompound("EntityNBT");
-                CompoundTag nfd = entityNBT.getCompound("neoforge:attachments").getCompound("lotmcraft:beyonder_component");
+                CompoundTag entityNBT = entityData.getCompoundOrEmpty("EntityNBT");
+                CompoundTag nfd = entityNBT.getCompoundOrEmpty("neoforge:attachments").getCompoundOrEmpty("lotmcraft:beyonder_component");
 
                 if (nfd.contains("pathway") && BeyonderData.pathwayInfos.get(nfd.get("pathway")) != null) {
-                    boolean isMarionette = Optional.of(entityNBT.getCompound("neoforge:attachments").getCompound("lotmcraft:marionette_component")).map(c -> c.getBoolean("isMarionette")).orElse(false);
+                    boolean isMarionette = Optional.of(entityNBT.getCompoundOrEmpty("neoforge:attachments").getCompoundOrEmpty("lotmcraft:marionette_component")).map(c -> c.getBooleanOr("isMarionette", false)).orElse(false);
                     displayItem.set(
                             DataComponents.LORE,
                             new ItemLore(List.of(
                                     Component.literal("-------------------").withStyle(style -> style.withColor(0xFFa742f5).withItalic(false)),
-                                    Component.translatable("lotm.pathway").append(Component.literal(": ")).append(Component.literal(BeyonderData.pathwayInfos.get(nfd.getString("pathway")).getSequenceName(9))).withColor(0xa26fc9).withStyle(style -> style.withItalic(false)),
-                                    Component.translatable("lotm.sequence").append(Component.literal(": ")).append(Component.literal(nfd.getInt("sequence") + "")).withColor(0xa26fc9).withStyle(style -> style.withItalic(false)),
+                                    Component.translatable("lotm.pathway").append(Component.literal(": ")).append(Component.literal(BeyonderData.pathwayInfos.get(nfd.getStringOr("pathway", "")).getSequenceName(9))).withColor(0xa26fc9).withStyle(style -> style.withItalic(false)),
+                                    Component.translatable("lotm.sequence").append(Component.literal(": ")).append(Component.literal(nfd.getIntOr("sequence", 0) + "")).withColor(0xa26fc9).withStyle(style -> style.withItalic(false)),
                                     Component.translatable("lotm.marionette").append(Component.literal(": ")).append(Component.literal(isMarionette + "")).withColor(0xa26fc9).withStyle(style -> style.withItalic(false))
                             )));
                 }
@@ -356,7 +356,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
                             }
 
                             if(tag.contains("EntityData")) {
-                                CompoundTag entityData = tag.getCompound("EntityData");
+                                CompoundTag entityData = tag.getCompoundOrEmpty("EntityData");
                                 if(isDeleting) {
                                     // remove logic
                                     removedMarkedEntity(player, entityData);
@@ -382,8 +382,8 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
     }
 
     private static ItemStack createEntityDisplayItem(CompoundTag entityData) {
-        String entityId = entityData.getString("EntityType");
-        String customName = entityData.getString("CustomName");
+        String entityId = entityData.getStringOr("EntityType", "");
+        String customName = entityData.getStringOr("CustomName", "");
 
         // Create a spawn egg or representation item
         ItemStack display = new ItemStack(Items.PLAYER_HEAD);
@@ -402,7 +402,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
 
     private void spawnTemporaryEntity(ServerLevel level, ServerPlayer player, CompoundTag entityData) {
         try {
-            String entityTypeId = entityData.getString("EntityType");
+            String entityTypeId = entityData.getStringOr("EntityType", "");
             Optional<EntityType<?>> optionalType = EntityType.byString(entityTypeId);
 
             if(optionalType.isEmpty()) {
@@ -416,14 +416,14 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
             boolean isPlayer = entityTypeId.equals("minecraft:player");
 
             // Special handling for BeyonderNPCEntity and players as well
-            if(entityData.getBoolean("IsBeyonderNPC") || isPlayer) {
-                CompoundTag entityNBT = entityData.getCompound("EntityNBT");
-                CompoundTag nfd = entityNBT.getCompound("neoforge:attachments").getCompound("lotmcraft:beyonder_component");
+            if(entityData.getBooleanOr("IsBeyonderNPC", false) || isPlayer) {
+                CompoundTag entityNBT = entityData.getCompoundOrEmpty("EntityNBT");
+                CompoundTag nfd = entityNBT.getCompoundOrEmpty("neoforge:attachments").getCompoundOrEmpty("lotmcraft:beyonder_component");
 
-                String pathway = nfd.getString("pathway");
-                int sequence = nfd.getInt("sequence");
-                String skin = entityData.getString("BeyonderSkin");
-                boolean hostile = entityData.getBoolean("BeyonderHostile");
+                String pathway = nfd.getStringOr("pathway", "");
+                int sequence = nfd.getIntOr("sequence", 0);
+                String skin = entityData.getStringOr("BeyonderSkin", "");
+                boolean hostile = entityData.getBooleanOr("BeyonderHostile", false);
 
                 // change the entity type to beyonder npc if the summoned was a player
                 EntityType<? extends BeyonderNPCEntity> npcType = isPlayer ?
@@ -444,10 +444,10 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
 
                 // store the original player's UUID if the summoned entity was a player
                 if(isPlayer && entityData.contains("EntityNBT")) {
-                    CompoundTag playerNbt = entityData.getCompound("EntityNBT");
-                    if(playerNbt.hasUUID("UUID")) {
+                    CompoundTag playerNbt = entityData.getCompoundOrEmpty("EntityNBT");
+                    if(playerNbt.contains("UUID")) {
                         if (entity instanceof BeyonderNPCEntity npc) {
-                            npc.setTargetPlayerUUID(playerNbt.getUUID("UUID"));
+                            npc.setTargetPlayerUUID(playerNbt.read("UUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
                         }
                     }
                 }
@@ -464,15 +464,15 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
             }
 
             // Load entity data (only for non-BeyonderNPC entities, as BeyonderNPC is already initialized)
-            if(!(entityData.getBoolean("IsBeyonderNPC") || isPlayer) && entityData.contains("EntityNBT")) {
-                CompoundTag entityNBT = entityData.getCompound("EntityNBT").copy();
+            if(!(entityData.getBooleanOr("IsBeyonderNPC", false) || isPlayer) && entityData.contains("EntityNBT")) {
+                CompoundTag entityNBT = entityData.getCompoundOrEmpty("EntityNBT").copy();
 
                 // Remove UUID to generate a new one and avoid conflicts
                 entityNBT.remove("UUID");
                 entity.load(entityNBT);
-            } else if(entityData.getBoolean("IsBeyonderNPC") && entityData.contains("EntityNBT")) {
+            } else if(entityData.getBooleanOr("IsBeyonderNPC", false) && entityData.contains("EntityNBT")) {
                 // For BeyonderNPC, load NBT but skip some fields that are already initialized
-                CompoundTag entityNBT = entityData.getCompound("EntityNBT").copy();
+                CompoundTag entityNBT = entityData.getCompoundOrEmpty("EntityNBT").copy();
 
                 // Remove UUID and custom initialization fields to avoid conflicts
                 entityNBT.remove("UUID");
@@ -493,7 +493,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
                 if (!stack.isEmpty()) {
                     CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> {
                         tag.putLong("VoidSummonTime", summonTimeInv);
-                        tag.putUUID("VoidSummonOwner", player.getUUID());
+                        tag.store("VoidSummonOwner", net.minecraft.core.UUIDUtil.CODEC,  player.getUUID());
 
                     });
                 }
@@ -515,7 +515,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
             long summonTime = level.getGameTime() + getSummonDurationTicks(player);
             CompoundTag tag = entity.getPersistentData();
             tag.putLong("VoidSummonTime", summonTime);
-            tag.putUUID("VoidSummonOwner", player.getUUID());
+            tag.store("VoidSummonOwner", net.minecraft.core.UUIDUtil.CODEC,  player.getUUID());
             tag.putBoolean("VoidSummoned", true);
 
             // Add entity to world
@@ -527,7 +527,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
                 // Track this summon
                 incrementSummonedCount(player, summonTime, SummonType.ENTITY, entityUUID);
 
-                player.sendSystemMessage(Component.translatable("ability.lotmcraft.historical_void_summoning.summoned_entity", entity.getName().getString()).withStyle(ChatFormatting.GREEN));
+                player.sendSystemMessage(Component.translatable("ability.lotmcraft.historical_void_summoning.summoned_entity", entity.name().getString()).withStyle(ChatFormatting.GREEN));
                 if(entity instanceof LivingEntity living)
                     AllyUtil.makeAllies(player, living);
 
@@ -554,9 +554,9 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
         // Try direct UUID lookup first
         Entity entity = level.getEntity(entityUUID);
 
-        if(entity != null && entity.getPersistentData().getBoolean("VoidSummoned")) {
+        if(entity != null && entity.getPersistentData().getBooleanOr("VoidSummoned", false)) {
             long entitySummonTime = entity.getPersistentData().getLong("VoidSummonTime");
-            UUID ownerId = entity.getPersistentData().getUUID("VoidSummonOwner");
+            UUID ownerId = entity.getPersistentData().read("VoidSummonOwner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
 
             if(entitySummonTime == summonTime && ownerId.equals(player.getUUID())) {
                 entity.remove(Entity.RemovalReason.DISCARDED);
@@ -568,9 +568,9 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
         if(!removed) {
             AABB searchBox = new AABB(player.blockPosition()).inflate(100);
             List<Entity> entities = level.getEntities((Entity)null, searchBox, e -> {
-                if(e.getPersistentData().getBoolean("VoidSummoned")) {
+                if(e.getPersistentData().getBooleanOr("VoidSummoned", false)) {
                     long entitySummonTime = e.getPersistentData().getLong("VoidSummonTime");
-                    UUID ownerId = e.getPersistentData().getUUID("VoidSummonOwner");
+                    UUID ownerId = e.getPersistentData().read("VoidSummonOwner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
                     return entitySummonTime == summonTime && ownerId.equals(player.getUUID());
                 }
                 return false;
@@ -596,9 +596,9 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
         List<CompoundTag> entities = new ArrayList<>();
 
         if(data.contains(MARKED_ENTITIES_TAG)) {
-            ListTag list = data.getList(MARKED_ENTITIES_TAG, Tag.TAG_COMPOUND);
+            ListTag list = data.getListOrEmpty(MARKED_ENTITIES_TAG, Tag.TAG_COMPOUND);
             for(int i = 0; i < list.size(); i++) {
-                entities.add(list.getCompound(i));
+                entities.add(list.getCompoundOrEmpty(i));
             }
         }
 
@@ -608,7 +608,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
     private void removedMarkedEntity(ServerPlayer player, CompoundTag entityData) {
         CompoundTag data = player.getPersistentData();
         if (data.contains(MARKED_ENTITIES_TAG)) {
-            ListTag list = data.getList(MARKED_ENTITIES_TAG, Tag.TAG_COMPOUND);
+            ListTag list = data.getListOrEmpty(MARKED_ENTITIES_TAG, Tag.TAG_COMPOUND);
 
             list.remove(entityData);
 
@@ -651,17 +651,17 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
         // Save entity data
         CompoundTag entityData = new CompoundTag();
         entityData.putString("EntityType", EntityType.getKey(closest.getType()).toString());
-        entityData.putString("CustomName", closest.hasCustomName() ? closest.getCustomName().getString() : closest.getName().getString());
+        entityData.putString("CustomName", closest.hasCustomName() ? closest.getCustomName().getString() : closest.name().getString());
 
         CompoundTag entityNBT = new CompoundTag();
         closest.saveWithoutId(entityNBT);
         entityData.put("EntityNBT", entityNBT);
 
-        String entityTypeId = entityData.getString("EntityType");
+        String entityTypeId = entityData.getStringOr("EntityType", "");
         if (entityTypeId.equals("minecraft:player")) {
-            CompoundTag playerNbt = entityData.getCompound("EntityNBT");
-            if(playerNbt.hasUUID("UUID")) {
-                entityData.putUUID("OriginalPlayerUUID", playerNbt.getUUID("UUID"));
+            CompoundTag playerNbt = entityData.getCompoundOrEmpty("EntityNBT");
+            if(playerNbt.contains("UUID")) {
+                entityData.store("OriginalPlayerUUID", net.minecraft.core.UUIDUtil.CODEC,  playerNbt.read("UUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
             }
         }
 
@@ -676,7 +676,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
 
         addMarkedEntity(player, entityData);
 
-        player.sendSystemMessage(Component.translatable("ability.lotmcraft.historical_void_summoning.marked_entity", closest.getName().getString()).withStyle(ChatFormatting.GREEN));
+        player.sendSystemMessage(Component.translatable("ability.lotmcraft.historical_void_summoning.marked_entity", closest.name().getString()).withStyle(ChatFormatting.GREEN));
     }
 
     private void addMarkedEntity(ServerPlayer player, CompoundTag entityData) {
@@ -684,7 +684,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
         ListTag list;
 
         if(data.contains(MARKED_ENTITIES_TAG)) {
-            list = data.getList(MARKED_ENTITIES_TAG, Tag.TAG_COMPOUND);
+            list = data.getListOrEmpty(MARKED_ENTITIES_TAG, Tag.TAG_COMPOUND);
         } else {
             list = new ListTag();
         }
@@ -703,7 +703,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
         // Save entity data
         CompoundTag entityData = new CompoundTag();
         entityData.putString("EntityType", EntityType.getKey(player.getType()).toString());
-        entityData.putString("CustomName", player.hasCustomName() ? player.getCustomName().getString() : player.getName().getString());
+        entityData.putString("CustomName", player.hasCustomName() ? player.getCustomName().getString() : player.name().getString());
 
         CompoundTag entityNBT = new CompoundTag();
         player.saveWithoutId(entityNBT);
@@ -711,14 +711,14 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
         entityData.put("EntityNBT", entityNBT);
         entityData.putBoolean("IsBeyonderNPC", false);
 
-        String entityTypeId = entityData.getString("EntityType");
+        String entityTypeId = entityData.getStringOr("EntityType", "");
         if (entityTypeId.equals("minecraft:player")) {
-            CompoundTag playerNbt = entityData.getCompound("EntityNBT");
-            entityData.putUUID("OriginalPlayerUUID", playerNbt.getUUID("UUID"));
+            CompoundTag playerNbt = entityData.getCompoundOrEmpty("EntityNBT");
+            entityData.store("OriginalPlayerUUID", net.minecraft.core.UUIDUtil.CODEC,  playerNbt.read("UUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
         addMarkedEntity(player, entityData);
 
-        player.sendSystemMessage(Component.translatable("ability.lotmcraft.historical_void_summoning.marked_entity", player.getName().getString()).withStyle(ChatFormatting.GREEN));
+        player.sendSystemMessage(Component.translatable("ability.lotmcraft.historical_void_summoning.marked_entity", player.name().getString()).withStyle(ChatFormatting.GREEN));
     }
 
 
@@ -773,14 +773,14 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
         if(specificInfo != null) {
 
             if(specificInfo.type() == SummonType.HEALTH) {
-                player.setHealth(specificInfo.originalBeforeBorrowing().getFloat("health"));
+                player.setHealth(specificInfo.originalBeforeBorrowing().getFloatOr("health", 0.0f));
             }
             else if (specificInfo.type() == SummonType.SPIRITUALITY) {
-                BeyonderData.setSpirituality(player, specificInfo.originalBeforeBorrowing().getFloat("spirituality"));
+                BeyonderData.setSpirituality(player, specificInfo.originalBeforeBorrowing().getFloatOr("spirituality", 0.0f));
             }
             else if (specificInfo.type() == SummonType.CLEANSED_STATE) {
                 CompoundTag tag = specificInfo.originalBeforeBorrowing();
-                if (tag.getBoolean("WalkStolen")) {
+                if (tag.getBooleanOr("WalkStolen", false)) {
                     AttributeInstance movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
                     movementSpeed.addTransientModifier(new AttributeModifier(Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "mundane_conceptual_theft_walk"), -100, AttributeModifier.Operation.ADD_VALUE));
                     ServerScheduler.scheduleDelayed(20 * 20, () -> {
@@ -792,24 +792,24 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
                     });
                 }
                 if (tag.contains("StolenEffects")) {
-                    ListTag effectsList = tag.getList("StolenEffects", Tag.TAG_COMPOUND);
+                    ListTag effectsList = tag.getListOrEmpty("StolenEffects", Tag.TAG_COMPOUND);
                     for (int i = 0; i < effectsList.size(); i++) {
-                        MobEffectInstance effect = MobEffectInstance.load(effectsList.getCompound(i));
+                        MobEffectInstance effect = MobEffectInstance.load(effectsList.getCompoundOrEmpty(i));
                         if (effect != null) {
                             player.addEffect(effect);
                         }
                     }
                 }
                 if (tag.contains("DisabledAbilities")) {
-                    ListTag disabledAbilitiesList = tag.getList("StolenEffects", Tag.TAG_COMPOUND);
+                    ListTag disabledAbilitiesList = tag.getListOrEmpty("StolenEffects", Tag.TAG_COMPOUND);
                     DisabledAbilitiesComponent disabledComponent = player.getData(ModAttachments.DISABLED_ABILITIES_COMPONENT);
                     for (int i = 0; i < disabledAbilitiesList.size(); i++) {
-                        disabledComponent.disableSpecificAbilityForTime(disabledAbilitiesList.getCompound(i).getString("AbilityName"), "theft_", 30 * 20);
+                        disabledComponent.disableSpecificAbilityForTime(disabledAbilitiesList.getCompoundOrEmpty(i).getStringOr("AbilityName", ""), "theft_", 30 * 20);
                     }
                 }
             } else if (specificInfo.type() == SummonType.SEQUENCE) {
-                BeyonderData.setPathway(player, specificInfo.originalBeforeBorrowing().getString("pathway"));
-                BeyonderData.setSequence(player, specificInfo.originalBeforeBorrowing().getInt("sequence"));
+                BeyonderData.setPathway(player, specificInfo.originalBeforeBorrowing().getStringOr("pathway", ""));
+                BeyonderData.setSequence(player, specificInfo.originalBeforeBorrowing().getIntOr("sequence", 0));
             }
             data.activeSummonTimes.remove(borrowTime);
         }
@@ -928,20 +928,20 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
                 CompoundTag entityData = markedEntities.get(i);
                 ItemStack displayItem = createEntityDisplayItem(entityData);
                 if (entityData.contains("EntityNBT")) {
-                    CompoundTag entityNBT = entityData.getCompound("EntityNBT");
-                    CompoundTag nfd = entityNBT.getCompound("neoforge:attachments").getCompound("lotmcraft:beyonder_component");
+                    CompoundTag entityNBT = entityData.getCompoundOrEmpty("EntityNBT");
+                    CompoundTag nfd = entityNBT.getCompoundOrEmpty("neoforge:attachments").getCompoundOrEmpty("lotmcraft:beyonder_component");
 
                     if (nfd.contains("pathway")) {
 
                         if (entityData.contains("OriginalPlayerUUID")) {
-                            if (entityData.getUUID("OriginalPlayerUUID").equals(player.getUUID()) && nfd.getInt("sequence") > 0) {
-                                boolean isMarionette = Optional.of(entityNBT.getCompound("neoforge:attachments").getCompound("lotmcraft:marionette_component")).map(c -> c.getBoolean("isMarionette")).orElse(false);
+                            if (entityData.read("OriginalPlayerUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null).equals(player.getUUID()) && nfd.getIntOr("sequence", 0) > 0) {
+                                boolean isMarionette = Optional.of(entityNBT.getCompoundOrEmpty("neoforge:attachments").getCompoundOrEmpty("lotmcraft:marionette_component")).map(c -> c.getBooleanOr("isMarionette", false)).orElse(false);
                                 displayItem.set(
                                         DataComponents.LORE,
                                         new ItemLore(List.of(
                                                 Component.literal("-------------------").withStyle(style -> style.withColor(0xFFa742f5).withItalic(false)),
-                                                Component.translatable("lotm.pathway").append(Component.literal(": ")).append(Component.literal(BeyonderData.pathwayInfos.get(nfd.getString("pathway")).getSequenceName(9))).withColor(0xa26fc9).withStyle(style -> style.withItalic(false)),
-                                                Component.translatable("lotm.sequence").append(Component.literal(": ")).append(Component.literal(nfd.getInt("sequence") + "")).withColor(0xa26fc9).withStyle(style -> style.withItalic(false)),
+                                                Component.translatable("lotm.pathway").append(Component.literal(": ")).append(Component.literal(BeyonderData.pathwayInfos.get(nfd.getStringOr("pathway", "")).getSequenceName(9))).withColor(0xa26fc9).withStyle(style -> style.withItalic(false)),
+                                                Component.translatable("lotm.sequence").append(Component.literal(": ")).append(Component.literal(nfd.getIntOr("sequence", 0) + "")).withColor(0xa26fc9).withStyle(style -> style.withItalic(false)),
                                                 Component.translatable("lotm.marionette").append(Component.literal(": ")).append(Component.literal(isMarionette + "")).withColor(0xa26fc9).withStyle(style -> style.withItalic(false))
                                         )));
                             } else {
@@ -973,7 +973,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
                                 CompoundTag tag = customData.copyTag();
 
                                 if(tag.contains("EntityData")) {
-                                    CompoundTag entityData = tag.getCompound("EntityData");
+                                    CompoundTag entityData = tag.getCompoundOrEmpty("EntityData");
                                     long borrowTime = level.getGameTime() + getMaxHistoricalBorrowingDurationTicks(player);
                                     CompoundTag anotherTag = new CompoundTag();
                                     anotherTag.putFloat("sequence", BeyonderData.getSequence(player));
@@ -981,8 +981,8 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
 
                                     incrementHistoricalBorrowingCount(player, borrowTime, SummonType.SEQUENCE, player.getUUID(), anotherTag);
 
-                                    BeyonderData.setPathway(player, entityData.getCompound("EntityNBT").getCompound("neoforge:attachments").getCompound("lotmcraft:beyonder_component").getString("pathway"));
-                                    BeyonderData.setSequence(player, entityData.getCompound("EntityNBT").getCompound("neoforge:attachments").getCompound("lotmcraft:beyonder_component").getInt("sequence"));
+                                    BeyonderData.setPathway(player, entityData.getCompoundOrEmpty("EntityNBT").getCompoundOrEmpty("neoforge:attachments").getCompoundOrEmpty("lotmcraft:beyonder_component").getStringOr("pathway", ""));
+                                    BeyonderData.setSequence(player, entityData.getCompoundOrEmpty("EntityNBT").getCompoundOrEmpty("neoforge:attachments").getCompoundOrEmpty("lotmcraft:beyonder_component").getIntOr("sequence", 0));
                                     player.closeContainer();
                                 }
                             }
@@ -1063,11 +1063,11 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
         if (entity.tickCount % 600 != 0) return;
         if (level .isClientSide() || !(level instanceof ServerLevel serverLevel)) return;
 
-        if(entity.getPersistentData().getBoolean("VoidSummoned")) {
+        if(entity.getPersistentData().getBooleanOr("VoidSummoned", false)) {
             if (entity.getPersistentData().getLong("VoidSummonTime") < serverLevel.getGameTime()) {
                 entity.remove(Entity.RemovalReason.DISCARDED);
             }
-            if (serverLevel.getPlayerByUUID(entity.getPersistentData().getUUID("VoidSummonOwner")) instanceof ServerPlayer serverPlayer) {
+            if (serverLevel.getPlayerByUUID(entity.getPersistentData().read("VoidSummonOwner", net.minecraft.core.UUIDUtil.CODEC).orElse(null)) instanceof ServerPlayer serverPlayer) {
                 decrementSummonedCount(serverPlayer, entity.getPersistentData().getLong("VoidSummonTime"));
             }
         }
@@ -1090,7 +1090,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
                 CompoundTag tag = customData.copyTag();
                 if(tag.contains("VoidSummonTime") && tag.contains("VoidSummonOwner")) {
                     long summonTime = tag.getLong("VoidSummonTime");
-                    UUID ownerId = tag.getUUID("VoidSummonOwner");
+                    UUID ownerId = tag.read("VoidSummonOwner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
 
                     // Track this placed block
                     placedBlocks.put(event.getPos(), new PlacedBlockData(summonTime, ownerId));
@@ -1154,7 +1154,7 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
                 CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
                 if(customData != null) {
                     CompoundTag tag = customData.copyTag();
-                    if(tag.contains("VoidSummonOwner") && tag.getUUID("VoidSummonOwner").equals(playerUUID)) {
+                    if(tag.contains("VoidSummonOwner") && tag.read("VoidSummonOwner", net.minecraft.core.UUIDUtil.CODEC).orElse(null).equals(playerUUID)) {
                         player.getInventory().removeItem(i, stack.getCount());
                     }
                 }
@@ -1164,8 +1164,8 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
         // Remove all summoned entities
         for(Entity entity : level.getAllEntities()) {
             if(entity == null) continue;
-            if(entity.getPersistentData().getBoolean("VoidSummoned") &&
-                    entity.getPersistentData().getUUID("VoidSummonOwner").equals(playerUUID)) {
+            if(entity.getPersistentData().getBooleanOr("VoidSummoned", false) &&
+                    entity.getPersistentData().read("VoidSummonOwner", net.minecraft.core.UUIDUtil.CODEC).orElse(null).equals(playerUUID)) {
                 entity.remove(Entity.RemovalReason.DISCARDED);
             }
         }
@@ -1192,8 +1192,8 @@ public class HistoricalVoidSummoningAbility extends SelectableAbility {
 
         // Remove all summoned entities
         for(Entity entity : level.getAllEntities()) {
-            if(entity.getPersistentData().getBoolean("VoidSummoned") &&
-                    entity.getPersistentData().getUUID("VoidSummonOwner").equals(playerUUID)) {
+            if(entity.getPersistentData().getBooleanOr("VoidSummoned", false) &&
+                    entity.getPersistentData().read("VoidSummonOwner", net.minecraft.core.UUIDUtil.CODEC).orElse(null).equals(playerUUID)) {
                 entity.remove(Entity.RemovalReason.DISCARDED);
             }
         }

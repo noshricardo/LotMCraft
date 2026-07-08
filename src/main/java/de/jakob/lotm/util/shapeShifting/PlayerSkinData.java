@@ -2,7 +2,7 @@ package de.jakob.lotm.util.shapeShifting;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.resources.Identifier;
 

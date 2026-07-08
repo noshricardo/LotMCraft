@@ -5,7 +5,7 @@ import com.mojang.math.Axis;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.entity.custom.ability_entities.tyrant_pathway.TsunamiEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -13,7 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 
-public class TsunamiRenderer extends EntityRenderer<TsunamiEntity> {
+public class TsunamiRenderer extends EntityRenderer<TsunamiEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
     public static final float scale = 3.75F;
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/tsunami/tsunami.png");

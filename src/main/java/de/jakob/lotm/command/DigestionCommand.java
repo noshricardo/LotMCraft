@@ -29,7 +29,7 @@ public class DigestionCommand {
                                 return 0;
                             }
 
-                            float amount = FloatArgumentType.getFloat(context, "amount");
+                            float amount = FloatArgumentType.getFloatOr(context, "amount", 0.0f);
 
                             return executeSanityCommand(source, player, amount);
                         })
@@ -41,7 +41,7 @@ public class DigestionCommand {
     private static int executeSanityCommand(CommandSourceStack source, Player target, float amount) {
         try {
             BeyonderData.setDigestionProgress(target, amount);
-            source.sendSuccess(() -> Component.literal("Digested potion " + target.getName().getString() + " with " + amount), true);
+            source.sendSuccess(() -> Component.literal("Digested potion " + target.name().getString() + " with " + amount), true);
             return 1;
 
         } catch (Exception e) {

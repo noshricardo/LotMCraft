@@ -89,9 +89,9 @@ public class TriggerPositionContext extends TriggerContextBase {
                 tag.getDouble("y"),
                 tag.getDouble("z")));
 
-        context.range = tag.getInt(NBT_RANGE);
+        context.range = tag.getIntOr(NBT_RANGE, 0);
 
-        context.dimension = tag.getString(NBT_DIMENSION);
+        context.dimension = tag.getStringOr(NBT_DIMENSION, "");
 
         return context;
 

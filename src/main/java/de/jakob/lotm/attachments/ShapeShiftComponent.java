@@ -33,8 +33,8 @@ public class ShapeShiftComponent {
                 @Override
                 public ShapeShiftComponent read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider lookup) {
                     ShapeShiftComponent component = new ShapeShiftComponent();
-                    component.shape = tag.getString("Shape");
-                    component.skinOnly = tag.getBoolean("skinOnly");
+                    component.shape = tag.getStringOr("Shape", "");
+                    component.skinOnly = tag.getBooleanOr("skinOnly", false);
                     return component;
                 }
 

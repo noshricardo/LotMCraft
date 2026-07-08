@@ -155,7 +155,7 @@ public class EyeOfOrderAbility extends ToggleAbility {
         var currentTeam = scoreboard.getPlayersTeam(entity.getStringUUID());
 
         if (currentTeam != null) {
-            String teamName = currentTeam.getName();
+            String teamName = currentTeam.name();
             if (teamName.equals("eye_red") || teamName.equals("eye_gold") || teamName.equals("eye_black")) {
                 scoreboard.removePlayerFromTeam(entity.getStringUUID(), currentTeam);
             }

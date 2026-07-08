@@ -48,7 +48,7 @@ public class KillPlayerQuest extends Quest {
 
         ServerPlayer targetOnline = player.server.getPlayerList().getPlayer(targetUuid);
         if (targetOnline != null) {
-            player.sendSystemMessage(Component.literal("Target selected: " + targetOnline.getName().getString()));
+            player.sendSystemMessage(Component.literal("Target selected: " + targetOnline.name().getString()));
         } else {
             Optional<StoredData> data = BeyonderData.playerMap.get(targetUuid);
             String name = data.isPresent() ? data.get().trueName() : targetUuid.toString();
@@ -104,7 +104,7 @@ public class KillPlayerQuest extends Quest {
         ServerPlayer targetOnline = player.server.getPlayerList().getPlayer(targetUuid);
         String targetName;
         if (targetOnline != null) {
-            targetName = targetOnline.getName().getString();
+            targetName = targetOnline.name().getString();
         } else {
             Optional<StoredData> data = BeyonderData.playerMap.get(targetUuid);
             targetName = data.map(StoredData::trueName).orElse(targetUuid.toString());

@@ -6,7 +6,7 @@ import com.mojang.math.Axis;
 import de.jakob.lotm.LOTMCraft;
 import de.jakob.lotm.entity.custom.ability_entities.door_pathway.BlackHoleEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -14,7 +14,7 @@ import net.minecraft.resources.Identifier;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-public class BlackHoleRenderer extends EntityRenderer<BlackHoleEntity> {
+public class BlackHoleRenderer extends EntityRenderer<BlackHoleEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
     private static final Identifier BLACK_TEXTURE =
             Identifier.fromNamespaceAndPath(LOTMCraft.MOD_ID, "textures/entity/black_hole/black.png");
     private static final Identifier DISK_TEXTURE =

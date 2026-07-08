@@ -50,7 +50,7 @@ public class SpectatingOverlayRenderer {
 
                 renderPanel(guiGraphics, x, y, width, height, 0xFFf7cd83);
 
-                String name = entity.getName().getString();
+                String name = entity.name().getString();
                 guiGraphics.drawString(mc.font, name, x + width / 2 - mc.font.width(name) / 2 + 1, y + 7 + 1, 0x55000000);
                 guiGraphics.drawCenteredString(mc.font, name, x + width / 2, y + 7, 0xFFf7cd83);
 
@@ -157,7 +157,7 @@ public class SpectatingOverlayRenderer {
         if (ClientBeyonderCache.isBeyonder(entity.getUUID())) {
             String pathway = ClientBeyonderCache.getPathway(entity.getUUID());
             if (!BeyonderData.pathwayInfos.containsKey(pathway)) return;
-            String pathwayName = BeyonderData.pathwayInfos.get(pathway).getName();
+            String pathwayName = BeyonderData.pathwayInfos.get(pathway).name();
             int sequence = ClientBeyonderCache.getSequence(entity.getUUID());
             float spirituality = ClientBeyonderCache.getSpirituality(entity.getUUID());
 

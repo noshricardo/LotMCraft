@@ -308,13 +308,13 @@ public class DisorderAbility extends SelectableAbility {
     @SubscribeEvent
     public static void onAbilityUsed(AbilityUsedEvent event) {
         LivingEntity entity = event.getEntity();
-        if (!entity.getPersistentData().getBoolean(DISORDERED_PERCEPTION_KEY)) return;
+        if (!entity.getPersistentData().getBooleanOr(DISORDERED_PERCEPTION_KEY, false)) return;
         if (!(entity.level() instanceof ServerLevel serverLevel)) return;
 
         // Don't intercept DisorderAbility itself to avoid recursion
         if (event.getAbility() instanceof DisorderAbility) return;
 
-        int charges = entity.getPersistentData().getInt(DISORDERED_PERCEPTION_CHARGES_KEY);
+        int charges = entity.getPersistentData().getIntOr(DISORDERED_PERCEPTION_CHARGES_KEY, 0);
         if (charges <= 0) {
             entity.getPersistentData().remove(DISORDERED_PERCEPTION_KEY);
             entity.getPersistentData().remove(DISORDERED_PERCEPTION_CHARGES_KEY);
@@ -361,7 +361,7 @@ public class DisorderAbility extends SelectableAbility {
         float dmg = event.getNewDamage();
 
         // --- Disordered Actions: redirect this hit to a random nearby entity ---
-        if (attacker.getPersistentData().getBoolean(DISORDERED_ACTION_KEY)) {
+        if (attacker.getPersistentData().getBooleanOr(DISORDERED_ACTION_KEY, false)) {
             attacker.getPersistentData().remove(DISORDERED_ACTION_KEY);
 
             if (dmg > 0 && attacker.level() instanceof ServerLevel sLevel) {
